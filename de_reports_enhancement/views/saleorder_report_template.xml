@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <template id="report_saleorder_document_inherit" inherit_id="sale.report_saleorder_document">
+        <!--
+        <xpath expr="/t/t/div/div[2]" position="after">
+            <div class="row">
+                <div class="col-3">
+                    <span>
+                        <strong>Display Name:</strong>
+                        <br/>
+                    </span>
+                    <span t-field="doc.display_name"/>
+                </div>
+                <div class="col-3"/>
+                <div class="col-3"/>
+                <div class="col-3"/>
+            </div>
+          </xpath>
+<xpath expr="//address" position="inside">
+            <span t-field="doc.partner_id.ref"/>
+        </xpath>
+-->
+        <!-- add partner fields -->
+        <xpath expr="/t[1]/t[1]/t[2]/div[1]" position="before">
+            <div t-if="doc.partner_id.ref">
+                <strong>Reference:</strong>
+                <span t-field="doc.partner_id.ref"/>
+            </div>
+        </xpath>
+        <xpath expr="/t[1]/t[1]/t[2]/div[1]" position="attributes">
+            <attribute name="t-options-fields">['address', 'name', 'phone', 'email']</attribute>
+        </xpath>
+        <xpath expr="/t[1]/t[1]/t[2]/div[1]" position="attributes">
+            <attribute name="t-options-no_marker">False</attribute>
+        </xpath>
+        
+ <!-- add weight field -->
+        <xpath expr="/t/t/div/table/thead/tr/th[1]" position="after">
+            <th>
+                <span>Weight</span>
+            </th>
+        </xpath>
+        <xpath expr="/t/t/div/table/tbody/t[2]/tr/t[1]/td[1]" position="after">
+            <td>
+              <span t-field="line.product_id.weight"/>
+            </td>
+        </xpath>
+        <xpath expr="/t/t/div/table/tbody/t[2]/t[3]/tr/td" position="attributes">
+            <attribute name="colspan">100</attribute>
+        </xpath>
+         <!-- add Total weight field -->
+        <xpath expr="/t/t/div/table/thead/tr/th[2]" position="after">
+            <th>
+              <span>Total Weight</span>
+            </th>
+        </xpath>
+        <xpath expr="/t/t/div/table/tbody/t[2]/tr/t[1]/td[2]" position="after">
+            <td>
+              <span t-field="line.total_weight"/>
+            </td>
+        </xpath>
+        <xpath expr="/t/t/div/table/tbody/t[2]/t[3]/tr/td" position="attributes">
+            <attribute name="colspan">101</attribute>
+        </xpath>
+        <!-- add terms & Conditions Heading -->
+        <xpath expr="/t/t/div/div[3]" position="after">
+            <div t-if="doc.note" class="row">
+                <div class="col h5">
+                    <span>Terms &amp; Conditions</span>
+                </div>
+            </div>
+        </xpath>
+        
+        <!-- add total quantities -->
+        <xpath expr="/t/t/div/div[3]/div/div" position="inside">
+      <div t-if="doc.sum_qty" class="col-auto">
+                    <strong>Total Qty:</strong>
+                    <span class="m-0" t-field="doc.sum_qty"/>
+                </div>
+        <div t-if="doc.sum_weight" class="col-auto">
+                    <strong>Total Weight:</strong>
+                    <span class="m-0" t-field="doc.sum_weight"/>
+                </div>        
+            
+        </xpath>
+        <!-- hide tax field when tax amount zero -->
+        <xpath expr="/t[1]/t[1]/div[1]/table[1]/thead[1]/tr[1]/th[7]" position="attributes">
+            <attribute name="t-if">doc.amount_tax != ""</attribute></xpath>
+        <xpath expr="/t[1]/t[1]/div[1]/table[1]/tbody[1]/t[2]/tr[1]/t[1]/td[7]" position="attributes">
+            <attribute name="t-if">doc.amount_tax != ""</attribute>
+        </xpath>
+    </template>
+</odoo>
