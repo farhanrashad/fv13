@@ -26,11 +26,12 @@
     'data': [
         # 'security/ir.model.access.csv',
         'views/bom_views.xml',
-        'views/job_order_views.xml',
-        'views/job_rule_views.xml',
-        'views/job_order_report.xml',
+        'security/ir.model.access.csv',
         'data/ir_sequence_data.xml',
-        'security/ir.model.access.csv'
+        'views/job_rule_views.xml',
+        'views/job_order_views.xml',
+        'views/job_order_report.xml', 
+        
     ],
     # only loaded in demonstration mode
     'demo': [

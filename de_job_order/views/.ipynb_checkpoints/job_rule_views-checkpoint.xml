@@ -12,6 +12,8 @@
             </tree>
         </field>
     </record>
+    
+    
     <!-- Job Order Structure Form -->
     <record id="view_job_order_strucutre_form" model="ir.ui.view">
         <field name="name">view.job.order.structure.form</field>
@@ -40,16 +42,21 @@
     
     <!-- Job Order Action -->
     <record id="action_view_job_order_structure_list_form" model="ir.actions.act_window">
-        <field name="name">Job Order Structure</field>
-        <field name="res_model">job.order.structure</field>
-        <field name="view_type">form</field>
-        <field name="view_mode">tree,form</field>
-    </record>
+            <field name="name">Job Order Structure</field>
+            <field name="res_model">job.order.structure</field>
+            <field name="view_mode">tree,form</field>
+            <field name="help" type="html">
+                <p class="oe_view_nocontent_create">
+                    Click here to create a new Job Order Rule.
+                </p>
+            </field>
+        </record>
     
     <menuitem id="job_order_structure_menu" name="Component Structure" parent="menu_job_order" action="action_view_job_order_structure_list_form" sequence="2"/>
 
     
     <!-- Job Order Rule Form View -->
+
     <record id="job_order_rule_form_view" model="ir.ui.view">
         <field name="name">job.order.rule.form.view</field>
         <field name="model">job.order.rule</field>
@@ -77,52 +84,13 @@
                                 
                         </group>
                         <group string="Code" attrs="{'invisible':[('quantity_select','!=','code')], 'required':[('quantity_select','=','code')]}">
-                        <div style="margin-top: 4px;">
-                            <!--<field name="quantity_python_compute" nolabel="1" widget="ace"
-                                   options="{'mode': 'python'}"/> -->
-                            <h3>Help with Python expressions.</h3>
-                            <p>You have to insert valid Python code block that
-                                stores at some moment a float/integer value of
-                                the quantity to invoice in the variable
-                                'result'.
-                            </p>
-                            <p>You can use these variables to compute your
-                                formula:
-                            </p>
-                            <ul>
-                                <li><i>env</i>: Environment variable for
-                                    getting other models.
-                                </li>
-                                <li><i>context</i>: Current context dictionary.
-                                </li>
-                                <li><i>user</i>: Current user.
-                                </li>
-                                <li><i>line</i>: Contract recurring invoice
-                                    line that triggers this formula.
-                                </li>
-                                <li><i>contract</i>: Contract whose line
-                                    belongs to.
-                                </li>
-                                <li><i>invoice</i>: Invoice (header) being
-                                    created.
-                                </li>
-                            </ul>
-                            <div>
-                                <p>Example of Python code</p>
-                                <code>
-                                    result =
-                                    env['product.product'].search_count([('sale_ok',
-                                    '=', True)])
-                                </code>
-                            </div>
-                        </div>
+                        
                     </group>
                     </page>
                 </notebook>
             </form>
         </field>
     </record>
-    
     
     <!-- Job Order Rule Tree View -->
     <record id="job_order_rule_tree_view" model="ir.ui.view">
@@ -138,16 +106,15 @@
     
     <!-- Job Order Sheet Action View -->
     <record id="job_order_rule_action" model="ir.actions.act_window">
-        <field name="name">Job Order Rule</field>
-        <field name="type">ir.actions.act_window</field>
-        <field name="res_model">job.order.rule</field>
-        <field name="view_mode">tree,form</field>
-        <field name="help" type="html">
-          <p class="oe_view_nocontent_create">
-            Click here to create a new Job Order Rule
-          </p>
-        </field>
-    </record>
+            <field name="name">Job Order Rule</field>
+            <field name="res_model">job.order.rule</field>
+            <field name="view_mode">tree,form</field>
+            <field name="help" type="html">
+                <p class="oe_view_nocontent_create">
+                     Click here to create a new Job Order Rule.
+                </p>
+            </field>
+        </record>
     
     <menuitem id="job_order_rule_menu" name="Job Order Rules" parent="menu_job_order" action="job_order_rule_action" sequence="3"/>
 </odoo>

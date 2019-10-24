@@ -41,8 +41,6 @@
                                     <field name="product_id" groups="product.group_product_variant" context="{'default_type': 'product'}"/>
                                     <field name="product_uom"/>
                                     <field name="product_uom_qty"/>
-                                    <field name="secondary_qty"/>
-                                    <field name="secondary_uom"/>
                                     <field name="struct_id"/>
 
                                 </tree>
@@ -52,11 +50,13 @@
                         <page string="Job Compute Items">
                             <field name="job_order_lines" widget="one2many_list">
                                 <tree string="Job Order Rule lines" editable="bottom">
-                                    <field name="rule_id"/>
-                                    <field name="rule_name"/>
-                                    <field name="rule_code"/>
-                                    <field name="category_id"/>
+                                    <field name="job_sale_line_id"/>
                                     <field name="name"/>
+                                    <field name="code"/>
+                                    <field name="sequence"/>
+                                    <field name="category_id"/>
+                                    <field name="job_rule_id"/>
+                                    <field name="line_desc"/>
                                     <field name="quantity"/>
                                 </tree>
                             </field>

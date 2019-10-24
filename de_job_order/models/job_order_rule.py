@@ -25,7 +25,6 @@ class JobOrderStructure(models.Model):
     note = fields.Text(string='Description')
     rule_ids = fields.Many2many('job.order.rule', 'job_structure_job_rule_rel', 'struct_id', 'rule_id', string='Job Order Rules')
     
-    @api.multi
     def get_all_rules(self):
         """
         @return: returns a list of tuple (id, sequence) of rules that are maybe to apply
@@ -68,7 +67,31 @@ class JobOrderRule(models.Model):
     quantity_percentage_base = fields.Char(string='Percentage based on', help='result will be affected to a variable')
             
     #TODO should add some checks on the type of result (should be float)
-    @api.multi
+    def _compute_rule(self, localdict):
+        """
+        :param localdict: dictionary containing the environement in which to compute the rule
+        :return: returns a tuple build as the base/amount computed, the quantity and the rate
+        :rtype: (float, float, float)
+        """
+        self.ensure_one()
+        if self.quantity_select == 'fix':
+            try:
+                return self.quantity_fix
+            except:
+                raise UserError(_('Wrong quantity defined for salary rule %s (%s).') % (self.name, self.code))
+        elif self.quantity_select == 'percentage':
+            try:
+                return (float(safe_eval(self.quantity_percentage_base, localdict)))
+            except:
+                raise UserError(_('Wrong percentage base or quantity defined for salary rule %s (%s).') % (self.name, self.code))
+        else:
+            try:
+                safe_eval(self.amount_python_compute, localdict, mode='exec', nocopy=True)
+                return float(localdict['result']), 'result_qty' in localdict and localdict['result_qty'] or 1.0
+            except:
+                raise UserError(_('Wrong python code defined for salary rule %s (%s).') % (self.name, self.code))
+                
+                
     def _compute_rule(self, localdict):
         """
         :param localdict: dictionary containing the environement in which to compute the rule

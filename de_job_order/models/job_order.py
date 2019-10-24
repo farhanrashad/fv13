@@ -42,23 +42,42 @@ class JobOrder(models.Model):
         res_id = super(JobOrder, self).create(vals)
         return res_id
     
-    @api.multi
     def compute_job(self):
+        class BrowsableObject(object):
+            def __init__(self, struct_id, dict, env):
+                self.struct_id = struct_id
+                self.dict = dict
+                self.env = env
+
+            def __getattr__(self, attr):
+                return attr in self.dict and self.dict.__getitem__(attr) or 0.0
         self.job_order_lines.unlink()
         job_order_line = self.env['job.order.line']
         for job in self:
             for sale in job.job_order_sale_lines:
-                for rule in sale.struct_id.rule_ids:
+                #sale = sale.id
+                for rule in job.struct_id.rule_ids:
+                    #rule = rule.id
+                    #localdict = dict(sale=sale, rule=rule)
+                    #localdict['result'] = None
+                    #localdict['result_qty'] = 1.0
+                    #localdict['result_rate'] = 100
+                    #qty = rule._compute_rule(localdict)
+            
                     result_dict = {
                         'job_order_id':job.id,
                         'job_sale_line_id':sale.id,
-                        'sequence':100,
-                        'rule_id':rule.id,
                         'name':rule.name,
+                        'code':rule.code,
+                        'sequence':rule.sequence,
+                        'category_id':rule.category_id.id,
+                        'job_rule_id':rule.id,
+                        'line_desc':rule.name,
                         'quantity':sale.product_uom_qty,
                     }
                     job_order_line.create(result_dict)
-    @api.multi
+    
+    
     def compute_job1(self):
         self.job_order_lines.unlink()
         for job in self:
@@ -77,16 +96,20 @@ class JobOrder(models.Model):
         sorted_rule_ids = [id for id, sequence in sorted(rule_ids, key=lambda x:x[1])]
         sorted_rules = self.env['job.order.rule'].browse(sorted_rule_ids)
         for rule in sorted_rules:
+            localdict['result'] = None
+            localdict['result_qty'] = 1.0
+            localdict['result_rate'] = 100
+            qty = rule._compute_rule(localdict)
             result_dict = {
                 'job_order_id':job_id,
                 #'sale_line_id':,
                 'sequence':100,
-                'rule_id':rule.id,
-                'name':rule.name,
+                'job_rule_id':rule.id,
+                'line_desc':rule.name,
                 'quantity':1,
             }
         return list(result_dict.values())
-    @api.multi
+    
     def generate_sale_lines(self):
         vals = {}
         self.job_order_sale_lines.unlink()
@@ -103,9 +126,6 @@ class JobOrder(models.Model):
             }
             job_sale_line.create(vals)
             
-   
-        
-    @api.multi
     def _compute_details_by_component_category(self):
         for job in self:
             job.details_by_component_category = job.mapped('job_order_lines').filtered(lambda line: line.category_id)
@@ -138,8 +158,6 @@ class JobOrderSaleLine(models.Model):
     product_uom = fields.Many2one('uom.uom', string='Unit of Measure',change_default=True, default=_get_default_uom)
     product_uom_qty = fields.Float(string='Ordered Quantity', digits=dp.get_precision('Product Unit of Measure'), required=True, default=1.0)
     struct_id = fields.Many2one('job.order.structure', string='Structure', readonly=True)
-    secondary_uom = fields.Char(string='UOM', compute='_get_secondary_qty', store=False, readonly=True)
-    secondary_qty = fields.Float(string='Secondary Qty', compute='_get_secondary_qty', store=True, readonly=True)
     
     @api.depends('product_uom_qty')
     def _get_secondary_qty(self):
@@ -153,16 +171,13 @@ class JobOrderSaleLine(models.Model):
     
 class JobOrderLine(models.Model):
     _name = 'job.order.line'
+    _inherit = 'job.order.rule'
     _description = 'Job Order Line'
     _order = 'sequence'
     
     job_order_id = fields.Many2one('Job.order', string='Job Order Reference', required=True, ondelete='cascade', index=True, copy=False, readonly=True)
     job_sale_line_id = fields.Many2one('job.order.sale.line', string='Job Order Sale Line', required=False, index=True)
     
-    sequence = fields.Integer(required=True, index=True, default=5,help='Use to arrange calculation sequence')
-    rule_id = fields.Many2one('job.order.rule', 'Job Rule',required=True)
-    rule_name = fields.Char(related='rule_id.name', store=False, string='Rule Description', readonly=True)
-    rule_code = fields.Char(related='rule_id.code', store=False, string='Rule Code', readonly=True)
-    category_id = fields.Many2one("job.order.rule.category", related='rule_id.category_id', string="Category", readonly=True, store=False)
-    name = fields.Char(string='Description')
+    job_rule_id = fields.Many2one('job.order.rule', 'Job Rule',required=True)
+    line_desc = fields.Char(string='Description')
     quantity = fields.Float(string='Quantity', required=True, default=1.0)
