@@ -15,6 +15,7 @@ class MrpBomLine(models.Model):
     _inherit = 'mrp.bom.line'
     
     percent_qty = fields.Float('Percentage Quantity')
+    material_desc = fields.Char('Componenet Description')
 
     @api.onchange('percent_qty')
     def _onchange_percent_qty(self):
