@@ -6,7 +6,7 @@
         <field name="inherit_id" ref="product.product_template_form_view"/>
         <field name="arch" type="xml">
             <xpath expr="//notebook/page[@name='general_information']/group[1]" position="after">
-                <group name="wk_product_dimension" string=" Other Dimensions">
+                <group name="product_dimension" string=" Other Dimensions">
                     <group>
                         <field name="weight_sm"/>
                         <field name="width"/>
