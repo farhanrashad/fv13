@@ -9,4 +9,4 @@ class Product(models.Model):
     width = fields.Integer(string='Width')
     length = fields.Integer(string='Length')
     height = fields.Integer(string='Height')
-    dim_weight = fields.Integer(string='Weight')
+    dim_weight = fields.Float(string='Weight/Kg')
