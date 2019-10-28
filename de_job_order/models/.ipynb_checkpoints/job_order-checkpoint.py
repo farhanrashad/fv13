@@ -22,6 +22,7 @@ class JobOrder(models.Model):
     state = fields.Selection([
         ('draft', 'Draft'),
         ('confirm', 'Confirmed'),
+        ('process', 'Processed'),
         ('cancel', 'Cancelled'),
         ], string='Status', readonly=True, copy=False, index=True, track_visibility='onchange', track_sequence=3, default='draft')
     date_order = fields.Datetime(string='Order Date', required=True, readonly=True, index=True, states={'draft': [('readonly', False)], 'sent': [('readonly', False)]}, copy=False, default=fields.Datetime.now)
@@ -52,6 +53,7 @@ class JobOrder(models.Model):
             def __getattr__(self, attr):
                 return attr in self.dict and self.dict.__getitem__(attr) or 0.0
         self.job_order_lines.unlink()
+        self.write({'state':'process'})
         job_order_line = self.env['job.order.line']
         for job in self:
             for sale in job.job_order_sale_lines:
@@ -113,6 +115,7 @@ class JobOrder(models.Model):
     def generate_sale_lines(self):
         vals = {}
         self.job_order_sale_lines.unlink()
+        self.write({'state':'confirm'})
         job_sale_line = self.env['job.order.sale.line']
         for line in self.sale_id.order_line:
             vals = {
