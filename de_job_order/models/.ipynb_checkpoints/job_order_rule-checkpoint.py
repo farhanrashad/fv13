@@ -55,6 +55,11 @@ class JobOrderRule(models.Model):
         help='Use to arrange calculation sequence')
     category_id = fields.Many2one('job.order.rule.category', string='Category', required=True)
     appears_on_sheet = fields.Boolean(string='Appears on sheet', default=True, help="Used to display the rule on Job Order Sheet.")
+    rule_type = fields.Selection([
+        ('normal', 'Normal'),
+        ('summary', 'Summary'),
+        ], string='Rule Type', required=True, default='normal')
+    
     active = fields.Boolean(default=True, help="If the active field is set to false, it will allow you to hide the rule without removing it.")
     quantity_select = fields.Selection([
         ('percentage', 'Percentage (%)'),

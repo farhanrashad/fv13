@@ -29,52 +29,64 @@
 <!-- Job Order Rule Lines --> 
                     <h2>Job Order Lines</h2>
                     <t t-set="product" t-value="[]"/>
+                    <t t-set="variant" t-value="[]"/>
                     <t t-set="sale_item" t-value="[]"/>
+                    <t t-set="rule" t-value="[]"/>
                     <t t-foreach="o.job_order_lines" t-as="s">
                         <t t-set="product" t-value="product+[s.job_sale_line_id.product_tmpl_id]"/>
+                        <t t-set="variant" t-value="variant+[s.job_sale_line_id.product_id]"/>
                         <t t-set="sale_item" t-value="sale_item+[s.job_sale_line_id]"/>
+                        <t t-set="rule" t-value="rule+[s.job_rule_id]"/>
                     </t>
-
-                            <t t-foreach="set(product)" t-as="p">
-                                <h4><span t-field="p.name"/></h4>
-                                <t t-set="i" t-value="0"/>
-                                <table class="table table-bordered">
-                                <t t-foreach="set(sale_item)" t-as="item">
-                                    
-                                        <thead>
-                                    <tr t-if="i == 0" class="table-dark">
-                                        <th width="20%">Product</th>
+                    <t t-foreach="set(product)" t-as="p">
+                        <span t-field="p.name"/>
+                        <t t-set="i" t-value="0"/>
+                        <table class="table-striped table-bordered">
+                            <t t-foreach="set(sale_item)" t-as="s">
+                                <t t-if="p.id==s.product_tmpl_id.id">
+                                    <tr t-if="i == 0">
+                                        <th>Variant</th>
                                         <th>UOM</th>
                                         <th>Qty</th>
-                                        <t t-foreach="o.job_order_lines" t-as="l">
-                                            <t t-if="item.id==l.job_sale_line_id.id">
-                                                <th t-if="l.code" style="">
-                                                    <strong><span t-field="l.code"/></strong>
-                                                </th>
-                                            </t>
+                                    <t t-foreach="o.job_order_lines" t-as="l">
+                                        <t t-if="s.product_id.id==l.job_sale_line_id.product_id.id and l.job_rule_id.rule_type== 'normal' and l.job_rule_id.active==True and l.job_rule_id.appears_on_sheet==True">
+                                            
+                                            <th><span t-field="l.code"/></th>
+                                            
                                         </t>
+                                    </t>
                                     </tr>
-                                        </thead>
                                     <t t-set="i" t-value="i+1"/> 
-                                        <tbody>
-                                    <tr class="table-light">
-                                        <td width="20%"><span t-field="item.product_id"/></td>
-                                        <td><span t-field="item.product_uom"/></td>
-                                        <td><span t-field="item.product_uom_qty"/></td>
-                                        <t t-foreach="o.job_order_lines" t-as="l">
-                                            <t t-if="item.id==l.job_sale_line_id.id">
-                                                <td t-if="l.code" style="">
-                                                    <p t-field="l.quantity"/>
-                                                </td>
-                                            </t>
+                                    <tr>
+                                        <td><span t-field="s.product_id"/></td>
+                                       <td><span t-field="s.product_uom"/></td>
+                                       <td><span t-field="s.product_uom_qty"/></td>
+                                       <t t-foreach="o.job_order_lines" t-as="l">
+                                           <t t-if="s.product_id.id==l.job_sale_line_id.product_id.id and l.job_rule_id.rule_type== 'normal' and l.job_rule_id.active==True and l.job_rule_id.appears_on_sheet==True">
+                                               <td><span t-field="l.quantity"/></td>
+                                               </t>
                                         </t>
                                     </tr>
-                                        </tbody>
                                 </t>
-                                </table>
                             </t>
-                       
-<!-- end job order Rule line -->                    
+                            <tr>
+                                <th colspan="3">Total</th>
+                                <t t-foreach="set(rule)" t-as="r">
+                                    <t t-set="stot" t-value="0"/>
+                                    <t t-foreach="o.job_order_lines" t-as="l">
+                                        <t t-if="r.id==l.job_rule_id.id">
+                                            <t t-if="p.id==l.job_sale_line_id.product_tmpl_id.id ">
+                                            <t t-set="stot" t-value="stot+l.quantity"/>
+                                        </t>
+                                    </t>
+                                </t>
+                            <th><t t-esc="round(stot,3)"/></th>
+                        </t>
+                            </tr>
+                        </table>
+                        
+                    </t>
+<!-- end job order Rule line -->                                 
                     <p t-field="doc.note" />
                 </div>
             </t>

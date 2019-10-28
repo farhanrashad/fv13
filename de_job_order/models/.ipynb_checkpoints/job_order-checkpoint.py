@@ -180,4 +180,4 @@ class JobOrderLine(models.Model):
     
     job_rule_id = fields.Many2one('job.order.rule', 'Job Rule',required=True)
     line_desc = fields.Char(string='Description')
-    quantity = fields.Float(string='Quantity', required=True, default=1.0)
+    quantity = fields.Float(string='Quantity', required=True, digits=dp.get_precision('Product Unit of Measure'), default=1.0)
