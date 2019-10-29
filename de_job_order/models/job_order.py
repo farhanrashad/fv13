@@ -25,7 +25,8 @@ class JobOrder(models.Model):
         ('processed', 'Processed'),
         ('done', 'Done'),
         ('cancel', 'Cancelled'),
-        ], string='Status', readonly=True, copy=False, index=True, track_visibility='onchange', track_sequence=3, default='draft')
+        ], string='Status', readonly=True, copy=False, index=True, tracking=3, default='draft')
+    
     date_order = fields.Datetime(string='Order Date', required=True, readonly=True, index=True, states={'draft': [('readonly', False)], 'sent': [('readonly', False)]}, copy=False, default=fields.Datetime.now)
     
     note = fields.Text(string="Note")
