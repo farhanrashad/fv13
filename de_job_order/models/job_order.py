@@ -19,13 +19,7 @@ class JobOrder(models.Model):
         help='Defines the rules that have to be applied to this Job Order, accordingly ')
     
     sale_id = fields.Many2one('sale.order', 'Order Reference',required=False)
-    state = fields.Selection([
-        ('draft', 'Draft'),
-        ('confirmed', 'Confirmed'),
-        ('processed', 'Processed'),
-        ('done', 'Done'),
-        ('cancel', 'Cancelled'),
-        ], string='Status', readonly=True, copy=False, index=True, tracking=3, default='draft')
+    state = fields.Selection([('draft', 'Draft'),('confirmed', 'Confirmed'),('processed', 'Processed'),('done', 'Done'),        ('cancel', 'Cancelled')], string='Status', readonly=True, copy=False, index=True, tracking=3, default='draft')
     
     date_order = fields.Datetime(string='Order Date', required=True, readonly=True, index=True, states={'draft': [('readonly', False)], 'sent': [('readonly', False)]}, copy=False, default=fields.Datetime.now)
     
