@@ -45,9 +45,7 @@ class JobOrder(models.Model):
         return res_id
     
     def compute_job(self):
-        
         self.job_order_lines.unlink()
-        self.write({'state':'process'})
         job_order_line = self.env['job.order.line']
         for job in self:
             for sale in job.job_order_sale_lines:
@@ -72,6 +70,7 @@ class JobOrder(models.Model):
                         'quantity':sale.product_uom_qty,
                     }
                     job_order_line.create(result_dict)
+        self.state = 'processed'
     
     def generate_sale_lines(self):
         vals = {}
@@ -89,6 +88,7 @@ class JobOrder(models.Model):
                 'struct_id': self.struct_id.id,
             }
             job_sale_line.create(vals)
+        self.state = 'confirmed'
             
     def _compute_details_by_component_category(self):
         for job in self:
