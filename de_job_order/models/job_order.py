@@ -44,14 +44,7 @@ class JobOrder(models.Model):
         return res_id
     
     def compute_job(self):
-        class BrowsableObject(object):
-            def __init__(self, struct_id, dict, env):
-                self.struct_id = struct_id
-                self.dict = dict
-                self.env = env
-
-            def __getattr__(self, attr):
-                return attr in self.dict and self.dict.__getitem__(attr) or 0.0
+        
         self.job_order_lines.unlink()
         self.write({'state':'process'})
         job_order_line = self.env['job.order.line']
@@ -78,39 +71,6 @@ class JobOrder(models.Model):
                         'quantity':sale.product_uom_qty,
                     }
                     job_order_line.create(result_dict)
-    
-    
-    def compute_job1(self):
-        self.job_order_lines.unlink()
-        for job in self:
-            lines = [(0, 0, line) for line in self._get_job_order_lines(job.struct_id.id, job.id)]
-            job.create({'job_order_lines': lines})
-        return True
-    
-    @api.model
-    def _get_job_order_lines(self, struct_id, job_id):
-            
-        result_dict = {}
-        rules_dict = {}
-        #categories = BrowsableObject(job_id.employee_id.id, {}, self.env)
-        
-        rule_ids = self.env['job.order.structure'].browse(struct_id).rule_ids
-        sorted_rule_ids = [id for id, sequence in sorted(rule_ids, key=lambda x:x[1])]
-        sorted_rules = self.env['job.order.rule'].browse(sorted_rule_ids)
-        for rule in sorted_rules:
-            localdict['result'] = None
-            localdict['result_qty'] = 1.0
-            localdict['result_rate'] = 100
-            qty = rule._compute_rule(localdict)
-            result_dict = {
-                'job_order_id':job_id,
-                #'sale_line_id':,
-                'sequence':100,
-                'job_rule_id':rule.id,
-                'line_desc':rule.name,
-                'quantity':1,
-            }
-        return list(result_dict.values())
     
     def generate_sale_lines(self):
         vals = {}
