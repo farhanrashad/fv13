@@ -51,13 +51,6 @@ class JobOrder(models.Model):
             for sale in job.job_order_sale_lines:
                 #sale = sale.id
                 for rule in job.struct_id.rule_ids:
-                    #rule = rule.id
-                    #localdict = dict(sale=sale, rule=rule)
-                    #localdict['result'] = None
-                    #localdict['result_qty'] = 1.0
-                    #localdict['result_rate'] = 100
-                    #qty = rule._compute_rule(localdict)
-            
                     result_dict = {
                         'job_order_id':job.id,
                         'job_sale_line_id':sale.id,
@@ -75,7 +68,6 @@ class JobOrder(models.Model):
     def generate_sale_lines(self):
         vals = {}
         self.job_order_sale_lines.unlink()
-        self.write({'state':'confirm'})
         job_sale_line = self.env['job.order.sale.line']
         for line in self.sale_id.order_line:
             vals = {
