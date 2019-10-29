@@ -21,8 +21,9 @@ class JobOrder(models.Model):
     sale_id = fields.Many2one('sale.order', 'Order Reference',required=False)
     state = fields.Selection([
         ('draft', 'Draft'),
-        ('confirm', 'Confirmed'),
-        ('process', 'Processed'),
+        ('confirmed', 'Confirmed'),
+        ('processed', 'Processed'),
+        ('done', 'Done'),
         ('cancel', 'Cancelled'),
         ], string='Status', readonly=True, copy=False, index=True, track_visibility='onchange', track_sequence=3, default='draft')
     date_order = fields.Datetime(string='Order Date', required=True, readonly=True, index=True, states={'draft': [('readonly', False)], 'sent': [('readonly', False)]}, copy=False, default=fields.Datetime.now)

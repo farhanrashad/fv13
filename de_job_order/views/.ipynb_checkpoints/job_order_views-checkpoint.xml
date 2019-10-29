@@ -1,5 +1,5 @@
 <odoo>
-    <menuitem id="menu_job_order" name="Job Order" parent="sale.sale_menu_root" sequence="2"/>
+    
     <!-- Job Sheet Form View -->
     <record id="job_order_sheet_form_view" model="ir.ui.view">
         <field name="name">job.order.sheet.form.view</field>
@@ -7,12 +7,10 @@
         <field name="arch" type="xml">
             <form string="Job Order">
                 <header>
-                    <field name="state" widget="statusbar" nolabel="1" statusbar_visible="draft,confirm,process"/>
-                    <button name="action_confirm" class="oe_highlight" states="draft" string="Confirm" type="object"/>
-                    <button name="action_cancel" states="validated,draft" string="Cancel" type="object"/>
+                    <button name="action_cancel" states="draft" string="Cancel" type="object"/>
                     <button string="Generate Sale Lines" name="generate_sale_lines" type="object" states="draft" class="oe_highlight"/>
-                    <button string="Compute Job" name="compute_job" type="object" states="confirm" class="oe_highlight"/>
-                    
+                    <button string="Compute Job" name="compute_job" type="object" states="confirmed" class="oe_highlight"/>
+                    <field name="state" widget="statusbar" statusbar_visible="draft,confirmed,processed,done"/>
                 </header>
                 <sheet>
                     <div class="oe_title">
