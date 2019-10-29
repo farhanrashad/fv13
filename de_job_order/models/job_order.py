@@ -70,16 +70,17 @@ class JobOrder(models.Model):
         self.job_order_sale_lines.unlink()
         job_sale_line = self.env['job.order.sale.line']
         for line in self.sale_id.order_line:
-            vals = {
-                'job_order_id': self.id,
-                'product_tmpl_id': line.product_id.product_tmpl_id.id,
-                'product_id': line.product_id.id,
-                'product_uom_qty' : line.product_uom_qty,
-                'product_uom': line.product_uom.id,
-                'sale_line_id': line.id,
-                'struct_id': self.struct_id.id,
-            }
-            job_sale_line.create(vals)
+            if line.product_uom_qty:
+                vals = {
+                    'job_order_id': self.id,
+                    'product_tmpl_id': line.product_id.product_tmpl_id.id,
+                    'product_id': line.product_id.id,
+                    'product_uom_qty' : line.product_uom_qty,
+                    'product_uom': line.product_uom.id,
+                    'sale_line_id': line.id,
+                    'struct_id': self.struct_id.id,
+                }
+                job_sale_line.create(vals)
         self.state = 'confirmed'
             
     def _compute_details_by_component_category(self):
