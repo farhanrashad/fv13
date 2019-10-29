@@ -1,4 +1,5 @@
 <odoo>
+    <menuitem id="menu_job_order" name="Job Order" parent="sale.sale_menu_root" sequence="2"/>
     <!-- Job Sheet Form View -->
     <record id="job_order_sheet_form_view" model="ir.ui.view">
         <field name="name">job.order.sheet.form.view</field>
@@ -109,6 +110,6 @@
         </field>
     </record>
     
-    <menuitem id="menu_job_order" name="Job Order" parent="sale.sale_menu_root" sequence="2"/>
+    
     <menuitem id="job_order_sheet_menu" name="Job Order" parent="menu_job_order" action="action_job_order" sequence="1"/>
 </odoo>
