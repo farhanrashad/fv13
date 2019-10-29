@@ -1,4 +1,5 @@
 <odoo>
+    <menuitem id="menu_job_order" name="Job Order" parent="sale.sale_menu_root" sequence="2"/>
     <!-- Job Order structure Tree-->
     <record id="view_job_order_structure_list_view" model="ir.ui.view">
         <field name="name">job.order.structure.tree</field>
