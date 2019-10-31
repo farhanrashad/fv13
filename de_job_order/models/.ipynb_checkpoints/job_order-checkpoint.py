@@ -15,6 +15,7 @@ class JobOrder(models.Model):
     _order = 'date_order desc, id desc'
     
     name = fields.Char(string='Order Reference', required=True, copy=False, readonly=True, states={'draft': [('readonly', False)]}, index=True, default=lambda self: _('New'))
+    
     struct_id = fields.Many2one('job.order.structure', string='Structure',
         readonly=True, states={'draft': [('readonly', False)]},
         help='Defines the rules that have to be applied to this Job Order, accordingly ')
@@ -28,7 +29,7 @@ class JobOrder(models.Model):
         ('done', 'Done'),
         ('cancel', 'Cancelled')], string='Status', readonly=True, copy=False, index=True, tracking=3, default='draft')
     
-    date_order = fields.Datetime(string='Order Date', required=True, readonly=True, index=True, states={'draft': [('readonly', False)], 'sent': [('readonly', False)]}, copy=False, default=fields.Datetime.now)
+    date_order = fields.Datetime(string='Job Order Date', required=True, readonly=True, index=True, states={'draft': [('readonly', False)], 'sent': [('readonly', False)]}, copy=False, default=fields.Datetime.now)
     
     note = fields.Text(string="Note")
     
@@ -90,8 +91,8 @@ class JobOrder(models.Model):
                 'job_order_id': self.id,
                 'ref_sale_id':self.sale_id.id,
             }
-            finish_production_id = self.env['mrp.production'].create(fvals)
-            self.env.cr.commit()
+            #finish_production_id = self.env['mrp.production'].create(fvals)
+            #self.env.cr.commit()
 
             if not (line.bom_id in bom_ids):
                 bom_ids.append(line.bom_id)
@@ -107,6 +108,8 @@ class JobOrder(models.Model):
         for bom in sub_boms:
             var1 = var1 + str(bom.id)
             product_id = self.env['product.product'].search([('product_tmpl_id', '=', bom.product_tmpl_id.id )])
+            vendor_id = self.env['product.supplierinfo'].search([('product_tmpl_id', '=', bom.product_tmpl_id.id )]).name
+            picking_type_id = self.env['stock.picking.type'].search([('code', '=', 'incoming')], limit=1)
             if bom.type == 'normal':
                 svals = {
                     'product_id': product_id.id,
@@ -119,21 +122,27 @@ class JobOrder(models.Model):
                     'job_order_id': self.id,
                     'ref_sale_id':self.sale_id.id,
                 }
-                semi_production_id = self.env['mrp.production'].create(svals)
-                self.env.cr.commit()
+                #semi_production_id = self.env['mrp.production'].create(svals)
+                #self.env.cr.commit()
 
             elif bom.type == 'subcontract':
                 vals = {
-                    'partner_id': [0,bom.subcontractor_ids.id],
+                    'partner_id': 1,
                     'group_id': self.sale_id.id,
+                    'origin': self.sale_id.name,
+                    'picking_type_id': picking_type_id.id,
+                    'date_order': self.date_order,
                 }
                 purchase_id = self.env['purchase.order'].create(vals)
                 self.env.cr.commit()
                 line_val = {
+                    'name':product_id.name,
                     'order_id':purchase_id.id,
                     'product_id':product_id.id,
                     'product_uom':product_id.uom_po_id.id,
                     'product_qty':1,
+                    'price_unit':1,
+                    'date_planned': self.date_order,
                 }
                 purchase_line_id = self.env['purchase.order.line'].create(line_val)
                 self.env.cr.commit()
