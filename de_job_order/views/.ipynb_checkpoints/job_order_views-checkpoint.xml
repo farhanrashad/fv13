@@ -10,9 +10,19 @@
                     <button name="action_cancel" states="draft" string="Cancel" type="object"/>
                     <button string="Generate Sale Lines" name="generate_sale_lines" type="object" states="draft" class="oe_highlight"/>
                     <button string="Compute Job" name="compute_job" type="object" states="confirmed" class="oe_highlight"/>
+                    <button string="Generate Orders" name="generate_orders" type="object" states="draft,confirmed,planned" class="oe_highlight"/>
                     <field name="state" widget="statusbar" statusbar_visible="draft,confirmed,processed,done"/>
                 </header>
                 <sheet>
+                    <div class="oe_button_box" name="button_box">
+                        <!--
+                        <field name="bom_ids" invisible="1"/>
+                        <button name="action_view_bom" type="object" class="oe_stat_button" icon="fa-pencil-square-o" attrs="{'invisible': [('bom_count', '=', 0)]}">
+                            <field name="bom_count" widget="statinfo" string="Invoices"/>
+                        </button>
+-->
+                    </div>
+                    
                     <div class="oe_title">
                         <label for="name" class="oe_edit_only"/>
                         <h1><field name="name" readonly="1" force_save="1"/></h1>
@@ -35,11 +45,11 @@
                             <field name="job_order_sale_lines" widget="one2many_list">
                                 <tree string="Order lines" editable="bottom">
                                     <field name="sale_line_id"/>
-                                    <field name="code"/>
                                     <field name="product_tmpl_id" context="{'default_type': 'product'}"/>
                                     <field name="product_id" groups="product.group_product_variant" context="{'default_type': 'product'}"/>
                                     <field name="product_uom"/>
                                     <field name="product_uom_qty"/>
+                                    <field name="bom_id"/>
                                     <field name="struct_id"/>
 
                                 </tree>
