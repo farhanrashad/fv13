@@ -280,32 +280,3 @@ class JobOrderBOM(models.Model):
     job_order_id = fields.Many2one('Job.order', string='Job Order Reference', required=True, ondelete='cascade', index=True, copy=False, readonly=True)
     bom_id = fields.Many2one('mrp.bom', string='BOM',readonly=True)
     job_rule_id = fields.Many2one('job.order.rule', 'Job Rule',required=True)
-    
-    
-class MRPBomLine(models.Model):
-    _inherit = 'mrp.bom.line'
-    
-    
-    
-class MRPBom(models.Model):
-    _inherit = 'mrp.bom'
-    
-    def _recursive_boms(self):
-        """
-        @return: returns a list of tuple (id) which are all the children of the passed bom_ids
-        """
-        children_boms = []
-        for bom in self.filtered(lambda bom: bom.bom_line_ids.product_id.product_tmpl_id.bom_ids):
-            children_boms += bom.bom_line_ids.product_id.product_tmpl_id.bom_ids._recursive_boms()
-        return [(bom.id) for bom in self] + children_boms
-    
-class MRPProduction(models.Model):
-    _inherit = 'mrp.production'
-    
-    job_order_id = fields.Many2one('Job.order', string='Job Order Reference', required=False, ondelete='cascade', index=True, copy=False, readonly=True)
-    ref_sale_id = fields.Many2one('sale.order', string='Sale Order', required=False, ondelete='cascade', index=True, copy=False, readonly=True)
-    
-class PurchaseOrder(models.Model):
-    _inherit = 'purchase.order'
-    
-    job_order_id = fields.Many2one('Job.order', string='Job Order Reference', required=False, ondelete='cascade', index=True, copy=False, readonly=True)
