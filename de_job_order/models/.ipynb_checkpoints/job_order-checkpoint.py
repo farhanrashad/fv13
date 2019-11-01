@@ -165,6 +165,7 @@ class JobOrder(models.Model):
         bom_ids = []
         all_boms = []
         self.job_order_lines.unlink()
+        self.job_order_bom_ids.unlink()
         job_order_line = self.env['job.order.line']
         for job in self:
             for sale in job.job_order_sale_lines:
@@ -176,6 +177,7 @@ class JobOrder(models.Model):
                         'job_order_id':job.id,
                         'job_sale_line_id':sale.id,
                         'name':rule.name,
+                        'code':rule.code,
                         'sequence':rule.sequence,
                         'category_id':rule.category_id.id,
                         'job_rule_id':rule.id,
@@ -186,12 +188,15 @@ class JobOrder(models.Model):
         #self.state = 'planned'
         for boms in bom_ids:
             all_boms += boms._recursive_boms()
+        
+        bom_line = self.env['job.order.bom']
         for bom in all_boms:
             val = {
                 'job_order_id':self.id,
                 'bom_id':bom,
             }
-            b_id = self.env['job.order.bom'].create(val)
+            bom_line.create(val)
+            
     
     def generate_sale_lines(self):
         vals = {}
@@ -227,7 +232,7 @@ class JobOrderSaleLine(models.Model):
     def _get_default_uom(self):
         return self.product_tmpl_id.uom_id
     
-    job_order_id = fields.Many2one('Job.order', string='Job Order Reference', required=True, ondelete='cascade', index=True, copy=False, readonly=True)
+    job_order_id = fields.Many2one('job.order', string='Order Reference', index=True, required=True, ondelete='cascade')
     
     sale_line_id = fields.Many2one('sale.order.line', string='Order Line', required=True, index=True)
     product_tmpl_id = fields.Many2one(
@@ -259,7 +264,7 @@ class JobOrderLine(models.Model):
     _description = 'Job Order Line'
     _order = 'sequence'
     
-    job_order_id = fields.Many2one('Job.order', string='Job Order Reference', required=True, ondelete='cascade', index=True, copy=False, readonly=True)
+    job_order_id = fields.Many2one('job.order', string='Order Reference', index=True, required=True, ondelete='cascade')
     job_sale_line_id = fields.Many2one('job.order.sale.line', string='Job Order Sale Line', required=False, index=True)
     
     job_rule_id = fields.Many2one('job.order.rule', 'Job Rule',required=True)
@@ -277,6 +282,14 @@ class JobOrderBOM(models.Model):
     _name = 'job.order.bom'
     _description = 'Jor Order BOM'
     
-    job_order_id = fields.Many2one('Job.order', string='Job Order Reference', required=True, ondelete='cascade', index=True, copy=False, readonly=True)
+    #job_order_id = fields.Many2one('Job.order', string='Job Order Reference', required=True, ondelete='cascade', index=True, copy=False, readonly=True)
+    job_order_id = fields.Many2one('job.order', string='Order Reference', index=True, required=True, ondelete='cascade')
     bom_id = fields.Many2one('mrp.bom', string='BOM',readonly=True)
-    job_rule_id = fields.Many2one('job.order.rule', 'Job Rule',required=True)
+    job_rule_id = fields.Many2one('job.order.rule', string='Job Rule',store=True)
+    
+    
+    def write(self, values):
+        return super(JobOrderBOM, self).write(values)
+    
+    def create(self, values):
+        return super(JobOrderBOM, self).create(values)

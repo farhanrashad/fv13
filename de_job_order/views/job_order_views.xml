@@ -71,7 +71,7 @@
                             </field>
                         </page>
                         <page string="Bill of Materials">
-                            <field name="job_order_bom_ids" widget="one2many_list">
+                            <field name="job_order_bom_ids" >
                                 <tree string="Job Order BOM lines" editable="bottom">
                                     <field name="bom_id"/>
                                     <field name="job_rule_id"/>
