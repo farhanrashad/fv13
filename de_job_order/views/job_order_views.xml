@@ -70,10 +70,18 @@
                                 </tree>
                             </field>
                         </page>
+                        <page string="Bill of Materials">
+                            <field name="job_order_bom_ids" widget="one2many_list">
+                                <tree string="Job Order BOM lines" editable="bottom">
+                                    <field name="bom_id"/>
+                                    <field name="job_rule_id"/>
+                                </tree>
+                            </field>
+                        </page>
                         <page string="Details by Component">
                         </page>
-                        <page string="Details by Category">
-                            <field name="details_by_component_category" context="{'group_by':'category_id'}" domain="[('appears_on_sheet', '=', True)]">
+                        <page string="Details By Category">
+                            <field name="details_by_category" context="{'group_by':'category_id'}" domain="[('appears_on_sheet', '=', True)]">
                                 <tree string="Category Lines" decoration-info="quantity == 0">
                                     <field name="category_id"/>
                                     <field name="quantity"/>

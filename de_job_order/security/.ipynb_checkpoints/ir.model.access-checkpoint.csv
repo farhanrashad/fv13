@@ -5,3 +5,4 @@ access_job_order_structure,access.job.order.structure,model_job_order_structure,
 access_job_order_rule,access.job.order.rule,model_job_order_rule,,1,1,1,1
 access_job_order_rule_category,access.job.order.rule.category,model_job_order_rule_category,,1,1,1,1
 access_job_order_sale_line,access.job.order.sale.line,model_job_order_sale_line,,1,1,1,1
+access_job_order_bom,access.job.order.bom,model_job_order_bom,,1,1,1,1
