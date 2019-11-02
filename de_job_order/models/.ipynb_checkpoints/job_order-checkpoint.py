@@ -110,26 +110,28 @@ class JobOrder(models.Model):
             all_boms += boms._recursive_boms()
             #var1 = var1 + ',' + str(all_boms)
             primary_bom_ids.append(boms.id)
-            var1 = str(primary_bom_ids)
-        sub_boms = self.env['mrp.bom'].search([('id', 'in', all_boms ),('id', 'not in', primary_bom_ids )])
-        for bom in sub_boms:
-            var1 = var1 + str(bom.id)
-            product_id = self.env['product.product'].search([('product_tmpl_id', '=', bom.product_tmpl_id.id )],limit=1)
-            vendor_id = self.env['product.supplierinfo'].search([('product_tmpl_id', '=', bom.product_tmpl_id.id )]).name
+            #var1 = str(primary_bom_ids)
+        #sub_boms = self.env['mrp.bom'].search([('id', 'in', all_boms ),('id', 'not in', primary_bom_ids )])
+        #for bom in sub_boms:
+            
+            #product_id1 = self.env['product.product'].search([('product_tmpl_id', '=', bom.product_tmpl_id.id )],limit=1)
+            #vendor_id = self.env['product.supplierinfo'].search([('product_tmpl_id', '=', bom.product_tmpl_id.id )]).name
             picking_type_id = self.env['stock.picking.type'].search([('code', '=', 'incoming')], limit=1)
             
-            self.env.cr.execute('select l.quantity from job_order o join job_order_sale_line s on s.job_order_id = o.id join job_order_line l on l.job_sale_line_id = s.id join job_order_bom b on l.job_rule_id = b.job_rule_id where s.product_tmpl_id=%s ',(bom.product_tmpl_id.id,))
+            #self.env.cr.execute('select l.quantity from job_order o join job_order_sale_line s on s.job_order_id = o.id join job_order_line l on l.job_sale_line_id = s.id join job_order_bom b on l.job_rule_id = b.job_rule_id where s.product_tmpl_id=%s ',(bom.product_tmpl_id.id,))
 
-            for rs in self.env.cr.dictfetchall():
-                rule_qty += rs['quantity']
+            #for rs in self.env.cr.dictfetchall():
+                #rule_qty += rs['quantity']
                         
-                    
-            if bom.type == 'normal':
+        for mrp in self.job_order_mrp_ids:
+            product_id = self.env['product.product'].search([('product_tmpl_id', '=', mrp.bom_id.product_tmpl_id.id )],limit=1)
+            vendor_id = self.env['product.supplierinfo'].search([('product_tmpl_id', '=', mrp.bom_id.product_tmpl_id.id )]).name
+            if mrp.bom_id.type == 'normal':
                 svals = {
                     'product_id': product_id.id,
                     'product_uom_id':product_id.uom_id.id,
-                    'product_qty':1,
-                    'bom_id':bom.id,
+                    'product_qty':mrp.quantity,
+                    'bom_id':mrp.bom_id.id,
                     'origin':self.sale_id.name,
                     #'orderpoint_id':self.sale_id.id,
                     'procurement_group_id':self.sale_id.id,
@@ -139,7 +141,7 @@ class JobOrder(models.Model):
                 #semi_production_id = self.env['mrp.production'].create(svals)
                 #self.env.cr.commit()
 
-            elif bom.type == 'subcontract':
+            elif mrp.bom_id.type == 'subcontract':
                 vals = {
                     'partner_id': 1,
                     'group_id': self.sale_id.id,
@@ -154,7 +156,7 @@ class JobOrder(models.Model):
                     'order_id':purchase_id.id,
                     'product_id':product_id.id,
                     'product_uom':product_id.uom_po_id.id,
-                    'product_qty':rule_qty,
+                    'product_qty':mrp.quantity,
                     'price_unit':1,
                     'date_planned': self.date_order,
                 }
@@ -199,7 +201,9 @@ class JobOrder(models.Model):
                 'bom_id':bom,
             }
             bom_line.create(val)
-            
+         
+        for b in bom_ids:
+            bom_line.search([('bom_id', '=', b.id)]).unlink()
     
     def generate_sale_lines(self):
         vals = {}
@@ -290,8 +294,9 @@ class JobOrderBOM(models.Model):
     #job_order_id = fields.Many2one('Job.order', string='Job Order Reference', required=True, ondelete='cascade', index=True, copy=False, readonly=True)
     job_order_id = fields.Many2one('job.order', string='Order Reference', index=True, required=True, ondelete='cascade')
     bom_id = fields.Many2one('mrp.bom', string='BOM',readonly=True)
-    job_rule_id = fields.Many2one('job.order.rule', string='Job Rule',store=True)
-    quantity = fields.Float(compute='_compute_quantity', string='Quantity', store=True)
+    #job_rule_id = fields.Many2one('job.order.rule', string='Job Rule',store=True)
+    #quantity = fields.Float(compute='_compute_quantity', string='Quantity', store=True)
+    quantity = fields.Float(string='Quantity')
     
     
     def write(self, values):
@@ -300,7 +305,7 @@ class JobOrderBOM(models.Model):
     def create(self, values):
         return super(JobOrderBOM, self).create(values)
     
-    @api.depends('job_rule_id')
+    #@api.depends('job_rule_id')
     def _compute_quantity(self):
         
         test = '0'

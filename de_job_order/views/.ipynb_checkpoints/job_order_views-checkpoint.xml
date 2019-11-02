@@ -71,11 +71,11 @@
                                 </tree>
                             </field>
                         </page>
-                        <page string="Bill of Materials">
+                        <page string="Material Production">
                             <field name="job_order_mrp_ids" >
                                 <tree string="Job Order BOM lines" editable="bottom">
                                     <field name="bom_id"/>
-                                    <field name="job_rule_id"/>
+                                    <!--<field name="job_rule_id"/>-->
                                     <field name="quantity"/>
                                 </tree>
                             </field>
