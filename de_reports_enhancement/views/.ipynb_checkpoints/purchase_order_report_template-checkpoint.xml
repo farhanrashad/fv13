@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <template id="report_purchaseorder_document_inherit" inherit_id="purchase.report_purchaseorder_document">
+        <xpath expr="/t/t/div/table/thead/tr/th[5]" position="after">
+            <th><span>Weight/kg</span></th>
+        </xpath>
+        <xpath expr="/t/t/div/table/tbody/t[2]/tr/t[1]/td[5]" position="after">
+            <td><span t-field="line.weight"/></td>
+        </xpath>
+        <xpath expr="/t/t/div/table/tbody/t[2]/t[3]/tr/td" position="attributes">
+            <attribute name="colspan">100</attribute>
+        </xpath>
+        <xpath expr="/t/t/div/table/thead/tr/th[6]" position="after">
+            <th><span>Total Weight</span></th>
+        </xpath>
+        <xpath expr="/t/t/div/table/tbody/t[2]/tr/t[1]/td[6]" position="after">
+            <td><span t-field="line.total_weight"/></td>
+        </xpath>
+        <xpath expr="/t/t/div/table/tbody/t[2]/t[3]/tr/td" position="attributes">
+            <attribute name="colspan">101</attribute>
+        </xpath>
+        <xpath expr="/t/t/div/table/thead/tr/th[7]" position="after">
+            <th><span>Weight Price</span></th>
+        </xpath>
+        <xpath expr="/t/t/div/table/tbody/t[2]/tr/t[1]/td[7]" position="after">
+            <td><span t-field="line.price_weight"/></td>
+        </xpath>
+        <xpath expr="/t/t/div/table/tbody/t[2]/t[3]/tr/td" position="attributes">
+            <attribute name="colspan">102</attribute>
+        </xpath>
+        <xpath expr="//div[@id='total']//table[1]" position="inside">
+            <tr>
+                <td colspan="2"><br/></td>
+            </tr>
+            <tr t-if="o.sum_qty">
+                <td><b>Total Quantity</b></td>
+                <td><span class="m-0" t-field="o.sum_qty"/></td>
+            </tr>
+            <tr t-if="o.sum_weight">
+                <td><b>Total Weight</b></td>
+                <td><span class="m-0" t-field="o.sum_weight"/></td>
+            </tr>
+        </xpath>
+    </template>
+</odoo>

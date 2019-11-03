@@ -23,16 +23,14 @@
     'version': '0.1',
 
     # any module necessary for this one to work correctly
-    'depends': ['base','sale','stock'],
+    'depends': ['base','sale','stock','purchase','de_product_weight'],
 
     # always loaded
     'data': [
         # 'security/ir.model.access.csv',
-        'views/saleorder_views.xml',
-        'views/purchase_order_views.xml',
-        'views/stock_picking_views.xml',
-        'views/templates.xml',
-        'views/saleorder_report_template.xml',
+        'views/sale_order_report_template.xml',
+        'views/purchase_order_report_template.xml',
+        'views/delivery_slip_report_template.xml',
     ],
     # only loaded in demonstration mode
     'demo': [
