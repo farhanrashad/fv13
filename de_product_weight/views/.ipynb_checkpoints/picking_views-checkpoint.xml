@@ -80,5 +80,30 @@
             </xpath>
         </field>
     </record>
+      
+      <record id="view_finisehd_move_line_inherit" model="ir.ui.view">
+        <field name="name">view.finisehd.move.line.inherit</field>
+        <field name="model">stock.move.line</field>
+        <field name="inherit_id" ref="mrp.view_finisehd_move_line"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='lot_id']" position="before">
+                <field name="weight"/>
+                <field name="total_weight"/>
+            </xpath>
+        </field>
+    </record>
+      
+      <record id="view_stock_move_lots_inherit" model="ir.ui.view">
+        <field name="name">view.stock.move.lots.inherit</field>
+        <field name="model">stock.move</field>
+        <field name="inherit_id" ref="mrp.view_stock_move_lots"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='move_line_ids']/tree" position="inside">
+                <field name="weight"/>
+                <field name="total_weight"/>
+            </xpath>
+        </field>
+    </record>
+      
     </data>
 </odoo>

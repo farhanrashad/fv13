@@ -2,3 +2,5 @@
 
 from . import purchase
 from . import picking
+from . import mrp
+from . import sale
