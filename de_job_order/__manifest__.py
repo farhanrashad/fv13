@@ -31,7 +31,6 @@
         'views/job_rule_views.xml',
         'views/job_order_views.xml',
         'views/job_order_report.xml', 
-        'views/purchase_views.xml', 
     ],
     # only loaded in demonstration mode
     'demo': [
