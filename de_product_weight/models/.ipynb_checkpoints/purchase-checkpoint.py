@@ -34,3 +34,23 @@ class PurchaseOrderLine(models.Model):
                 'price_weight_subtotal': (line.total_weight * line.price_weight),
                 'price_unit': (line.total_weight * line.price_weight),
             })
+            
+class PurchaseOrder(models.Model):
+    _inherit = 'purchase.order'
+    
+    sum_qty = fields.Float(string='Total Quantity', compute='_sum_quantity', store=True, readonly=True)
+    sum_weight = fields.Float(string='Total Weight', compute='_sum_quantity', store=True, readonly=True)
+    
+    @api.depends('order_line.product_uom_qty','order_line.total_weight')
+    def _sum_quantity(self):
+        """
+        Compute the sum of Quantity and Weight of the order lines.
+        """
+        
+        for order in self:
+            sum_qty = sum_weight = 0.0
+            for line in order.order_line:
+                sum_qty += line.product_uom_qty
+                sum_weight += line.total_weight
+            order.sum_qty = sum_qty
+            order.sum_weight = sum_weight
