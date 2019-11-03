@@ -294,8 +294,7 @@ class JobOrderBOM(models.Model):
     #job_order_id = fields.Many2one('Job.order', string='Job Order Reference', required=True, ondelete='cascade', index=True, copy=False, readonly=True)
     job_order_id = fields.Many2one('job.order', string='Order Reference', index=True, required=True, ondelete='cascade')
     bom_id = fields.Many2one('mrp.bom', string='BOM',readonly=True)
-    #job_rule_id = fields.Many2one('job.order.rule', string='Job Rule',store=True)
-    #quantity = fields.Float(compute='_compute_quantity', string='Quantity', store=True)
+    bom_type = fields.Selection('mrp.bom', related='bom_id.type',string='Type',readonly=True, store=True)
     quantity = fields.Float(string='Quantity')
     
     
