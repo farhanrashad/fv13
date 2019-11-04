@@ -30,10 +30,11 @@ class PurchaseOrderLine(models.Model):
         Compute the amounts of the PO line.
         """
         for line in self:
-            line.update({
-                'price_weight_subtotal': (line.total_weight * line.price_weight),
-                'price_unit': line.product_qty / (line.total_weight * line.price_weight),
-            })
+            if line.product_qty > 0:
+                line.update({
+                    'price_weight_subtotal': (line.total_weight * line.price_weight),
+                    'price_unit': line.product_qty / (line.total_weight * line.price_weight),
+                })
             
 class PurchaseOrder(models.Model):
     _inherit = 'purchase.order'
