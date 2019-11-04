@@ -98,8 +98,8 @@ class JobOrder(models.Model):
                 'job_order_id': self.id,
                 'ref_sale_id':self.sale_id.id,
             }
-            #finish_production_id = self.env['mrp.production'].create(fvals)
-            #self.env.cr.commit()
+            finish_production_id = self.env['mrp.production'].create(fvals)
+            self.env.cr.commit()
 
             if not (line.bom_id in bom_ids):
                 bom_ids.append(line.bom_id)
@@ -138,8 +138,8 @@ class JobOrder(models.Model):
                     'job_order_id': self.id,
                     'ref_sale_id':self.sale_id.id,
                 }
-                #semi_production_id = self.env['mrp.production'].create(svals)
-                #self.env.cr.commit()
+                semi_production_id = self.env['mrp.production'].create(svals)
+                self.env.cr.commit()
 
             elif mrp.bom_id.type == 'subcontract':
                 vals = {
