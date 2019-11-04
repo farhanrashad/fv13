@@ -32,7 +32,7 @@ class PurchaseOrderLine(models.Model):
         for line in self:
             line.update({
                 'price_weight_subtotal': (line.total_weight * line.price_weight),
-                'price_unit': (line.total_weight * line.price_weight),
+                'price_unit': line.product_qty / (line.total_weight * line.price_weight),
             })
             
 class PurchaseOrder(models.Model):
