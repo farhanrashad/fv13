@@ -15,7 +15,7 @@ class PurchaseOrderLine(models.Model):
         
     #weight = fields.Float('Weight/Kg', digits=dp.get_precision('Stock Weight'), default=_default_product_weight, help="Weight of the product, packaging not included. The unit of measure can be changed in the general settings")
     weight = fields.Float(related='product_id.weight',string='Weight/kg',readonly=True, store=True)
-    total_weight = fields.Float('Total Weight', digits=dp.get_precision('Stock Weight'), help="Weight of the product in order line")
+    total_weight = fields.Float('Total Weight', digits=dp.get_precision('Stock Weight'), help="Weight of the product in order line", default=1.0)
     price_weight = fields.Float('Weight Price', required=True, digits=dp.get_precision('Weight Price'), default=1.0)
     price_weight_subtotal = fields.Float(compute='_compute_subtotal', string='Subtotal', readonly=True, store=True)
     
@@ -24,17 +24,20 @@ class PurchaseOrderLine(models.Model):
         #super(PurchaseOrderLine, self).onchange_product_id()
         self.total_weight = self.product_id.weight * self.product_qty
         
-    @api.depends('weight', 'price_weight')
+    @api.depends('total_weight', 'price_weight')
     def _compute_subtotal(self):
         """
         Compute the amounts of the PO line.
         """
         for line in self:
-            if line.product_qty > 0:
-                line.update({
-                    'price_weight_subtotal': (line.total_weight * line.price_weight),
-                    'price_unit': line.product_qty / (line.total_weight * line.price_weight),
-                })
+            if line.price_weight > 0 and line.product_qty > 0  and line.total_weight > 0:
+                line.price_weight_subtotal = (line.total_weight * line.price_weight)
+                line.price_unit = (line.total_weight * line.price_weight) / line.product_qty
+                
+                #line.update({
+                 #   'price_weight_subtotal': (line.total_weight * line.price_weight),
+                  #  'price_unit': line.product_qty / (line.total_weight * line.price_weight),
+                #})
             
 class PurchaseOrder(models.Model):
     _inherit = 'purchase.order'
