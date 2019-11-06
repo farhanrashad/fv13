@@ -39,12 +39,40 @@ class JobOrder(models.Model):
     
     job_order_mrp_ids = fields.One2many('job.order.mrp', 'job_order_id', string='Job Order MRP Lines', states={'cancel': [('readonly', True)], 'done': [('readonly', True)]}, copy=True, auto_join=True)
     
+    company_id = fields.Many2one(
+        'res.company', 'Company', default=lambda self: self.env.company,
+        index=True, required=True)
     #details_by_component = fields.One2many('hr.payslip.line',compute='_compute_details_by_salary_rule_category', string='Details by Salary Rule Category')
     
     details_by_category = fields.One2many('job.order.line', compute='_compute_details_by_category', string='Details by Category')
     
     bom_ids = fields.One2many('mrp.bom', 'product_tmpl_id', string='Bill of Materials')
     bom_count = fields.Integer(string='BOMs', compute='_compute_bom_ids')
+    
+    production_ids = fields.One2many('mrp.production', 'job_order_id', string='Productions')
+    production_count = fields.Integer(string='Productions', compute='_compute_production_count')
+    
+    @api.depends('production_ids')
+    def _compute_production_count(self):
+        production_data = self.env['mrp.production'].sudo().read_group([('job_order_id', 'in', self.ids)], ['job_order_id'], ['job_order_id'])
+        mapped_data = dict([(r['job_order_id'][0], r['job_order_id_count']) for r in production_data])
+        for job in self:
+            job.production_count = mapped_data.get(job.id, 0)
+
+    def action_view_productions(self):
+        self.ensure_one()
+        return {
+            'type': 'ir.actions.act_window',
+            'name': _('Productions'),
+            'res_model': 'mrp.production',
+            'view_mode': 'tree,form',
+            'domain': [('job_order_id', '=', self.id)],
+            'context': dict(self._context, create=False, default_company_id=self.company_id.id, default_job_order_id=self.id),
+        }
+    
+    def _compute_production_count(self):
+        for job in self:
+            job.production_count = self.env['mrp.production'].search_count([('job_order_id', '=', job.id)])
     
     def _compute_details_by_category(self):
         for job in self:

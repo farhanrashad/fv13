@@ -20,7 +20,7 @@
     'version': '1.6',
 
     # any module necessary for this one to work correctly
-    'depends': ['base','product','mrp','sale','stock'],
+    'depends': ['base','product','mrp','sale','stock','purchase'],
 
     # always loaded
     'data': [
@@ -28,9 +28,11 @@
         'views/bom_views.xml',
         'security/ir.model.access.csv',
         'data/ir_sequence_data.xml',
+        'views/mrp_views.xml',
         'views/job_rule_views.xml',
         'views/job_order_views.xml',
-        'views/job_order_report.xml', 
+        'views/job_order_report.xml',
+        
     ],
     # only loaded in demonstration mode
     'demo': [
