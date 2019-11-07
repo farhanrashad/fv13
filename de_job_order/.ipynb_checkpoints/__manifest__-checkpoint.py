@@ -29,6 +29,7 @@
         'security/ir.model.access.csv',
         'data/ir_sequence_data.xml',
         'views/mrp_views.xml',
+        'views/purchase_views.xml',
         'views/job_rule_views.xml',
         'views/job_order_views.xml',
         'views/job_order_report.xml',

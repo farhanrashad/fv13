@@ -16,7 +16,10 @@
                 <sheet>
                     <div class="oe_button_box" name="button_box">
                         <button class="oe_stat_button" name="action_view_productions" icon="fa-wrench" type="object" attrs="{'invisible': [('production_count', '=', 0)]}">
-                            <field name="production_count" string="Productions" widget="statinfo"/>
+                            <field name="production_count" string="Production" widget="statinfo"/>
+                        </button>
+                        <button class="oe_stat_button" name="action_view_purchases" icon="fa-credit-card" type="object" attrs="{'invisible': [('purchase_count', '=', 0)]}">
+                            <field name="purchase_count" string="Subcontract" widget="statinfo"/>
                         </button>
                     </div>
                     
@@ -75,6 +78,7 @@
                                     <field name="bom_id"/>
                                     <field name="bom_type"/>
                                     <field name="quantity"/>
+                                    <!-- <button name="generate_mo" type="object" string="Generate MO" colspan="2" icon="fa-cogs"/> -->
                                 </tree>
                             </field>
                         </page>

@@ -36,6 +36,5 @@ class MrpBomLine(models.Model):
 class MRPProduction(models.Model):
     _inherit = 'mrp.production'
     
-    #job_order_id = fields.Many2one('Job.order', string='Job Order', required=False, ondelete='cascade', index=True, copy=False, readonly=False)
-    job_order_id = fields.Many2one('job.order', string='Order Reference', index=True, required=True, ondelete='cascade')
+    job_order_id = fields.Many2one('job.order', string='Job Order', index=True, ondelete='cascade')
     ref_sale_id = fields.Many2one('sale.order', string='Sale Order', required=False, ondelete='cascade', index=True, copy=False, readonly=True)
