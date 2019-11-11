@@ -348,16 +348,6 @@ class JobOrderSaleLine(models.Model):
     struct_id = fields.Many2one('job.order.structure', string='Structure', readonly=True)
     bom_id = fields.Many2one('mrp.bom', string='BOM')
     
-    @api.depends('product_uom_qty')
-    def _get_secondary_qty(self):
-        """
-        Compute the total Quantity Weight of the SO Line.
-        """
-        for line in self:
-            line.secondary_qty = line.product_uom_qty * line.product_id.product_tmpl_id.secondary_unit_qty
-            line.secondary_uom = line.product_id.product_tmpl_id.secondary_uom_id.name
-    
-    
 class JobOrderLine(models.Model):
     _name = 'job.order.line'
     _inherit = 'job.order.rule'
