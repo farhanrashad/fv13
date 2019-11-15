@@ -39,12 +39,75 @@ class JobOrder(models.Model):
     
     job_order_mrp_ids = fields.One2many('job.order.mrp', 'job_order_id', string='Job Order MRP Lines', states={'cancel': [('readonly', True)], 'done': [('readonly', True)]}, copy=True, auto_join=True)
     
+    company_id = fields.Many2one(
+        'res.company', 'Company', default=lambda self: self.env.company,
+        index=True, required=True)
+    
+    procurement_group_id = fields.Many2one(
+        string='Procurement Group',
+        comodel_name='procurement.group',
+        copy=False)
+    routing_id = fields.Many2one(
+        comodel_name='mrp.routing', string='Routing',
+        on_delete='setnull', readonly=True,
+        states={'draft': [('readonly', False)]},
+        help="The list of operations (list of work centers) to produce "
+             "the finished product. The routing is mainly used to compute "
+             "work center costs during operations and to plan future loads "
+             "on work centers based on production plannification.")
+    
     #details_by_component = fields.One2many('hr.payslip.line',compute='_compute_details_by_salary_rule_category', string='Details by Salary Rule Category')
     
     details_by_category = fields.One2many('job.order.line', compute='_compute_details_by_category', string='Details by Category')
     
     bom_ids = fields.One2many('mrp.bom', 'product_tmpl_id', string='Bill of Materials')
     bom_count = fields.Integer(string='BOMs', compute='_compute_bom_ids')
+    
+    production_ids = fields.One2many('mrp.production', 'job_order_id', string='Productions')
+    production_count = fields.Integer(string='Productions', compute='_compute_production_count')
+    
+    purchase_ids = fields.One2many('purchase.order', 'job_order_id', string='Purchases')
+    purchase_count = fields.Integer(string='Subcontract', compute='_compute_subcontract_count')
+    
+    @api.depends('production_ids')
+    def _compute_production_count(self):
+        production_data = self.env['mrp.production'].sudo().read_group([('job_order_id', 'in', self.ids)], ['job_order_id'], ['job_order_id'])
+        mapped_data = dict([(r['job_order_id'][0], r['job_order_id_count']) for r in production_data])
+        for job in self:
+            job.production_count = mapped_data.get(job.id, 0)
+
+    def action_view_productions(self):
+        self.ensure_one()
+        return {
+            'type': 'ir.actions.act_window',
+            'name': _('Productions'),
+            'res_model': 'mrp.production',
+            'view_mode': 'tree,form',
+            'domain': [('job_order_id', '=', self.id)],
+            'context': dict(self._context, create=False, default_company_id=self.company_id.id, default_job_order_id=self.id),
+        }
+    
+    @api.depends('purchase_ids')
+    def _compute_subcontract_count(self):
+        purchase_data = self.env['purchase.order'].sudo().read_group([('job_order_id', 'in', self.ids)], ['job_order_id'], ['job_order_id'])
+        mapped_data = dict([(r['job_order_id'][0], r['job_order_id_count']) for r in purchase_data])
+        for job in self:
+            job.purchase_count = mapped_data.get(job.id, 0)
+
+    def action_view_purchases(self):
+        self.ensure_one()
+        return {
+            'type': 'ir.actions.act_window',
+            'name': _('Purchases'),
+            'res_model': 'purchase.order',
+            'view_mode': 'tree,form',
+            'domain': [('job_order_id', '=', self.id)],
+            'context': dict(self._context, create=False, default_company_id=self.company_id.id, default_job_order_id=self.id),
+        }
+    
+    def _compute_production_count(self):
+        for job in self:
+            job.production_count = self.env['mrp.production'].search_count([('job_order_id', '=', job.id)])
     
     def _compute_details_by_category(self):
         for job in self:
@@ -83,11 +146,13 @@ class JobOrder(models.Model):
         product_id = 0
         var1 = ''
         rule_qty = 0
+        
         #self.state = 'processed'
         #finish_production_id = self.env['mrp.production']
         #semi_production_id = self.env['mrp.production']
         for line in self.job_order_sale_lines:
             #bom_ids = self.env['mrp.bom'].browse(line.bom_id).id
+            #res = line.sale_line_id._compute_qty_to_deliver()
             fvals = {
                 'product_id': line.product_id.id,
                 'product_uom_id':line.product_id.uom_id.id,
@@ -98,8 +163,12 @@ class JobOrder(models.Model):
                 'job_order_id': self.id,
                 'ref_sale_id':self.sale_id.id,
             }
-            finish_production_id = self.env['mrp.production'].create(fvals)
-            self.env.cr.commit()
+            vals = self._prepare_manufacturing_order(line)
+            #mo = self.env['mrp.production'].create(vals)
+            #mo._update_raw_move(line.bom_id.id,mo._get_moves_raw_values)
+            #finish_production_id.move_raw_ids = [(2, move.id) for move in finish_production_id.move_raw_ids.filtered(lambda m: m.bom_line_id)]
+            #finish_production_id.picking_type_id = finish_production_id.bom_id.picking_type_id or finish_production_id.picking_type_id
+            #self.env.cr.commit()
 
             if not (line.bom_id in bom_ids):
                 bom_ids.append(line.bom_id)
@@ -122,6 +191,15 @@ class JobOrder(models.Model):
 
             #for rs in self.env.cr.dictfetchall():
                 #rule_qty += rs['quantity']
+			#vals = {
+			#	'partner_id': 1,
+             #   'group_id': self.sale_id.id,
+            #    'origin': self.sale_id.name,
+            #    'picking_type_id': picking_type_id.id,
+            #    'date_order': self.date_order,
+            #    'job_order_id': self.id,
+            #}
+            #purchase_id = self.env['purchase.order'].create(vals)
                         
         for mrp in self.job_order_mrp_ids:
             product_id = self.env['product.product'].search([('product_tmpl_id', '=', mrp.bom_id.product_tmpl_id.id )],limit=1)
@@ -138,19 +216,12 @@ class JobOrder(models.Model):
                     'job_order_id': self.id,
                     'ref_sale_id':self.sale_id.id,
                 }
-                semi_production_id = self.env['mrp.production'].create(svals)
-                self.env.cr.commit()
+                #semi_production_id = self.env['mrp.production'].create(svals)
+                #self.env.cr.commit()
 
             elif mrp.bom_id.type == 'subcontract':
-                vals = {
-                    'partner_id': 1,
-                    'group_id': self.sale_id.id,
-                    'origin': self.sale_id.name,
-                    'picking_type_id': picking_type_id.id,
-                    'date_order': self.date_order,
-                }
-                purchase_id = self.env['purchase.order'].create(vals)
-                self.env.cr.commit()
+                
+                #self.env.cr.commit()
                 line_val = {
                     'name':product_id.name,
                     'order_id':purchase_id.id,
@@ -163,8 +234,31 @@ class JobOrder(models.Model):
                 purchase_line_id = self.env['purchase.order.line'].create(line_val)
                 self.env.cr.commit()
        
-        raise Warning(_(rule_qty))
-        
+        #raise Warning(_(rule_qty))
+    
+    def _prepare_manufacturing_order(self,line):
+        self.ensure_one()
+        picking_type_id = self.env['stock.picking.type'].browse(self.env['mrp.production']._get_default_picking_type())
+        location_src_id = self.env['stock.location'].browse(self.env['mrp.production']._get_default_location_src_id())
+        location_dest_id = self.env['stock.location'].browse(self.env['mrp.production']._get_default_location_dest_id())
+        return {
+            'product_id': line.product_id.id,
+            'bom_id': line.bom_id.id,
+            'product_qty': line.product_uom_qty,
+            'product_uom_id': line.product_id.uom_id.id,
+            'job_order_id': self.id,
+            'origin': self.sale_id.name,
+            'location_src_id': location_src_id.id,
+            'location_dest_id': location_dest_id.id,
+            'picking_type_id': picking_type_id.id,
+            'routing_id': self.routing_id.id,
+            'date_planned_start': self.date_order,
+            'date_planned_finished': self.date_order,
+            'procurement_group_id': self.procurement_group_id.id,
+            #'propagate': self.propagate,
+            'company_id': self.company_id.id,
+        }
+    
     def compute_job(self):
         bom_ids = []
         all_boms = []
@@ -255,16 +349,6 @@ class JobOrderSaleLine(models.Model):
     struct_id = fields.Many2one('job.order.structure', string='Structure', readonly=True)
     bom_id = fields.Many2one('mrp.bom', string='BOM')
     
-    @api.depends('product_uom_qty')
-    def _get_secondary_qty(self):
-        """
-        Compute the total Quantity Weight of the SO Line.
-        """
-        for line in self:
-            line.secondary_qty = line.product_uom_qty * line.product_id.product_tmpl_id.secondary_unit_qty
-            line.secondary_uom = line.product_id.product_tmpl_id.secondary_uom_id.name
-    
-    
 class JobOrderLine(models.Model):
     _name = 'job.order.line'
     _inherit = 'job.order.rule'
@@ -298,11 +382,6 @@ class JobOrderBOM(models.Model):
     quantity = fields.Float(string='Quantity')
     
     
-    def write(self, values):
-        return super(JobOrderBOM, self).write(values)
-    
-    def create(self, values):
-        return super(JobOrderBOM, self).create(values)
     
     #@api.depends('job_rule_id')
     def _compute_quantity(self):

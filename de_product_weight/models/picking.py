@@ -4,26 +4,34 @@ from datetime import datetime
 from odoo import api, fields, models, _
 from odoo.exceptions import UserError, ValidationError, Warning
 
-
 from odoo.addons import decimal_precision as dp
 
 class StockMove(models.Model):
-    _inherit = 'stock.move'
-    
-    total_weight = fields.Float('Total Weight', digits=dp.get_precision('Stock Weight'), compute='_get_total_weight', help="Weight of the product in order line")
-    
-    @api.depends('move_line_ids')
-    def _get_total_weight(self):
-        for line in self.move_line_ids:
-            self.total_weight += line.total_weight
-    
+	_inherit = 'stock.move'
+	
+	total_weight = fields.Float('Total Weight', digits=dp.get_precision('Stock Weight'), compute='_get_total_weight', store=True, readonly=True)
+	
+	@api.depends('quantity_done')
+	def _get_total_weight(self):
+		sum_weight = 0.0
+		for mv in self:
+			for line in mv.move_line_ids:
+				sum_weight += line.total_weight
+			mv.total_weight = sum_weight
+	
+	#@api.depends('product_id','quantity_done')
+	#def _get_total_weight(self):
+		#for line in self.move_line_ids:
+			#if self.product_id == line.product_id:
+				#self.total_weight = line.total_weight
+			
 class StockMoveLine(models.Model):
     _inherit = 'stock.move.line'
     
     weight = fields.Float(related='product_id.weight',string='Weight/kg',readonly=True, store=True)
     total_weight = fields.Float('Total Weight', digits=dp.get_precision('Stock Weight'), help="Weight of the product in order line")
     
-    @api.onchange('product_uom_qty')
+    @api.onchange('product_uom_qty','product_uom_id')
     def onchange_product_uom_qty(self):
         self.total_weight = self.product_id.weight * self.product_uom_qty
     
