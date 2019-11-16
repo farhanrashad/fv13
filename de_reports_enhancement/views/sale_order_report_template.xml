@@ -16,33 +16,30 @@
         </xpath>
         
  <!-- add weight field -->
-        <xpath expr="/t/t/div/table/thead/tr/th[1]" position="after">
-            <th>
-                <span>Weight</span>
-            </th>
+        <xpath expr="/t/t/div/table/thead/tr/th[3]" position="after">
+            <th><span>Weight</span></th>
+            <th><span>Total Weight</span></th>
         </xpath>
-        <xpath expr="/t/t/div/table/tbody/t[2]/tr/t[1]/td[1]" position="after">
-            <td>
-              <span t-field="line.product_id.weight"/>
+        <xpath expr="/t/t/div/table/tbody/t[2]/tr/t[1]/td[3]" position="after">
+            <td><span t-field="line.product_id.weight"/> Kg</td>
+            <td><span t-field="line.total_weight"/> Kg</td>
+        </xpath>
+        <!-- add weight subtotal -->
+       <!--
+        <xpath expr="/t/t/div/table/tbody/t[2]/tr" position="before">
+            <t t-set="current_totweight" t-value="current_totweight + line.total_weight" />
+        </xpath>
+         <xpath expr="/t/t/div/table/tbody/t/tr" position="before">
+            <t t-set="current_totweight" t-value="0"/>
+        </xpath>
+        <xpath expr="//tr[hasclass('is-subtotal')]//td" position="replace">
+            <td name="td_section_subtotal" colspan="99">
+                <strong class="mr16">Subtotal</strong>
+                <span t-esc="current_totweight" />
+                <span t-esc="current_subtotal" t-options="{&quot;widget&quot;: &quot;monetary&quot;, &quot;display_currency&quot;: doc.pricelist_id.currency_id}"/>
             </td>
         </xpath>
-        <xpath expr="/t/t/div/table/tbody/t[2]/t[3]/tr/td" position="attributes">
-            <attribute name="colspan">100</attribute>
-        </xpath>
-         <!-- add Total weight field -->
-        <xpath expr="/t/t/div/table/thead/tr/th[2]" position="after">
-            <th>
-              <span>Total Weight</span>
-            </th>
-        </xpath>
-        <xpath expr="/t/t/div/table/tbody/t[2]/tr/t[1]/td[2]" position="after">
-            <td>
-              <span t-field="line.total_weight"/>
-            </td>
-        </xpath>
-        <xpath expr="/t/t/div/table/tbody/t[2]/t[3]/tr/td" position="attributes">
-            <attribute name="colspan">101</attribute>
-        </xpath>
+-->
         <!-- add terms & Conditions Heading -->
         <xpath expr="/t/t/div/div[3]" position="after">
             <div t-if="doc.note" class="row">
@@ -63,7 +60,7 @@
             </tr>
             <tr t-if="doc.sum_weight">
                 <td><b>Total Weight</b></td>
-                <td><span class="m-0" t-field="doc.sum_weight"/></td>
+                <td><span class="m-0" t-field="doc.sum_weight"/> Kg</td>
             </tr>
         </xpath>
         <!-- hide tax field when tax amount zero -->

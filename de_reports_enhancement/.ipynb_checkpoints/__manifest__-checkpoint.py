@@ -23,7 +23,7 @@
     'version': '0.1',
 
     # any module necessary for this one to work correctly
-    'depends': ['base','sale','stock','purchase','de_product_weight'],
+    'depends': ['base','sale','stock','purchase','mrp','de_product_weight'],
 
     # always loaded
     'data': [
@@ -31,6 +31,7 @@
         'views/sale_order_report_template.xml',
         'views/purchase_order_report_template.xml',
         'views/delivery_slip_report_template.xml',
+        'views/mo_report_template.xml',
     ],
     # only loaded in demonstration mode
     'demo': [
