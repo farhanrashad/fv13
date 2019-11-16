@@ -9,6 +9,9 @@
                     <field name="job_order_count" string="Job Orders" widget="statinfo"/>
                 </button>
             </div>
+            <field name="client_order_ref" position="after">
+                <field name="job_order_ids" />
+            </field>
         </field>
     </record>
 </odoo>

@@ -33,7 +33,7 @@
         'views/job_rule_views.xml',
         'views/job_order_views.xml',
         'views/job_order_report.xml',
-		#'views/sale_views.xml',
+		'views/sale_views.xml',
 		'views/picking_views.xml',
         
     ],
