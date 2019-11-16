@@ -191,6 +191,15 @@ class JobOrder(models.Model):
 
             #for rs in self.env.cr.dictfetchall():
                 #rule_qty += rs['quantity']
+			#vals = {
+			#	'partner_id': 1,
+             #   'group_id': self.sale_id.id,
+            #    'origin': self.sale_id.name,
+            #    'picking_type_id': picking_type_id.id,
+            #    'date_order': self.date_order,
+            #    'job_order_id': self.id,
+            #}
+            #purchase_id = self.env['purchase.order'].create(vals)
                         
         for mrp in self.job_order_mrp_ids:
             product_id = self.env['product.product'].search([('product_tmpl_id', '=', mrp.bom_id.product_tmpl_id.id )],limit=1)
@@ -211,16 +220,8 @@ class JobOrder(models.Model):
                 #self.env.cr.commit()
 
             elif mrp.bom_id.type == 'subcontract':
-                vals = {
-                    'partner_id': 1,
-                    'group_id': self.sale_id.id,
-                    'origin': self.sale_id.name,
-                    'picking_type_id': picking_type_id.id,
-                    'date_order': self.date_order,
-                    'job_order_id': self.id,
-                }
-                purchase_id = self.env['purchase.order'].create(vals)
-                self.env.cr.commit()
+                
+                #self.env.cr.commit()
                 line_val = {
                     'name':product_id.name,
                     'order_id':purchase_id.id,
@@ -378,7 +379,7 @@ class JobOrderBOM(models.Model):
     job_order_id = fields.Many2one('job.order', string='Order Reference', index=True, required=True, ondelete='cascade')
     bom_id = fields.Many2one('mrp.bom', string='BOM',readonly=True)
     bom_type = fields.Selection('mrp.bom', related='bom_id.type',string='Type',readonly=True, store=True)
-    quantity = fields.Float(string='Quantity')
+    quantity = fields.Float(string='Quantity',digits=dp.get_precision('Product Unit of Measure'),default=1.0)
     
     
     
