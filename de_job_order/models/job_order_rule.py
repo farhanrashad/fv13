@@ -55,6 +55,7 @@ class JobOrderRule(models.Model):
         help='Use to arrange calculation sequence')
     category_id = fields.Many2one('job.order.rule.category', string='Category', required=True)
     appears_on_sheet = fields.Boolean(string='Appears on sheet', default=True, help="Used to display the rule on Job Order Sheet.")
+    is_total = fields.Boolean(string='total', default=True, help="Used to display total")
     rule_type = fields.Selection([
         ('normal', 'Normal'),
         ('summary', 'Summary'),

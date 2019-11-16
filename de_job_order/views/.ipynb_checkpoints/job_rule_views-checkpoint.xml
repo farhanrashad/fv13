@@ -74,6 +74,7 @@
                     <field name="sequence"/>
                     <field name="appears_on_sheet"/>
                     <field name="rule_type"/>
+                    <field name="is_total"/>
                 </group>
                 <notebook colspan="6">
                     <page string="General">

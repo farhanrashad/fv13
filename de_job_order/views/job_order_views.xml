@@ -7,11 +7,14 @@
         <field name="arch" type="xml">
             <form string="Job Order">
                 <header>
-                    <button name="action_cancel" states="draft" string="Cancel" type="object"/>
-                    <button string="Generate Sale Lines" name="generate_sale_lines" type="object" states="draft" class="oe_highlight"/>
-                    <button string="Compute Job" name="compute_job" type="object" states="confirmed" class="oe_highlight"/>
+                    <button name="action_cancel" states="draft,confirmed,computed,processed" string="Cancel" type="object"/>
+                    <button name="action_draft" states="cancel" string="Set to Draft" type="object"/>
+                    
+                    <button string="Confirm" name="action_confirm" type="object" states="draft" class="oe_highlight"/>
+                    <button string="Compute Job" name="action_compute" type="object" states="confirmed" class="oe_highlight"/>
+					<button string="Process Job" name="action_process" type="object" states="computed" class="oe_highlight"/>
                     <button string="Generate Orders" name="generate_orders" type="object" states="draft,confirmed,planned" class="oe_highlight"/>
-                    <field name="state" widget="statusbar" statusbar_visible="draft,confirmed,processed,done"/>
+                    <field name="state" widget="statusbar" statusbar_visible="draft,confirmed,computed,processed,done"/>
                 </header>
                 <sheet>
                     <div class="oe_button_box" name="button_box">
