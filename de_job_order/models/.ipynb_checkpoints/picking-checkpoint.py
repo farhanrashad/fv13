@@ -11,7 +11,7 @@ class Picking(models.Model):
 	_inherit = 'stock.picking'
     
 	#job_order_id = fields.Many2one('job.order', related='purchase_id.job_order_id', string='Job Order', readonly=True, store=True)
-	job_order_id = fields.Many2one("job.order", related='purchase_id.job_order_id', string="Job Order", readonly=True, required=True)
+	job_order_id = fields.Many2one("job.order", related='purchase_id.job_order_id', string="Job Order", readonly=True, required=False)
 	
 	#@api.depends('purchase_id')
 	#def _compute_Job_order_id(self):
