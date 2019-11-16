@@ -10,7 +10,9 @@ from odoo.addons import decimal_precision as dp
 class StockMove(models.Model):
     _inherit = 'stock.move'
     
-    total_weight = fields.Float('Total Weight', digits=dp.get_precision('Stock Weight'), compute='_get_total_weight', help="Weight of the product in order line")
+    total_weight = fields.Float('Total Weight', digits=dp.get_precision('Stock Weight'), help="Weight of the product in order line")
+	
+	#total_weight = fields.Float('Total Weight', digits=dp.get_precision('Stock Weight'), compute='_get_total_weight', help="Weight of the product in order line")
     
     @api.depends('move_line_ids')
     def _get_total_weight(self):

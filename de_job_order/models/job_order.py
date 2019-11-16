@@ -220,8 +220,21 @@ class JobOrder(models.Model):
                 #self.env.cr.commit()
 
             elif mrp.bom_id.type == 'subcontract':
+<<<<<<< HEAD
                 
                 #self.env.cr.commit()
+=======
+                vals = {
+                    'partner_id': 1,
+                    'group_id': self.sale_id.id,
+                    'origin': self.sale_id.name,
+                    'picking_type_id': picking_type_id.id,
+                    'date_order': self.date_order,
+                    'job_order_id': self.id,
+                }
+                purchase_id = self.env['purchase.order'].create(vals)
+                self.env.cr.commit()
+>>>>>>> 4ee8568e50b054756022c8741c6099452c532a5e
                 line_val = {
                     'name':product_id.name,
                     'order_id':purchase_id.id,

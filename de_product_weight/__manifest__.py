@@ -29,6 +29,7 @@
         'views/picking_views.xml',
         'views/mrp_views.xml',
         'views/sale_views.xml',
+		'views/product_views.xml',
     ],
     # only loaded in demonstration mode
     'demo': [

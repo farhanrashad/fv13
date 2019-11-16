@@ -16,3 +16,6 @@ class MrpProduction(models.Model):
     @api.onchange('product_qty')
     def onchange_product_uom_qty(self):
         self.total_weight = self.product_id.weight * self.product_qty
+		
+	#def button_mark_done(self):
+		#super(MrpProduction, self).button_mark_done()

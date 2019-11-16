@@ -7,6 +7,7 @@ from odoo.exceptions import UserError, ValidationError, Warning
 from odoo.addons import decimal_precision as dp
 
 class StockMove(models.Model):
+<<<<<<< HEAD
 	_inherit = 'stock.move'
 	
 	total_weight = fields.Float('Total Weight', digits=dp.get_precision('Stock Weight'), compute='_get_total_weight', store=True, readonly=True)
@@ -25,6 +26,19 @@ class StockMove(models.Model):
 			#if self.product_id == line.product_id:
 				#self.total_weight = line.total_weight
 			
+=======
+    _inherit = 'stock.move'
+    
+    total_weight = fields.Float('Total Weight', digits=dp.get_precision('Stock Weight'), help="Weight of the product in order line")
+	
+	#total_weight = fields.Float('Total Weight', digits=dp.get_precision('Stock Weight'), compute='_get_total_weight', help="Weight of the product in order line")
+    
+    @api.depends('move_line_ids')
+    def _get_total_weight(self):
+        for line in self.move_line_ids:
+            self.total_weight += line.total_weight
+    
+>>>>>>> 4ee8568e50b054756022c8741c6099452c532a5e
 class StockMoveLine(models.Model):
     _inherit = 'stock.move.line'
     

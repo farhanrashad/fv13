@@ -15,12 +15,12 @@
                 </header>
                 <sheet>
                     <div class="oe_button_box" name="button_box">
-                        <!--
-                        <field name="bom_ids" invisible="1"/>
-                        <button name="action_view_bom" type="object" class="oe_stat_button" icon="fa-pencil-square-o" attrs="{'invisible': [('bom_count', '=', 0)]}">
-                            <field name="bom_count" widget="statinfo" string="Invoices"/>
+                        <button class="oe_stat_button" name="action_view_productions" icon="fa-wrench" type="object" attrs="{'invisible': [('production_count', '=', 0)]}">
+                            <field name="production_count" string="Production" widget="statinfo"/>
                         </button>
--->
+                        <button class="oe_stat_button" name="action_view_purchases" icon="fa-credit-card" type="object" attrs="{'invisible': [('purchase_count', '=', 0)]}">
+                            <field name="purchase_count" string="Subcontract" widget="statinfo"/>
+                        </button>
                     </div>
                     
                     <div class="oe_title">
@@ -34,6 +34,7 @@
                         <group>
                             <field name="sale_id"/>
                             <field name="struct_id"/>
+                            <field name="company_id" groups="base.group_multi_company" options="{'no_create': True}" attrs="{'readonly': [('state', '!=', 'draft')]}" force_save="1"/>
                         </group>
                     </group>
                     
@@ -77,6 +78,7 @@
                                     <field name="bom_id"/>
                                     <field name="bom_type"/>
                                     <field name="quantity"/>
+                                    <!-- <button name="generate_mo" type="object" string="Generate MO" colspan="2" icon="fa-cogs"/> -->
                                 </tree>
                             </field>
                         </page>
@@ -128,6 +130,5 @@
         </field>
     </record>
     
-    
-    <menuitem id="job_order_sheet_menu" name="Job Order" parent="menu_job_order" action="action_job_order" sequence="1"/>
+    <menuitem id="job_order_sheet_menu" name="Job Order" parent="mrp.menu_mrp_manufacturing" action="action_job_order" sequence="0"/>
 </odoo>

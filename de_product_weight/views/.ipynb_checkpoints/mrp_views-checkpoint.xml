@@ -14,6 +14,10 @@
                     </div>
                 </div>
             </xpath>
+			<xpath expr="//field[@name='qty_done']" position="after">
+				<field name="weight"/>
+				<field name="total_weight"/>
+			</xpath>
         </field>
     </record>
     </data>
