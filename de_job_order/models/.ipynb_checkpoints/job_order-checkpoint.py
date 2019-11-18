@@ -35,6 +35,8 @@ class JobOrder(models.Model):
     
     job_order_lines = fields.One2many('job.order.line', 'job_order_id', string='Job Order Lines', states={'cancel': [('readonly', True)], 'done': [('readonly', True)]}, copy=True, auto_join=True)
     
+    job_order_routing_ids = fields.One2many('job.order.routing', 'job_order_id', string='Job Order Routings', states={'cancel': [('readonly', True)], 'done': [('readonly', True)]}, copy=True, auto_join=True)
+    
     job_order_sale_lines = fields.One2many('job.order.sale.line', 'job_order_id', string='Order Sale Lines', states={'cancel': [('readonly', True)], 'done': [('readonly', True)]}, copy=True, auto_join=True)
     
     job_order_mrp_ids = fields.One2many('job.order.mrp', 'job_order_id', string='Job Order MRP Lines', states={'cancel': [('readonly', True)], 'done': [('readonly', True)]}, copy=True, auto_join=True)
@@ -259,7 +261,108 @@ class JobOrder(models.Model):
             'company_id': self.company_id.id,
         }
     
+    def _prepare_bom(self, product_template, product, type, quantity, contractors):
+        return {
+            'product_tmpl_id':product_template.id,
+            'product_id':product.id,
+            'product_uom_id':product_template.uom_id.id,
+            'product_qty':quantity,
+            'type':type,
+            'subcontractor_ids':[( 6, 0, contractors)],
+        }
+    def _prepare_bom1(self, product_template, type, quantity, contractors):
+        return {
+            'product_tmpl_id':product_template.id,
+            'product_uom_id':product_template.uom_id.id,
+            'product_qty':quantity,
+            'type':type,
+            'subcontractor_ids':[( 6, 0, contractors)],
+        }
+    
+    def _prepare_bom_line(self, bom, product, quantity):
+        return {
+            'bom_id': bom.id,
+            'product_id':product.id,
+            'product_qty':quantity
+        }
+    def _prepare_reorder(self, product, location):
+        return {
+            'product_id':product.id,
+            'product_min_qty':0,
+            'product_max_qty':0,
+            'qty_multiple':1,
+            'location_id':location,
+        }
+    def _prepare_product(self, name, category, product_template, weight):
+        return {
+            'name': name,
+            'type':product_template.type,
+            'categ_id':category.id,
+            'sale_ok':False,
+            'purchase_ok':True,
+            'uom_id':product_template.uom_id.id,
+            'uom_po_id':product_template.uom_po_id.id,
+            #'route_ids':  [( 6, 0, list)],
+            'ref_product_tmpl_id': product_template.id,
+            #'ref_product_id': rs.product_id.id,
+            'tracking':'lot',
+            'weight':weight,  
+        }
     def action_process(self):
+        
+        bom_type = 'normal'
+        pname = ''
+        
+        #get list of contractors
+        contractors = []
+        
+                
+        for sale in self.job_order_sale_lines:
+            parent_product_template = find_product_id = sale.product_tmpl_id
+            component_id = sale.product_id
+            for routing in self.job_order_routing_ids:
+                if routing.routing_include:
+                    contractors.clear()
+                    category = self.env['product.category'].search([('name', '=', routing.routing_id.name)],limit=1)
+                    partner_category = self.env['res.partner.category'].search([('name', '=', routing.routing_id.name)],limit=1)
+                    if partner_category:
+                        contractor_ids = self.env['res.partner'].search([('category_id', '=', partner_category.id)])
+                        for ct in contractor_ids:
+                            contractors.append(ct.id)
+                        
+                    # Create Product and BOM
+                    if routing.apply_on_variant:
+                        pname = sale.product_id.display_name + '-' + routing.routing_id.name
+                        product_tmpl_id = self.env['product.template'].create(self._prepare_product(pname,category,sale.product_tmpl_id,1))
+                        component_id = self.env['product.product'].search([('product_tmpl_id', '=', product_tmpl_id.id)],limit=1)
+                        if routing.sequence == 10:
+                            bom_type = 'normal'
+                            bom_id = self.env['mrp.bom'].create(self._prepare_bom(parent_product_template, sale.product_id, bom_type, 1, contractors ))
+                        else:
+                            bom_id = self.env['mrp.bom'].create(self._prepare_bom1(parent_product_template, bom_type, 1, contractors ))
+                        bom_line_id = self.env['mrp.bom.line'].create(self._prepare_bom_line(bom_id, component_id, 1))
+                        
+                    else:
+                        pname = sale.product_tmpl_id.name + '-' + routing.routing_id.name
+                        find_product_id = self.env['product.template'].search([('name', '=', pname)])
+                        if find_product_id:
+                            component_id = self.env['product.product'].search([('product_tmpl_id', '=', find_product_id.id)],limit=1)
+                        else:
+                            product_tmpl_id = self.env['product.template'].create(self._prepare_product(pname,category,sale.product_tmpl_id,1))
+                            component_id = self.env['product.product'].search([('product_tmpl_id', '=', product_tmpl_id.id)],limit=1)
+                        
+                        bom_id = self.env['mrp.bom'].create(self._prepare_bom1(parent_product_template, bom_type, 1, contractors ))
+                        bom_line_id = self.env['mrp.bom.line'].create(self._prepare_bom_line(bom_id, component_id, 1))
+                    
+                    if routing.is_subcontracting:
+                        bom_type = 'subcontract'
+                    else:
+                        bom_type = 'normal'
+                    
+                parent_product_template = product_tmpl_id
+    
+    
+    def action_process1(self):
         self.state = 'processed'
         
         dyed_category_id = self.env['product.category'].search([('name', 'like', 'Dyed Greige')],limit=1)
@@ -419,7 +522,22 @@ class JobOrder(models.Model):
          
         for b in bom_ids:
             bom_line.search([('bom_id', '=', b.id)]).unlink()
-            
+        
+        routings = self.env['mrp.routing'].search([('active', '=', True)])
+        #routings = self.env['mrp.routing']
+        seq = 0
+        self.job_order_routing_ids.unlink()
+        job_routing_id = self.env['job.order.routing']
+        for g in routings:
+            seq += 10
+            rvals = {
+                'job_order_id':self.id,
+                'routing_id':g.id,
+                'sequence':seq,
+                #'routing_include':True,
+            }
+            job_routing_id.create(rvals)
+        self.env.cr.commit()
         self.state = 'computed'
     
     def action_confirm(self):
@@ -526,3 +644,17 @@ class JobOrderBOM(models.Model):
                             #rule_qty += line.quantity
             rs.quantity = rule_qty
         #raise Warning(_(self.bom_id.product_tmpl_id.id))
+        
+class JobOrderRouting(models.Model):
+    _name = 'job.order.routing'
+    _description = 'Job Order Routing'
+    _order = 'sequence'
+    
+    job_order_id = fields.Many2one('job.order', string='Order Reference', index=True, required=True, ondelete='cascade')
+    routing_id = fields.Many2one('mrp.routing', string='Routing')
+    sequence = fields.Integer(string='Sequence', required=True, default=10)
+    routing_include = fields.Boolean('Include',default=True)
+    is_subcontracting = fields.Boolean('Is Subcontracting',default=True)
+    apply_on_variant = fields.Boolean('Apply on variant',default=True)
+    
+    

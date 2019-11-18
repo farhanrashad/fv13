@@ -7,6 +7,7 @@
             <field name="origin" position="after">
                 <field name="job_order_id" readonly="0"/>
             </field>
+            
         </field>
     </record>
 	<record id="mrp_production_form_tree_inherit" model="ir.ui.view">

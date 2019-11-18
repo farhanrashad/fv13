@@ -75,6 +75,17 @@
                                 </tree>
                             </field>
                         </page>
+                        <page string="Routings">
+                            <field name="job_order_routing_ids" >
+                                <tree string="Job Order Routings" editable="bottom">
+                                    <field name="routing_id"/>
+                                    <field name="sequence"/>
+                                    <field name="is_subcontracting"/>
+                                    <field name="apply_on_variant"/>
+                                    <field name="routing_include"/>
+                                </tree>
+                            </field>
+                        </page>
                         <page string="Material Production">
                             <field name="job_order_mrp_ids" >
                                 <tree string="Job Order BOM lines" editable="bottom">
