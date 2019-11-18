@@ -20,7 +20,7 @@ class JobOrder(models.Model):
         readonly=True, states={'draft': [('readonly', False)]},
         help='Defines the rules that have to be applied to this Job Order, accordingly ')
     
-    sale_id = fields.Many2one('sale.order', 'Order Reference',required=False)
+    sale_id = fields.Many2one('sale.order', 'Order Reference',required=False, states={'draft': [('readonly', False)]})
     state = fields.Selection([
         ('draft', 'Draft'),
         ('confirmed', 'Confirmed'),
@@ -260,13 +260,15 @@ class JobOrder(models.Model):
         }
     
     def action_process(self):
-        #self.state = 'processed'
+        self.state = 'processed'
         
         dyed_category_id = self.env['product.category'].search([('name', 'like', 'Dyed Greige')],limit=1)
         fresh_category_id = self.env['product.category'].search([('name', 'like', 'Greige')],limit=1)
         
         for rs in self.job_order_sale_lines:
-            job = self.env['job.order.line'].search([('job_sale_line_id', '=', rs.id),('code', '=', 'GWPU')],limit=1)
+            fresh_product_id = rs.product_id
+            job_gwpu = self.env['job.order.line'].search([('job_sale_line_id', '=', rs.id),('code', '=', 'GWPU')],limit=1)
+            job_dwp = self.env['job.order.line'].search([('job_sale_line_id', '=', rs.id),('code', '=', 'DWP')],limit=1)
             #create fresh or greige fabric produt
             find_fresh_product = self.env['product.template'].search([('ref_product_tmpl_id', '=', rs.product_tmpl_id.id)],limit=1)
             fvals = {
@@ -281,7 +283,7 @@ class JobOrder(models.Model):
                 'ref_product_tmpl_id': rs.product_tmpl_id.id,
                 #'ref_product_id': rs.product_id.id,
                 'tracking':'lot',
-                'weight':job.quantity,
+                'weight':job_gwpu.quantity,
             }
             if not(find_fresh_product):
                 fresh_product_tmpl_id = self.env['product.template'].create(fvals)
@@ -317,7 +319,7 @@ class JobOrder(models.Model):
                 'ref_product_tmpl_id': rs.product_tmpl_id.id,
                 'ref_product_id': rs.product_id.id,
                 'tracking':'lot',
-                'weight':job.quantity,
+                'weight':job_gwpu.quantity,
             }
             dyed_product_tmpl_id = self.env['product.template'].create(vals)
             dyed_product_id = self.env['product.product'].search([('product_tmpl_id', '=', dyed_product_tmpl_id.id)],limit=1)
@@ -332,7 +334,7 @@ class JobOrder(models.Model):
             self.env['mrp.bom.line'].create({
                 'bom_id': finish_bom_id.id,
                 'product_id':dyed_product_id.id,
-                'product_qty':1,
+                'product_qty':1 + (1 * (job_dwp.quantity/100)),
             })
             #BOM for Dyed Products
             contractor_ids = self.env['res.partner'].search([('category_id', '=', 'Dyeing Contractor')])

@@ -13,7 +13,7 @@
                     <button string="Confirm" name="action_confirm" type="object" states="draft" class="oe_highlight"/>
                     <button string="Compute Job" name="action_compute" type="object" states="confirmed" class="oe_highlight"/>
 					<button string="Process Job" name="action_process" type="object" states="computed" class="oe_highlight"/>
-                    <button string="Generate Orders" name="generate_orders" type="object" states="draft,confirmed,planned" class="oe_highlight"/>
+                    <!--<button string="Generate Orders" name="generate_orders" type="object" states="draft,confirmed,planned" class="oe_highlight"/>-->
                     <field name="state" widget="statusbar" statusbar_visible="draft,confirmed,computed,processed,done"/>
                 </header>
                 <sheet>

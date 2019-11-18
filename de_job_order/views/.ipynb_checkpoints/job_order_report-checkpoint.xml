@@ -24,10 +24,14 @@
                             <strong>Calculation Reference:</strong>
                             <p t-field="o.struct_id"/>
                         </div>
+                        <div t-if="o.state" class="mr32">
+                            <strong>Status:</strong>
+                            <p t-field="o.state"/>
+                        </div>
                     </div>
 
 <!-- Job Order Rule Lines --> 
-                    <h2>Job Order Lines</h2>
+                    
                     <t t-set="product" t-value="[]"/>
                     <t t-set="variant" t-value="[]"/>
                     <t t-set="sale_item" t-value="[]"/>
