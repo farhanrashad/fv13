@@ -67,11 +67,11 @@
                                     <tr>
                                         <td class="text-nowrap" style="padding:5px;"><span t-field="s.product_id"/></td>
                                        <td style="padding:5px;"><span t-field="s.product_uom"/></td>
-                                       <td style="padding:5px;"><span t-esc="round(s.product_uom_qty,2)"/></td>
+                                       <td style="padding:5px;"><span t-esc="round(s.product_uom_qty,3)"/></td>
                                        <t t-set="sumqty" t-value="sumqty+s.product_uom_qty"/>
                                         <t t-foreach="o.job_order_lines.sorted(key=lambda b: b.job_rule_id.sequence)" t-as="l">
                                             <t t-if="s.product_id.id==l.job_sale_line_id.product_id.id and l.job_rule_id.rule_type== 'normal' and l.job_rule_id.active==True and l.job_rule_id.appears_on_sheet==True">
-                                               <td class="" style="padding:5px;"><span t-esc="round(l.quantity,2)"/></td>
+                                               <td class="" style="padding:5px;"><span t-esc="round(l.quantity,3)"/></td>
                                                
                                             </t>
                                         </t>
@@ -82,7 +82,7 @@
                                 <t t-set="stot" t-value="0"/>
                                 <th>Total</th>
                                 <th></th>
-                                <th><span t-esc="round(sumqty,2)"/></th>
+                                <th><span t-esc="round(sumqty,3)"/></th>
                                 <!--<t t-foreach="set(rule)" t-as="r">-->
                                 <t t-foreach="request.env['job.order.rule'].search([])" t-as="r">
                                     <t t-set="stot" t-value="0"/>
@@ -91,7 +91,7 @@
                                             <t t-set="stot" t-value="stot+l.quantity"/>
                                         </t>
                                     </t>                                    
-                                    <th style="padding:5px;"><span t-if="r.is_total==True" t-esc="round(stot,2)"/></th>
+                                    <th style="padding:5px;"><span t-if="r.is_total==True" t-esc="round(stot,3)"/></th>
                                 </t>
                                 
                             </tr>

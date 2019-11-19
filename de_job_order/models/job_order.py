@@ -302,12 +302,22 @@ class JobOrder(models.Model):
             'purchase_ok':True,
             'uom_id':product_template.uom_id.id,
             'uom_po_id':product_template.uom_po_id.id,
-            #'route_ids':  [( 6, 0, list)],
+            'route_ids':  [],
             'ref_product_tmpl_id': product_template.id,
             #'ref_product_id': rs.product_id.id,
             'tracking':'lot',
             'weight':weight,  
         }
+    
+    #def _prepare_vendor_pricelist(self,partner_id, product_template):
+        #return {
+          #  'name':partner_id.id,
+         #   'min_qty':1,
+         #   'price':1,
+         #   'product_tmpl_id':product_template.id,
+         #   'is_subcontractor':True,
+       # }
+    
     def action_process(self):
         
         bom_type = 'normal'
@@ -320,27 +330,33 @@ class JobOrder(models.Model):
         for sale in self.job_order_sale_lines:
             parent_product_template = find_product_id = sale.product_tmpl_id
             component_id = sale.product_id
+            
+            job_gwpu = self.env['job.order.line'].search([('job_sale_line_id', '=', sale.id),('code', '=', 'GWPU')],limit=1)
+            job_dwp = self.env['job.order.line'].search([('job_sale_line_id', '=', sale.id),('code', '=', 'DWP')],limit=1)
+            job_dwp_qty = 1 + (1 * (job_dwp.quantity/100))
             for routing in self.job_order_routing_ids:
                 if routing.routing_include:
                     contractors.clear()
                     category = self.env['product.category'].search([('name', '=', routing.routing_id.name)],limit=1)
-                    partner_category = self.env['res.partner.category'].search([('name', '=', routing.routing_id.name)],limit=1)
-                    if partner_category:
-                        contractor_ids = self.env['res.partner'].search([('category_id', '=', partner_category.id)])
-                        for ct in contractor_ids:
-                            contractors.append(ct.id)
+                    partner_category = self.env['res.partner.category'].search([('name', '=', parent_product_template.categ_id.name)],limit=1)
+                    contractor_ids = self.env['res.partner'].search([('category_id', '=', partner_category.id)])
+                    for ct in contractor_ids:
+                        contractors.append(ct.id)
                         
                     # Create Product and BOM
                     if routing.apply_on_variant:
                         pname = sale.product_id.display_name + '-' + routing.routing_id.name
-                        product_tmpl_id = self.env['product.template'].create(self._prepare_product(pname,category,sale.product_tmpl_id,1))
+                        product_tmpl_id = self.env['product.template'].create(self._prepare_product(pname,category,sale.product_tmpl_id,job_gwpu.quantity))
                         component_id = self.env['product.product'].search([('product_tmpl_id', '=', product_tmpl_id.id)],limit=1)
+                        
+                        
                         if routing.sequence == 10:
                             bom_type = 'normal'
                             bom_id = self.env['mrp.bom'].create(self._prepare_bom(parent_product_template, sale.product_id, bom_type, 1, contractors ))
+                            bom_line_id = self.env['mrp.bom.line'].create(self._prepare_bom_line(bom_id, component_id, job_dwp_qty))
                         else:
                             bom_id = self.env['mrp.bom'].create(self._prepare_bom1(parent_product_template, bom_type, 1, contractors ))
-                        bom_line_id = self.env['mrp.bom.line'].create(self._prepare_bom_line(bom_id, component_id, 1))
+                            bom_line_id = self.env['mrp.bom.line'].create(self._prepare_bom_line(bom_id, component_id, 1))
                         
                     else:
                         pname = sale.product_tmpl_id.name + '-' + routing.routing_id.name
@@ -348,9 +364,8 @@ class JobOrder(models.Model):
                         if find_product_id:
                             component_id = self.env['product.product'].search([('product_tmpl_id', '=', find_product_id.id)],limit=1)
                         else:
-                            product_tmpl_id = self.env['product.template'].create(self._prepare_product(pname,category,sale.product_tmpl_id,1))
+                            product_tmpl_id = self.env['product.template'].create(self._prepare_product(pname,category,sale.product_tmpl_id,job_gwpu.quantity))
                             component_id = self.env['product.product'].search([('product_tmpl_id', '=', product_tmpl_id.id)],limit=1)
-                        
                         bom_id = self.env['mrp.bom'].create(self._prepare_bom1(parent_product_template, bom_type, 1, contractors ))
                         bom_line_id = self.env['mrp.bom.line'].create(self._prepare_bom_line(bom_id, component_id, 1))
                     
@@ -358,9 +373,13 @@ class JobOrder(models.Model):
                         bom_type = 'subcontract'
                     else:
                         bom_type = 'normal'
-                    
+                 
+                rule_id = self.env['stock.warehouse.orderpoint'].create(self._prepare_reorder(component_id, 8))
+                sc_rule_id = self.env['stock.warehouse.orderpoint'].create(self._prepare_reorder(component_id, 19))
+                #for pl in contractor_ids:
+                    #vendor_pricelist_id = self.env['product.supplierinfo'].create(self._prepare_vendor_pricelist(pl,product_tmpl_id))
                 parent_product_template = product_tmpl_id
-    
+        self.state = 'processed'
     
     def action_process1(self):
         self.state = 'processed'
