@@ -20,13 +20,12 @@ class JobOrder(models.Model):
         readonly=True, states={'draft': [('readonly', False)]},
         help='Defines the rules that have to be applied to this Job Order, accordingly ')
     
-    sale_id = fields.Many2one('sale.order', 'Order Reference',required=False, states={'draft': [('readonly', False)]})
+    sale_id = fields.Many2one('sale.order', 'Order Reference',required=False,  readonly=True, states={'draft': [('readonly', False)]},)
     state = fields.Selection([
         ('draft', 'Draft'),
         ('confirmed', 'Confirmed'),
-		('computed', 'Computed'),
         ('processed', 'Processed'),
-        ('done', 'Done'),
+        ('done', 'Approved'),
         ('cancel', 'Cancelled')], string='Status', readonly=True, copy=False, index=True, tracking=3, default='draft')
     
     date_order = fields.Datetime(string='Job Order Date', required=True, readonly=True, index=True, states={'draft': [('readonly', False)], 'sent': [('readonly', False)]}, copy=False, default=fields.Datetime.now)
@@ -318,7 +317,7 @@ class JobOrder(models.Model):
          #   'is_subcontractor':True,
        # }
     
-    def action_process(self):
+    def action_process2(self):
         
         bom_type = 'normal'
         pname = ''
@@ -502,7 +501,7 @@ class JobOrder(models.Model):
     def action_draft(self):
         self.state = 'draft'
     
-    def action_compute(self):
+    def action_process(self):
         bom_ids = []
         all_boms = []
         self.job_order_lines.unlink()
@@ -557,8 +556,11 @@ class JobOrder(models.Model):
             }
             job_routing_id.create(rvals)
         self.env.cr.commit()
-        self.state = 'computed'
+        self.state = 'processed'
     
+    def action_approve(self):
+        self.state = 'done'
+        
     def action_confirm(self):
         vals = {}
         self.job_order_sale_lines.unlink()
@@ -574,7 +576,7 @@ class JobOrder(models.Model):
                     'sale_line_id': line.id,
                     'struct_id': self.struct_id.id,
                     #'bom_id': self._get_bom_id(line.product_id.product_tmpl_id),
-                    'bom_id': line.product_id.product_tmpl_id.bom_ids.id,
+                    #'bom_id': line.product_id.product_tmpl_id.bom_ids.id,
                 }
                 job_sale_line.create(vals)
                 
