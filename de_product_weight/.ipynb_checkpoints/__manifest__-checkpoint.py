@@ -20,7 +20,7 @@
     'version': '0.2',
 
     # any module necessary for this one to work correctly
-    'depends': ['base','stock','sale','purchase'],
+    'depends': ['base','stock','sale','purchase','de_product_dimensions'],
 
     # always loaded
     'data': [
