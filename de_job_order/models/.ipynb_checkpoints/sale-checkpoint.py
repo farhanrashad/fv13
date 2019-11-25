@@ -13,11 +13,11 @@ class SaleOrder(models.Model):
     job_order_ids = fields.One2many('job.order', 'sale_id', string='Job Orders')
     job_order_count = fields.Integer(string='Job Order', compute='_compute_job_ids')
     
-    def action_confirm(self):
-        res = super(SaleOrder, self).action_confirm()
-        if not len(self.job_order_ids) > 0:
-            raise UserError(_('Please define Job Order before confirmation.'))
-        return res
+    #def action_confirm(self):
+        #res = super(SaleOrder, self).action_confirm()
+        #if not len(self.job_order_ids) > 0:
+            #raise UserError(_('Please define Job Order before confirmation.'))
+        #return res
     
     @api.depends('job_order_ids')
     def _compute_job_ids(self):
