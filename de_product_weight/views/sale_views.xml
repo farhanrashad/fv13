@@ -4,10 +4,15 @@
         <field name="model">sale.order</field>
         <field name="inherit_id" ref="sale.view_order_form"/>
         <field name="arch" type="xml">
+            <field name="partner_id" position="after">
+                <field name="is_sale_weight" invisible="1" />
+            </field>
             <xpath expr="//form[1]/sheet[1]/notebook[1]/page[@name='order_lines']/field[@name='order_line']/tree[1]/field[@name='price_unit']" position="after">
                 <field name="weight"/>
-                <field name="total_weight"/>
+                <field name="total_weight" attrs="{'invisible':[('parent.is_sale_weight', '!=', True)],'required':[('parent.is_sale_weight', '=', True)]}" />
+                <field name="price_weight" attrs="{'invisible':[('parent.is_sale_weight', '!=', True)],'required':[('parent.is_sale_weight', '=', True)]}" />
             </xpath>
+            
             <xpath expr="/form/sheet/notebook" position="after">
                 <group>
                     <group>

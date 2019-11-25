@@ -10,3 +10,4 @@ class Partner(models.Model):
     _inherit = 'res.partner'
     
     is_purchase_weight = fields.Boolean("Compute prices in weight", default=False)
+    is_sale_weight = fields.Boolean("Compute prices in weight", default=False)

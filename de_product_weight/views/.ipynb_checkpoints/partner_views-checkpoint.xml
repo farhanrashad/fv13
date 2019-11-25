@@ -7,6 +7,9 @@
             <field name="property_supplier_payment_term_id" position="after">
                 <field name="is_purchase_weight" />
             </field>
+            <field name="property_payment_term_id" position="after">
+                <field name="is_sale_weight" />
+            </field>
         </field>
     </record>
 </odoo>
