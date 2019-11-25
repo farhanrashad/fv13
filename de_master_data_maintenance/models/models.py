@@ -127,7 +127,7 @@ class ProductTemplate(models.Model):
                 })
                 bom_line = self.env['mrp.bom.line'].create({
                     'bom_id': bom_id.id,
-                    'product_id':product_id.id,
+                    'product_id':parent_product_id.id,
                     'product_qty':1,
                 })
             
