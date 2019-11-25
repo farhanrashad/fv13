@@ -24,9 +24,31 @@ class ProductTemplate(models.Model):
             p.bom_ids.unlink()
             p.seller_ids.unlink()
         self.ref_product_tmpl_ids.unlink()
+        
+        parent_product_id = self.env['product.product'].search([('product_tmpl_id', '=', self.id)],limit=1)
+        #create parent reorderin rule
+        for route in self.categ_id.route_ids:
+            if route.name in ['Buy']:
+                buy_parent__id = self.env['stock.warehouse.orderpoint'].create({
+                    'product_id':parent_product_id.id,
+                    'product_min_qty':0,
+                    'product_max_qty':0,
+                    'qty_multiple':1,
+                    'location_id':8,
+                })
+            elif route.name in ['Resupply Subcontractor on Order']:
+                buy_parent__id = self.env['stock.warehouse.orderpoint'].create({
+                    'product_id':parent_product_id.id,
+                    'product_min_qty':0,
+                    'product_max_qty':0,
+                    'qty_multiple':1,
+                    'location_id':19,   
+                })
         for vn in self.product_variant_ids:
             parent_product_tmpl_id = self.id
             for dm in self.data_maintenance_lines:
+                if not(dm.is_multi_bom):
+                    parent_product_tmpl_id = self.id
                 if dm.production_tolerance > 0:
                     consumption_qty = 1 + (1*(dm.production_tolerance/100))
                 #create products
@@ -44,8 +66,9 @@ class ProductTemplate(models.Model):
                 })
                 
                 product_id = self.env['product.product'].search([('product_tmpl_id', '=', product_tmpl_id.id)],limit=1)
+                
                 #create parent bom
-                if parent_product_tmpl_id == self.id and dm.is_bom_maintenance:
+                if parent_product_tmpl_id == self.id and dm.is_bom_maintenance and dm.is_multi_bom:
                     parent_bom_id = self.env['mrp.bom'].create({
                         'product_tmpl_id':self.id,
                         'product_id': vn.id,
@@ -81,7 +104,7 @@ class ProductTemplate(models.Model):
                     })
                 
             #create bom
-            if component_id and dm_id.is_bom_maintenance:
+            if component_id and dm_id.is_bom_maintenance and dm_id.is_multi_bom:
                 bom_id = self.env['mrp.bom'].create({
                     'product_tmpl_id':product.id,
                     'product_uom_id':product.uom_id.id,
@@ -94,10 +117,24 @@ class ProductTemplate(models.Model):
                     'product_id':component_id.id,
                     'product_qty':1,
                 })
+            elif dm_id.is_bom_maintenance and not(dm_id.is_multi_bom):
+                bom_id = self.env['mrp.bom'].create({
+                    'product_tmpl_id':product.id,
+                    'product_uom_id':product.uom_id.id,
+                    'product_qty':1,
+                    'type':dm_id.bom_type,
+                    'subcontractor_ids':[( 6, 0, contractors)],
+                })
+                bom_line = self.env['mrp.bom.line'].create({
+                    'bom_id': bom_id.id,
+                    'product_id':product_id.id,
+                    'product_qty':1,
+                })
             
             #create reordering rules
             for route in product.categ_id.route_ids:
                 if route.name in ['Buy','Manufacture']:
+                    #child reordering rule
                     buy_op_id = self.env['stock.warehouse.orderpoint'].create({
                         'product_id':variant_id.id,
                         'product_min_qty':0,
@@ -133,6 +170,7 @@ class ProductDataMaintenance(models.Model):
     
     is_reorder_rule_maintenance = fields.Boolean("Is Reorder Rule", default=True)
     is_bom_maintenance = fields.Boolean("Is Bom", default=False)
+    is_multi_bom = fields.Boolean("Is Multi-level Bom", default=True)
     bom_type = fields.Selection([
         ('normal', 'Manufacture this product'),
         ('subcontract', 'Subcontracting')], 'BoM Type',

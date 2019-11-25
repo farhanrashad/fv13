@@ -21,6 +21,7 @@
                             <field name="is_reorder_rule_maintenance" />
                             <field name="is_bom_maintenance" />
                             <field name="bom_type" attrs="{'invisible':[('is_bom_maintenance', '!=', True)],'required':[('is_bom_maintenance', '=', True)]}" />
+                            <field name="is_multi_bom" attrs="{'invisible':[('is_bom_maintenance', '!=', True)],'required':[('is_bom_maintenance', '=', True)]}" />
                             <field name="partner_tag" attrs="{'invisible':[('bom_type', '!=', 'subcontract')],'required':[('bom_type', '=', 'subcontract')]}" />
                             <field name="production_tolerance" attrs="{'invisible':[('is_bom_maintenance', '!=', True)],'required':[('is_bom_maintenance', '=', True)]}" />
                         </tree>
