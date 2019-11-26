@@ -24,8 +24,15 @@
                 
                 <div class="col-3"/>
                 <div class="col-3"/>
-    </div>
-  </xpath>
+            </div>
+        </xpath>
+         <xpath expr="/t/t/t/t/div/table/thead/tr/th[1]" position="after">
+             <th><span>Componenet Description</span></th>
+        </xpath>
+        <xpath expr="/t/t/t/t/div/table/tbody/t/tr/td[1]" position="after">
+            <td><span t-field="raw_line.bom_line_id.material_desc"/></td>
+        </xpath>
+        
         
         <xpath expr="/t/t/t/t/div/table/thead/tr/th[2]" position="after">
             <th><span>Weight</span></th>
