@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<odoo>
+    <report id="product_ledger_pdf"
+            string="Product Ledger"
+            model="product.ledger"
+            report_type="qweb-pdf"
+            file="de_product_ledger.de_product_ledger_pdf_report"
+            name="de_product_ledger.de_product_ledger_pdf_report" />
+</odoo>

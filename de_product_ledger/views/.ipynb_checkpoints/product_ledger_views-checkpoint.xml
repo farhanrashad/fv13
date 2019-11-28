@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<odoo>
+    <record id="product_ledger_wizard_report" model="ir.ui.view">
+        <field name="name">product.ledger.wizard.report</field>
+        <field name="model">product.ledger</field>
+        <field name="arch" type="xml">
+            <form string="Product Ledger">
+                <group>
+                    <group>
+                        <field name="start_date"/>
+                        <field name="product_id"/>
+
+                    </group>
+                    <group>
+                        <field name="end_date"/>
+                        <field name="location_id" />
+
+                    </group>
+                </group>
+
+                <footer>
+                    <button name="print_report" type="object" string="Print" class="oe_highlight"/>
+                    <button string="Cancel" class="btn btn-default" special="cancel"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_product_ledger_wizard" model="ir.actions.act_window">
+        <field name="name">Product Ledger</field>
+        <field name="res_model">product.ledger</field>
+        <field name="view_type">form</field>
+        <field name="view_mode">form</field>
+        <field name="target">new</field>
+    </record>
+
+    <menuitem id="menu_product_ledger_report" name="Product Ledger" parent="stock.menu_warehouse_report" action="action_product_ledger_wizard" sequence="150" />
+</odoo>
