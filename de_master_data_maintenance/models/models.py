@@ -53,7 +53,7 @@ class ProductTemplate(models.Model):
                     consumption_qty = 1 + (1*(dm.production_tolerance/100))
                 #create products
                 product_tmpl_id = self.env['product.template'].create({
-                    'name': vn.display_name + '-' + dm.routing_id.name,
+                    'name': vn.display_name + '-' + dm.categ_id.name,
                     'type':self.type,
                     'categ_id':dm.categ_id.id,
                     'sale_ok':False,
@@ -63,6 +63,7 @@ class ProductTemplate(models.Model):
                     'parent_product_tmpl_id': parent_product_tmpl_id,
                     'ref_product_tmpl_id': self.id,
                     'tracking': dm.tracking,
+                    'weight': vn.weight or self.dim_weight,
                 })
                 
                 product_id = self.env['product.product'].search([('product_tmpl_id', '=', product_tmpl_id.id)],limit=1)
