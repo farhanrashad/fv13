@@ -29,15 +29,23 @@ class StockMoveLine(models.Model):
     _inherit = 'stock.move.line'
     
     weight = fields.Float(related='product_id.weight',string='Weight/kg',readonly=True, store=True)
-    total_weight = fields.Float('Total Weight', digits=dp.get_precision('Stock Weight'), help="Weight of the product in order line")
+    total_weight = fields.Float('Total Weight', readonly=True, store=True, digits=dp.get_precision('Stock Weight'), help="Weight of the product in order line")
     
-    @api.onchange('product_uom_qty','product_uom_id')
-    def onchange_product_uom_qty(self):
-        self.total_weight = self.product_id.weight * self.product_uom_qty
+    #@api.onchange('product_uom_qty','product_uom_id')
+    #def onchange_product_uom_qty(self):
+        #self.total_weight = self.product_id.weight * self.product_uom_qty
     
-    @api.onchange('qty_done')
-    def onchange_product_qty_done(self):
-        self.total_weight = self.product_id.weight * self.qty_done
+    #@api.onchange('qty_done')
+    #def onchange_product_qty_done(self):
+        #self.total_weight = self.product_id.weight * self.qty_done
+        
+    #@api.onchange('product_uom_qty','product_uom_id')
+    #def onchange_product_qty_done(self):
+        #production_ids = self.env['mrp.product.produce'].search([('production_id', '=', self.production_id.id),('product_id', '=', self.product_id.id),('finished_lot_id', '=', self.lot_id.id)])
+        #for production in production_ids:
+            #self.total_weight =222
+        #for line in self.produce_line_ids:
+            #line.total_weight = line.product_id.weight * line.product_qty
         
         
 class StockPicking(models.Model):
