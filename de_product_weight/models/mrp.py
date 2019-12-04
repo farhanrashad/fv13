@@ -25,15 +25,7 @@ class MrpProduction(models.Model):
 	#def button_mark_done(self):
 		#super(MrpProduction, self).button_mark_done()
 
-    def button_update_weight(self):
-        """ Update Production Weight. """
-        for fm in self.finished_move_line_ids:
-            tw = 0
-            production_ids = self.env['mrp.product.produce'].search([('production_id', '=', self.id),('product_id', '=', fm.product_id.id),('finished_lot_id', '=', fm.lot_id.id)])
-            for production in production_ids:
-                tw += production.produced_weight
-                
-            fm.total_weight = tw
+    
         
 class MRPProductProduce(models.TransientModel):
     _inherit = 'mrp.product.produce'
