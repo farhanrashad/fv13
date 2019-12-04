@@ -5,10 +5,6 @@
         <field name="model">mrp.production</field>
         <field name="inherit_id" ref="mrp.mrp_production_form_view"/>
         <field name="arch" type="xml">
-            <xpath expr="//button[@name='button_mark_done']" position="before">
-                <button name="button_update_weight" string="Update Weight" type="object" class="oe_highlight"/>
-            </xpath>
-            
             <xpath expr="//field[@name='bom_id']" position="before">
                 <label for="production_weight"/>
                 <div class="o_row no-gutters d-flex">
