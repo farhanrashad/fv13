@@ -41,3 +41,26 @@ class MRPProductProduce(models.TransientModel):
                 #'total_weight': self.produced_weight,
             #})
             #p.total_weight = self.produced_weight
+   # @api.onchange('produced_weight')
+   # def _onchange_produced_weight(self):
+        #for line in self.raw_workorder_line_ids:
+            #for bom_line in self.line.production_id.bom_id.bom_line_ids:
+                #if bom_line.product_id.id == line.product_id.id:
+                    #line.produced_weight = self.produced_weight * (1 / bom_line.product_qty)
+            
+            
+    
+            
+class MRPProductProduceLine(models.TransientModel):
+    _inherit = 'mrp.product.produce.line'
+    
+    produced_weight = fields.Float('Weight to produce', compute='_calculate_produced_weight', store=True, digits=dp.get_precision('Stock Weight'), help="Weight produced")
+    
+    @api.depends('raw_product_produce_id.produced_weight')
+    def _calculate_produced_weight(self):
+        for rs in self:
+            rs.produced_weight = rs.raw_product_produce_id.produced_weight * (rs.move_id.bom_line_id.product_qty/rs.move_id.bom_line_id.bom_id.product_qty)
+            #for bom_line in rs.raw_product_produce_id.production_id.bom_id.bom_line_ids:
+                #if rs.product_id == bom_line.product_id:
+                    #rs.produced_weight = rs.raw_product_produce_id.produced_weight * (1/bom_line.product_qty)
+    

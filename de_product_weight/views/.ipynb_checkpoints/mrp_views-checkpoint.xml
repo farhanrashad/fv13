@@ -20,7 +20,20 @@
         </field>
     </record>
         
-        <record id="view_mrp_product_produce_wizard_inherit" model="ir.ui.view">
+        <record id="view_stock_move_raw_tree_inherit" model="ir.ui.view">
+        <field name="name">view.stock.move.raw_.tree</field>
+        <field name="model">stock.move</field>
+        <field name="inherit_id" ref="mrp.view_stock_move_raw_tree"/>
+        <field name="arch" type="xml">
+			<xpath expr="//field[@name='quantity_done']" position="after">
+				<field name="total_weight"/>
+			</xpath>
+        </field>
+    </record>
+        
+        
+        
+    <record id="view_mrp_product_produce_wizard_inherit" model="ir.ui.view">
         <field name="name">view.mrp.product.produce.wizard.inherit</field>
         <field name="model">mrp.product.produce</field>
         <field name="inherit_id" ref="mrp.view_mrp_product_produce_wizard"/>
@@ -28,6 +41,9 @@
 			<xpath expr="//field[@name='product_tracking']" position="before">
 				<field name="produced_weight"/>
 			</xpath>
+            <xpath expr="//field[@name='raw_workorder_line_ids']/tree" position="inside">
+                <field name="produced_weight"/>
+            </xpath>
         </field>
     </record>
         
