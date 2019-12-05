@@ -48,7 +48,26 @@ class MRPProductProduce(models.TransientModel):
                 #if bom_line.product_id.id == line.product_id.id:
                     #line.produced_weight = self.produced_weight * (1 / bom_line.product_qty)
             
-            
+    def do_produce(self):
+        """ Save the current wizard and go back to the MO. """
+        res = super(MRPProductProduce, self).do_produce()
+        #for mv in self.move_raw_ids:
+            #mv.total_weight = 10
+        #for line in self.raw_workorder_line_ids:
+            #for mv in line.move_id.move_line_ids:
+                #mv.total_weight = line.produced_weight
+            #for mv in line.move_id.move_line_ids:
+                #mv.total_weight = line.produced_weight
+        return res
+    
+    def continue_production(self):
+        res = super(MRPProductProduce, self).continue_production()
+        for line in self.raw_workorder_line_ids:
+            for mv in line.move_id.move_line_ids:
+                mv.update({
+                'total_weight': line.produced_weight,
+                })
+        return res
     
             
 class MRPProductProduceLine(models.TransientModel):
@@ -60,6 +79,9 @@ class MRPProductProduceLine(models.TransientModel):
     def _calculate_produced_weight(self):
         for rs in self:
             rs.produced_weight = rs.raw_product_produce_id.produced_weight * (rs.move_id.bom_line_id.product_qty/rs.move_id.bom_line_id.bom_id.product_qty)
+            #rs.move_id.total_weight += rs.produced_weight
+            #for mv in rs.move_id.move_line_ids:
+                #mv.total_weight = rs.produced_weight
             #for bom_line in rs.raw_product_produce_id.production_id.bom_id.bom_line_ids:
                 #if rs.product_id == bom_line.product_id:
                     #rs.produced_weight = rs.raw_product_produce_id.produced_weight * (1/bom_line.product_qty)
