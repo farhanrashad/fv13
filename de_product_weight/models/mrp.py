@@ -30,23 +30,15 @@ class MrpProduction(models.Model):
 class MRPProductProduce(models.TransientModel):
     _inherit = 'mrp.product.produce'
     
-    produced_weight = fields.Float('Weight to produce', digits=dp.get_precision('Stock Weight'), help="Weight produced")
+    produced_weight = fields.Float('Weight Produced', digits=dp.get_precision('Stock Weight'), help="Weight produced")
     
-    #def do_produce(self):
-        #res = super(MRPProductProduce, self).do_produce()
-        #production_id = self.env['stock.move.line'].search([('production_id', '=', self.production_id.id),('product_id', '=', self.product_id.id),('lot_id', '=', self.lot_id.id)],limited=1)
+    @api.onchange('qty_producing')
+    def _compute_produced_weight(self):
+        """
+        Compute the weight on change in quantity
+        """
+        self.produced_weight = self.qty_producing * self.product_id.weight
         
-        #for p in produceproduction_id:
-            #p.update({
-                #'total_weight': self.produced_weight,
-            #})
-            #p.total_weight = self.produced_weight
-   # @api.onchange('produced_weight')
-   # def _onchange_produced_weight(self):
-        #for line in self.raw_workorder_line_ids:
-            #for bom_line in self.line.production_id.bom_id.bom_line_ids:
-                #if bom_line.product_id.id == line.product_id.id:
-                    #line.produced_weight = self.produced_weight * (1 / bom_line.product_qty)
             
     def do_produce(self):
         """ Save the current wizard and go back to the MO. """
@@ -95,25 +87,37 @@ class MRPProductProduce(models.TransientModel):
             for rline in raws.move_line_ids:
                 for lot in rline.lot_produced_ids:
                     if lot == self.finished_lot_id:
-                        rline.write({
-                            'total_weight': self.produced_weight * (rline.move_id.bom_line_id.product_qty/rline.move_id.bom_line_id.bom_id.product_qty)
-                        })
+                        if rline.product_id.product_tmpl_id.is_weight_uom:
+                            rline.write({
+                                'total_weight': self.produced_weight * (rline.move_id.bom_line_id.product_qty/rline.move_id.bom_line_id.bom_id.product_qty)
+                            })
+                        else:
+                            rline.write({
+                                'qty_done': self.produced_weight * (rline.move_id.bom_line_id.product_qty/rline.move_id.bom_line_id.bom_id.product_qty)
+                            })
                         
     
             
 class MRPProductProduceLine(models.TransientModel):
     _inherit = 'mrp.product.produce.line'
     
-    produced_weight = fields.Float('Weight to produce', compute='_calculate_produced_weight', store=True, digits=dp.get_precision('Stock Weight'), help="Weight produced")
+    produced_weight = fields.Float('Weight Produced', compute='_calculate_produced_weight', store=True, digits=dp.get_precision('Stock Weight'), help="Weight produced")
     
     @api.depends('raw_product_produce_id.produced_weight')
     def _calculate_produced_weight(self):
         for rs in self:
-            rs.produced_weight = rs.raw_product_produce_id.produced_weight * (rs.move_id.bom_line_id.product_qty/rs.move_id.bom_line_id.bom_id.product_qty)
-            #rs.move_id.total_weight += rs.produced_weight
-            #for mv in rs.move_id.move_line_ids:
-                #mv.total_weight = rs.produced_weight
-            #for bom_line in rs.raw_product_produce_id.production_id.bom_id.bom_line_ids:
-                #if rs.product_id == bom_line.product_id:
-                    #rs.produced_weight = rs.raw_product_produce_id.produced_weight * (1/bom_line.product_qty)
+            if rs.product_id.product_tmpl_id.is_weight_uom:
+                rs.produced_weight = rs.raw_product_produce_id.produced_weight * (rs.move_id.bom_line_id.product_qty/rs.move_id.bom_line_id.bom_id.product_qty)
+            else:
+                rs.produced_weight = 0
+            
+    @api.onchange('raw_product_produce_id.produced_weight')
+    def _change_produced_qty(self):
+        """
+        Compute the weight on change in quantity
+        """
+        for rs in self:
+            if not(rs.product_id.product_tmpl_id.is_weight_uom):
+                rs.qty_done = rs.raw_product_produce_id.produced_weight * (rs.move_id.bom_line_id.product_qty/rs.move_id.bom_line_id.bom_id.product_qty)
+           
     
