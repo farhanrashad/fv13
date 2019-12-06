@@ -31,30 +31,24 @@ class StockMoveLine(models.Model):
     weight = fields.Float(related='product_id.weight',string='Weight/kg',readonly=True, store=True)
     total_weight = fields.Float('Total Weight', digits=dp.get_precision('Stock Weight'), help="Weight of the product in order line")
     
-   # @api.model_create_multi
-    #def write(self, values):
-       ## values['total_weight'] = 10
-       # res = super(StockMoveLine, self).write(values)
-       # return res
+    #def _quantity_done_set(self):
+    #def _action_cancel(self):
+    #def _action_done(self, cancel_backorder=False):
+    #def _set_quantity_done(self, qty):
         
-    #@api.onchange('product_uom_qty','product_uom_id')
-    #def onchange_product_uom_qty(self):
-        #self.total_weight = self.product_id.weight * self.product_uom_qty
-    
-    #@api.onchange('product_id')
-    #def onchange_product_total_weight(self):
-        #self.total_weight = 10
-        #if len(self.produce_line_ids):
-            #for production in self.produce_line_ids:
-                #self.total_weight += production.produced_weight
-        
-    #@api.onchange('product_uom_qty','product_uom_id')
-    #def onchange_product_qty_done(self):
-        #production_ids = self.env['mrp.product.produce'].search([('production_id', '=', self.production_id.id),('product_id', '=', self.product_id.id),('finished_lot_id', '=', self.lot_id.id)])
-        #for production in production_ids:
-            #self.total_weight =222
-        #for line in self.produce_line_ids:
-            #line.total_weight = line.product_id.weight * line.product_qty
+    def write(self, vals):
+        res = super(StockMoveLine, self).write(vals)
+        if self.product_id.product_tmpl_id.is_weight_uom:
+            if self.location_id.usage == 'internal':
+                self.product_id.product_tmpl_id.weight_available -= self.total_weight
+                if not (self.product_id.product_tmpl_id.tracking) == 'none':
+                    self.lot_id.product_weight -= self.total_weight
+            elif self.location_dest_id == 'internal':
+                self.product_id.product_tmpl_id.weight_available += self.total_weight
+                if not (self.product_id.product_tmpl_id.tracking) == 'none':
+                    self.lot_id.product_weight += self.total_weight
+                    
+        return res
         
         
 class StockPicking(models.Model):

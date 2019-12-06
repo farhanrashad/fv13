@@ -10,8 +10,10 @@ from odoo.addons import decimal_precision as dp
 class ProductTemplate(models.Model):
     _inherit = 'product.template'
     
-    weight_available = fields.Float(compute='_compute_total_weight', string='Total Weight', readonly=True, store=True)
+    #weight_available = fields.Float(compute='_compute_total_weight', string='Weight Available', readonly=True, store=True)
+    weight_available = fields.Float(string='Weight Available')
     is_weight_uom = fields.Boolean('Weight UOM',default=True)
+    weight_done = fields.Float('Weight Done')
     
     @api.depends(
 		'product_variant_ids',

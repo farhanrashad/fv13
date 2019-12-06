@@ -17,7 +17,7 @@
     # Check https://github.com/odoo/odoo/blob/13.0/odoo/addons/base/data/ir_module_category_data.xml
     # for the full list
     'category': 'Warehouse',
-    'version': '0.5',
+    'version': '0.6',
 
     # any module necessary for this one to work correctly
     'depends': ['base','stock','sale','purchase','mrp','de_product_dimensions'],
@@ -31,6 +31,7 @@
         'views/sale_views.xml',
 		'views/product_views.xml',
         'views/partner_views.xml',
+        'views/stock_production_lot_views.xml',
     ],
     # only loaded in demonstration mode
     'demo': [
