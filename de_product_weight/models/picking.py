@@ -31,12 +31,11 @@ class StockMoveLine(models.Model):
     weight = fields.Float(related='product_id.weight',string='Weight/kg',readonly=True, store=True)
     total_weight = fields.Float('Total Weight', digits=dp.get_precision('Stock Weight'), help="Weight of the product in order line")
     
-    @api.model_create_multi
-    def create(self, vals_list):
-        """ Save the current wizard and go back to the MO. """
-        res = super(StockMoveLine, self).create(vals_list)
-        self.total_weight = 10
-        return res
+   # @api.model_create_multi
+    #def write(self, values):
+       ## values['total_weight'] = 10
+       # res = super(StockMoveLine, self).write(values)
+       # return res
         
     #@api.onchange('product_uom_qty','product_uom_id')
     #def onchange_product_uom_qty(self):

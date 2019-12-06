@@ -51,6 +51,7 @@ class MRPProductProduce(models.TransientModel):
     def do_produce(self):
         """ Save the current wizard and go back to the MO. """
         res = super(MRPProductProduce, self).do_produce()
+        self._product_weight_assignment()
         #for mv in self.move_raw_ids:
             #mv.total_weight = 10
         #for line in self.raw_workorder_line_ids:
@@ -62,12 +63,42 @@ class MRPProductProduce(models.TransientModel):
     
     def continue_production(self):
         res = super(MRPProductProduce, self).continue_production()
-        for line in self.raw_workorder_line_ids:
-            for mv in line.move_id.move_line_ids:
-                mv.update({
-                'total_weight': line.produced_weight,
-                })
+        self._product_weight_assignment()
+        #for line in self.raw_workorder_line_ids:
+        
+                #line.toal_weight = 111
+        
+        
+                
+        #for line in self.production_id.move_raw_ids:
+            #production = self.env['mrp.product.produce.line'].search([('move_id', '=', line.id)],limit=1)
+            #for mv in line.move_line_ids:
+            #    mv.total_weight = production.produced_weight
+            #move_lines = self.env['stock.move.line'].search([('move_id', '=', line.move_id.id)])
+            #for mv in move_lines:
+                #mv.write({
+                #'total_weight': 10,
+                #})
         return res
+    
+    def _product_weight_assignment(self):
+        #finish weight assignment
+        for mv in self.production_id.move_finished_ids:
+            for line in mv.move_line_ids:
+                if line.lot_id == self.finished_lot_id:
+                    line.write({
+                        'total_weight': self.produced_weight,
+                    })
+        
+        #raw material weight assignment
+        for raws in self.production_id.move_raw_ids:
+            for rline in raws.move_line_ids:
+                for lot in rline.lot_produced_ids:
+                    if lot == self.finished_lot_id:
+                        rline.write({
+                            'total_weight': self.produced_weight * (rline.move_id.bom_line_id.product_qty/rline.move_id.bom_line_id.bom_id.product_qty)
+                        })
+                        
     
             
 class MRPProductProduceLine(models.TransientModel):
