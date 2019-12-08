@@ -23,7 +23,7 @@
     'version': '0.4',
 
     # any module necessary for this one to work correctly
-    'depends': ['base','sale','stock','purchase','mrp','de_product_weight','de_job_order'],
+    'depends': ['base','sale','stock','purchase','mrp','de_product_weight','de_job_order','de_bom_percent','de_sale_global_ref'],
 
     # always loaded
     'data': [

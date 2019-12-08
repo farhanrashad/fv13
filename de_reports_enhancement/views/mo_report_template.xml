@@ -1,6 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
     <template id="mrp_report_mrporder_inherit" inherit_id="mrp.report_mrporder">
+        <xpath expr="/t/t/t/t/div/div/div/h2" position="inside">
+            / <span t-field="o.job_order_id.sale_id.global_ref"/>
+        </xpath>
+        
         <xpath expr="/t/t/t/t/div/div[4]" position="inside">
             <div class="col-3">
                 <strong>Weight:</strong><br/>
@@ -28,19 +32,18 @@
         </xpath>
          <xpath expr="/t/t/t/t/div/table/thead/tr/th[1]" position="after">
              <th><span>Componenet Description</span></th>
+             <th><span>Qty(%)</span></th>
+             <th><span>Weight</span></th>
+            <th><span>Total Weight</span></th>
         </xpath>
         <xpath expr="/t/t/t/t/div/table/tbody/t/tr/td[1]" position="after">
             <td><span t-field="raw_line.bom_line_id.material_desc"/></td>
-        </xpath>
-        
-        
-        <xpath expr="/t/t/t/t/div/table/thead/tr/th[2]" position="after">
-            <th><span>Weight</span></th>
-            <th><span>Total Weight</span></th>
-        </xpath>
-        <xpath expr="/t/t/t/t/div/table/tbody/t/tr/td[2]" position="after">
-            <td><span t-field="raw_line.weight"/> Kg</td>
+            <td><span t-field="raw_line.bom_line_id.percent_qty"/></td>
+             <td><span t-field="raw_line.weight"/> Kg</td>
             <td><span t-field="raw_line.total_weight"/> Kg</td>
         </xpath>
+        
+        
+       
     </template>
 </odoo>

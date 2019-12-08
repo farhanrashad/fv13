@@ -1,6 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
     <template id="report_saleorder_document_inherit" inherit_id="sale.report_saleorder_document">
+        <xpath expr="/t/t/div/h2" position="inside">
+            / <span t-field="doc.global_ref"/>
+        </xpath>
         <!-- add partner fields -->
         <xpath expr="/t[1]/t[1]/t[2]/div[1]" position="before">
             <div t-if="doc.partner_id.ref">
