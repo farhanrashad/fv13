@@ -1,6 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
     <template id="mrp_report_mrporder_inherit" inherit_id="mrp.report_mrporder">
+        <xpath expr="/t/t/t/t/div/div" position="inside">
+            <h2 class="text-center"><span t-field="o.product_id.categ_id.name"/> Order</h2>
+        </xpath>
+        
         <xpath expr="/t/t/t/t/div/div/div/h2" position="inside">
             / <span t-field="o.job_order_id.sale_id.global_ref"/>
         </xpath>
