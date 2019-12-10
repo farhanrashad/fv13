@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <template id="de_stock_valuation_pdf_report">
+        <t t-call="web.html_container">
+            <t t-call="web.external_layout">
+                <div class="page">
+                    <div class="oe_structure"/>
+                    <div class="text-left">
+                    <h3 class="text-center">Product Stock </h3>
+                    <!--<span t-esc="data['product_id']"/>-->
+                    <t t-foreach="request.env['product.product'].search([('id', '=', data['product_id'])])" t-as="prd">
+                        <h4><span t-field="prd.product_tmpl_id.name"/></h4>
+                    </t>
+                        <p>Valuation Date: <span t-esc="data['dated']" t-options="{'widget': 'date'}" /></p>
+                    </div>
+                </div>
+                
+                <table class="table table-condensed" name="stock_expiry_table">
+                    <thead>
+                        <tr>
+                            <th>Category</th>
+                            <th>Product</th>
+                            <th>barcode</th>
+                            <th>Quantity</th>
+                            <th>Price</th>
+                            <th>Valuation</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                    </tbody>
+                  </table>
+            </t>
+        </t>
+    </template>
+</odoo>

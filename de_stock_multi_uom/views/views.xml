@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<odoo>
+    <report id="product_stock_pdf"
+            string="Product Stock"
+            model="report.product.stock.wizard"
+            report_type="qweb-pdf"
+            file="de_stock_multi_uom.product_stock_pdf_report"
+            name="de_stock_multi_uom.product_stock_pdf_report" />
+</odoo>
