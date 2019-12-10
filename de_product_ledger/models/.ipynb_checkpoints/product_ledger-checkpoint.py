@@ -24,7 +24,14 @@ class ProductLedger(models.TransientModel):
     product_id = fields.Many2one('product.product', string='Product', required=True, help='Select Product for movement')
     location_id = fields.Many2one('stock.location', string='Location', help='Enter the location to filter records')
     
-    @api.multi
     def print_report(self, data):
         data = {'product_id': self.product_id.id,'start_date': self.start_date, 'end_date': self.end_date,'location_id':self.location_id.id}
         return self.env.ref('de_product_ledger.product_ledger_pdf').report_action(self, data=data)
+    
+    def _print_report(self, data):
+        data = self.pre_print_report(data)
+        data = {'product_id': self.product_id.id,'start_date': self.start_date, 'end_date': self.end_date,'location_id':self.location_id.id}
+        
+        records = self.env[data['model']].browse(data.get('ids', []))
+        return self.env.ref('de_product_ledger.product_ledger_pdf').with_context(landscape=True).report_action(records, data=data)
+
