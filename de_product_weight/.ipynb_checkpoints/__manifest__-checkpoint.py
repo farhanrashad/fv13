@@ -32,6 +32,7 @@
 		'views/product_views.xml',
         'views/partner_views.xml',
         'views/stock_production_lot_views.xml',
+        'views/stock_quant_views.xml',
     ],
     # only loaded in demonstration mode
     'demo': [
