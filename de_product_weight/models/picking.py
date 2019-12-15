@@ -36,20 +36,20 @@ class StockMoveLine(models.Model):
     #def _action_done(self, cancel_backorder=False):
     #def _set_quantity_done(self, qty):
         
-    #def write(self, vals):
-     #   res = super(StockMoveLine, self).write(vals)
-      #  for rs in self:
-       #     if rs.product_id.product_tmpl_id.is_weight_uom:
-        #        if rs.location_id.usage == 'internal':
-         #           rs.product_id.product_tmpl_id.weight_available -= rs.total_weight
-          #          if not (rs.product_id.product_tmpl_id.tracking) == 'none':
-           #             rs.lot_id.product_weight -= rs.total_weight
-            #    elif rs.location_dest_id == 'internal':
-             #       rs.product_id.product_tmpl_id.weight_available += rs.total_weight
-              #      if not (rs.product_id.product_tmpl_id.tracking) == 'none':
-               #         rs.lot_id.product_weight += rs.total_weight
+    def write(self, vals):
+        res = super(StockMoveLine, self).write(vals)
+        for rs in self:
+            if rs.product_id.product_tmpl_id.is_weight_uom:
+                if rs.location_id.usage == 'internal':
+                    rs.product_id.product_tmpl_id.weight_available -= rs.total_weight
+                    if not (rs.product_id.product_tmpl_id.tracking) == 'none':
+                        rs.lot_id.product_weight -= rs.total_weight
+                elif rs.location_dest_id == 'internal':
+                    rs.product_id.product_tmpl_id.weight_available += rs.total_weight
+                    if not (rs.product_id.product_tmpl_id.tracking) == 'none':
+                        rs.lot_id.product_weight += rs.total_weight
                     
-        #return res
+        return res
         
         
 class StockPicking(models.Model):

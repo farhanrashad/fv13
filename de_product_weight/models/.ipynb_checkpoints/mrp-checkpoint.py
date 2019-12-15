@@ -91,7 +91,7 @@ class MRPProductProduce(models.TransientModel):
                             rline.write({
                                 'total_weight': self.produced_weight * (rline.move_id.bom_line_id.product_qty/rline.move_id.bom_line_id.bom_id.product_qty)
                             })
-                        else:
+                        elif (rline.product_id.product_tmpl_id.uom_id.category_id.measure_type == 'weight'):
                             rline.write({
                                 'qty_done': self.produced_weight * (rline.move_id.bom_line_id.product_qty/rline.move_id.bom_line_id.bom_id.product_qty)
                             })

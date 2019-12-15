@@ -17,21 +17,22 @@ class PurchaseOrderLine(models.Model):
     weight = fields.Float(related='product_id.weight',string='Weight Unit',readonly=True, store=True)
     total_weight = fields.Float('Total Weight', digits=dp.get_precision('Stock Weight'), help="Weight of the product in order line", default=1.0)
     price_weight = fields.Float('Weight Price', required=True, digits=dp.get_precision('Weight Price'), default=1.0)
-    price_weight_subtotal = fields.Float(compute='_compute_subtotal', string='Subtotal', readonly=True, store=True)
+    price_weight_subtotal = fields.Float(string='Subtotal', readonly=True, store=True)
     
     @api.onchange('product_qty')
     def onchange_product_qty(self):
         #super(PurchaseOrderLine, self).onchange_product_id()
         self.total_weight = self.product_id.weight * self.product_qty
         
-    @api.depends('total_weight', 'price_weight')
+    #@api.depends('total_weight', 'price_weight')
+    @api.onchange('product_qty','total_weight','price_weight')
     def _compute_subtotal(self):
         """
         Compute the amounts of the PO line.
         """
         for line in self:
             if line.price_weight > 0 and line.product_qty > 0  and line.total_weight > 0:
-                line.price_weight_subtotal = (line.total_weight * line.price_weight)
+                #line.price_weight_subtotal = (line.total_weight * line.price_weight)
                 line.price_unit = (line.total_weight * line.price_weight) / line.product_qty
                 
                 #line.update({
