@@ -36,14 +36,12 @@
         </xpath>
          <xpath expr="/t/t/t/t/div/table/thead/tr/th[1]" position="after">
              <th><span>Componenet Description</span></th>
-             <th><span>Qty(%)</span></th>
              <th><span>Weight</span></th>
             <th><span>Total Weight</span></th>
         </xpath>
         <xpath expr="/t/t/t/t/div/table/tbody/t/tr/td[1]" position="after">
             <td><span t-field="raw_line.bom_line_id.material_desc"/></td>
-            <td><span t-field="raw_line.bom_line_id.percent_qty"/></td>
-             <td><span t-field="raw_line.weight"/> Kg</td>
+             <td><span t-field="raw_line.product_id.weight"/> Kg</td>
             <td><span t-field="raw_line.total_weight"/> Kg</td>
         </xpath>
         
