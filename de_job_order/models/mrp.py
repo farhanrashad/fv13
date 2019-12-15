@@ -5,6 +5,8 @@ from odoo import models, fields, api
 class MrpBom(models.Model):
     _inherit = 'mrp.bom'
     
+    categ_id = fields.Many2one("product.category", related='product_tmpl_id.categ_id', string="Category", readonly=True)
+    
     compute_qty = fields.Selection([
         ('qty', 'By Quantity'),
         ('percentage', 'By Percentage'),
@@ -38,3 +40,4 @@ class MRPProduction(models.Model):
     
     job_order_id = fields.Many2one('job.order', string='Job Order', index=True, ondelete='cascade')
     ref_sale_id = fields.Many2one('sale.order', string='Sale Order', required=False, ondelete='cascade', index=True, copy=False, readonly=True)
+    categ_id = fields.Many2one("product.category", related='product_id.product_tmpl_id.categ_id', string="Category", readonly=True)
