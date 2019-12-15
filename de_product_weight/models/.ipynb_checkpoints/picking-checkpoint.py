@@ -38,15 +38,16 @@ class StockMoveLine(models.Model):
         
     def write(self, vals):
         res = super(StockMoveLine, self).write(vals)
-        if self.product_id.product_tmpl_id.is_weight_uom:
-            if self.location_id.usage == 'internal':
-                self.product_id.product_tmpl_id.weight_available -= self.total_weight
-                if not (self.product_id.product_tmpl_id.tracking) == 'none':
-                    self.lot_id.product_weight -= self.total_weight
-            elif self.location_dest_id == 'internal':
-                self.product_id.product_tmpl_id.weight_available += self.total_weight
-                if not (self.product_id.product_tmpl_id.tracking) == 'none':
-                    self.lot_id.product_weight += self.total_weight
+        for rs in self:
+            if rs.product_id.product_tmpl_id.is_weight_uom:
+                if rs.location_id.usage == 'internal':
+                    rs.product_id.product_tmpl_id.weight_available -= rs.total_weight
+                    if not (rs.product_id.product_tmpl_id.tracking) == 'none':
+                        rs.lot_id.product_weight -= rs.total_weight
+                elif rs.location_dest_id == 'internal':
+                    rs.product_id.product_tmpl_id.weight_available += rs.total_weight
+                    if not (rs.product_id.product_tmpl_id.tracking) == 'none':
+                        rs.lot_id.product_weight += rs.total_weight
                     
         return res
         
