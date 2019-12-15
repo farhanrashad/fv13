@@ -25,6 +25,21 @@ class MrpProduction(models.Model):
 	#def button_mark_done(self):
 		#super(MrpProduction, self).button_mark_done()
 
+    def post_inventory(self):
+        res = super(MrpProduction, self).post_inventory()
+        #for order in self:
+            #moves_to_finish = order.move_finished_ids.filtered(lambda x: x.state not in ('done', 'cancel'))
+            #for moveline in moves_to_finish.mapped('move_line_ids'):
+                #if moveline.product_id.product_tmpl_id.is_weight_uom:
+                    #if moveline.location_id.usage == 'internal':
+                        #moveline.product_id.product_tmpl_id.weight_available -= moveline.total_weight
+                        #if not (moveline.product_id.product_tmpl_id.tracking) == 'none':
+                            #moveline.lot_id.product_weight -= moveline.total_weight
+                    #elif moveline.location_dest_id == 'internal':
+                        #moveline.product_id.product_tmpl_id.weight_available += moveline.total_weight
+                        #if not (moveline.product_id.product_tmpl_id.tracking) == 'none':
+                            #moveline.lot_id.product_weight += moveline.total_weight
+        return res
     
         
 class MRPProductProduce(models.TransientModel):
@@ -83,19 +98,29 @@ class MRPProductProduce(models.TransientModel):
                     })
         
         #raw material weight assignment
-        for raws in self.production_id.move_raw_ids:
-            for rline in raws.move_line_ids:
-                for lot in rline.lot_produced_ids:
-                    if lot == self.finished_lot_id:
-                        if not(rline.product_id.product_tmpl_id.uom_id.category_id.measure_type == 'weight'):
-                            rline.write({
-                                'total_weight': self.produced_weight * (rline.move_id.bom_line_id.product_qty/rline.move_id.bom_line_id.bom_id.product_qty)
-                            })
-                        elif (rline.product_id.product_tmpl_id.uom_id.category_id.measure_type == 'weight'):
-                            rline.write({
-                                'qty_done': self.produced_weight * (rline.move_id.bom_line_id.product_qty/rline.move_id.bom_line_id.bom_id.product_qty)
-                            })
-                        
+        for mv in self.production_id.move_raw_ids.filtered(lambda x: x.state not in ('done', 'cancel')):
+            for mvline in mv.move_line_ids:
+                if self.finished_lot_id:
+                    for lot in mvline.lot_produced_ids:
+                        if lot == self.finished_lot_id:
+                            if not(mvline.product_id.product_tmpl_id.uom_id.category_id.measure_type == 'weight'):
+                                mvline.write({
+                                    'total_weight': self.produced_weight * (mvline.move_id.bom_line_id.product_qty/mvline.move_id.bom_line_id.bom_id.product_qty)
+                                })
+                            else:
+                                mvline.write({
+                                    'qty_done': self.produced_weight * (mvline.move_id.bom_line_id.product_qty/mvline.move_id.bom_line_id.bom_id.product_qty)
+                                })    
+                else:
+                    if not(mvline.product_id.product_tmpl_id.uom_id.category_id.measure_type == 'weight'):
+                        mvline.write({
+                            'total_weight': self.produced_weight * (mvline.move_id.bom_line_id.product_qty/mvline.move_id.bom_line_id.bom_id.product_qty)
+                        })
+                    else:
+                        mvline.write({
+                            'qty_done': self.produced_weight * (mvline.move_id.bom_line_id.product_qty/mvline.move_id.bom_line_id.bom_id.product_qty)
+                        })  
+                    
     
             
 class MRPProductProduceLine(models.TransientModel):
