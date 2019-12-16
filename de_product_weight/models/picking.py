@@ -1,5 +1,4 @@
 # -*- coding: utf-8 -*-
-
 from datetime import datetime
 from odoo import api, fields, models, _
 from odoo.exceptions import UserError, ValidationError, Warning
@@ -7,19 +6,21 @@ from odoo.exceptions import UserError, ValidationError, Warning
 from odoo.addons import decimal_precision as dp
 
 class StockMove(models.Model):
-	_inherit = 'stock.move'
-	
-	total_weight = fields.Float('Total Weight', digits=dp.get_precision('Stock Weight'), compute='_get_total_weight', store=True, readonly=True)
-	
-	@api.depends('quantity_done')
-	def _get_total_weight(self):
-		sum_weight = 0.0
-		for mv in self:
-			for line in mv.move_line_ids:
-				sum_weight += line.total_weight
-			mv.total_weight = sum_weight
-	
-	#@api.depends('product_id','quantity_done')
+    _inherit = 'stock.move'
+    
+    total_weight = fields.Float('Total Weight', digits=dp.get_precision('Stock Weight'), compute='_get_total_weight', store=True, readonly=True)
+    
+    @api.depends('quantity_done')
+    def _get_total_weight(self):
+        sum_weight = 0.0
+        for mv in self:
+            for line in mv.move_line_ids:
+                sum_weight += line.total_weight
+            mv.total_weight = sum_weight
+            
+    
+    
+    #@api.depends('product_id','quantity_done')
 	#def _get_total_weight(self):
 		#for line in self.move_line_ids:
 			#if self.product_id == line.product_id:
@@ -38,16 +39,44 @@ class StockMoveLine(models.Model):
         
     def write(self, vals):
         res = super(StockMoveLine, self).write(vals)
-        for rs in self:
+        #self.product_id.product_tmpl_id.weight_available = self.product_id.product_tmpl_id.weight_available + self.total_weight
+        for rs in self.filtered(lambda x: x.move_id.state in ('done')):
             if rs.product_id.product_tmpl_id.is_weight_uom:
-                if rs.location_id.usage == 'internal':
-                    rs.product_id.product_tmpl_id.weight_available -= rs.total_weight
-                    if not (rs.product_id.product_tmpl_id.tracking) == 'none':
-                        rs.lot_id.product_weight -= rs.total_weight
-                elif rs.location_dest_id == 'internal':
-                    rs.product_id.product_tmpl_id.weight_available += rs.total_weight
+                if rs.location_dest_id.usage == 'internal':
+                    rs.product_id.weight_available += rs.total_weight
                     if not (rs.product_id.product_tmpl_id.tracking) == 'none':
                         rs.lot_id.product_weight += rs.total_weight
+                        quant = self.env['stock.quant'].search([('product_id', '=', rs.product_id.id),('location_id', '=', rs.location_dest_id.id),('lot_id', '=', rs.lot_id.id)])
+                        quant.sudo().write({
+                            'product_weight':rs.lot_id.product_weight
+                        })
+                    else:
+                        quant = self.env['stock.quant'].search([('product_id', '=', rs.product_id.id),('location_id', '=', rs.location_dest_id.id)])
+                        quant.sudo().write({
+                            'product_weight':rs.total_weight
+                        }) 
+                elif rs.location_id.usage == 'internal':
+                    rs.product_id.weight_available -= rs.total_weight
+                    if not (rs.product_id.product_tmpl_id.tracking) == 'none':
+                        rs.lot_id.product_weight -= rs.total_weight
+                        quant = self.env['stock.quant'].search([('product_id', '=', rs.product_id.id),('location_id', '=', rs.location_id.id),('lot_id', '=', rs.lot_id.id)])
+                        quant.sudo().write({
+                            'product_weight':rs.lot_id.product_weight
+                        })
+                    else:
+                        quant = self.env['stock.quant'].search([('product_id', '=', rs.product_id.id),('location_id', '=', rs.location_id.id)])
+                        quant.sudo().write({
+                            'product_weight':rs.total_weight
+                        }) 
+                    
+                #if rs.location_id.usage == 'internal':
+                    #rs.product_id.product_tmpl_id.weight_available = rs.total_weight
+                    #if not (rs.product_id.product_tmpl_id.tracking) == 'none':
+                        #rs.lot_id.product_weight -= rs.total_weight
+                #elif rs.location_dest_id == 'internal':
+                    #rs.product_id.product_tmpl_id.weight_available = rs.product_id.product_tmpl_id.weight_available + rs.total_weight
+                    #if not (rs.product_id.product_tmpl_id.tracking) == 'none':
+                        #rs.lot_id.product_weight += rs.total_weight
                     
         return res
         
@@ -70,3 +99,23 @@ class StockPicking(models.Model):
                 sum_weight += line.total_weight
             mv.sum_qty = sum_qty
             mv.sum_weight = sum_weight
+            
+    def action_confirm(self):
+        res = super(StockPicking,self).action_confirm()
+        for move in self.move_lines:
+            #if move.location_id.usage == 'internal':
+                #move.product_id.product_tmpl_id.weight_available += move.total_weight
+            #elif move.location_dest_id.usage == 'internal':
+                #move.product_id.product_tmpl_id.weight_available -= move.total_weight
+                
+            #if move.product_id.product_tmpl_id.tracking == 'none':
+            quant_from = self.env['stock.quant'].search([('product_id', '=', move.product_id.id),('location_id', '=', move.location_id.id)])
+            quant_to = self.env['stock.quant'].search([('product_id', '=', move.product_id.id),('location_id', '=', move.location_dest_id.id)])
+                
+            #self.env['stock.quant'].sudo().update({
+            #    'product_weight': 11,
+            #})
+            quant = self.env['stock.quant']
+            #quant.product_weight == 12
+        
+        return res
