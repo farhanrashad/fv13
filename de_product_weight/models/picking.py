@@ -32,10 +32,19 @@ class StockMoveLine(models.Model):
     weight = fields.Float(related='product_id.weight',string='Weight/kg',readonly=True, store=True)
     total_weight = fields.Float('Total Weight', digits=dp.get_precision('Stock Weight'), help="Weight of the product in order line")
     
-    #def _quantity_done_set(self):
-    #def _action_cancel(self):
-    #def _action_done(self, cancel_backorder=False):
-    #def _set_quantity_done(self, qty):
+    @api.onchange('product_id','lot_id')
+    def onchange_product(self):
+        if self.lot_id:
+            self.qty_done = self.lot_id.product_qty
+            self.total_weight = self.lot_id.product_weight
+        else:
+            self.total_weight = self.product_id.weight_available
+            
+    @api.onchange('qty_done')
+    def onchange_quantity(self):
+        if self.lot_id and self.lot_id.product_weight > 0:
+            self.total_weight = self.qty_done * (self.lot_id.product_weight / self.lot_id.product_qty)
+        
         
     def write(self, vals):
         res = super(StockMoveLine, self).write(vals)
