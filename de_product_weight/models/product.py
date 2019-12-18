@@ -17,10 +17,10 @@ class ProductTemplate(models.Model):
     
     @api.depends(
 		'product_variant_ids',
-		'product_variant_ids.stock_move_ids.product_qty',
-		'product_variant_ids.stock_move_ids.state',
+		#'product_variant_ids.stock_move_ids.product_qty',
+		#'product_variant_ids.stock_move_ids.state',
 	)
-    @api.depends_context('company_owned', 'force_company')
+    #@api.depends_context('company_owned', 'force_company')
     def _compute_total_weight(self):
         """
         Compute the total weight of physical storeage locations
@@ -32,6 +32,42 @@ class ProductTemplate(models.Model):
             total_weight += product.weight_available
         self.weight_available = total_weight
         
+    def action_update_weight_stock(self):
+        lots = self.env['stock.production.lot']
+        for product in self.product_variant_ids:
+            total_weight = 0
+            lots = self.env['stock.production.lot'].search([('product_id', '=', product.id)])
+            if lots:
+                for lot in lots:
+                    lot_weight =0
+                    move_lines = self.env['stock.move.line'].search([('product_id', '=', product.id),('lot_id', '=', lot.id)])
+                    for line in move_lines.filtered(lambda x: x.move_id.state in ('done')):
+                        if line.total_weight <=0:
+                            line.write({
+                                'total_weight':line.qty_done * product.weight
+                            })
+                        if line.location_id.usage == 'internal':
+                            if lot.product_weight > 0:
+                                lot_weight -= line.total_weight
+                                total_weight += line.total_weight 
+                            else:
+                                lot_weight -= line.qty_done * product.weight
+                                total_weight += line.total_weight 
+                        elif line.location_dest_id.usage == 'internal':
+                            if lot.product_weight > 0:
+                                lot_weight += line.total_weight
+                                total_weight += line.total_weight 
+                            else:
+                                lot_weight += line.qty_done * product.weight
+                                total_weight += line.total_weight
+                            
+                           
+                    lot.write({
+                        'product_weight': lot_weight
+                    })
+            product.weight_available = total_weight
+            self._compute_total_weight()
+                
                 
 class ProductProduct(models.Model):
     _inherit = 'product.product'

@@ -17,10 +17,10 @@
     # Check https://github.com/odoo/odoo/blob/13.0/odoo/addons/base/data/ir_module_category_data.xml
     # for the full list
     'category': 'Warehouse',
-    'version': '1.0',
+    'version': '1.1',
 
     # any module necessary for this one to work correctly
-    'depends': ['base','stock','sale','purchase','mrp','de_product_dimensions'],
+    'depends': ['base','stock','product','sale','purchase','mrp','de_product_dimensions'],
 
     # always loaded
     'data': [
