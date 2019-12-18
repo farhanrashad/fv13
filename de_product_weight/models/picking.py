@@ -34,16 +34,23 @@ class StockMoveLine(models.Model):
     
     @api.onchange('product_id','lot_id')
     def onchange_product(self):
-        if self.lot_id:
-            self.qty_done = self.lot_id.product_qty
-            self.total_weight = self.lot_id.product_weight
-        else:
-            self.total_weight = self.product_id.weight_available
+        if self.product_id.product_tmpl_id.is_weight_uom:
+            if self.lot_id:
+                self.qty_done = self.lot_id.product_qty
+                if self.lot_id.product_weight > 0:
+                    self.total_weight = self.lot_id.product_weight 
+                else:
+                    self.total_weight = (self.product_id.weight * self.lot_id.product_qty)
+            else:
+                self.total_weight = self.product_id.weight_available
             
     @api.onchange('qty_done')
     def onchange_quantity(self):
-        if self.lot_id and self.lot_id.product_weight > 0:
-            self.total_weight = self.qty_done * (self.lot_id.product_weight / self.lot_id.product_qty)
+        if self.product_id.product_tmpl_id.is_weight_uom:
+            if self.lot_id and self.lot_id.product_weight > 0:
+                self.total_weight = self.qty_done * (self.lot_id.product_weight / self.lot_id.product_qty) or self.qty_done * self.product_id.weight
+            elif self.lot_id and self.lot_id.product_weight <= 0:
+                self.total_weight = self.qty_done * self.product_id.weight
         
         
     def write(self, vals):
