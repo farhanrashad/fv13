@@ -29,7 +29,7 @@ class SaleOrderLine(models.Model):
             #rec.total_weight = rec.weight * rec.product_uom_qty
         #return res
 
-    @api.onchange('product_uom_qty', 'product_uom')
+    @api.onchange('product_id','product_uom_qty')
     def _onchange_quantity(self):
         res = super(SaleOrderLine, self).product_id_change()
         for rec in self:
