@@ -17,7 +17,7 @@
     # Check https://github.com/odoo/odoo/blob/12.0/odoo/addons/base/data/ir_module_category_data.xml
     # for the full list
     'category': 'Manufacturing',
-    'version': '1.7',
+    'version': '1.9',
 
     # any module necessary for this one to work correctly
     'depends': ['base','product','mrp','sale','stock','purchase'],
@@ -35,6 +35,7 @@
         'views/job_order_report.xml',
 		'views/sale_views.xml',
 		'views/picking_views.xml',
+        'views/weaving_contract_report.xml',
         
     ],
     # only loaded in demonstration mode

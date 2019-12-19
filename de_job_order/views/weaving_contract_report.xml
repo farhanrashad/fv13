@@ -1,0 +1,237 @@
+<odoo>
+    <template id="weaving_contract_report_template">
+        <t t-call="web.internal_layout">
+            <t t-set="o" t-value="doc.with_context({'lang': 'en_US'})"/>
+            <t t-foreach="docs" t-as="o">
+                <div class="page">
+                    <div class="row mt32 mb32" id="Contract">
+                        <h2 class="mt16">
+                            <span t-if="o.sale_id">Order # </span>
+                            <span t-field="o.sale_id.name"/>-<span t-field="o.sale_id.global_ref"/>
+                        </h2>
+                    </div>
+                    <div class="row mt32 mb8" id="box1">
+                        <div t-if="o.sale_id" class="col-6 col-md-6 col-xs-6">
+                            <strong>Contract Date: </strong>
+                            <span t-field="o.date_order"/>
+                        </div>
+                        <div t-if="o.sale_id" class="col-6 col-md-6 col-xs-6">
+                            <strong>Prepared By: </strong>
+                            <span t-field="o.create_uid"/>
+                        </div>
+                    </div>
+                    
+                    <div class="row mt0 mb8" id="box2">
+                        <div t-if="o.sale_id" class="col-6 col-md-6 col-xs-6">
+                            <strong>Order Date: </strong>
+                            <span t-field="o.sale_id.date_order"/>
+                        </div>
+                    </div>
+                    <div class="row mt0 mb8" id="box2">
+                        <div t-if="o.sale_id" class="col-6 col-md-6 col-xs-6">
+                            <strong>Delivery Date: </strong>
+                            <span t-field="o.sale_id.expected_date"/>
+                        </div>
+                    </div>
+                    
+                    <div class="row mt0 mb32" id="box3">
+                        <div t-if="o.sale_id" class="col-12 col-md-12 col-xs-12">
+                            <strong>Remarks:</strong>
+                            <span t-field="o.note"/>
+                        </div>
+                    </div>
+                    
+                    <table class="table table-sm table-striped table-bordered">
+                        <thead>
+                            <tr>
+                                <th rowspan="2" name="th_description" class="text-center">Description</th>
+                                <th rowspan="2" name="th_description" class="text-center">GSM</th>
+                                <th colspan="2" class="text-center">Unit Weight</th>
+                                <th colspan="2" class="text-center">Finish</th>
+                                <th colspan="2" class="text-center" >B</th>
+                                <th colspan="2" class="text-center" >Greige</th>
+                                <th colspan="2" class="text-center" >Hard Waste</th>
+                                
+                                <th colspan="2" class="text-center" >Remarks</th>
+                            </tr>
+                            <tr>
+        
+                                <th name="th_description" class="text-center">Finish</th>
+                                <th name="th_description" class="text-center">Greige</th>
+                                
+                                <th name="th_description" class="text-center">Qty</th>
+                                <th name="th_description" class="text-center">Weight</th>
+                                
+                                <th name="th_description" class="text-center">%</th>
+                                <th name="th_description" class="text-center">Qty</th>
+                                
+                                <th name="th_description" class="text-center">G.Qty</th>
+                                <th name="th_description" class="text-center">G.Wgt</th>
+                                
+                                <th name="th_description" class="text-center">HW(%)</th>
+                                <th name="th_description" class="text-center">HW Qty</th>
+                                
+                                <th name="th_description" class="text-center">R/OE</th>
+                                <th name="th_description" class="text-center">Fancy</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                             <t t-set="hw" t-value="0"/>
+                             <t t-set="gw" t-value="0"/>
+                             
+                             <t t-set="s1" t-value="0"/>
+                             <t t-set="s2" t-value="0"/>
+                             <t t-set="s3" t-value="0"/>
+                             <t t-set="s4" t-value="0"/>
+                             <t t-set="s5" t-value="0"/>
+                             <t t-set="s6" t-value="0"/>
+                             
+                            <tr t-foreach="o.job_order_sale_lines" t-as="sale">
+                                <td><span t-field="sale.product_id"/></td>
+                                <td><span t-field="sale.product_tmpl_id.weight_sm"/></td>
+                                
+                                <t t-foreach="o.job_order_lines.filtered(lambda x: x.job_rule_id.code == 'FW(KG)' and x.job_sale_line_id.id == sale.id)" t-as="FW">
+                                    <td><span t-field="FW.quantity"/></td>
+                                   
+                                </t>
+                                <t t-foreach="o.job_order_lines.filtered(lambda x: x.job_rule_id.code == 'GPWG' and x.job_sale_line_id.id == sale.id) " t-as="GPWG">
+                                    <td><span t-field="GPWG.quantity"/></td>
+                                    
+                                </t>
+                                
+                                <td><span t-field="sale.sale_line_id.product_uom_qty"/></td>
+                                <td><span t-field="sale.sale_line_id.total_weight"/></td>
+                                <t t-set="s1" t-value="s1 + sale.sale_line_id.product_uom_qty"/>
+                                <t t-set="s2" t-value="s2 + sale.sale_line_id.total_weight"/>
+                                
+                                <t t-foreach="o.job_order_lines.filtered(lambda x: x.job_rule_id.code == 'BG' and x.job_sale_line_id.id == sale.id) " t-as="BG">
+                                    <td><span t-field="BG.quantity"/></td>
+                                    <td><span t-esc="sale.sale_line_id.product_uom_qty * (BG.quantity/100)"/></td>
+                                    <t t-set="s3" t-value="s3 + sale.sale_line_id.product_uom_qty * (BG.quantity/100)"/>
+                                </t>
+                                
+                                
+                                <t t-foreach="o.job_order_lines.filtered(lambda x: x.job_rule_id.code == 'GQ' and x.job_sale_line_id.id == sale.id) " t-as="GQ">
+                                    <td><span t-field="GQ.quantity"/></td>
+                                    <t t-set="s4" t-value="s4 + GQ.quantity"/>
+                                </t>
+                                <t t-foreach="o.job_order_lines.filtered(lambda x: x.job_rule_id.code == 'GW (KG)' and x.job_sale_line_id.id == sale.id) " t-as="GW">
+                                    <td><span t-field="GW.quantity"/></td>
+                                    <t t-set="gw" t-value="GW.quantity"/>
+                                    <t t-set="s5" t-value="s5 + GW.quantity"/>
+                                </t>
+                                
+                                <t t-foreach="o.job_order_lines.filtered(lambda x: x.job_rule_id.code == 'HW(%)' and x.job_sale_line_id.id == sale.id) " t-as="HW">
+                                    <td><span t-field="HW.quantity"/></td>
+                                    <td><span t-esc="(gw * (HW.quantity/100))"/></td>
+                                    <t t-set="hw" t-value="HW.quantity"/>
+                                    <t t-set="s6" t-value="s6 + (gw * (HW.quantity/100))"/>
+                                </t>
+
+                                <td></td>
+                                <td></td>
+                                
+                            </tr>
+                            <tr>
+                                   
+                                        <th colspan="4">Total</th>
+                                        <th><span t-esc="s1"/></th>
+                                        <th><span t-esc="s2"/></th>
+                                        <td colspan="1"/>
+                                        <th><span t-esc="s3"/></th>
+                                        <th><span t-esc="s4"/></th>
+                                        <th><span t-esc="s5"/></th>
+                                        <td colspan="1"/>
+                                        <th><span t-esc="s6"/></th>
+                                        <td colspan="2"/>
+                                </tr>
+                        </tbody>
+                        
+                    </table>
+                    <br/>
+                    <table class="table table-sm table-striped table-bordered">
+                        <thead>
+                            <tr>
+                                <td class="text-center">Product</td>
+                                <td class="text-center">Description</td>
+                                <td colspan="2" class="text-center">Quantity</td>
+                                <td class="text-center">HW (%)</td>
+                                <td colspan="2" class="text-center">HW Quantity</td>
+                                <td colspan="2" class="text-center">Total Quantity</td>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <t t-foreach="o.job_order_mrp_ids.filtered(lambda x: x.bom_id.type == 'normal')" t-as="bom">
+                                <t t-set="s1" t-value="0"/>
+                             <t t-set="s2" t-value="0"/>
+                             <t t-set="s3" t-value="0"/>
+                             <t t-set="s4" t-value="0"/>
+                             <t t-set="s5" t-value="0"/>
+                             <t t-set="s6" t-value="0"/>
+                             
+                                <th colspan="9"><span t-field="bom.bom_id.product_tmpl_id"/></th>
+                                <tr t-foreach="bom.bom_id.bom_line_ids" t-as="bomline">
+                                    <td><span t-field="bomline.product_id"/></td>
+                                    <td><span t-field="bomline.material_desc"/></td>
+                                    <td><span t-esc="bomline.product_qty * gw"/> <span t-field="bomline.product_uom_id"/></td>
+                                    <td>
+                                        <span t-if="bomline.product_id.uom_po_id.uom_type=='bigger'"><t t-set="q" t-value="round(gw * (bomline.product_qty / bomline.product_id.uom_po_id.factor_inv),3)"/><t t-esc="q" />  <span t-field="bomline.product_id.uom_po_id"/></span>
+                                        <span t-if="bomline.product_id.uom_po_id.uom_type=='smaller'"><t t-set="q" t-value="round(gw * (bomline.product_qty * bomline.product_id.uom_po_id.factor_inv),3)"/><t t-esc="q" />  <span t-field="bomline.product_id.uom_po_id"/></span>
+                                    </td>
+                                    <td><span t-esc="hw/100"/></td>
+                                    <td><span t-esc="((bomline.product_qty * gw) * (hw/100))"/> <span t-field="bomline.product_uom_id"/></td>
+                                    <td>
+                                        <span t-if="bomline.product_id.uom_po_id.uom_type=='bigger'"><t t-set="hwq" t-value="round((gw * (bomline.product_qty / bomline.product_id.uom_po_id.factor_inv)*(hw/100)) ,3)"/><t t-esc="hwq" />  <span t-field="bomline.product_id.uom_po_id"/></span>
+                                        <span t-if="bomline.product_id.uom_po_id.uom_type=='smaller'"><t t-set="hwq" t-value="round((gw * (bomline.product_qty * bomline.product_id.uom_po_id.factor_inv))*(hw/100),3)"/><t t-esc="hwq" />  <span t-field="bomline.product_id.uom_po_id"/></span>
+                                    </td>
+                                    <td><span t-esc="(bomline.product_qty * gw) + ((bomline.product_qty * gw) * (hw/100))"/>   <span t-field="bomline.product_uom_id"/></td>
+                                    <td><span t-esc="q+hwq"/>   <span t-field="bomline.product_id.uom_po_id"/></td>
+                                    
+                                    <t t-set="s1" t-value="s1 + (bomline.product_qty * gw)"/>
+                                    <t t-set="s2" t-value="s2 + q"/>
+                                    <t t-set="s3" t-value="s3 + ((bomline.product_qty * gw) * (hw/100))"/>
+                                    <t t-set="s4" t-value="s4 + hwq"/>
+                                    <t t-set="s5" t-value="s5 + (bomline.product_qty * gw) + ((bomline.product_qty * gw) * (hw/100))"/>
+                                    <t t-set="s6" t-value="s6 + (q+hwq)"/>
+                                    
+                                </tr>
+                                <tr>
+                                    <thead>
+                                        <th colspan="2">Total</th>
+                                        <th><span t-esc="s1"/></th>
+                                        <th><span t-esc="s2"/></th>
+                                        <td colspan="1"/>
+                                        <th><span t-esc="s3"/></th>
+                                        <th><span t-esc="s4"/></th>
+                                        <th><span t-esc="s5"/></th>
+                                        <th><span t-esc="s6"/></th>
+                                    </thead>
+                                    
+                                </tr>
+                                
+                            </t>
+                        </tbody>
+                    </table>
+                </div>
+            </t>
+        </t>
+    </template>
+    <!--TEMPLATE [Weaving Contract Report]-->
+    <template id="weaving_order_report">
+        <t t-call="web.html_container">
+            <t t-foreach="docs" t-as="doc">
+                <t t-call="de_job_order.weaving_contract_report_template"/>
+            </t>
+        </t>
+    </template>
+
+    <report id="action_print_weaving_order_report"
+            model="job.order"
+            string="Weaving Contract"
+            report_type="qweb-pdf"
+            name="de_job_order.weaving_order_report"
+            file="de_job_order.weaving_order_report"
+            attachment_use="True"
+    />
+
+</odoo>
