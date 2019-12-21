@@ -565,7 +565,9 @@ class JobOrder(models.Model):
         vals = {}
         self.job_order_sale_lines.unlink()
         job_sale_line = self.env['job.order.sale.line']
+        bom = self.env['mrp.bom']
         for line in self.sale_id.order_line:
+            bom = self.env['mrp.bom'].search([('product_tmpl_id', '=',line.product_id.product_tmpl_id.id),('product_id', '=',line.product_id.id)],limit=1)
             if line.product_uom_qty:
                 vals = {
                     'job_order_id': self.id,
@@ -577,6 +579,7 @@ class JobOrder(models.Model):
                     'struct_id': self.struct_id.id,
                     #'bom_id': self._get_bom_id(line.product_id.product_tmpl_id),
                     #'bom_id': line.product_id.product_tmpl_id.bom_ids.id,
+                    'bom_id': bom.id
                 }
                 job_sale_line.create(vals)
                 

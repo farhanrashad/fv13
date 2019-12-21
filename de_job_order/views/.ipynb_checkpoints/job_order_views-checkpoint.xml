@@ -131,6 +131,7 @@
             <tree string="Job Order">
                 <field name="name"/>
                 <field name="date_order"/>
+                <field name="sale_id"/>
                 <field name="struct_id"/>
                 <field name="state"/>
             </tree>
