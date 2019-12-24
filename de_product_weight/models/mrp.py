@@ -100,7 +100,7 @@ class MRPProductProduce(models.TransientModel):
         #raw material weight assignment
         for mv in self.production_id.move_raw_ids.filtered(lambda x: x.state not in ('done', 'cancel')):
             for mvline in mv.move_line_ids:
-                if self.finished_lot_id:
+                if self.finished_lot_id and mvline.move_id.bom_line_id.bom_id.product_qty >0:
                     for lot in mvline.lot_produced_ids:
                         if lot == self.finished_lot_id:
                             if not(mvline.product_id.product_tmpl_id.uom_id.category_id.measure_type == 'weight'):
