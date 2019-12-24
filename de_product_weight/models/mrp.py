@@ -54,7 +54,26 @@ class MRPProductProduce(models.TransientModel):
         """
         self.produced_weight = self.qty_producing * self.product_id.weight
         
-            
+    @api.onchange('finished_lot_id')
+    def onchange_finished_lot(self):
+        total_qty = 0
+        total_weight = 0
+        if self.production_id.bom_id.type == 'subcontract':
+            for line in self.raw_workorder_line_ids:
+                if line.lot_id.name == self.finished_lot_id.name:
+                    total_qty += line.qty_done
+                    total_weight += line.produced_weight
+            self.qty_producing = total_qty
+            self.produced_weight = total_weight
+        
+        #if self.production_id.bom_id.type == 'subcontract':
+        #for mv in self.production_id.move_raw_ids.filtered(lambda x: x.state not in ('done', 'cancel')):
+            #for mvline in mv.move_line_ids:
+                #if mvline.lot_id.name == self.finished_lot_id.name:
+                #total += mvline.qty_done
+        
+                
+        
     def do_produce(self):
         """ Save the current wizard and go back to the MO. """
         res = super(MRPProductProduce, self).do_produce()
