@@ -1,46 +1,27 @@
 # -*- coding: utf-8 -*-
-#############################################################################
-#
-#    Cybrosys Technologies Pvt. Ltd.
-#
-#    Copyright (C) 2019-TODAY Cybrosys Technologies(<https://www.cybrosys.com>).
-#    Author: Akhilesh N S (odoo@cybrosys.com)
-#
-#    You can modify it under the terms of the GNU AFFERO
-#    GENERAL PUBLIC LICENSE (AGPL v3), Version 3.
-#
-#    This program is distributed in the hope that it will be useful,
-#    but WITHOUT ANY WARRANTY; without even the implied warranty of
-#    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-#    GNU AFFERO GENERAL PUBLIC LICENSE (AGPL v3) for more details.
-#
-#    You should have received a copy of the GNU AFFERO GENERAL PUBLIC LICENSE
-#    (AGPL v3) along with this program.
-#    If not, see <http://www.gnu.org/licenses/>.
-#
-#############################################################################
 
-from odoo import models, fields, api
+from datetime import datetime
+from odoo import api, fields, models, _
+from odoo.exceptions import UserError, ValidationError, Warning
+
+
+from odoo.addons import decimal_precision as dp
 
 
 class SaleOrder(models.Model):
     _inherit = 'sale.order'
 
-    care_of_partner_id = fields.Many2one('res.partner', string='Care Of (C/O)', required=False,
-                                         readonly=True,
+    agent_id = fields.Many2one('res.partner', string='Agent', required=False, readonly=True,
                                          states={'draft': [('readonly', False)], 'sent': [('readonly', False)]},
                                          help="To address a contact in care of someone else")
-    care_of_percentage = fields.Float(string='C/O Commission Percentage',
-                                      readonly=True,
-                                      states={'draft': [('readonly', False)], 'sent': [('readonly', False)]})
-    care_of_commission = fields.Monetary(string='C/O Commission Amount', store=True, readonly=True,
-                                         compute='_amount_all')
+    
+    commission_amount = fields.Monetary(string='Commission Amount', store=True, readonly=True, compute='_amount_all')
 
     @api.onchange('partner_id')
     def onchange_partner_id(self):
         super(SaleOrder, self).onchange_partner_id()
-        self.care_of_partner_id = self.partner_id.care_of_partner_id
-        self.care_of_percentage = self.partner_id.care_of_percentage
+        self.agent_id = self.partner_id.agent_id
+        #self.commission_percentage = self.partner_id.commission_percentage
 
     @api.depends('order_line.price_total')
     def _amount_all(self):
@@ -48,6 +29,17 @@ class SaleOrder(models.Model):
         res = super(SaleOrder, self)._amount_all()
         for order in self:
             order.update({
-                'care_of_commission': order.care_of_percentage * order.amount_untaxed
+                'commission_amount': order.amount_untaxed
             })
         return res
+
+class SaleOrderLine(models.Model):
+    _inherit = 'sale.order.line'
+    
+    commission_percentage = fields.Float(string='Comm. %', readonly=True,
+                                      states={'draft': [('readonly', False)], 'sent': [('readonly', False)]})
+    
+    @api.onchange('product_id')
+    def onchange_product_id(self):
+        #super(SaleOrderLine, self).onchange_product_id()
+        self.commission_percentage = self.order_id.partner_id.commission_percentage
