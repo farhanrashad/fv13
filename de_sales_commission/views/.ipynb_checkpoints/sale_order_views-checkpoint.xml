@@ -18,7 +18,11 @@
                 <field name="commission_percentage"/>
                
             </xpath>
-            
+            <xpath expr="//field[@name='note']" position="after">
+                <group name="group_recompute_commission">
+                    <button name="recompute_lines_agents" type="object" string="Recompute lines agents" states="draft,sent"></button>
+                </group>
+            </xpath>
             
         </field>
     </record>

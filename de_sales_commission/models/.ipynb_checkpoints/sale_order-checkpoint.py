@@ -32,6 +32,12 @@ class SaleOrder(models.Model):
                 'commission_amount': order.amount_untaxed
             })
         return res
+    
+    def recompute_lines_agents(self):
+        for line in self.order_line:
+            line.update({
+                'commission_percentage': self.partner_id.commission_percentage
+            })
 
 class SaleOrderLine(models.Model):
     _inherit = 'sale.order.line'
