@@ -17,7 +17,6 @@ class StockMove(models.Model):
             for line in mv.move_line_ids:
                 sum_weight += line.total_weight
             mv.total_weight = sum_weight
-            
     
     
     #@api.depends('product_id','quantity_done')

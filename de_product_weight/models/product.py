@@ -35,12 +35,25 @@ class ProductTemplate(models.Model):
     def action_update_weight_stock(self):
         lots = self.env['stock.production.lot']
         for product in self.product_variant_ids:
-            total_weight = 0
+            total_weight = update_total_weight = 0
+            #wegiht_move_lines = self.env['stock.move.line'].search([('product_id', '=', product.id),])
+            product_moves = self.env['stock.move'].search([('product_id', '=', product.id),])
+            for mv in product_moves:
+                update_total_weight = 0
+                for line in mv.move_line_ids:
+                    if line.total_weight <=0:
+                        line.total_weight = line.qty_done * line.product_id.weight
+                        update_total_weight += line.qty_done * line.product_id.weight
+                    else:
+                        update_total_weight += line.total_weight
+                mv.total_weight = update_total_weight
+                            
             lots = self.env['stock.production.lot'].search([('product_id', '=', product.id)])
             if lots:
                 for lot in lots:
                     lot_weight =0
                     move_lines = self.env['stock.move.line'].search([('product_id', '=', product.id),('lot_id', '=', lot.id)])
+                            
                     for line in move_lines.filtered(lambda x: x.move_id.state in ('done')):
                         if line.total_weight <=0:
                             line.write({

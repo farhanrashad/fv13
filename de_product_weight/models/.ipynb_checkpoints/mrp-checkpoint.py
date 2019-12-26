@@ -58,13 +58,12 @@ class MRPProductProduce(models.TransientModel):
     def onchange_finished_lot(self):
         total_qty = 0
         total_weight = 0
-        if self.production_id.bom_id.type == 'subcontract':
-            for line in self.raw_workorder_line_ids:
-                if line.lot_id.name == self.finished_lot_id.name:
-                    total_qty += line.qty_done
-                    total_weight += line.produced_weight
-            self.qty_producing = total_qty
-            self.produced_weight = total_weight
+        for line in self.raw_workorder_line_ids:
+            if line.lot_id.name == self.finished_lot_id.name:
+                total_qty += line.qty_done
+                total_weight += line.produced_weight
+        self.qty_producing = total_qty
+        self.produced_weight = total_weight
         
         #if self.production_id.bom_id.type == 'subcontract':
         #for mv in self.production_id.move_raw_ids.filtered(lambda x: x.state not in ('done', 'cancel')):
@@ -119,26 +118,33 @@ class MRPProductProduce(models.TransientModel):
         #raw material weight assignment
         for mv in self.production_id.move_raw_ids.filtered(lambda x: x.state not in ('done', 'cancel')):
             for mvline in mv.move_line_ids:
-                if self.finished_lot_id and mvline.move_id.bom_line_id.bom_id.product_qty >0:
-                    for lot in mvline.lot_produced_ids:
-                        if lot == self.finished_lot_id:
-                            if not(mvline.product_id.product_tmpl_id.uom_id.category_id.measure_type == 'weight'):
-                                mvline.write({
-                                    'total_weight': self.produced_weight * (mvline.move_id.bom_line_id.product_qty/mvline.move_id.bom_line_id.bom_id.product_qty)
-                                })
-                            else:
-                                mvline.write({
-                                    'qty_done': self.produced_weight * (mvline.move_id.bom_line_id.product_qty/mvline.move_id.bom_line_id.bom_id.product_qty)
-                                })    
-                else:
-                    if not(mvline.product_id.product_tmpl_id.uom_id.category_id.measure_type == 'weight'):
-                        mvline.write({
-                            'total_weight': self.produced_weight * (mvline.move_id.bom_line_id.product_qty/mvline.move_id.bom_line_id.bom_id.product_qty)
-                        })
+                if self.production_id.bom_id.type == 'normal':
+                    if self.finished_lot_id and mvline.move_id.bom_line_id.bom_id.product_qty >0:
+                        for lot in mvline.lot_produced_ids:
+                            if lot == self.finished_lot_id:
+                                if not(mvline.product_id.product_tmpl_id.uom_id.category_id.measure_type == 'weight'):
+                                    mvline.write({
+                                        'total_weight': self.produced_weight * (mvline.move_id.bom_line_id.product_qty/mvline.move_id.bom_line_id.bom_id.product_qty)
+                                    })
+                                else:
+                                    mvline.write({
+                                        'qty_done': self.produced_weight * (mvline.move_id.bom_line_id.product_qty/mvline.move_id.bom_line_id.bom_id.product_qty)
+                                    })    
                     else:
+                        if not(mvline.product_id.product_tmpl_id.uom_id.category_id.measure_type == 'weight'):
+                            mvline.write({
+                                'total_weight': self.produced_weight * (mvline.move_id.bom_line_id.product_qty/mvline.move_id.bom_line_id.bom_id.product_qty)
+                            })
+                        else:
+                            mvline.write({
+                                'qty_done': self.produced_weight * (mvline.move_id.bom_line_id.product_qty/mvline.move_id.bom_line_id.bom_id.product_qty)
+                            })
+                else:
+                    if mvline.product_id.product_tmpl_id.is_weight_uom:
                         mvline.write({
-                            'qty_done': self.produced_weight * (mvline.move_id.bom_line_id.product_qty/mvline.move_id.bom_line_id.bom_id.product_qty)
-                        })  
+                            'total_weight': self.produced_weight * mvline.product_id.weight
+                            })
+                    
                     
     
             
@@ -151,7 +157,11 @@ class MRPProductProduceLine(models.TransientModel):
     def _calculate_produced_weight(self):
         for rs in self:
             if rs.product_id.product_tmpl_id.is_weight_uom:
-                rs.produced_weight = rs.raw_product_produce_id.produced_weight * (rs.move_id.bom_line_id.product_qty/rs.move_id.bom_line_id.bom_id.product_qty)
+                #if self.finished_product_produce_id.subcontract_move_id:
+                if rs.move_id.bom_line_id.bom_id.type == 'normal':
+                    rs.produced_weight = rs.raw_product_produce_id.produced_weight * (rs.move_id.bom_line_id.product_qty/rs.move_id.bom_line_id.bom_id.product_qty)
+                else:
+                    rs.produced_weight = rs.qty_done * rs.product_id.weight
             else:
                 rs.produced_weight = 0
             
