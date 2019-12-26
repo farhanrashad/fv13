@@ -30,18 +30,18 @@ class SalesCommission(models.Model):
         ('cancel', 'Cancelled')], string='Status', readonly=True, copy=False, index=True, tracking=3, default='draft')
     
     company_id = fields.Many2one('res.company', 'Company', default=lambda self: self.env['res.company']._company_default_get('sale.order'))
-    currency_id = fields.Many2one("res.currency", string="Currency", required=True, readonly=True, state={'draft': [('readonly', False)]}, )
+    currency_id = fields.Many2one("res.currency", string="Currency", required=True, readonly=True, states={'draft': [('readonly', False)]}, )
     
-    agent_id = fields.Many2one('res.partner', string='Agent', required=True, help="Commission Agent", readonly=True, state={'draft': [('readonly', False)]}, )
+    agent_id = fields.Many2one('res.partner', string='Agent', required=True, help="Commission Agent", readonly=True, states={'draft': [('readonly', False)]}, )
     user_id = fields.Many2one('res.users', string='Salesperson', index=True, track_visibility='onchange', track_sequence=2, default=lambda self: self.env.user)
     
-    doc_date = fields.Datetime(string='Date', required=True, index=True, copy=False, default=fields.Datetime.now, readonly=True, state={'draft': [('readonly', False)]}, )
+    doc_date = fields.Datetime(string='Date', required=True, index=True, copy=False, default=fields.Datetime.now, readonly=True, states={'draft': [('readonly', False)]}, )
     product_id = fields.Many2one('product.product', required=True, string='Product', domain=[('type', '=', 'service')],
-                                 readonly=True, state={'draft': [('readonly', False)]}, default=_default_product_id)
+                                 readonly=True, states={'draft': [('readonly', False)]}, default=_default_product_id)
     
-    commission_amount = fields.Float(string='Comm. Amount',required=True, readonly=True, state={'draft': [('readonly', False)]}, )
-    sale_id = fields.Many2one('sale.order', 'Sale Order',required=False, domain="[('state', 'in', ['sale','done'])]", readonly=True, state={'draft': [('readonly', False)]}, )
-    sale_amount = fields.Monetary(string='Total Sale', related='sale_id.amount_total', store=True, readonly=True, state={'draft': [('readonly', False)]}, )
+    commission_amount = fields.Float(string='Comm. Amount',required=True, readonly=True, states={'draft': [('readonly', False)]}, )
+    sale_id = fields.Many2one('sale.order', 'Sale Order',required=False, domain="[('state', 'in', ['sale','done'])]", readonly=True, states={'draft': [('readonly', False)]}, )
+    sale_amount = fields.Monetary(string='Total Sale', related='sale_id.amount_total', store=True, readonly=True, )
     is_invoiced = fields.Boolean('Is Invoiced', default=False, readonly=True, )
     invoice_id = fields.Many2one('account.move', 'Invoice',required=False,  readonly=True, )
     date_invoiced = fields.Datetime(string='Date Invoiced', required=False, readonly=True)
