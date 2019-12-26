@@ -19,8 +19,9 @@
 #    If not, see <http://www.gnu.org/licenses/>.
 #
 #############################################################################
-from . import res_config_settings
+#from . import res_config_settings
 from . import res_partner
 from . import sale_order
+from . import sales_commission
 #from . import account_invoice
 #from . import account_invoice_report

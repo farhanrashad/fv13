@@ -23,7 +23,10 @@
                 <xpath expr="//page[@name='sales_purchases']/group" position="inside">
                     <group string="Agent" name="agent_id">
                         <field name="agent_id"/>
-                        <field name="commission_percentage" widget="percentage" placeholder="0.05"/>
+                        <label for="commission_percent" />
+                        <div>
+                            <field name="commission_percent" class="oe_inline" />%%
+                        </div>
                     </group>
                 </xpath>
             </field>

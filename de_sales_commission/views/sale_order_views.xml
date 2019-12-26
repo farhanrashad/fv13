@@ -24,6 +24,10 @@
                 </group>
             </xpath>
             
+            <field name="amount_total" position="after">
+                <field name="commission_amount" widget="monetary" options="{'currency_field': 'currency_id'}"/>
+            </field>
+            
         </field>
     </record>
 </odoo>

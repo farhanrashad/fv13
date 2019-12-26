@@ -12,7 +12,7 @@ class Partner(models.Model):
     _inherit = 'res.partner'
 
     agent_id = fields.Many2one('res.partner', string='Agent', required=False, help="Commission Agent")
-    commission_percentage = fields.Float(string='Commission Percentage')
+    commission_percent = fields.Float(string='Commission Percentage')
     total_commission = fields.Monetary('Total Commission', compute='_compute_total_commission', default=0.0)
 
     def _compute_total_commission(self):

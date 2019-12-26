@@ -15,7 +15,14 @@ class SaleOrder(models.Model):
                                          states={'draft': [('readonly', False)], 'sent': [('readonly', False)]},
                                          help="To address a contact in care of someone else")
     
-    commission_amount = fields.Monetary(string='Commission Amount', store=True, readonly=True, compute='_amount_all')
+    commission_amount = fields.Monetary(string='Commission Amount', store=True, readonly=True, compute='_amount_commission')
+    
+    def action_confirm(self):
+        res = super(SaleOrder, self).action_confirm()
+        
+    
+    def action_cancel(self):
+        res = super(SaleOrder, self).action_cancel()
 
     @api.onchange('partner_id')
     def onchange_partner_id(self):
@@ -23,14 +30,16 @@ class SaleOrder(models.Model):
         self.agent_id = self.partner_id.agent_id
         #self.commission_percentage = self.partner_id.commission_percentage
 
-    @api.depends('order_line.price_total')
-    def _amount_all(self):
-        """Compute the C/O Commission amounts of the SO"""
+    @api.depends('order_line.commission_percentage')
+    def _amount_commission(self):
+        """Compute the Commission amounts of the SO"""
+        total = 0
         res = super(SaleOrder, self)._amount_all()
-        for order in self:
-            order.update({
-                'commission_amount': order.amount_untaxed
-            })
+        for line in self.order_line:
+            total += (line.commission_percentage/100) * line.price_subtotal
+        
+        self.commission_amount = total
+            
         return res
     
     def recompute_lines_agents(self):
