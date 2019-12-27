@@ -1,0 +1,3 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_car_repair_request,access.car.repair.request,model_car_repair_request,group_repair_user,1,1,1,1
+access_car_repair_request,access.car.repair.request,model_car_repair_request,group_repair_manager,1,1,1,1

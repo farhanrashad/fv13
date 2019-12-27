@@ -1,0 +1,10 @@
+<odoo>
+    <data noupdate="1">
+    	<record forcecreate="True" id="car_repair_sequence" model="ir.sequence">
+		    <field name="name">Car Repair</field>
+		    <field name="code">car.repair.order</field>
+		    <field name="prefix">RO/</field>
+		    <field name="padding">4</field>
+		</record>
+    </data>
+</odoo>

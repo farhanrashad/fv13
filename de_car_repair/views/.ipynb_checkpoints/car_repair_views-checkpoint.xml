@@ -1,0 +1,109 @@
+<odoo>
+        
+    <!-- Car Repair Request Tree-->
+    <record id="car_request_list_view" model="ir.ui.view">
+        <field name="name">car.request.list.view</field>
+        <field name="model">car.repair.request</field>
+        <field name="arch" type="xml">
+            <tree string="Car Repair Request">
+                <field name="title"/>
+                <field name="name"/>
+                <field name="partner_id"/>
+                <field name="company_id" groups="base.group_multi_company" options="{'no_create': True}"/>
+                <field name="state"/>
+            </tree>
+        </field>
+    </record>
+    
+    
+    <!-- Car Repair Request Form -->
+    <record id="car_repair_form_view" model="ir.ui.view">
+        <field name="name">car.repair.form.view</field>
+        <field name="model">car.repair.request</field>
+        <field name="arch" type="xml">
+            <form string="Sale Commission">
+                <header>
+                    <button string="Confirm" name="action_confirm" type="object" states="draft" class="oe_highlight"/>
+                   
+                    <button string="Cancel" name="action_cancel" states="draft,confirmed" type="object"/>
+                    
+                    <field name="state" widget="statusbar" statusbar_visible="draft,sent,confirm,donecancel"/>
+                </header>
+                <sheet>
+                    <div class="oe_title">
+                        <!-- Number -->
+                        <h4 class="mt0">
+                            <field name="name" readonly="True" attrs="{'invisible':[('name', '=', '/')]}"/>
+                        </h4>
+                        <label for="title" class="oe_edit_only"/>
+                        <h1><field name="title" /></h1>
+                    </div>
+                    
+                    <group>
+                        <group>
+                            <field name="partner_id"/>
+                           <field name="email"/>
+                        </group>
+                        <group>
+                        
+                        <field name="user_id"/>
+                        <field name="company_id" groups="base.group_multi_company" options="{'no_create': True}"/>
+                        </group>
+                    </group>
+                    
+                    <group string="Car Info">
+                        <group>
+                        
+                        </group>
+                    </group>
+                </sheet>
+                
+            </form>
+        </field>
+    </record>
+    
+    <!-- Car Repair Action View -->
+    <record id="action_car_repair" model="ir.actions.act_window">
+        <field name="name">Car Repair</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">car.repair.request</field>
+        <field name="view_mode">tree,form</field>
+        <!--<field name="context">{'search_default_commission_unpaid_filter': 1}</field>-->
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Create a new quotation, the first step of a new sale!
+            </p>
+            <p>
+                Once the quotation is confirmed by the customer, it becomes a repair order.<br/> You will be able to work on order and create an invoice and collect the payment.
+            </p>
+        </field>
+    </record>
+<!--    
+    <record id="view_sales_commission_filter" model="ir.ui.view">
+        <field name="name">sales.commission.list.select</field>
+            <field name="model">sale.commission</field>
+            <field name="priority" eval="15"/>
+            <field name="arch" type="xml">
+                <search string="Search Sales Commission">
+                    <field name="name" string="Sales Commission" filter_domain="['|','|',('name','ilike',self),('client_order_ref','ilike',self),('agent_id','child_of',self)]"/>
+                    <field name="agent_id" operator="child_of"/>
+                    <field name="user_id"/>                    
+                    <filter string="My Orders Commission" domain="[('user_id','=',uid)]" name="my_sale_commission_filter"/>
+                    <separator/>
+                    <filter string="Draft" domain="[('state','=','draft')]" name="commission_draft_filter"/>
+                    <filter string="Unpaid" domain="[('state','=','posted')]" name="commission_unpaid_filter"/>
+                    <filter string="Paid" domain="[('state','=','paid')]" name="commission_paid_filter"/>
+                    
+                    <group expand="0" string="Group By">
+                        <filter name="agent" string="Agent" domain="[]" context="{'group_by':'agent_id'}"/>
+                        <filter string="Salesperson" name="salesperson" domain="[]" context="{'group_by':'user_id'}"/>
+                        <filter string="Commission Date" name="doc_date" domain="[]" context="{'group_by':'doc_date'}"/>
+                    </group>
+               </search>
+            </field>
+        </record>
+  -->  
+    
+    <menuitem name="Repair Request" id="car_repair_request_menu" parent="de_car_repair.menu_car_repair_transaction"  action="action_car_repair" />
+    
+</odoo>
