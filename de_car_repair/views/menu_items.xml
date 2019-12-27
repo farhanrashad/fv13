@@ -8,7 +8,8 @@
     		name="Car Repair"
         />
         <menuitem id="menu_car_repair_transaction" name="Repair Management" parent="de_car_repair.parent_menu_car_repair" sequence="10"/>
-        <menuitem id="menu_car_repair_report" name="Reporting" parent="de_car_repair.parent_menu_car_repair" sequence="20"/>
+        <menuitem id="menu_car_products" name="Products" parent="de_car_repair.parent_menu_car_repair" sequence="20"/>
+        <menuitem id="menu_car_repair_report" name="Reporting" parent="de_car_repair.parent_menu_car_repair" sequence="30"/>
         <menuitem id="menu_car_repair_configuration" name="Configuration" parent="de_car_repair.parent_menu_car_repair" sequence="30" groups="de_car_repair.group_repair_manager"/>
     </data>
 </odoo>

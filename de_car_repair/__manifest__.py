@@ -29,6 +29,8 @@
         'data/car_repair_seq.xml',
         'views/menu_items.xml',
         'views/car_repair_views.xml',
+        'views/product_views.xml',
+        'views/car_brand_views.xml',
     ],
     # only loaded in demonstration mode
     'demo': [
