@@ -121,9 +121,9 @@ class MRPProductProduce(models.TransientModel):
                     #})
         
         #raw material weight assignment
-        for mv in self.production_id.move_raw_ids.filtered(lambda x: x.state not in ('done', 'cancel')):
-            for mvline in mv.move_line_ids:
-                if self.production_id.bom_id.type == 'normal':
+        if self.production_id.bom_id.type == 'normal':
+            for mv in self.production_id.move_raw_ids.filtered(lambda x: x.state not in ('done', 'cancel')):
+                for mvline in mv.move_line_ids:
                     if self.finished_lot_id and mvline.move_id.bom_line_id.bom_id.product_qty >0:
                         for lot in mvline.lot_produced_ids:
                             if lot == self.finished_lot_id:
@@ -144,14 +144,15 @@ class MRPProductProduce(models.TransientModel):
                             mvline.write({
                                 'qty_done': self.produced_weight * (mvline.move_id.bom_line_id.product_qty/mvline.move_id.bom_line_id.bom_id.product_qty)
                             })
-                else:
-                    if mvline.product_id.product_tmpl_id.is_weight_uom:
-                        mvline.write({
-                            'total_weight': self.produced_weight * mvline.product_id.weight
-                            })
-                    
-                    
-    
+        else:
+            for mv in self.production_id.move_raw_ids.filtered(lambda x: x.state not in ('done', 'cancel')):
+                for line in mv.move_line_ids:
+                    if line.product_id.product_tmpl_id.is_weight_uom:
+                    #move_lines = self.env['stock.move.line'].search([('product_id', '=', oline.product_id.id),('lot_id', '=', line.olot_id.id),('state', '!=', 'done')])
+                    #for line in move_lines:
+                        line.write({
+                            'total_weight': self.produced_weight
+                        })
             
 class MRPProductProduceLine(models.TransientModel):
     _inherit = 'mrp.product.produce.line'
