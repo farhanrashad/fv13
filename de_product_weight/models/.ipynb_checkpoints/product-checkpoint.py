@@ -62,10 +62,10 @@ class ProductTemplate(models.Model):
                         if line.location_id.usage == 'internal':
                             if lot.product_weight > 0:
                                 lot_weight -= line.total_weight
-                                total_weight += line.total_weight 
+                                total_weight -= line.total_weight 
                             else:
                                 lot_weight -= line.qty_done * product.weight
-                                total_weight += line.total_weight 
+                                total_weight -= line.total_weight 
                         elif line.location_dest_id.usage == 'internal':
                             if lot.product_weight > 0:
                                 lot_weight += line.total_weight

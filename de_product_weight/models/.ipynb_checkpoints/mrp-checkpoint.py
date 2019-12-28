@@ -151,17 +151,30 @@ class MRPProductProduce(models.TransientModel):
 class MRPProductProduceLine(models.TransientModel):
     _inherit = 'mrp.product.produce.line'
     
-    produced_weight = fields.Float('Weight Produced', compute='_calculate_produced_weight', store=True, digits=dp.get_precision('Stock Weight'), help="Weight produced")
+    produced_weight = fields.Float('Weight Produced', store=True, digits=dp.get_precision('Stock Weight'), help="Weight produced")
     
-    @api.depends('raw_product_produce_id.produced_weight')
+    #api.depends('raw_product_produce_id.produced_weight','product_id','lot_id','qty_done')
+    api.onchange('raw_product_produce_id.produced_weight','product_id','lot_id','qty_done')
     def _calculate_produced_weight(self):
+        tw = 0
         for rs in self:
+            tw = 0
+            tq = 0
             if rs.product_id.product_tmpl_id.is_weight_uom:
                 #if self.finished_product_produce_id.subcontract_move_id:
                 if rs.move_id.bom_line_id.bom_id.type == 'normal':
                     rs.produced_weight = rs.raw_product_produce_id.produced_weight * (rs.move_id.bom_line_id.product_qty/rs.move_id.bom_line_id.bom_id.product_qty)
                 else:
-                    rs.produced_weight = rs.qty_done * rs.product_id.weight
+                    move_lines = self.env['stock.move.line'].search([('product_id', '=', rs.product_id.id),('lot_id', '=', rs.lot_id.id),('state', '=', 'done')])
+                    for line in move_lines:
+                        if line.location_id.usage == 'internal':
+                            tw -= line.total_weight
+                            tq -= line.qty_done
+                        elif line.location_dest_id.usage == 'internal':
+                            tw += line.total_weight
+                            tq += line.qty_done
+                            
+                    rs.produced_weight = rs.qty_done * (tw/tq)
             else:
                 rs.produced_weight = 0
             

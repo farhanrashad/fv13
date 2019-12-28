@@ -42,6 +42,7 @@ class StockMoveLine(models.Model):
                     self.total_weight = (self.product_id.weight * self.lot_id.product_qty)
             else:
                 self.total_weight = self.product_id.weight_available
+                
             
     @api.onchange('qty_done')
     def onchange_quantity(self):
