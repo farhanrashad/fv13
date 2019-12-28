@@ -8,7 +8,7 @@ from odoo.exceptions import UserError, ValidationError, Warning
 from odoo.addons import decimal_precision as dp
 
 
-class CarRepairRequest(models.Model):
+class CarRepairOrder(models.Model):
     _name = 'car.repair.order'
     _inherit = ['portal.mixin', 'mail.thread', 'mail.activity.mixin']
     _description = 'Car Repair Order'
@@ -49,12 +49,41 @@ class CarRepairRequest(models.Model):
     city = fields.Char('City',related='partner_id.city',readonly=True,states={'draft': [('readonly', False)], 'sent': [('readonly', False)]},)
     
     #car information related field
+    car_id = fields.Many2one('car', 'Car', readonly=True, states={'draft': [('readonly', False)], 'sent': [('readonly', False)]}, help="Car", copy=False)
+    category_id = fields.Many2one(related='car_id.category_id', readonly=True, string='Category', states={'draft': [('readonly', False)], 'sent': [('readonly', False)]},)
+    brand_id = fields.Many2one(related='car_id.brand_id', readonly=True, string='Brand', states={'draft': [('readonly', False)], 'sent': [('readonly', False)]},)
+    model = fields.Char(string='Car Model')
+    color = fields.Char(string='Color')
+    year = fields.Char(string='Year')
     
-    notes = fields.Text(string='Notes')
+    
+    description = fields.Text(string='Description')
+    
+    order_service_lines = fields.One2many('car.repair.order.service', 'car_repair_order_id', string='Car Repair Order Services', readonly=True, states={'draft': [('readonly', False)], 'sent': [('readonly', False)]}, copy=True, auto_join=True)
+    
+    order_lines = fields.One2many('car.repair.order.line', 'car_repair_order_id', string='Car Repair Order Lines', readonly=True, states={'draft': [('readonly', False)], 'sent': [('readonly', False)]}, copy=True, auto_join=True)
     
     @api.model
     def create(self,values):
         seq = self.env['ir.sequence'].get('car.repair.order') 
         values['name'] = seq
         res = super(CarRepairRequest,self).create(values)
-        return res    
+        return res
+    
+class CarRepairOrderService(models.Model):
+    _name = 'car.repair.order.service'
+    _description = 'Car Repair Order Service'
+    _order = 'id desc'
+    
+    car_repair_order_id = fields.Many2one('car.repair.order', string='Car Repair Order', index=True, required=True, ondelete='cascade')
+    product_id = fields.Many2one('product.product', 'Product', domain="[('type', 'not in', ['product', 'consu'])]", required=True,)
+    quantity = fields.Float('Quantity', default=1.0, required=True)
+    
+class CarRepairOrderline(models.Model):
+    _name = 'car.repair.order.line'
+    _description = 'Car Repair Order Line'
+    _order = 'id desc'
+    
+    car_repair_order_id = fields.Many2one('car.repair.order', string='Car Repair Order', index=True, required=True, ondelete='cascade')
+    product_id = fields.Many2one('product.product', 'Product', domain="[('type', 'in', ['product', 'consu'])]", required=True,)
+    quantity = fields.Float('Quantity', default=1.0, required=True)

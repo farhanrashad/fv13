@@ -4,3 +4,5 @@ access_car_category,access.car.category,model_car_category,group_repair_manager,
 access_car,access.car,model_car,group_repair_manager,1,1,1,1
 access_car_repair_order,access.car.repair.order,model_car_repair_order,group_repair_user,1,1,1,1
 access_car_repair_order,access.car.repair.order,model_car_repair_order,group_repair_manager,1,1,1,1
+access_car_repair_order_service,access.car.repair.order.service,model_car_repair_order_service,group_repair_user,1,1,1,1
+access_car_repair_order_line,access.car.repair.order.line,model_car_repair_order_line,group_repair_user,1,1,1,1

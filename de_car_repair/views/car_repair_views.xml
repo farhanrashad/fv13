@@ -84,9 +84,37 @@
                     
                     <group string="Car Info">
                         <group>
-                        
+                            <field name="car_id"/>
+                            <field name="category_id"/>
+                            <field name="brand_id"/>
+                        </group>
+                        <group>
+                            <field name="model"/>
+                            <field name="color"/>
+                            <field name="year"/>
                         </group>
                     </group>
+                    <notebook>
+                        <page string="Spare Parts">
+                            <field name="description" placeholder="Add a description..."/>
+                        </page>
+                        <page string="Services">
+                            <field name="order_service_lines" widget="one2many_list">
+                                <tree string="Order lines" editable="bottom">
+                                    <field name="product_id"/>
+                                    <field name="quantity"/>
+                                </tree>
+                            </field>
+                        </page>
+                        <page string="Spare Parts">
+                            <field name="order_lines" widget="one2many_list">
+                                <tree string="Order lines" editable="bottom">
+                                    <field name="product_id"/>
+                                    <field name="quantity"/>
+                                </tree>
+                            </field>
+                        </page>
+                    </notebook>
                 </sheet>
                 
             </form>
