@@ -108,12 +108,17 @@ class MRPProductProduce(models.TransientModel):
     
     def _product_weight_assignment(self):
         #finish weight assignment
-        for mv in self.production_id.move_finished_ids:
-            for line in mv.move_line_ids:
-                if line.lot_id == self.finished_lot_id:
-                    line.write({
-                        'total_weight': self.produced_weight,
-                    })
+        move_lines = self.env['stock.move.line'].search([('product_id', '=', self.product_id.id),('lot_id', '=', self.finished_lot_id.id),('state', '!=', 'done')])
+        for line in move_lines:
+            line.write({
+                'total_weight':self.produced_weight
+            })
+        #for mv in self.production_id.move_finished_ids:
+            #for line in mv.move_line_ids:
+                #if line.lot_id == self.finished_lot_id:
+                    #line.write({
+                        #'total_weight': self.produced_weight,
+                    #})
         
         #raw material weight assignment
         for mv in self.production_id.move_raw_ids.filtered(lambda x: x.state not in ('done', 'cancel')):

@@ -122,5 +122,16 @@
         </field>
     </record>
       
+      <record id="mrp_subcontracting_move_form_view_inherit" model="ir.ui.view">
+        <field name="name">mrp.subcontracting.move.form.view.inherit</field>
+        <field name="model">stock.move</field>
+        <field name="inherit_id" ref="mrp_subcontracting.mrp_subcontracting_move_form_view"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='qty_done']" position="after">
+                <field name="total_weight"/>
+            </xpath>
+        </field>
+    </record>
+      
     </data>
 </odoo>

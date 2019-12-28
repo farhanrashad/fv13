@@ -54,6 +54,7 @@ class StockMoveLine(models.Model):
         
         
     def write(self, vals):
+        #Raw Material Assignment
         res = super(StockMoveLine, self).write(vals)
         #self.product_id.product_tmpl_id.weight_available = self.product_id.product_tmpl_id.weight_available + self.total_weight
         for rs in self.filtered(lambda x: x.move_id.state in ('done')):
