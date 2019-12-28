@@ -1,21 +1,21 @@
 <odoo>
-     <!-- Car Brand Tree View-->
-    <record id="car_brand_list_view" model="ir.ui.view">
-        <field name="name">car.brand.list.view</field>
-        <field name="model">car.brand</field>
+     <!-- Car Category Tree View-->
+    <record id="car_category_list_view" model="ir.ui.view">
+        <field name="name">car.category.list.view</field>
+        <field name="model">car.category</field>
         <field name="arch" type="xml">
-            <tree string="Car Brand">
+            <tree string="Car Category">
                 <field name="name"/>
             </tree>
         </field>
     </record>
     
-    <!-- Car Brand Form View -->
-    <record id="car_brand_form_view" model="ir.ui.view">
-        <field name="name">car.brand.form.view</field>
-        <field name="model">car.brand</field>
+    <!-- Car Category Form View -->
+    <record id="car_category_form_view" model="ir.ui.view">
+        <field name="name">car.category.form.view</field>
+        <field name="model">car.category</field>
         <field name="arch" type="xml">
-            <form string="Car Brand">
+            <form string="Car Category">
                 <sheet>
                     <group>
                         <field name="name"/>
@@ -26,11 +26,11 @@
     </record>
     
     
-    <!-- Car Brand View -->
-    <record id="action_car_brand" model="ir.actions.act_window">
-        <field name="name">Car Brand</field>
+    <!-- Car Category View -->
+    <record id="action_car_category" model="ir.actions.act_window">
+        <field name="name">Car Category</field>
         <field name="type">ir.actions.act_window</field>
-        <field name="res_model">car.brand</field>
+        <field name="res_model">car.category</field>
         <field name="view_mode">tree,form</field>
         <!--<field name="context">{'search_default_commission_unpaid_filter': 1}</field>-->
         <field name="help" type="html">
@@ -43,5 +43,5 @@
         </field>
     </record>
     
-    <menuitem name="Car Brand" id="car_brand_menu" parent="de_car_repair.menu_car_repair_configuration"  action="action_car_brand" sequence="20" />
+    <menuitem name="Car Category" id="car_category_menu" parent="de_car_repair.menu_car_repair_configuration"  action="action_car_category" sequence="30" />
 </odoo>

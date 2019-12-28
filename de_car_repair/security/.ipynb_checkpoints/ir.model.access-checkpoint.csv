@@ -1,4 +1,6 @@
 id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_car_brand,access.car.brand,model_car_brand,group_repair_manager,1,1,1,1
+access_car_category,access.car.category,model_car_category,group_repair_manager,1,1,1,1
+access_car,access.car,model_car,group_repair_manager,1,1,1,1
 access_car_repair_order,access.car.repair.order,model_car_repair_order,group_repair_user,1,1,1,1
 access_car_repair_order,access.car.repair.order,model_car_repair_order,group_repair_manager,1,1,1,1
-access_car_brand,access.car.brand,model_car_brand,group_repair_manager,1,1,1,1

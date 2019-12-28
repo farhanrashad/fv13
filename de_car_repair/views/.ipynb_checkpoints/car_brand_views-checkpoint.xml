@@ -43,5 +43,5 @@
         </field>
     </record>
     
-    <menuitem name="Car Brand" id="car_brand_menu" parent="de_car_repair.menu_car_repair_configuration"  action="action_car_brand" />
+    <menuitem name="Car Brand" id="car_brand_menu" parent="de_car_repair.menu_car_repair_configuration"  action="action_car_brand" sequence="20" />
 </odoo>

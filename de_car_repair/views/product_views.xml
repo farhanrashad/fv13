@@ -1,4 +1,15 @@
-<odoo>   
+<odoo>
+    <record model="ir.ui.view" id="product_template_spare_parts_form_view">
+        <field name="name">product.template.spare.parts.form.view</field>
+        <field name="model">product.template</field>
+        <field name="inherit_id" ref="product.product_template_form_view"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='sale_ok']" position="after">
+                <field name="spare_part_ok"/>
+            </xpath>
+        </field>
+    </record>
+    
     <!-- Car Spare Parts Action View -->
     <record id="action_car_spare_parts" model="ir.actions.act_window">
         <field name="name">Spare Parts</field>
@@ -16,5 +27,26 @@
         </field>
     </record>
     
-    <menuitem name="Spare Parts" id="car_spare_parts_menu" parent="de_car_repair.menu_car_products"  action="action_car_spare_parts" />
+    <!-- Car Services Action View -->
+    <record id="action_car_services" model="ir.actions.act_window">
+        <field name="name">Services</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">product.template</field>
+        <field name="view_mode">tree,form</field>
+        <field name="domain">[('type', '=', 'service')]</field>
+        <!--<field name="context">{'search_default_commission_unpaid_filter': 1}</field>-->
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Create a new repair request, the first step of a new sale!
+            </p>
+            <p>
+                Once the request is confirmed by the customer, it becomes a repair order.<br/> You will be able to work on order and create an invoice and collect the payment.
+            </p>
+        </field>
+    </record>
+    
+    
+    <menuitem name="Spare Parts" id="car_spare_parts_menu" parent="de_car_repair.menu_car_products"  action="action_car_spare_parts" sequence="10" />
+    <menuitem name="Service" id="services_menu" parent="de_car_repair.menu_car_products"  action="action_car_services" sequence="20" />
+    
 </odoo>
