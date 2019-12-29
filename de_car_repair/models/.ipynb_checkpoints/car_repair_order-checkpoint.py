@@ -18,8 +18,13 @@ class CarRepairOrder(models.Model):
     title = fields.Char(string='Title',required=True, readonly=True,states={'draft': [('readonly', False)], 'sent': [('readonly', False)]},)
     request_date = fields.Date(string='Request Date',required=True, readonly=True, states={'draft': [('readonly', False)], 'sent': [('readonly', False)]},)
     date_order = fields.Date(string='Confirmation Date',required=False, readonly=True, )
-    start_date = fields.Date(string='Start Date',required=True, readonly=True, states={'draft': [('readonly', False)], 'sent': [('readonly', False)]},)
+    
+    schedule_start_date = fields.Date(string='Schedule Start Date',required=True, readonly=True, states={'draft': [('readonly', False)], 'sent': [('readonly', False)]},)
+    schedule_end_date = fields.Date(string='Schedule End Date',required=False, readonly=True, states={'draft': [('readonly', False)], 'sent': [('readonly', False)]},)
+    
+    start_date = fields.Date(string='Start Date',required=False, readonly=True, states={'draft': [('readonly', False)], 'sent': [('readonly', False)]},)
     end_date = fields.Date(string='End Date',required=False, readonly=True, states={'draft': [('readonly', False)], 'sent': [('readonly', False)]},)
+    
     date_closed = fields.Date(string='Closed Date',required=False, readonly=True, states={'draft': [('readonly', False)], 'sent': [('readonly', False)]},)
     
     company_id = fields.Many2one('res.company', 'Company', required=True, index=True, default=lambda self: self.env.company)
@@ -37,6 +42,7 @@ class CarRepairOrder(models.Model):
                               ('sent','Request Sent'),
                               ('confirm','Repair Order'),
                               ('inprocess','Work in Process'),
+                              ('repaired','Repaired'),
                               ('done','Done'),
                               ('cancel','Cancel')],string = "Status", default='draft',track_visibility='onchange')
     
@@ -68,7 +74,7 @@ class CarRepairOrder(models.Model):
         ('no', 'Nothing to Bill'),
         ('to invoice', 'Waiting Bills'),
         ('invoiced', 'Fully Billed'),
-    ], string='Billing Status', compute='_get_invoiced', store=True, readonly=True, copy=False, default='no')
+    ], string='Invoice Status', compute='_get_invoiced', store=True, readonly=True, copy=False, default='no')
     
     
     @api.depends('order_lines.invoice_lines.move_id')
@@ -82,7 +88,7 @@ class CarRepairOrder(models.Model):
     def create(self,values):
         seq = self.env['ir.sequence'].get('car.repair.order') 
         values['name'] = seq
-        res = super(CarRepairRequest,self).create(values)
+        res = super(CarRepairOrder,self).create(values)
         return res
     
     def action_confirm(self):
@@ -98,13 +104,15 @@ class CarRepairOrder(models.Model):
             order.message_subscribe([order.partner_id.id])
         self.write({
             'state': 'inprocess',
+            'start_date': fields.Datetime.now()
         })
     
     def action_end_repair(self):
         for order in self.filtered(lambda order: order.partner_id not in order.message_partner_ids):
             order.message_subscribe([order.partner_id.id])
         self.write({
-            'state': 'done',
+            'state': 'repaired',
+            'end_date': fields.Datetime.now()
         })
     
     def action_quotation_send(self):
@@ -127,7 +135,7 @@ class CarRepairOrder(models.Model):
             'default_sale_id': self.id,
         }
         # choose the view_mode accordingly
-        if len(self.invoice_ids) > 1 and not create_bill:
+        if len(self.invoice_ids) > 1 and not create_invoice:
             result['domain'] = "[('id', 'in', " + str(self.invoice_ids.ids) + ")]"
         else:
             res = self.env.ref('account.view_move_form', False)
@@ -140,14 +148,14 @@ class CarRepairOrder(models.Model):
             if not create_invoice:
                 result['res_id'] = self.invoice_ids.id or False
         result['context']['default_origin'] = self.name
-        result['context']['default_reference'] = self.partner_ref
+        #result['context']['default_reference'] = self.partner_ref
         return result
     
     @api.depends('state', 'order_lines.product_uom_qty')
     def _get_invoiced(self):
         precision = self.env['decimal.precision'].precision_get('Product Unit of Measure')
         for order in self:
-            if order.state not in ('purchase', 'done'):
+            if order.state not in ('confirm', 'done'):
                 order.invoice_status = 'no'
                 continue
 
