@@ -16,7 +16,8 @@ class StockMove(models.Model):
         for mv in self:
             sum_weight = 0.0
             for line in mv.move_line_ids:
-                sum_weight += line.total_weight
+                if line.location_id.id == mv.location_id.id:
+                    sum_weight += line.total_weight
             mv.update({
                 'total_weight': sum_weight
             })
