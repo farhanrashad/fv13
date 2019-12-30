@@ -8,15 +8,17 @@ from odoo.addons import decimal_precision as dp
 class StockMove(models.Model):
     _inherit = 'stock.move'
     
-    total_weight = fields.Float('Total Weight', digits=dp.get_precision('Stock Weight'), compute='_get_total_weight', store=True, readonly=True)
+    total_weight = fields.Float('Total Weight', digits=dp.get_precision('Stock Weight'), compute='_get_total_weight', store=False, readonly=True)
     
-    @api.depends('quantity_done')
+    @api.depends('move_line_ids')
     def _get_total_weight(self):
         sum_weight = 0.0
         for mv in self:
             for line in mv.move_line_ids:
                 sum_weight += line.total_weight
-            mv.total_weight = sum_weight
+            mv.update({
+                'total_weight': sum_weight
+            })
     
     
     #@api.depends('product_id','quantity_done')
@@ -42,6 +44,7 @@ class StockMoveLine(models.Model):
                     self.total_weight = (self.product_id.weight * self.lot_id.product_qty)
             else:
                 self.total_weight = self.product_id.weight_available
+                
             
     @api.onchange('qty_done')
     def onchange_quantity(self):
@@ -53,6 +56,7 @@ class StockMoveLine(models.Model):
         
         
     def write(self, vals):
+        #Raw Material Assignment
         res = super(StockMoveLine, self).write(vals)
         #self.product_id.product_tmpl_id.weight_available = self.product_id.product_tmpl_id.weight_available + self.total_weight
         for rs in self.filtered(lambda x: x.move_id.state in ('done')):

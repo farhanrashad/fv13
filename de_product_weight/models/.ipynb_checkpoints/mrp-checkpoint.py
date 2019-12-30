@@ -107,19 +107,6 @@ class MRPProductProduce(models.TransientModel):
         return res
     
     def _product_weight_assignment(self):
-        #finish weight assignment
-        move_lines = self.env['stock.move.line'].search([('product_id', '=', self.product_id.id),('lot_id', '=', self.finished_lot_id.id),('state', '!=', 'done')])
-        for line in move_lines:
-            line.write({
-                'total_weight':self.produced_weight
-            })
-        #for mv in self.production_id.move_finished_ids:
-            #for line in mv.move_line_ids:
-                #if line.lot_id == self.finished_lot_id:
-                    #line.write({
-                        #'total_weight': self.produced_weight,
-                    #})
-        
         #raw material weight assignment
         if self.production_id.bom_id.type == 'normal':
             for mv in self.production_id.move_raw_ids.filtered(lambda x: x.state not in ('done', 'cancel')):
@@ -145,14 +132,20 @@ class MRPProductProduce(models.TransientModel):
                                 'qty_done': self.produced_weight * (mvline.move_id.bom_line_id.product_qty/mvline.move_id.bom_line_id.bom_id.product_qty)
                             })
         else:
-            for mv in self.production_id.move_raw_ids.filtered(lambda x: x.state not in ('done', 'cancel')):
-                for line in mv.move_line_ids:
-                    if line.product_id.product_tmpl_id.is_weight_uom:
+            production_logs = self.env['mrp.production.log'].search([('product_produce_id', '=', self.id)])
+            for log in production_logs:
+                move_lines = self.env['stock.move.line'].search([('move_id', '=', log.move_id.id),('product_id', '=', log.product_id.id),('lot_id', '=', log.lot_id.id),('state', '!=', 'done')])
+                for line in move_lines:
+                    line.total_weight = log.total_weight
+                
+            #for mv in self.production_id.move_raw_ids.filtered(lambda x: x.state not in ('done', 'cancel')):
+                #for line in mv.move_line_ids:
+                    #if line.product_id.product_tmpl_id.is_weight_uom:
                     #move_lines = self.env['stock.move.line'].search([('product_id', '=', oline.product_id.id),('lot_id', '=', line.olot_id.id),('state', '!=', 'done')])
                     #for line in move_lines:
-                        line.write({
-                            'total_weight': self.produced_weight
-                        })
+                        #line.write({
+                            #'total_weight': self.produced_weight
+                        #})
             
 class MRPProductProduceLine(models.TransientModel):
     _inherit = 'mrp.product.produce.line'
@@ -192,5 +185,41 @@ class MRPProductProduceLine(models.TransientModel):
         for rs in self:
             if not(rs.product_id.product_tmpl_id.is_weight_uom):
                 rs.qty_done = rs.raw_product_produce_id.produced_weight * (rs.move_id.bom_line_id.product_qty/rs.move_id.bom_line_id.bom_id.product_qty)
+                
+    #@api.model
+    #def write(self, values):
+        #vals = {
+            #'product_id': self.product_id.id,
+            #'lot_id': self.lot_id.id,
+            #'move_id': self.move_id.id,
+            #'qty_done': self.qty_done,
+            #'total_weight': self.produced_weight,
+        #}
+        #production_log = self.env['mrp.production.log'].write(vals)
+        #move_lines = self.env['stock.move.line'].search([('product_id', '=', self.product_id.id),('lot_id', '=', self.lot_id.id),('state', '!=', 'done')])
+        #for line in move_lines:
+            #line.update({
+                #'total_weight': produced_weight,
+           # })
+        #res = super(MRPProductProduceLine, self).create(values)
+        #return res
+                
+class MrpProductionLog(models.Model):
+    _name = 'mrp.production.log'
+    
+    product_id = fields.Many2one('product.product', 'Product Variant',)
+    lot_id = fields.Many2one('stock.production.lot','lot')
+    move_id = fields.Many2one('stock.move','Move')
+    move_line_id = fields.Many2one('stock.move.line','Move Line')
+    product_produce_id = fields.Integer('Product Produce')
+    product_produce_line_id = fields.Integer('Product Produce Line')
+    qty_done = fields.Float(string="quantity")
+    consumed_weight = fields.Float('Consumed Weight', store=True, digits=dp.get_precision('Stock Weight'), help="Weight consumed", oldname='total_weight')
+    finished_product_id = fields.Many2one('product.product', 'Finish Product',)
+    finished_lot_id = fields.Many2one('stock.production.lot','Finish Lot')
+    finished_qty_done = fields.Float(string="Finish quantity")
+    finished_produced_weight = fields.Float('Produced Weight', store=True, digits=dp.get_precision('Stock Weight'), help="Produced Weight")
+    
+    
            
     
