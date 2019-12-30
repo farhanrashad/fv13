@@ -62,8 +62,8 @@ class MRPProductProduce(models.TransientModel):
             if line.lot_id.name == self.finished_lot_id.name:
                 total_qty += line.qty_done
                 total_weight += line.produced_weight
-        self.qty_producing = total_qty
-        self.produced_weight = total_weight
+        #self.qty_producing = total_qty
+        #self.produced_weight = total_weight
         
         #if self.production_id.bom_id.type == 'subcontract':
         #for mv in self.production_id.move_raw_ids.filtered(lambda x: x.state not in ('done', 'cancel')):
@@ -107,6 +107,25 @@ class MRPProductProduce(models.TransientModel):
         return res
     
     def _product_weight_assignment(self):
+        #finish weight assignment
+        #for mv in self.production_id.move_finished_ids:
+            #for line in mv.move_line_ids:
+                #if line.lot_id == self.finished_lot_id:
+                    #line.write({
+                    #    'total_weight': self.produced_weight,
+                    #})
+        move_lines = self.env['stock.move.line'].search([('product_id', '=', self.product_id.id),('lot_id', '=', self.finished_lot_id.id),('state', '!=', 'done')])
+        for line in move_lines:
+            line.update({
+                'total_weight':self.produced_weight
+            })
+        #for mv in self.production_id.move_finished_ids:
+            #for line in mv.move_line_ids:
+                #if line.lot_id == self.finished_lot_id:
+                    #line.write({
+                        #'total_weight': self.produced_weight,
+                    #})
+                    
         #raw material weight assignment
         if self.production_id.bom_id.type == 'normal':
             for mv in self.production_id.move_raw_ids.filtered(lambda x: x.state not in ('done', 'cancel')):
@@ -150,7 +169,7 @@ class MRPProductProduce(models.TransientModel):
 class MRPProductProduceLine(models.TransientModel):
     _inherit = 'mrp.product.produce.line'
     
-    produced_weight = fields.Float('Weight Produced', store=True, digits=dp.get_precision('Stock Weight'), help="Weight produced")
+    produced_weight = fields.Float('Weight Consumed', store=True, digits=dp.get_precision('Stock Weight'), help="Weight produced")
     
     #api.depends('raw_product_produce_id.produced_weight','product_id','lot_id','qty_done')
     api.onchange('raw_product_produce_id.produced_weight','product_id','lot_id','qty_done')
