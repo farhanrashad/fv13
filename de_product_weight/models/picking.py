@@ -12,8 +12,9 @@ class StockMove(models.Model):
     
     @api.depends('move_line_ids')
     def _get_total_weight(self):
-        sum_weight = 0.0
+        
         for mv in self:
+            sum_weight = 0.0
             for line in mv.move_line_ids:
                 sum_weight += line.total_weight
             mv.update({
