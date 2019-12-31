@@ -25,9 +25,11 @@
     # always loaded
     'data': [
         'security/ir.model.access.csv',
+        'data/em_order_seq.xml',
+        'data/maintenance_data.xml',
         'views/em_order_views.xml',
         'views/maintenance_views.xml',
-        'data/em_order_seq.xml',
+        
     ],
     # only loaded in demonstration mode
     'demo': [
