@@ -1,0 +1,32 @@
+<odoo>
+    <data>
+        <record id="action_maintenance_order_form" model="ir.actions.act_window">
+            <field name="name">Create a Maintenance Order</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">maintenance.order</field>
+            <field name="view_mode">form</field>
+            <field name="target">current</field>
+        </record>
+        
+        <record id="hr_equipment_request_view_form_inherit" model="ir.ui.view">
+        <field name='name'>hr.equipment.request.view.form.inherit</field>
+        <field name="model">maintenance.request</field>
+        <field name="inherit_id" ref="maintenance.hr_equipment_request_view_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//form[1]/sheet[1]/div[not(@name)][1]" position="before">
+                <div class="oe_button_box" name="button_box">
+                    <!--  -->
+                    <button class="oe_stat_button" name="action_view_maintenance" icon="fa-wrench" type="action" attrs="{'invisible': [('maintenance_count', '=', 0)]}" >
+                        <field name="maintenance_count" string="EM Order" widget="statinfo"/>
+                    </button>
+                </div>
+            </xpath>
+            <xpath expr="//button[@name='archive_equipment_request']" position="before">
+                <button name="%(action_maintenance_order_form)d" type="action"
+                    string="Maintenance Order" class="oe_highlight" context="{'default_maintenance_request_id': id, 'default_company_id': company_id}"/>
+            </xpath>
+        </field>
+    </record>
+        
+    </data>
+</odoo>

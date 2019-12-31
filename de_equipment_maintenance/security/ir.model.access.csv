@@ -1,0 +1,4 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_maintenance_order,access.maintenance.order,model_maintenance_order,maintenance.group_equipment_manager,1,1,1,1
+access_maintenance_order_part_lines,access.maintenance.order.part.lines,model_maintenance_order_part_lines,maintenance.group_equipment_manager,1,1,1,1
+access_maintenance_order_service_lines,access.maintenance.order.service.lines,model_maintenance_order_service_lines,maintenance.group_equipment_manager,1,1,1,1
