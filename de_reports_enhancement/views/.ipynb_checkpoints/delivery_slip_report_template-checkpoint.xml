@@ -4,7 +4,7 @@
         
         <xpath expr="/t/t/t/div/table[1]/thead/tr/th[2]" position="after">
             <th><span>Done Qty</span></th>
-            <th><span>Weight</span></th>
+            <th><span>Unit Weight</span></th>
             <th><span>Total Weight</span></th>
         </xpath>
         <xpath expr="/t/t/t/div/table[1]/tbody/tr/td[2]" position="after">
@@ -14,7 +14,7 @@
         </xpath>
         
         <xpath expr="/t/t/t/div/table[2]/thead/tr/th[3]" position="after">
-            <th>Weight</th>
+            <th>Unit Weight</th>
             <th>Total Weight</th>
         </xpath>
         

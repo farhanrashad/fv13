@@ -29,7 +29,7 @@
         
         <xpath expr="/t/t/div/table/thead/tr/th[5]" position="after">
             <t t-if="o.partner_id.is_purchase_weight == True">
-                <th><span>Weight</span></th>
+                <th><span>Unit Weight</span></th>
                 <th><span>Total Weight</span></th>
                 <th><span>Weight Price</span></th>
             </t>

@@ -11,7 +11,7 @@
         
         <xpath expr="/t/t/t/t/div/div[4]" position="inside">
             <div class="col-3">
-                <strong>Weight:</strong><br/>
+                <strong>Unit Weight:</strong><br/>
                 <span t-field="o.product_id.weight"/> Kg
             </div>
             <div class="col-3">
@@ -36,7 +36,7 @@
         </xpath>
          <xpath expr="/t/t/t/t/div/table/thead/tr/th[1]" position="after">
              <th><span>Componenet Description</span></th>
-             <th><span>Weight</span></th>
+             <th><span>Unit Weight</span></th>
             <th><span>Total Weight</span></th>
         </xpath>
         <xpath expr="/t/t/t/t/div/table/tbody/t/tr/td[1]" position="after">
