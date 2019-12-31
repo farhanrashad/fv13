@@ -20,10 +20,10 @@
     # Check https://github.com/odoo/odoo/blob/12.0/odoo/addons/base/data/ir_module_category_data.xml
     # for the full list
     'category': 'sale',
-    'version': '0.4',
+    'version': '0.5',
 
     # any module necessary for this one to work correctly
-    'depends': ['base','sale','stock','purchase','mrp','de_product_weight','de_job_order','de_sale_global_ref'],
+    'depends': ['base','sale','stock','purchase','mrp','de_product_weight','de_job_order','de_sale_global_ref','de_picking_gatepass'],
 
     # always loaded
     'data': [
@@ -32,6 +32,7 @@
         'views/purchase_order_report_template.xml',
         'views/delivery_slip_report_template.xml',
         'views/mo_report_template.xml',
+        'views/gatepass_report_template.xml',
     ],
     # only loaded in demonstration mode
     'demo': [
