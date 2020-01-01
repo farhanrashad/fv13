@@ -9,7 +9,7 @@ from odoo.addons import decimal_precision as dp
 class SaleOrderLine(models.Model):
     _inherit = 'sale.order.line'
     
-    weight = fields.Float(related='product_id.weight',string='Weight Unit',readonly=True, store=True,default=1.0)
+    weight = fields.Float(related='product_id.weight',string='Weight Unit',readonly=False, store=True,default=1.0)
     total_weight = fields.Float('Total Weight', digits=dp.get_precision('Stock Weight'), help="Weight of the product in order line",default=1.0)
     price_weight = fields.Float('Weight Price', required=True, digits=dp.get_precision('Weight Price'), default=1.0)
     #price_weight_subtotal = fields.Float(compute='_compute_weight_subtotal', string='Subtotal', readonly=True, store=True)
@@ -29,12 +29,10 @@ class SaleOrderLine(models.Model):
             #rec.total_weight = rec.weight * rec.product_uom_qty
         #return res
 
-    @api.onchange('product_id','product_uom_qty')
+    @api.onchange('product_id','product_uom_qty','weight')
     def _onchange_quantity(self):
-        res = super(SaleOrderLine, self).product_id_change()
         for rec in self:
             rec.total_weight = rec.weight * rec.product_uom_qty
-        return res
     
     @api.onchange('price_weight')
     def _onchange_price_unit(self):
@@ -78,3 +76,5 @@ class SaleOrder(models.Model):
                 sum_weight += (line.weight * line.product_uom_qty)
             order.sum_qty = sum_qty
             order.sum_weight = sum_weight
+            
+            

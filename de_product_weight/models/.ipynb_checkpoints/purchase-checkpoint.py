@@ -14,12 +14,12 @@ class PurchaseOrderLine(models.Model):
         #return self.product_id.weight * self.product_qty
         
     #weight = fields.Float('Weight/Kg', digits=dp.get_precision('Stock Weight'), default=_default_product_weight, help="Weight of the product, packaging not included. The unit of measure can be changed in the general settings")
-    weight = fields.Float(related='product_id.weight',string='Weight Unit',readonly=True, store=True)
+    weight = fields.Float(related='product_id.weight',string='Weight Unit',readonly=False, store=True)
     total_weight = fields.Float('Total Weight', digits=dp.get_precision('Stock Weight'), help="Weight of the product in order line", default=1.0)
     price_weight = fields.Float('Weight Price', required=True, digits=dp.get_precision('Weight Price'), default=1.0)
     price_weight_subtotal = fields.Float(string='Subtotal', readonly=True, store=True)
     
-    @api.onchange('product_qty')
+    @api.onchange('product_id','product_qty','weight')
     def onchange_product_qty(self):
         #super(PurchaseOrderLine, self).onchange_product_id()
         self.total_weight = self.product_id.weight * self.product_qty

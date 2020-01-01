@@ -14,18 +14,44 @@ class AccountMove(models.Model):
 class AccountMoveLine(models.Model):
     _inherit = 'account.move.line'
     
-    weight = fields.Float(related='product_id.weight',string='Weight Unit',readonly=True, store=True,default=1.0)
+    def _get_default_price_weight(self):
+        wp = 0
+        if self.sale_line_ids:
+            for sale in self.sale_line_ids:
+                wp = sale.price_weight
+        elif self.purchase_line_id:
+            wp = self.purchase_line.id.price_weight
+        else:
+            wp = 1.0
+                
+        return wp
+    
+    def _calculate_weight(self):
+        tw = 0
+        if self.move_id.is_sale_weight:
+            if self.sale_line_ids:
+                for sale in self.sale_line_ids:
+                    tw += self.quantity * (sale.total_weight/sale.product_uom_qty)
+            elif self.purchase_line_id:
+                tw = self.quantity * (self.purchase_line.id.total_weight/self.purchase_line_id.product_uom_qty)
+            else:
+                tw = self.weight * self.quantity
+                
+            self.total_weight = tw
+            return tw
+                
+    weight = fields.Float(related='product_id.weight',string='Weight Unit',readonly=False, store=True,default=1.0)
     total_weight = fields.Float('Total Weight', digits=dp.get_precision('Stock Weight'), help="Weight of the product in order line",default=1.0)
     price_weight = fields.Float('Weight Price', required=True, digits=dp.get_precision('Weight Price'), default=1.0, domain="[('parent.is_sale_weight', '=', True)")
     
+    
+    
     @api.onchange('product_id','quantity')
     def _onchange_quantity(self):
-        tw = 0
-        for rec in self:
-            if rec.sale_line_ids:
-                for sale in rec.sale_line_ids:
-                    tw += rec.weight * (sale.total_weight/sale.product_uom_qty)
-            elif rec.purchase_line_id:
-                rec.total_weight = rec.weight * (rec.purchase_line.id.total_weight/rec.purchase_line_id.product_uom_qty)
-            else:
-                rec.total_weight = rec.weight * rec.quantity
+        self._calculate_weight()
+    
+    @api.onchange('weight')
+    def _onchange_weight(self):
+        self.total_weight = self.quantity * self.weight
+                
+    
