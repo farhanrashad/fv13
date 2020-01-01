@@ -33,6 +33,7 @@
         'views/delivery_slip_report_template.xml',
         'views/mo_report_template.xml',
         'views/gatepass_report_template.xml',
+        'views/invoice_report_template.xml',
     ],
     # only loaded in demonstration mode
     'demo': [
