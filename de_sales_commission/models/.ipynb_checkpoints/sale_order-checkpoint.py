@@ -27,7 +27,7 @@ class SaleOrder(models.Model):
     @api.onchange('partner_id')
     def onchange_partner_id(self):
         super(SaleOrder, self).onchange_partner_id()
-        self.agent_id = self.partner_id.agent_id
+        self.agent_id = self.partner_id.agent_id or False
         #self.commission_percentage = self.partner_id.commission_percentage
 
     @api.depends('order_line.commission_percentage')
@@ -35,18 +35,20 @@ class SaleOrder(models.Model):
         """Compute the Commission amounts of the SO"""
         total = 0
         res = super(SaleOrder, self)._amount_all()
-        for line in self.order_line:
-            total += (line.commission_percentage/100) * line.price_subtotal
+        if self.order_id.partner_id.commission_percentage:
+            for line in self.order_line:
+                total += (line.commission_percentage/100) * line.price_subtotal
         
-        self.commission_amount = total
+            self.commission_amount = total
             
         return res
     
     def recompute_lines_agents(self):
-        for line in self.order_line:
-            line.update({
-                'commission_percentage': self.partner_id.commission_percentage
-            })
+        if self.order_id.partner_id.commission_percentage:
+            for line in self.order_line:
+                line.update({
+                    'commission_percentage': self.partner_id.commission_percentage
+                })
 
 class SaleOrderLine(models.Model):
     _inherit = 'sale.order.line'
@@ -57,4 +59,5 @@ class SaleOrderLine(models.Model):
     @api.onchange('product_id')
     def onchange_product_id(self):
         #super(SaleOrderLine, self).onchange_product_id()
-        self.commission_percentage = self.order_id.partner_id.commission_percentage
+        if self.order_id.partner_id.commission_percentage:
+            self.commission_percentage = self.order_id.partner_id.commission_percentage
