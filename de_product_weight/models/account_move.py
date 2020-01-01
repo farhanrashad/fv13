@@ -53,5 +53,11 @@ class AccountMoveLine(models.Model):
     @api.onchange('weight')
     def _onchange_weight(self):
         self.total_weight = self.quantity * self.weight
+    
+    @api.onchange('price_weight')
+    def _onchange_price_weight(self):
+        for line in self:
+            if line.quantity > 0:
+                line.price_unit = (line.total_weight * line.price_weight) / line.quantity
                 
     

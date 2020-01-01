@@ -38,7 +38,8 @@ class SaleOrderLine(models.Model):
     def _onchange_price_unit(self):
         res = super(SaleOrderLine, self).product_id_change()
         for line in self:
-            line.price_unit = (line.total_weight * line.price_weight) / line.product_uom_qty
+            if line.product_uom_qty > 0:
+                line.price_unit = (line.total_weight * line.price_weight) / line.product_uom_qty
         return res
 
     #@api.depends('total_weight', 'price_weight')
