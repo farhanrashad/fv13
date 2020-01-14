@@ -63,16 +63,14 @@
                                 <th>
                                     <strong>Product</strong>
                                 </th>
-                                <th>
+                                <th colspan="2">
                                     <span>Quantity</span>
                                 </th>
                                 <th>
                                     <span>Lots</span>
                                 </th>
                                 <!--
-                                <th>
-                                    <span>Unit Weight</span>
-                                </th>
+                                <th><span>Unit Weight</span></th>
 -->
                                 <th>
                                     <span>Total Weight</span>
@@ -107,35 +105,27 @@
                                         </t>
                                     </t>
                                 </td>
-                                
-                                
-                                
-                                    <t t-set="lot" t-value="0"/>
-                                    <t t-set="tw" t-value="0"/>
-                                    <t t-foreach="move.move_line_ids" t-as="move_line">
-                                        <t t-if="move_line.lot_id">
-                                            <t t-set="lot" t-value="lot+1"/>
-                                            <t t-set="tw" t-value="tw+move_line.total_weight"/>
-                                        </t>
-                                    </t>
+                                <t t-set="lot" t-value="0"/>
+                                <t t-set="tw" t-value="0"/>
+                                <t t-foreach="move.move_line_ids" t-as="move_line">
+                                    <t t-if="move_line.lot_id">
+                                        <t t-set="lot" t-value="lot+1"/>
+                                        <t t-set="tw" t-value="tw+move_line.total_weight"/></t>
+                                </t>
                                 <td>
-                                    
                                     <span t-esc="lot"/>
                                 </td>
-                                <td>
-                                    <t t-if="move.total_weight == 0">
-                                        <span t-esc="tw"/>
-                                    </t>
-                                    <t t-else="">
-                                        <span t-field="move.total_weight"/> Kg
-                                    </t>
-                                </td>
-                                <!--
-                                <td>
-                                    <span t-field="move.product_id.weight"/> Kg
-                                </td>
--->
-                                
+                                <t t-if="move.product_id.product_tmpl_id.is_weight_uom">
+                                    <td>
+                                        <t t-if="move.total_weight == 0">
+                                            <span t-esc="tw"/>
+                                        </t>
+                                        <t t-else="">
+                                            <span t-field="move.total_weight"/> Kg
+                                    
+                                        </t>
+                                    </td>
+                                </t>
                             </tr>
                         </tbody>
                     </table>
