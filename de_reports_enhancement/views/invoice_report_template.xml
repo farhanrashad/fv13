@@ -4,7 +4,9 @@
         
         <xpath expr="/t[1]/t[1]/div[1]/table[1]/tbody[1]/t[2]/tr[1]/t[1]/td[5]" position="replace"/>
   <xpath expr="/t[1]/t[1]/div[1]/table[1]/thead[1]/tr[1]/th[6]" position="replace"/>
+        <!--
   <xpath expr="/t/t/div/table/thead/tr/th[3]" position="after">
+      
     <th>
       <span>Weight Unit</span>
     </th>
@@ -14,6 +16,7 @@
       <span t-field="line.weight"/>
     </td>
   </xpath>
+-->
   <xpath expr="/t/t/div/table/tbody/t[2]/t[3]/tr/td" position="attributes">
     <attribute name="colspan">100</attribute>
   </xpath>
