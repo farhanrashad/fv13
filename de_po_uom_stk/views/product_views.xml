@@ -13,5 +13,17 @@
         </field>
     </record>
       
+      <record id="product_product_tree_view_inherit" model="ir.ui.view">
+        <field name="name">product.product.tree.view.inherit</field>
+        <field name="model">product.product</field>
+        <field name="inherit_id" ref="product.product_product_tree_view"/>
+        <field name="arch" type="xml">
+            <field name="uom_id" position="after">
+                <field name="po_uom_stk" />
+                <field name="uom_po_id" />
+            </field>
+        </field>
+    </record>
+      
   </data>
 </odoo>

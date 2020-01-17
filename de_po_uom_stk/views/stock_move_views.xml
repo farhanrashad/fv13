@@ -1,0 +1,35 @@
+<odoo>
+  <data>
+      
+    <record id="view_move_line_form_inherit" model="ir.ui.view">
+        <field name="name">view.move.line.form.inherit</field>
+        <field name="model">stock.move.line</field>
+        <field name="inherit_id" ref="stock.view_move_line_form"/>
+        <field name="arch" type="xml">
+            <field name="qty_done" position="after">
+                <label for="po_uom_stk" class="oe_edit_only"/>
+                    <div>
+                        <field name="po_uom_stk" />
+                <field name="uom_po_id" />
+                    </div>
+                
+            </field>
+        </field>
+    </record>
+      
+      <record id="view_move_line_tree_inherit" model="ir.ui.view">
+        <field name="name">view.move.line.tree.inherit</field>
+        <field name="model">stock.move.line</field>
+        <field name="inherit_id" ref="stock.view_move_line_tree"/>
+        <field name="arch" type="xml">
+            <field name="product_uom_id" position="after">
+                <field name="po_uom_stk" />
+                <field name="uom_po_id" />
+                   
+                
+            </field>
+        </field>
+    </record>
+      
+  </data>
+</odoo>

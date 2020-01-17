@@ -1,0 +1,37 @@
+<odoo>
+  <data>
+      
+    <record id="view_production_lot_form_inherit" model="ir.ui.view">
+        <field name="name">view.production.lot.form.inherit</field>
+        <field name="model">stock.production.lot</field>
+        <field name="inherit_id" ref="stock.view_production_lot_form"/>
+        <field name="arch" type="xml">
+            <field name="ref" position="before">
+                <label for="po_uom_stk" class="oe_edit_only"/>
+                    <div>
+                        <field name="po_uom_stk" />
+                <field name="uom_po_id" />
+                    </div>
+                
+            </field>
+        </field>
+    </record>
+      
+      <record id="view_production_lot_tree_inherit" model="ir.ui.view">
+        <field name="name">view.production.lot.tree.inherit</field>
+        <field name="model">stock.production.lot</field>
+        <field name="inherit_id" ref="stock.view_production_lot_tree"/>
+        <field name="arch" type="xml">
+            <xpath expr="//tree" position="inside">
+               <field name="product_qty" />
+                <field name="product_uom_id" />
+                <field name="po_uom_stk" />
+                <field name="uom_po_id" />
+                   
+                
+            </xpath>
+        </field>
+    </record>
+      
+  </data>
+</odoo>
