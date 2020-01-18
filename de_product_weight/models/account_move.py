@@ -46,9 +46,9 @@ class AccountMoveLine(models.Model):
     
     
     
-    @api.onchange('product_id','quantity')
-    def _onchange_quantity(self):
-        self._calculate_weight()
+    #@api.onchange('product_id','quantity')
+    #def _onchange_quantity(self):
+        #self._calculate_weight()
     
     @api.onchange('weight')
     def _onchange_weight(self):
