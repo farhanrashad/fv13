@@ -55,8 +55,8 @@ class AccountInvoiceLine(models.Model):
     price_weight = fields.Float('Weight Price', store=True,default='1.0')
     
     
-    #def write(self,vals):
-        #res = super(AccountInvoiceLine,self).write(vals)
+    def write(self,vals):
+        res = super(AccountInvoiceLine,self).write(vals)
         
         #for line in self:
             #to_write = line._get_fields_onchange_balance(balance=line.price_subtotal,)
@@ -67,7 +67,7 @@ class AccountInvoiceLine(models.Model):
             #))
             #res = super(AccountInvoiceLine,self).write(to_write)
         #super(AccountMoveLine, line).write(to_write)
-        #return res
+        return res
     
     
     #@api.onchange('quantity','price_unit','tmp_price_weight','tmp_total_weight')
