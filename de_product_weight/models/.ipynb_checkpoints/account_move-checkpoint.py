@@ -41,8 +41,8 @@ class AccountMoveLine(models.Model):
             #return tw
                 
     weight = fields.Float(related='product_id.weight',string='Weight Unit',readonly=False, store=True)
-    total_weight = fields.Float('Total Weight', store=True, digits=dp.get_precision('Stock Weight'), help="Weight of the product in order line")
-    price_weight = fields.Float('Weight Price', store=True, digits=dp.get_precision('Weight Price'))
+    total_weight = fields.Float('Total Weight', store=True, help="Weight of the product in order line")
+    price_weight = fields.Float('Weight Price', store=True,)
     
     
     
