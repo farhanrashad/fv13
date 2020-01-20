@@ -41,8 +41,8 @@ class AccountMoveLine(models.Model):
             #return tw
                 
     weight = fields.Float(related='product_id.weight',string='Weight Unit',readonly=False, store=True)
-    total_qty_weight = fields.Float('Total Weight', store=True, digits=dp.get_precision('Stock Weight'), help="Weight of the product in order line",oldname="total_weight")
-    price_weight = fields.Float('Weight Price', store=True, digits=dp.get_precision('Weight Price'), domain="[('parent.is_sale_weight', '=', True)")
+    total_weight = fields.Float('Total Weight', store=True, digits=dp.get_precision('Stock Weight'), help="Weight of the product in order line")
+    price_weight = fields.Float('Weight Price', store=True, digits=dp.get_precision('Weight Price'))
     
     
     
@@ -54,10 +54,10 @@ class AccountMoveLine(models.Model):
     #def _onchange_weight(self):
         #self.total_weight = self.quantity * self.weight
     
-    @api.onchange('price_weight')
-    def _onchange_price_weight(self):
-        for line in self:
-            if line.quantity > 0:
-                line.price_unit = (line.total_weight * line.price_weight) / line.quantity
+    #@api.onchange('price_weight')
+    #def _onchange_price_weight(self):
+        #for line in self:
+            #if line.quantity > 0:
+                #line.price_unit = (line.total_weight * line.price_weight) / line.quantity
                 
     

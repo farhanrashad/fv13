@@ -8,9 +8,9 @@
                 <field name="is_sale_weight" invisible="1" />
             </field>
             <xpath expr="//form[1]/sheet[1]/notebook[1]/page[1]/field[@name='invoice_line_ids']/tree[1]/field[@name='price_unit']" position="after">
-                <field name="weight"/>
-                <field name="total_qty_weight" attrs="{'required':[('parent.is_sale_weight', '=', True)]}" />
-                <field name="price_weight" attrs="{'invisible':[('parent.is_sale_weight', '!=', True)],'required':[('parent.is_sale_weight', '=', True)]}" />
+                <field name="weight" optional="show" />
+                <field name="total_weight" optional="show"  />
+                <field name="price_weight" optional="show"  />
             </xpath>
         </field>
     </record>
