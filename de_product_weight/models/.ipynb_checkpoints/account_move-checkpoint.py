@@ -114,13 +114,13 @@ class AccountInvoiceLine(models.Model):
         res = {}
 
         # Compute 'price_subtotal'.
-        subtotal = price_unit_wo_discount = new_price = 0
-        if self.move_id.is_sale_weight:
-            if self.quantity > 0:
-                new_price = (self.total_weight * self.price_weight) / self.quantity
+        #subtotal = price_unit_wo_discount = new_price = 0
+        #if self.move_id.is_sale_weight:
+            #if self.quantity > 0:
+                #new_price = (self.total_weight * self.price_weight) / self.quantity
                 #price_unit_wo_discount = new_price * (1 - (discount / 100.0))
                 #res['price_unit'] = new_price
-                price_unit = new_price
+                #price_unit = new_price
         #else:
             #price_unit_wo_discount = price_unit * (1 - (discount / 100.0))
             #subtotal = quantity * price_unit_wo_discount
