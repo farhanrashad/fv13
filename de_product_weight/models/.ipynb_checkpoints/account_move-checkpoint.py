@@ -82,6 +82,61 @@ class AccountInvoiceLine(models.Model):
                     #'price_unit': pu
                 #}) 
     
+    def _get_price_total_and_subtotal(self, price_unit=None, quantity=None, discount=None, currency=None, product=None, partner=None, taxes=None, move_type=None,total_weight=None,price_weight=None):
+        self.ensure_one()
+        return self._get_price_total_and_subtotal_model(
+            price_unit=price_unit or self.price_unit,
+            quantity=quantity or self.quantity,
+            discount=discount or self.discount,
+            currency=currency or self.currency_id,
+            product=product or self.product_id,
+            partner=partner or self.partner_id,
+            taxes=taxes or self.tax_ids,
+            move_type=move_type or self.move_id.type,
+            total_weight=total_weight or self.total_weight,
+            price_weight=price_weight or self.price_weight,
+        )
+    
+    @api.model
+    def _get_price_total_and_subtotal_model(self, price_unit, quantity, discount, currency, product, partner, taxes, move_type,total_weight=None,price_weight=None):
+        ''' This method is used to compute 'price_total' & 'price_subtotal'.
+
+        :param price_unit:  The current price unit.
+        :param quantity:    The current quantity.
+        :param discount:    The current discount.
+        :param currency:    The line's currency.
+        :param product:     The line's product.
+        :param partner:     The line's partner.
+        :param taxes:       The applied taxes.
+        :param move_type:   The type of the move.
+        :return:            A dictionary containing 'price_subtotal' & 'price_total'.
+        '''
+        res = {}
+
+        # Compute 'price_subtotal'.
+        subtotal = price_unit_wo_discount = new_price = 0
+        if self.move_id.is_sale_weight:
+            if self.quantity > 0:
+                new_price = (self.total_weight * self.price_weight) / self.quantity
+                #price_unit_wo_discount = new_price * (1 - (discount / 100.0))
+                #res['price_unit'] = new_price
+                price_unit = new_price
+        #else:
+            #price_unit_wo_discount = price_unit * (1 - (discount / 100.0))
+            #subtotal = quantity * price_unit_wo_discount
+        
+        price_unit_wo_discount = price_unit * (1 - (discount / 100.0))
+        subtotal = quantity * price_unit_wo_discount
+        # Compute 'price_total'.
+        if taxes:
+            taxes_res = taxes._origin.compute_all(price_unit_wo_discount,
+                quantity=quantity, currency=currency, product=product, partner=partner, is_refund=move_type in ('out_refund', 'in_refund'))
+            res['price_subtotal'] = taxes_res['total_excluded']
+            res['price_total'] = taxes_res['total_included']
+        else:
+            res['price_total'] = res['price_subtotal'] = subtotal
+        return res
+    
     #def _get_computed_price_unit(self):
         #res = super(AccountInvoiceLine,self)._get_computed_price_unit()
         #if self.move_id.is_sale_weight:
