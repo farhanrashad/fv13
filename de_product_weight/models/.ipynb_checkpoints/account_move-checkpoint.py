@@ -26,19 +26,19 @@ class AccountMoveLine(models.Model):
                 
         return wp
     
-    def _calculate_weight(self):
-        tw = 0
-        if self.move_id.is_sale_weight:
-            if self.sale_line_ids:
-                for sale in self.sale_line_ids:
-                    tw += self.quantity * (sale.total_weight/sale.product_uom_qty)
-            elif self.purchase_line_id:
-                tw = self.quantity * (self.purchase_line.id.total_weight/self.purchase_line_id.product_uom_qty)
-            else:
-                tw = self.weight * self.quantity
+    #def _calculate_weight(self):
+        #tw = 0
+        #if self.move_id.is_sale_weight:
+            #if self.sale_line_ids:
+                #for sale in self.sale_line_ids:
+                    #tw += self.quantity * (sale.total_weight/sale.product_uom_qty)
+            #elif self.purchase_line_id:
+                #tw = self.quantity * (self.purchase_line.id.total_weight/self.purchase_line_id.product_uom_qty)
+            #else:
+                #tw = self.weight * self.quantity
                 
-            self.total_weight = tw
-            return tw
+            #self.total_weight = tw
+            #return tw
                 
     weight = fields.Float(related='product_id.weight',string='Weight Unit',readonly=False, store=True,default=1.0)
     total_weight = fields.Float('Total Weight', digits=dp.get_precision('Stock Weight'), help="Weight of the product in order line",default=1.0)
