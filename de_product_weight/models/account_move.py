@@ -14,17 +14,17 @@ class AccountMove(models.Model):
 class AccountMoveLine(models.Model):
     _inherit = 'account.move.line'
     
-    def _get_default_price_weight(self):
-        wp = 0
-        if self.sale_line_ids:
-            for sale in self.sale_line_ids:
-                wp = sale.price_weight
-        elif self.purchase_line_id:
-            wp = self.purchase_line.id.price_weight
-        else:
-            wp = 1.0
+    #def _get_default_price_weight(self):
+        #wp = 0
+        #if self.sale_line_ids:
+            #for sale in self.sale_line_ids:
+                #wp = sale.price_weight
+        #elif self.purchase_line_id:
+            #wp = self.purchase_line.id.price_weight
+        #else:
+            #wp = 1.0
                 
-        return wp
+        #return wp
     
     #def _calculate_weight(self):
         #tw = 0
@@ -40,9 +40,9 @@ class AccountMoveLine(models.Model):
             #self.total_weight = tw
             #return tw
                 
-    weight = fields.Float(related='product_id.weight',string='Weight Unit',readonly=False, store=True,default=1.0)
-    total_weight = fields.Float('Total Weight', digits=dp.get_precision('Stock Weight'), help="Weight of the product in order line")
-    price_weight = fields.Float('Weight Price', required=True, digits=dp.get_precision('Weight Price'), default=1.0, domain="[('parent.is_sale_weight', '=', True)")
+    weight = fields.Float(related='product_id.weight',string='Weight Unit',readonly=False, store=True)
+    total_weight = fields.Float('Total Weight', store=True, digits=dp.get_precision('Stock Weight'), help="Weight of the product in order line")
+    price_weight = fields.Float('Weight Price', store=True, digits=dp.get_precision('Weight Price'), domain="[('parent.is_sale_weight', '=', True)")
     
     
     
