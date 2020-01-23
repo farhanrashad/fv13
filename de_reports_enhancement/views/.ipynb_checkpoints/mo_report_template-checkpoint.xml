@@ -10,13 +10,17 @@
         </xpath>
         
         <xpath expr="/t/t/t/t/div/div[4]" position="inside">
-            <div class="col-3">
+            <div class="col-2">
                 <strong>Unit Weight:</strong><br/>
                 <span t-field="o.product_id.weight"/> Kg
             </div>
-            <div class="col-3">
-                <strong>Weight to Produce:</strong><br/>
+            <div class="col-2">
+                <strong>Wgt 2 Produce:</strong><br/>
                 <span t-field="o.production_weight"/> Kg
+            </div>
+            <div class="col-2">
+                <strong>Sec. Qty:</strong><br/>
+                <span t-field="o.product_sec_qty"/> <span t-field="o.product_id.sec_uom_id"/>
             </div>
         </xpath>
         <xpath expr="/t/t/t/t/div/div[4]" position="after">

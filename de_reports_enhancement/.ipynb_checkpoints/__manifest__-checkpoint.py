@@ -20,10 +20,10 @@
     # Check https://github.com/odoo/odoo/blob/12.0/odoo/addons/base/data/ir_module_category_data.xml
     # for the full list
     'category': 'sale',
-    'version': '0.7',
+    'version': '0.9',
 
     # any module necessary for this one to work correctly
-    'depends': ['base','sale','stock','purchase','mrp','de_product_weight','de_job_order','de_sale_global_ref','de_picking_gatepass'],
+    'depends': ['base','sale','stock','purchase','mrp','de_product_weight','de_job_order','de_sale_global_ref','de_picking_gatepass','de_secondary_uom_qty'],
 
     # always loaded
     'data': [
