@@ -17,5 +17,6 @@ class ProductTemplate(models.Model):
     @api.depends('qty_available')
     def _calculate_secondary_qty(self):
         for rs in self:
-            if rs.sec_uom_id:
-                rs.sec_qty = rs.qty_available * rs.sec_uom_factor
+            #rs.sec_qty = 1
+            #if rs.sec_uom_id.id and rs.sec_uom_factor:
+            rs.sec_qty = rs.qty_available * rs.sec_uom_factor
