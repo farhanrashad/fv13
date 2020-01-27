@@ -8,10 +8,27 @@ from odoo.addons import decimal_precision as dp
 class StockMove(models.Model):
     _inherit = 'stock.move'
     
-    total_weight = fields.Float('Total Weight', digits=dp.get_precision('Stock Weight'), compute='_get_total_weight', store=False, readonly=True)
+    total_weight = fields.Float('Total Weight', digits=dp.get_precision('Stock Weight'), compute='_get_total_weight', readonly=True)
     
-    @api.depends('move_line_ids')
     def _get_total_weight(self):
+        for line in self:
+            if len(line.move_line_ids):
+                move_line_obj = self.env['stock.move.line']
+                domain = [('product_id', '=', line.product_id.id),
+                          ('state', '=', 'done'),
+                          ]
+
+                where_query = move_line_obj._where_calc(domain)
+                move_line_obj._apply_ir_rules(where_query, 'read')
+                from_clause, where_clause, where_clause_params = where_query.get_sql()
+                select = "SELECT SUM(total_weight) from " + from_clause + " where " + where_clause
+
+            self.env.cr.execute(select, where_clause_params)
+            line.total_weight = self.env.cr.fetchone()[0] or 0.0
+            
+            
+    #@api.depends('move_line_ids')
+    def _get_total_weight1(self):
         
         for mv in self:
             sum_weight = 0.0
