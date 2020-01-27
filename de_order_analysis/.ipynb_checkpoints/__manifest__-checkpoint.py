@@ -22,7 +22,7 @@
     # Check https://github.com/odoo/odoo/blob/13.0/odoo/addons/base/data/ir_module_category_data.xml
     # for the full list
     'category': 'sale',
-    'version': '0.4',
+    'version': '0.5',
 
     # any module necessary for this one to work correctly
     'depends': ['base','sale','purchase','stock','mrp','de_sale_global_ref','de_product_weight','de_job_order'],
