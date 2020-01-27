@@ -91,7 +91,7 @@ join stock_location ld on l.location_dest_id = ld.id
 left join purchase_order_line pl on l.purchase_line_id = pl.id
 left join purchase_order po on pl.order_id = po.id
 left join sale_order so on o.sale_id = so.id
-left join production_order mo on l.production_id = mo.id
+left join mrp_production mo on l.production_id = mo.id
 left join job_order j on j.sale_id = so.id or po.job_order_id = j.id or mo.job_order_id = j.id
 left join res_partner p on o.partner_id = p.id
 join product_product m on l.product_id = m.id
