@@ -49,6 +49,7 @@ join product_category c on t.categ_id = c.id
 left join res_company b on o.company_id = b.id
 left join res_users u on o.user_id = u.id
 left join crm_team r on o.team_id = r.id
+where o.state in ('done','sale')
 union all
 select l.id, o.global_ref, o.name as name,o.date_order as date, t.categ_id, m.product_tmpl_id, l.product_id as product_id, t.uom_id as product_uom, l.product_uom_qty, l.qty_received as qty_delivered, l.total_weight as order_weight, j.name as job_order, 0 as in_qty, 0 as out_qty, 0 as in_weight, 0 as out_weight, p.team_id, o.partner_id, o.company_id, o.user_id
 from job_order j
@@ -61,6 +62,7 @@ join product_category c on t.categ_id = c.id
 left join res_company b on o.company_id = b.id
 left join res_users u on o.user_id = u.id
 left join crm_team r on p.team_id = r.id
+where o.state in ('purchase','done')
 union all
 select o.id, o.global_ref, o.name as name,o.date_start as date, t.categ_id, m.product_tmpl_id, o.product_id as product_id, t.uom_id as product_uom, o.product_uom_qty, (o.product_uom_qty - o.product_qty) as qty_delivered, o.production_weight as order_weight, j.name as job_order, 0 as in_qty, 0 as out_qty, 0 as in_weight, 0 as out_weight, p.team_id, s.partner_id, o.company_id, o.user_id
 from job_order j
@@ -73,6 +75,7 @@ join product_category c on t.categ_id = c.id
 left join res_company b on o.company_id = b.id
 left join res_users u on o.user_id = u.id
 left join crm_team r on p.team_id = r.id
+where o.state not in ('draft','confirmed','planned','cencel') 
 union all
 select l.id, so.global_ref, o.name as name, o.date_done, t.categ_id, m.product_tmpl_id, l.product_id as product_id, t.uom_id as product_uom, 0 as product_uom_qty, 0 as qty_delivered, 0 as order_weight, j.name as job_order, 
 (case when ld.usage='internal' then ml.qty_done else 0 end) as in_qty, 
