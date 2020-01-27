@@ -53,7 +53,7 @@ where o.state in ('done','sale')
 union all
 select l.id, o.global_ref, o.name as name,o.date_order as date, t.categ_id, m.product_tmpl_id, l.product_id as product_id, t.uom_id as product_uom, l.product_uom_qty, l.qty_received as qty_delivered, l.total_weight as order_weight, j.name as job_order, 0 as in_qty, 0 as out_qty, 0 as in_weight, 0 as out_weight, p.team_id, o.partner_id, o.company_id, o.user_id
 from job_order j
-join purchase_order o on j.sale_id = o.id
+join purchase_order o on o.job_order_id.j.id
 join res_partner p on o.partner_id = p.id
 join purchase_order_line l on l.order_id = o.id
 join product_product m on l.product_id = m.id
@@ -91,7 +91,8 @@ join stock_location ld on l.location_dest_id = ld.id
 left join purchase_order_line pl on l.purchase_line_id = pl.id
 left join purchase_order po on pl.order_id = po.id
 left join sale_order so on o.sale_id = so.id
-left join job_order j on j.sale_id = so.id or po.job_order_id = j.id
+left join production_order mo on l.production_id = mo.id
+left join job_order j on j.sale_id = so.id or po.job_order_id = j.id or mo.job_order_id = j.id
 left join res_partner p on o.partner_id = p.id
 join product_product m on l.product_id = m.id
 join product_template t on m.product_tmpl_id = t.id
