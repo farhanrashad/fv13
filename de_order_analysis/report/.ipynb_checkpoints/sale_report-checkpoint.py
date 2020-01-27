@@ -68,7 +68,7 @@ select o.id, o.global_ref, o.name as name,o.date_start as date, t.categ_id, m.pr
 from job_order j
 join sale_order s on j.sale_id = s.id
 join mrp_production o on o.job_order_id = j.id
-join mrp_bom b on o.bom_id = b.id
+join mrp_bom bm on o.bom_id = bm.id
 join res_partner p on s.partner_id = p.id
 join product_product m on o.product_id = m.id
 join product_template t on m.product_tmpl_id = t.id
@@ -77,9 +77,9 @@ left join res_company b on o.company_id = b.id
 left join res_users u on o.user_id = u.id
 left join crm_team r on p.team_id = r.id
 where o.state not in ('draft','confirmed','planned','cencel') 
-and b.type = 'normal'
+and bm.type = 'normal'
 union all
-select o.id, so.global_ref, o.name as name, o.date, t.categ_id, m.product_tmpl_id, l.product_id as product_id, t.uom_id as product_uom, 0 as product_uom_qty, 0 as qty_delivered, 0 as order_weight, j.name as job_order, 
+select o.id, so.global_ref, o.reference as name, o.date, t.categ_id, m.product_tmpl_id, l.product_id as product_id, t.uom_id as product_uom, 0 as product_uom_qty, 0 as qty_delivered, 0 as order_weight, j.name as job_order, 
 (case when ld.usage='internal' then l.qty_done else 0 end) as in_qty, 
 (case when ls.usage='internal' then l.qty_done else 0 end) as out_qty,
 (case when ld.usage='internal' then l.total_weight else 0 end) as in_weight, 

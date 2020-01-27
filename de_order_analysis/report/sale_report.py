@@ -79,7 +79,7 @@ left join crm_team r on p.team_id = r.id
 where o.state not in ('draft','confirmed','planned','cencel') 
 and bm.type = 'normal'
 union all
-select o.id, so.global_ref, o.name as name, o.date, t.categ_id, m.product_tmpl_id, l.product_id as product_id, t.uom_id as product_uom, 0 as product_uom_qty, 0 as qty_delivered, 0 as order_weight, j.name as job_order, 
+select o.id, so.global_ref, o.reference as name, o.date, t.categ_id, m.product_tmpl_id, l.product_id as product_id, t.uom_id as product_uom, 0 as product_uom_qty, 0 as qty_delivered, 0 as order_weight, j.name as job_order, 
 (case when ld.usage='internal' then l.qty_done else 0 end) as in_qty, 
 (case when ls.usage='internal' then l.qty_done else 0 end) as out_qty,
 (case when ld.usage='internal' then l.total_weight else 0 end) as in_weight, 
