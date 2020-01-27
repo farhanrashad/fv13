@@ -80,10 +80,10 @@ where o.state not in ('draft','confirmed','planned','cencel')
 and bm.type = 'normal'
 union all
 select o.id, so.global_ref, o.reference as name, o.date, t.categ_id, m.product_tmpl_id, l.product_id as product_id, t.uom_id as product_uom, 0 as product_uom_qty, 0 as qty_delivered, 0 as order_weight, j.name as job_order, 
-(case when ld.usage='internal' then l.qty_done else 0 end) as in_qty, 
-(case when ls.usage='internal' then l.qty_done else 0 end) as out_qty,
-(case when ld.usage='internal' then l.total_weight else 0 end) as in_weight, 
-(case when ls.usage='internal' then l.total_weight else 0 end) as out_weight,
+(case when ld.usage='internal' and ls.usage != 'internal' then l.qty_done else 0 end) as in_qty, 
+(case when ls.usage='internal' and ld.usage != 'internal' then l.qty_done else 0 end) as out_qty,
+(case when ld.usage='internal' and ls.usage != 'internal' then l.total_weight else 0 end) as in_weight, 
+(case when ls.usage='internal' and ld.usage != 'internal' then l.total_weight else 0 end) as out_weight,
 p.team_id, o.partner_id, o.company_id, pk.user_id
 from stock_move o
 join stock_move_line l on l.move_id = o.id
