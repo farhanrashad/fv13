@@ -10,7 +10,7 @@ class StockMove(models.Model):
     
     total_weight = fields.Float('Total Weight', digits=dp.get_precision('Stock Weight'), compute='_get_total_weight', readonly=True)
     
-    def _get_total_weight(self):
+    def _get_total_weight1(self):
         select = 0
         from_clause, where_clause, where_clause_params = ''
         move_line_obj = self.env['stock.move.line']
@@ -31,7 +31,7 @@ class StockMove(models.Model):
             
             
     #@api.depends('move_line_ids')
-    def _get_total_weight1(self):
+    def _get_total_weight(self):
         
         for mv in self:
             sum_weight = 0.0
