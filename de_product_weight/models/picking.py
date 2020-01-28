@@ -12,6 +12,7 @@ class StockMove(models.Model):
     
     def _get_total_weight(self):
         select = 0
+        from_clause, where_clause, where_clause_params = ''
         move_line_obj = self.env['stock.move.line']
         for line in self:
             if len(line.move_line_ids):
