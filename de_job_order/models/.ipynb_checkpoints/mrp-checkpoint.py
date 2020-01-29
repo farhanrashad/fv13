@@ -39,5 +39,27 @@ class MRPProduction(models.Model):
     _inherit = 'mrp.production'
     
     job_order_id = fields.Many2one('job.order', string='Job Order', index=True, ondelete='cascade')
-    ref_sale_id = fields.Many2one('sale.order', string='Sale Order', required=False, ondelete='cascade', index=True, copy=False, readonly=True)
+    #ref_sale_id = fields.Many2one('sale.order', string='Sale Order', required=False, ondelete='cascade', index=True, copy=False, readonly=True)
     categ_id = fields.Many2one("product.category", related='product_id.product_tmpl_id.categ_id', string="Category", readonly=True)
+    
+    #ref_sale_id = fields.Many2one("sale.order",compute="_assign_sale_order", store=False, readonly=True,)
+    ref_sale_id = fields.Many2one("sale.order",related="job_order_id.sale_id", store=True, readonly=True,)
+    
+    def _assign_sale_order(self):
+        #picking_id = self.id
+        for line in self:
+            query = """
+        select distinct j.sale_id from job_order j
+where j.id = %(job_order_id)s 
+            """
+            #self.env['stock.picking'].search([('name', '=', line.group_id.name)],limit=1).purchase_id.id
+            params = {
+                'job_order_id': line.job_order_id.id or 0,
+                
+            }
+            self.env.cr.execute(query, params=params)
+            #cr = self._cr
+            for order in self._cr.dictfetchall():
+                line.update ({
+                    'ref_sale_id': order['sale_id'],
+                })

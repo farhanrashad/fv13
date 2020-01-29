@@ -6,4 +6,5 @@ from . import job_order_rule
 from . import job_order
 from . import sale
 from . import picking
+from . import stock_move
 
