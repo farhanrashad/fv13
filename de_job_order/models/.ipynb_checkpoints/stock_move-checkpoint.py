@@ -48,7 +48,6 @@ where m.id = %(production_id)s
                     'ref_sale_id': order['sale_id'],
                 })
                 
-from odoo.addons import decimal_precision as dp
 class StockMoveLine(models.Model):
     _inherit = 'stock.move.line'
     
@@ -61,4 +60,3 @@ class StockMoveLine(models.Model):
     job_order_id = fields.Many2one("job.order", readonly=True, store=True)
     #job_order2_id = fields.Many2one("job.order", readonly=True, store=True)
     sale_id = fields.Many2one("sale.order", readonly=True, store=True)
-    global_ref = fields.Char(related='sale_id.global_ref', string='Global Ref', store=True)

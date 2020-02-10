@@ -28,11 +28,9 @@
         <field name="inherit_id" ref="stock.view_move_line_form"/>
         <field name="arch" type="xml">
             <field name="reference" position="after">
-                <!--
+                
                 <field name="job_order_id" />
                 <field name="sale_id" />
-                <field name="global_ref" />
--->
             </field>
         </field>
     </record>
@@ -43,11 +41,8 @@
         <field name="inherit_id" ref="stock.view_move_line_tree"/>
         <field name="arch" type="xml">
             <field name="reference" position="after">
-                <!--
                 <field name="job_order_id" />
                 <field name="sale_id" />
-                <field name="global_ref" />
--->
             </field>
         </field>
     </record>
