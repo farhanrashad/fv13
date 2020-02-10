@@ -7,8 +7,8 @@ from odoo.addons import decimal_precision as dp
 class StockMove(models.Model):
     _inherit = 'stock.move'
     
-    job_order_id = fields.Many2one("job.order", compute="_assign_sale_order", store=False, string="Job Order", readonly=True, required=False)
-    ref_sale_id = fields.Many2one("sale.order",compute="_assign_sale_order", store=False, readonly=True,)
+    job_order_id = fields.Many2one("job.order", compute="_assign_sale_order", store=True, string="Job Order", readonly=True, required=False)
+    ref_sale_id = fields.Many2one("sale.order",compute="_assign_sale_order", store=True, readonly=True,)
     
     @api.model
     def _assign_sale_order(self):
