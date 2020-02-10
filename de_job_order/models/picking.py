@@ -8,8 +8,8 @@ class Picking(models.Model):
     _inherit = 'stock.picking'
     
     #job_order_id = fields.Many2one('job.order', related='purchase_id.job_order_id', string='Job Order', readonly=True, store=True)
-    job_order_id = fields.Many2one("job.order", compute="_assign_sale_order", store=False, string="Job Order", readonly=True, required=False)
-    ref_sale_id = fields.Many2one("sale.order",compute="_assign_sale_order", store=False, readonly=True,)
+    job_order_id = fields.Many2one("job.order", compute="_assign_sale_order", store=True, string="Job Order", readonly=True, required=False)
+    ref_sale_id = fields.Many2one("sale.order",compute="_assign_sale_order", store=True, readonly=True,)
     
     def _assign_sale_order(self):
         #picking_id = self.id
@@ -27,7 +27,6 @@ where s.id = %(sale_id)s
             params = {
                 'purchase_id': line.purchase_id.id or 0,
                 'sale_id': line.sale_id.id or 0,
-                'origin': line.origin or '',
             }
             self.env.cr.execute(query, params=params)
             #cr = self._cr

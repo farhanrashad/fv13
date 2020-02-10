@@ -10,6 +10,7 @@ class StockMove(models.Model):
     job_order_id = fields.Many2one("job.order", compute="_assign_sale_order", store=False, string="Job Order", readonly=True, required=False)
     ref_sale_id = fields.Many2one("sale.order",compute="_assign_sale_order", store=False, readonly=True,)
     
+    @api.model
     def _assign_sale_order(self):
         #picking_id = self.id
         for line in self:
@@ -51,5 +52,13 @@ from odoo.addons import decimal_precision as dp
 class StockMoveLine(models.Model):
     _inherit = 'stock.move.line'
     
-    job_order_id = fields.Many2one("job.order", related="move_id.job_order_id", store=False, string="Job Order", readonly=True)
-    ref_sale_id = fields.Many2one("sale.order",related="move_id.ref_sale_id", store=False, readonly=True,)
+    ref_job_order_id = fields.Many2one("job.order", related="move_id.job_order_id", store=False, string="Reference Job Order", readonly=True)
+    ref_sale_id = fields.Many2one("sale.order",related="move_id.ref_sale_id", string="Reference Sale", store=False, readonly=True,)
+    
+    #job_order_id = fields.Many2one("job.order", compute="_assign_sale_order", store=False, string="Job Order", readonly=True, required=False)
+    #ref_sale_id = fields.Many2one("sale.order",compute="_assign_sale_order", store=False, readonly=True,)
+    
+    job_order_id = fields.Many2one("job.order", readonly=True, store=True)
+    #job_order2_id = fields.Many2one("job.order", readonly=True, store=True)
+    sale_id = fields.Many2one("sale.order", readonly=True, store=True)
+    global_ref = fields.Char(related='sale_id.global_ref', string='Global Ref', store=True)

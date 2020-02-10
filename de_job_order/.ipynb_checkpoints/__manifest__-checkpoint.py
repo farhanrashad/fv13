@@ -17,10 +17,10 @@
     # Check https://github.com/odoo/odoo/blob/12.0/odoo/addons/base/data/ir_module_category_data.xml
     # for the full list
     'category': 'Manufacturing',
-    'version': '2.0',
+    'version': '2.1',
 
     # any module necessary for this one to work correctly
-    'depends': ['base','product','mrp','sale','stock','purchase','sale_management'],
+    'depends': ['base','product','mrp','sale','stock','purchase','sale_management','de_sale_global_ref'],
 
     # always loaded
     'data': [
