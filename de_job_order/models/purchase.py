@@ -11,5 +11,6 @@ class PurchaseOrder(models.Model):
     _inherit = 'purchase.order'
     
     job_order_id = fields.Many2one('job.order', string='Job Order', index=True, ondelete='cascade')
+    sale_id = fields.Many2one("sale.order",related="job_order_id.sale_id", string="Sale Order", store=True, readonly=True,)
                 
         

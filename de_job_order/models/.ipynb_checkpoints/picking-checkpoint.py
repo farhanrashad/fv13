@@ -8,21 +8,28 @@ class Picking(models.Model):
     _inherit = 'stock.picking'
     
     #job_order_id = fields.Many2one('job.order', related='purchase_id.job_order_id', string='Job Order', readonly=True, store=True)
-    job_order_id = fields.Many2one("job.order", compute="_assign_sale_order", store=True, string="Job Order", readonly=True, required=False)
-    ref_sale_id = fields.Many2one("sale.order",compute="_assign_sale_order", store=True, readonly=True,)
+    job_order_id = fields.Many2one("job.order", compute="_assign_sale_order", store=False, string="Job Order", readonly=True, required=False)
+    ref_sale_id = fields.Many2one("sale.order",compute="_assign_sale_order", store=False, readonly=True,)
     
+    def _assign_sale_order2(self):
+        #move_line_obj = self.env['stock.move.line'].search[()]
+        for line in self:
+            line.update({
+                'ref_sale_id': line.sale_id.id
+            })
+        
     def _assign_sale_order(self):
         #picking_id = self.id
         for line in self:
             query = """
-        
-        select p.job_order_id,j.sale_id from purchase_order p
-left join job_order j on j.id = p.job_order_id
+            select max(a.job_order_id) as job_order_id,max(a.sale_id) as sale_id from (
+select p.job_order_id,p.sale_id from purchase_order p
 where p.id = %(purchase_id)s
 union all
 select j.id as job_order_id, s.id as sale_id from sale_order s
 left join job_order j on j.sale_id = s.id
 where s.id = %(sale_id)s
+) a
             """
             params = {
                 'purchase_id': line.purchase_id.id or 0,
