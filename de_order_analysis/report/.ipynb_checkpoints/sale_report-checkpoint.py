@@ -64,7 +64,7 @@ left join res_users u on o.user_id = u.id
 left join crm_team r on p.team_id = r.id
 where o.state in ('purchase','done')
 union all
-select o.id, o.global_ref, o.name as name,o.date_start as date, t.categ_id, m.product_tmpl_id, o.product_id as product_id, t.uom_id as product_uom, o.product_uom_qty, (o.product_uom_qty - o.product_qty) as qty_delivered, o.production_weight as order_weight, j.name as job_order, 0 as in_qty, 0 as out_qty, 0 as in_weight, 0 as out_weight, p.team_id, s.partner_id, o.company_id, o.user_id
+select o.id, s.global_ref, o.name as name,o.date_start as date, t.categ_id, m.product_tmpl_id, o.product_id as product_id, t.uom_id as product_uom, o.product_uom_qty, (o.product_uom_qty - o.product_qty) as qty_delivered, o.production_weight as order_weight, j.name as job_order, 0 as in_qty, 0 as out_qty, 0 as in_weight, 0 as out_weight, p.team_id, s.partner_id, o.company_id, o.user_id
 from job_order j
 join sale_order s on j.sale_id = s.id
 join mrp_production o on o.job_order_id = j.id
@@ -90,12 +90,9 @@ join stock_move_line l on l.move_id = o.id
 join stock_location ls on o.location_id = ls.id
 join stock_location ld on o.location_dest_id = ld.id
 left join stock_picking pk on o.picking_id =pk.id
-left join purchase_order_line pl on o.purchase_line_id = pl.id
-left join purchase_order po on pl.order_id = po.id
-left join sale_order_line sl on o.sale_line_id = sl.id
-left join sale_order so on sl.order_id = so.id
+left join sale_order so on l.sale_id = so.id
 left join mrp_production mo on o.production_id = mo.id
-left join job_order j on j.sale_id = so.id or po.job_order_id = j.id or mo.job_order_id = j.id
+left join job_order j on l.job_order_id = j.id
 left join res_partner p on o.partner_id = p.id
 join product_product m on o.product_id = m.id
 join product_template t on m.product_tmpl_id = t.id
