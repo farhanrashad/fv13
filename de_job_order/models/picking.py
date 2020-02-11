@@ -21,6 +21,7 @@ class Picking(models.Model):
     def _assign_sale_order(self):
         #picking_id = self.id
         for line in self:
+            picking = self.env['stock.picking'].search([('name', '=', line.group_id.name)],limit=1)
             query = """
             select max(a.job_order_id) as job_order_id,max(a.sale_id) as sale_id from (
 select p.job_order_id,p.sale_id from purchase_order p
@@ -37,10 +38,11 @@ where s.id = %(sale_id)s
             }
             self.env.cr.execute(query, params=params)
             #cr = self._cr
+            
             for order in self._cr.dictfetchall():
                 line.update ({
-                    'job_order_id': order['job_order_id'],
-                    'ref_sale_id': order['sale_id'],
+                    'job_order_id': order['job_order_id'] or picking.job_order_id.id,
+                    'ref_sale_id': order['sale_id'] or picking.ref_sale_id.id,
                 })
         
     def _assign_sale_order1(self):
