@@ -16,23 +16,31 @@ class SaleOrder(models.Model):
     
 
     def _compute_delivert_status(self):
+        status = ''
         for line in self:
             moves = line.order_line.mapped('move_ids')
             moves_not_cancel = self.env['stock.move']
             if moves:
-                line.delivery_status = 'Draft'
+                status = 'Draft'
                 moves_not_cancel = moves.filtered(lambda x: x.state != 'cancel')
                 if all(m.state == 'cancel' for m in moves):
-                    line.delivery_status = 'Cancelled'
+                    status = 'Cancelled'
             if moves_not_cancel:
                 if any(m.state not in ('assigned', 'done') for m in moves_not_cancel):
-                    line.delivery_status = 'Waiting'
+                    status = 'Waiting'
                 if all(m.state == 'assigned' for m in moves_not_cancel):
-                    line.delivery_status = 'Ready'
+                    status = 'Ready'
                 if any(m.state == 'done' for m in moves_not_cancel):
-                    line.delivery_status = 'Partially Delivered'
+                    status = 'Partially Delivered'
                 if all(m.state == 'done' for m in moves_not_cancel):
-                    line.delivery_status = 'Fully Delivered'
+                    status = 'Fully Delivered'
+            
+            if not(status):
+                status = ' '
+            
+            line.update({
+                'delivery_status': status
+            })
 
     def _compute_payment(self):
         payment = 0
