@@ -10,7 +10,7 @@ from odoo.addons import decimal_precision as dp
 class SaleOrder(models.Model):
     _inherit = "sale.order"
 
-    delivery_status = fields.Char(string='Delivery Status', compute="_compute_delivert_status")
+    delivery_status = fields.Char(string='Delivery Status', compute="_compute_delivert_status",default=' ')
     due_amount = fields.Monetary(string='Due Amount', compute='_compute_payment')
     
     
