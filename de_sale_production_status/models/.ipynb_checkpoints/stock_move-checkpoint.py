@@ -24,7 +24,8 @@ class StockMove(models.Model):
     def write(self, vals):
         res = super(StockMove,self).write(vals)
         sale = self.env['sale.order'].search([('id','=',self.ref_sale_id.id)])
-        sale.update({
-            'production_status': (self.product_id.categ_id.name + ' ' + self.picking_type_id.name)
-        })
+        for line in self:
+            sale.update({
+                'production_status': line.product_id.categ_id.name + ' ' + str(line.picking_type_id.name)
+            })
         return res

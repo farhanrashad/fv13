@@ -26,11 +26,16 @@ class SaleOrder(models.Model):
             self.env.cr.execute(select, where_clause_params)
             line.production_status = self.env.cr.fetchone()[0] or ''
             
-    def button_confirm(self):
-        res = super(SaleOrder,self).button_confirm()
-        sale = self.env['sale.order'].search([('id','=',self.sale_id.id)])
-        
+    def action_confirm(self):
+        res = super(SaleOrder,self).action_confirm()        
         self.update({
             'production_status': 'Pending'
+        })
+        return res
+    
+    def action_cancel(self):
+        res = super(SaleOrder,self).action_cancel()        
+        self.update({
+            'production_status': 'Cancelled'
         })
         return res
