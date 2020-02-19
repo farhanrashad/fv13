@@ -12,6 +12,8 @@ class SaleOrder(models.Model):
 
     delivery_status = fields.Char(string='Delivery Status', compute="_compute_delivert_status")
     due_amount = fields.Monetary(string='Due Amount', compute='_compute_payment')
+    
+    
 
     def _compute_delivert_status(self):
         for so in self:
@@ -29,6 +31,7 @@ class SaleOrder(models.Model):
                     so.delivery_status = 'Ready'
                 if any(m.state == 'done' for m in moves_not_cancel):
                     so.delivery_status = 'Partially Delivered'
+                    so.is_partially_delivery = True
                 if all(m.state == 'done' for m in moves_not_cancel):
                     so.delivery_status = 'Fully Delivered'
 
