@@ -1,0 +1,13 @@
+<odoo>
+	<record id="view_order_form_inherit" model="ir.ui.view">
+        <field name="name">view.order.form.inherit</field>
+        <field name="model">sale.order</field>
+        <field name="inherit_id" ref="sale.view_order_form"/>
+        <field name="arch" type="xml">
+            
+            <field name="client_order_ref" position="after">
+                <field name="tag_ids" widget="many2many_tags" options="{'color_field': 'color', 'no_create_edit': True}"/>
+            </field>
+        </field>
+    </record>
+</odoo>
