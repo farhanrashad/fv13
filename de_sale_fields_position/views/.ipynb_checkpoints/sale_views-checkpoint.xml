@@ -24,7 +24,7 @@
            <xpath expr="//field[@name='partner_id']" position="attributes">
                 <attribute name="optional">hide</attribute>
             </xpath>
-            <xpath expr="//field[@name='create_date']" position="attributes">
+            <xpath expr="//field[@name='expected_date']" position="attributes">
                 <attribute name="optional">hide</attribute>
             </xpath>
             <xpath expr="//field[@name='user_id']" position="attributes">
