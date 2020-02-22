@@ -10,4 +10,28 @@
             </field>
         </field>
     </record>
+    
+    <record id="sale_view_quotation_tree_inherit" model="ir.ui.view">
+        <field name="name">sale.view.quotation.tree.inherit</field>
+        <field name="model">sale.order</field>
+        <field name="inherit_id" ref="sale.view_quotation_tree_with_onboarding"/>
+        <field name="arch" type="xml">
+           <xpath expr="//field[@name='state']" position="after">
+               <field name="tag_ids" string="Order Status" widget="many2many_tags" optional="show" options="{'color_field': 'color', 'no_create_edit': True}"/>
+            </xpath>
+        </field>
+    </record>
+    
+    <record id="sale_view_order_tree_inherit" model="ir.ui.view">
+        <field name="name">sale.view.order.tree.inherit</field>
+        <field name="model">sale.order</field>
+        <field name="inherit_id" ref="sale.view_order_tree"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='state']" position="after">
+                <field name="tag_ids" string="Order Status" widget="many2many_tags" optional="show" options="{'color_field': 'color', 'no_create_edit': True}"/>
+            </xpath>
+        </field>
+    </record>
+    
+    
 </odoo>
