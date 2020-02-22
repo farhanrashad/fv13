@@ -16,7 +16,7 @@
         <field name="inherit_id" ref="sale.view_order_tree"/>
         <field name="arch" type="xml">
             <xpath expr="//field[@name='state']" position="after">
-                <field name="production_status" optional="show" />
+                <field name="production_status" optional="hide" />
             </xpath>
         </field>
     </record>
@@ -27,7 +27,7 @@
         <field name="inherit_id" ref="sale.view_quotation_tree_with_onboarding"/>
         <field name="arch" type="xml">
            <xpath expr="//field[@name='state']" position="after">
-                <field name="production_status" optional="show" />
+                <field name="production_status" optional="hide" />
             </xpath>
         </field>
     </record>
