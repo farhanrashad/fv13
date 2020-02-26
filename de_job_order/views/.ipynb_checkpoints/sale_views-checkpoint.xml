@@ -10,7 +10,7 @@
                 </button>
             </div>
             <field name="client_order_ref" position="after">
-                <field name="job_order_ids" />
+                <field name="job_order_ids" invisible="1" />
             </field>
         </field>
     </record>
