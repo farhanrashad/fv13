@@ -1,23 +1,23 @@
 # -*- coding: utf-8 -*-
 {
-    'name': "de_sale_tags",
+    'name': "Sale Tags",
 
     'summary': """
-        Short (1 phrase/line) summary of the module's purpose, used as
-        subtitle on modules listing or apps.openerp.com""",
+    Sale Tags to categorized orders
+        """,
 
     'description': """
-        Long description of module's purpose
+        Sale Tags to categorized orders
     """,
 
-    'author': "My Company",
-    'website': "http://www.yourcompany.com",
+    'author': "Dynexcel",
+    'website': "http://www.dynexcel.com",
 
     # Categories can be used to filter modules in modules listing
     # Check https://github.com/odoo/odoo/blob/13.0/odoo/addons/base/data/ir_module_category_data.xml
     # for the full list
-    'category': 'Uncategorized',
-    'version': '0.2',
+    'category': 'Sale',
+    'version': '0.3',
 
     # any module necessary for this one to work correctly
     'depends': ['base','sale'],

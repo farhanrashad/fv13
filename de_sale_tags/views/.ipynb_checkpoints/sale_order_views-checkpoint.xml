@@ -33,5 +33,20 @@
         </field>
     </record>
     
+    <record id="view_inherit_sale_order_filter" model="ir.ui.view">
+            <field name="name">view.inherit.sale.order.search</field>
+            <field name="model">sale.order</field>
+            <field name="inherit_id" ref="sale.sale_order_view_search_inherit_quotation"/>
+            <field name="arch" type="xml">
+            	<xpath expr="//filter[@name='my_quotation']" position="after">
+            		<separator/>
+                    <filter name="tag_inprocess" string="In Process" domain="[('tag_ids.name','=','In-Process')]"/>
+                    <filter name="tag_shipped" string="Shipped" domain="[('tag_ids.name','=','Shipped')]"/>
+                    <filter name="tag_pending" string="Pending" domain="[('tag_ids.name','=','Pending')]"/>
+            	</xpath>
+            </field>
+        </record>
+
+    
     
 </odoo>
