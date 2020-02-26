@@ -12,15 +12,7 @@
                         <span t-if="o.sale_id">Order # </span>
                         <span t-field="o.id"/>/
                         
-                        
-                        
-                        
                         <span t-field="o.sale_id.name"/>-
-                    
-                        
-                        
-                        
-                        
                         
                         <span t-field="o.sale_id.global_ref"/>
                     </h4>
@@ -57,7 +49,7 @@
                     <thead>
                         <tr>
                             <th rowspan="2" name="th_description" class="text-center">Description</th>
-                            <th rowspan="2" name="th_description" class="text-center"></th>
+                            <th rowspan="2" name="th_description" class="text-center"/>
                             <th colspan="2" class="text-center">Unit Weight</th>
                             <th colspan="2" class="text-center">Finish</th>
                             <th colspan="2" class="text-center">B</th>
@@ -85,10 +77,9 @@
                         <t t-set="components" t-value="[]"/>
                         <t t-foreach="request.env['mrp.production'].search([])" t-as="p">
                             <t t-if="(p.job_order_id.id==o.id and p.product_id.categ_id.name=='Greige')">
-                                <t t-set="products" t-value="products+[p.product_id.product_tmpl_id]"></t>
+                                <t t-set="products" t-value="products+[p.product_id.product_tmpl_id]"/>
                                 <t t-foreach="p.move_raw_ids" t-as="line_ids">
-                                    <t t-set="components" t-value="components+[line_ids.product_id.product_tmpl_id]"></t>
-                                </t>
+                                    <t t-set="components" t-value="components+[line_ids.product_id.product_tmpl_id]"/></t>
                             </t>
                         </t>
                         <tr t-foreach="set(products)" t-as="product">
@@ -129,25 +120,21 @@
                                         <t t-set="w" t-value="q+prd.production_weight"/></t>
                                 </t>
                             </t>
-                            
                             <!--bgrade and hard waste-->
                             <t t-set="bq" t-value="0"/>
                             <t t-set="hq" t-value="0"/>
                             <t t-foreach="o.job_order_lines" t-as="line">
                                 <t t-if="product.ref_product_tmpl_id.id==line.product_tmpl_id.id">
                                     <t t-if="line.job_rule_id.code=='GQ'">
-                                        <t t-set="bq" t-value="line.quantity"/>
-                                    </t>
+                                        <t t-set="bq" t-value="line.quantity"/></t>
                                     <t t-elif="line.job_rule_id.code=='HWKG'">
-                                        <t t-set="hq" t-value="line.quantity"/>
-                                        </t>
+                                        <t t-set="hq" t-value="line.quantity"/></t>
                                 </t>
                             </t>
-                            
-                            
-                            
-                            <td></td>
-                            <td><span t-esc="bq"/></td>
+                            <td/>
+                            <td>
+                                <span t-esc="bq"/>
+                            </td>
                             <td>
                                 <span t-esc="q"/>
                                 <span t-esc="product.uom_id.name"/>
@@ -155,12 +142,12 @@
                             <td>
                                 <span t-esc="w"/>
                             </td>
-                            
-                            
-                            <td></td>
-                            <td><span t-esc="hq"/></td>
-                            <td></td>
-                            <td></td>
+                            <td/>
+                            <td>
+                                <span t-esc="hq"/>
+                            </td>
+                            <td/>
+                            <td/>
                         </tr>
                         <!--above code-->
                         <!--
@@ -197,6 +184,53 @@
                             <span t-esc="component.uom_id.name"/>
                         </td>
                     </tr>
+                </table>
+                <div class="row mt32 mb16 text-center" style="text-align:center;width:100%;display:block;" id="Heading">
+                    <h3 class="text-center mb0">Production Details</h3>
+                </div>
+                <table class="table table-sm table-striped table-bordered">
+                    <tr>
+                        <th>Description</th>
+                        <th>Composition</th>
+                        <th>Quantity</th>
+                    </tr>
+                    <t t-foreach="request.env['mrp.production'].search([])" t-as="prd">
+                        <t t-set="tot_qty" t-value="0"/>
+                        <t t-if="(prd.job_order_id.id==o.id and prd.product_id.categ_id.name=='Greige')">
+                            <tr>
+                                <td colspan="3">
+                                    <strong>
+                                        <span t-field="prd.product_id"/>
+                                    </strong>
+                                </td>
+                            </tr>
+                            <t t-if="prd.job_order_id.id==o.id">
+                                <tr t-foreach="prd.move_raw_ids" t-as="line">
+                                    <t t-set="tot_qty" t-value="tot_qty+line.product_qty"/>
+                                    <td>
+                                        <span t-field="line.product_id"/>
+                                    </td>
+                                    <td>
+                                        <span t-field="line.bom_line_id.material_desc"/>
+                                    </td>
+                                    <td>
+                                        <span t-field="line.product_qty"/>
+                                        <span t-field="line.product_id.uom_id"/>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td colspan="2">
+                                        <strong>Total</strong>
+                                    </td>
+                                    <td>
+                                        <strong>
+                                            <span t-esc="tot_qty"/>
+                                        </strong>
+                                    </td>
+                                </tr>
+                            </t>
+                        </t>
+                    </t>
                 </table>
             </div>
             </t>
