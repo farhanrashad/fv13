@@ -32,6 +32,22 @@
             <span t-esc="round(line.quantity,0)"/>
         </td>
     </xpath>
+	
+	<xpath expr="/t/t/t[2]/div[1]" position="attributes">
+        <attribute name="class" separator=" " add="h2"/>
+    </xpath>
+    <xpath expr="/t/t/div/h2" position="replace">
+        <h4>
+            <span t-if="o.type == 'out_invoice' and o.state == 'posted'">Invoice</span>
+            <span t-if="o.type == 'out_invoice' and o.state == 'draft'">Draft Invoice</span>
+            <span t-if="o.type == 'out_invoice' and o.state == 'cancel'">Cancelled Invoice</span>
+            <span t-if="o.type == 'out_refund'">Credit Note</span>
+            <span t-if="o.type == 'in_refund'">Vendor Credit Note</span>
+            <span t-if="o.type == 'in_invoice'">Vendor Bill</span>
+            <span t-if="o.name != '/'" t-field="o.name"/>
+        </h4>
+    </xpath>
+	
     <xpath expr="/t/t/div" position="inside">
         <div class="row mt96">
             <div class="col-3">
@@ -42,6 +58,7 @@
             </div>
         </div>
     </xpath>
+	
         
     </template>
 </odoo>
