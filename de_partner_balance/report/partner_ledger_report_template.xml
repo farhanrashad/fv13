@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <template id="de_partner_balance_pdf_report">
+        <t t-call="web.html_container">
+            <t t-call="web.internal_layout">
+                <div class="page">
+                    <h2 class="text-center">Partner Balances</h2>
+                    <div class="row mt32">
+                        <div class="col-xs-6">
+                             <p><span style="display:inline-block;width:100px;min-width:100px;"><strong>From Date: </strong></span><span t-esc="data['start_date']" t-options="{'widget': 'date'}" /></p>
+                        </div>
+                        <div class="col-xs-6">
+                           
+                            <p><span style="display:inline-block;width:100px;min-width:100px;"><strong>To Date: </strong></span><span t-esc="data['end_date']" t-options="{'widget': 'date'}" /></p>
+                        </div>
+                    </div>
+                </div>
+                <t t-set="tot_obal" t-value="0"/>
+                <t t-set="tot_debit" t-value="0"/>
+                <t t-set="tot_credit" t-value="0"/>
+                <t t-set="tot_cbal" t-value="0"/>
+               <!-- 
+                <t t-set="cities" t-value="[]"/>
+                <t t-foreach="dat" t-as="c">
+                    <t t-set="cities" t-value="cities+c['city']"></t>
+                </t>
+-->
+                <table class="table table-striped table-bordered" name="account_lines_table">
+                    <thead class="thead-dark">
+                        <tr class="table-active">
+                            <th>City</th>
+                            <th>Partner</th>
+                            <th>Initial Balance</th>
+                            <th>Debit</th>
+                            <th>Credit</th>
+                            <th>Closing Balance</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                       <tr t-foreach="dat" t-as="d" style="border-bottom:1px solid #000;">
+                           
+                           <t t-set="tot_obal" t-value="tot_obal+d['obal']"/>
+                           <t t-set="tot_debit" t-value="tot_debit+d['debit']"/>
+                           <t t-set="tot_credit" t-value="tot_credit+d['credit']"/>
+                           <t t-set="tot_cbal" t-value="tot_cbal+d['cbal']"/>
+
+                           <!--<span t-esc="d['date']" t-options="{'widget': 'date'}" />-->
+                            <td><span t-esc="d['city']"/></td>
+                           <td><span t-esc="d['partner_name']"/></td>
+                           <td class="text-right"><t t-esc="'{0:,.2f}'.format(float(d['obal']))" /></td>
+                            <td class="text-right"><t t-esc="'{0:,.2f}'.format(float(d['debit']))" /></td>
+                            <td class="text-right"><t t-esc="'{0:,.2f}'.format(float(d['credit']))" /></td>
+                            <td class="text-right"><t t-esc="'{0:,.2f}'.format(float(d['cbal']))" /></td>
+                        </tr>
+                        <tr>
+                            <td><strong>Total</strong></td>
+                            <td class="text-right"><strong><t t-esc="tot_obal" /></strong></td>
+                            <td class="text-right"><strong><t t-esc="tot_debit" /></strong></td>
+                            <td class="text-right"><strong><t t-esc="tot_credit" /></strong></td>
+                            <td class="text-right"><strong><t t-esc="tot_cbal" /></strong></td>
+                            
+                        </tr>
+                    </tbody>
+                  </table>
+            </t>
+        </t>
+    </template>
+</odoo>
