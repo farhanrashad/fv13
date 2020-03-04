@@ -1,13 +1,13 @@
 # -*- coding: utf-8 -*-
 {
-    'name': "Sale Order Approval",
+    'name': "HR Training",
 
     'summary': """
-        Sale Order Approval
-        """,
+                Hr Training Program
+                """,
 
     'description': """
-        Sale Order Approval- Only users with particular group access will be able to approve the order.
+        Hr Training Program- This Module will provide all the information related to courses and session in the training program.
     """,
 
     'author': "Dynexcel",
@@ -16,18 +16,19 @@
     # Categories can be used to filter modules in modules listing
     # Check https://github.com/odoo/odoo/blob/13.0/odoo/addons/base/data/ir_module_category_data.xml
     # for the full list
-    'category': 'sale',
-    'version': '0.4',
+    'category': 'Training',
+    'version': '0.3',
 
     # any module necessary for this one to work correctly
-    'depends': ['base', 'sale'],
+    'depends': ['base', 'mail', 'hr', 'l10n_cn'],
 
     # always loaded
     'data': [
-        # 'security/ir.model.access.csv',
+        'security/ir.model.access.csv',
         'views/views.xml',
         'views/templates.xml',
-        'security/security.xml',
+        'views/training.xml',
+        'data/sequence.xml',
     ],
     # only loaded in demonstration mode
     'demo': [

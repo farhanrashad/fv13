@@ -1,0 +1,191 @@
+<odoo>
+  <data>
+    <record model="ir.ui.view" id="hr_disciplinary_case_tree">
+      <field name="name">hr.disciplinary.case.tree</field>
+      <field name="model">hr.disciplinary.case</field>
+      <field name="arch" type="xml">
+        <tree>
+          <field name="name_seq"/>
+            <field name="title"/>
+          <field name="employee_name"/>
+          <field name="description_field"/>
+
+<!--          <field name="pateint_name"/>-->
+<!--          <field name="patient_age"/>-->
+        </tree>
+      </field>
+    </record>
+
+     <record model="ir.ui.view" id="hr_disciplinary_action_tree">
+      <field name="name">hr.disciplinary.action.tree</field>
+      <field name="model">hr.disciplinary.action</field>
+      <field name="arch" type="xml">
+        <tree>
+          <field name="desciplinart_case"/>
+          <field name="action_type"/>
+          <field name="action_created_by"/>
+          <field name="owner"/>
+          <field name="due_date" optional="hide"/>
+          <field name="status" optional="hide"/>
+
+
+        </tree>
+      </field>
+    </record>
+    <record model="ir.ui.view" id="hr_disciplinary_case_form">
+      <field name="name">hr.disciplinary.case.form</field>
+      <field name="model">hr.disciplinary.case</field>
+<!--      <field name="view_mode">form</field>-->
+      <field name="arch" type="xml">
+        <form>
+
+            <sheet>
+                <div  style="background-color:green;height=40px">
+                    <p style="color:white;"><h1>Add Disciplinary Case</h1></p>
+                </div>
+                 <div>
+                    <h1>
+                         <field name="name_seq"/>
+                    </h1>
+                </div>
+                <group>
+                    <group>
+                          <field name="title"/>
+                          <field name="employee_name"/>
+                    </group>
+                    <group>
+                          <field name="description_field"/>
+                    </group>
+                </group>
+            </sheet>
+        </form>
+      </field>
+    </record>
+       <record model="ir.ui.view" id="hr_disciplinary_action_form">
+      <field name="name">hr.disciplinary.action.form</field>
+      <field name="model">hr.disciplinary.action</field>
+<!--      <field name="view_mode">form</field>-->
+      <field name="arch" type="xml">
+        <form>
+
+            <sheet>
+
+                <group>
+                    <group>
+                         <field name="desciplinart_case"/>
+                         <field name="owner"/>
+                    </group>
+                    <group>
+                         <field name="action_type"/>
+                         <field name="due_date"/>
+                    </group>
+                     <group>
+                       <field name="action_created_by"/>
+                       <field name="status"/>
+                    </group>
+                </group>
+                <group>
+                    <field name="description_page"/>
+                </group>
+                <div style="text-align:right;">
+                    <button name="test" string="CANCEL" style="background-color:orange;color:white;"/>
+                    <button name="test" string="VIEW DISCIPLINARY CASE" style="background-color:orange;color:white;"/>
+                    <button name="test" string="SAVE" style="background-color:green;color:white;"/>
+                </div>
+            </sheet>
+        </form>
+      </field>
+    </record>
+
+
+    <!-- explicit list view definition -->
+<!--
+    <record model="ir.ui.view" id="de_disciplinary_action.list">
+      <field name="name">de_disciplinary_action list</field>
+      <field name="model">de_disciplinary_action.de_disciplinary_action</field>
+      <field name="arch" type="xml">
+        <tree>
+          <field name="name"/>
+          <field name="value"/>
+          <field name="value2"/>
+        </tree>
+      </field>
+    </record>
+-->
+
+    <!-- actions opening views on models -->
+<!--
+    <record model="ir.actions.act_window" id="de_disciplinary_action.action_window">
+      <field name="name">de_disciplinary_action window</field>
+      <field name="res_model">de_disciplinary_action.de_disciplinary_action</field>
+      <field name="view_mode">tree,form</field>
+    </record>
+-->
+
+    <!-- server action to the one above -->
+<!--
+    <record model="ir.actions.server" id="de_disciplinary_action.action_server">
+      <field name="name">de_disciplinary_action server</field>
+      <field name="model_id" ref="model_de_disciplinary_action_de_disciplinary_action"/>
+      <field name="state">code</field>
+      <field name="code">
+        action = {
+          "type": "ir.actions.act_window",
+          "view_mode": "tree,form",
+          "res_model": model._name,
+        }
+      </field>
+    </record>
+-->
+
+    <!-- Top menu item -->
+<!--
+    <menuitem name="de_disciplinary_action" id="de_disciplinary_action.menu_root"/>
+-->
+    <!-- menu categories -->
+<!--
+    <menuitem name="Menu 1" id="de_disciplinary_action.menu_1" parent="de_disciplinary_action.menu_root"/>
+    <menuitem name="Menu 2" id="de_disciplinary_action.menu_2" parent="de_disciplinary_action.menu_root"/>
+-->
+    <!-- actions -->
+<!--
+    <menuitem name="List" id="de_disciplinary_action.menu_1_list" parent="de_disciplinary_action.menu_1"
+              action="de_disciplinary_action.action_window"/>
+    <menuitem name="Server to list" id="de_disciplinary_action" parent="de_disciplinary_action.menu_2"
+              action="de_disciplinary_action.action_server"/>
+-->
+      <record id="case_action" model="ir.actions.act_window">
+            <field name="name">disciplinary</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">hr.disciplinary.case</field>
+<!--            <field name="view_type">form</field>-->
+            <field name="view_mode">tree,form</field>
+<!--            <field name="context">{"search_default_male":1}</field>-->
+<!--            <field name="view_id" ref="view_account_list"/>-->
+            <field name="help" type="html">
+              <p class="o_view_nocontent_smiling_face">
+                Add a new case
+              </p>
+
+            </field>
+        </record>
+    <record id="action_action" model="ir.actions.act_window">
+            <field name="name">case action</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">hr.disciplinary.action</field>
+<!--            <field name="view_type">form</field>-->
+            <field name="view_mode">tree,form</field>
+<!--            <field name="context">{"search_default_male":1}</field>-->
+<!--            <field name="view_id" ref="view_account_list"/>-->
+            <field name="help" type="html">
+              <p class="o_view_nocontent_smiling_face">
+                Add a new action
+              </p>
+
+            </field>
+        </record>
+       <menuitem name="Employee Disciplinary Action" id="disciplinary_root" sequence="2" web_icon="de_disciplinary_action.static/description/icon.png"/>
+      <menuitem name="Disciplinary Case" id="action_discip" parent="disciplinary_root" action="case_action" />
+      <menuitem name="Disciplinary Action" id="action_act" parent="disciplinary_root" action="action_action" />
+  </data>
+</odoo>

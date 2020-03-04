@@ -1,13 +1,13 @@
 # -*- coding: utf-8 -*-
 {
-    'name': "Sale Order Approval",
+    'name': "de_disciplinary_action",
 
     'summary': """
-        Sale Order Approval
-        """,
+       desciplinary action define here
+        subtitle on modules listing or apps.openerp.com""",
 
     'description': """
-        Sale Order Approval- Only users with particular group access will be able to approve the order.
+        Long description of module's purpose
     """,
 
     'author': "Dynexcel",
@@ -16,18 +16,20 @@
     # Categories can be used to filter modules in modules listing
     # Check https://github.com/odoo/odoo/blob/13.0/odoo/addons/base/data/ir_module_category_data.xml
     # for the full list
-    'category': 'sale',
-    'version': '0.4',
+    'category': 'Tools',
+    'version': '0.1',
 
     # any module necessary for this one to work correctly
-    'depends': ['base', 'sale'],
+    'depends': ['base'],
 
     # always loaded
     'data': [
-        # 'security/ir.model.access.csv',
+        'security/ir.model.access.csv',
         'views/views.xml',
+        'reports/report.xml',
+        'reports/disciplinary_case.xml',
+        'data/sequence.xml',
         'views/templates.xml',
-        'security/security.xml',
     ],
     # only loaded in demonstration mode
     'demo': [

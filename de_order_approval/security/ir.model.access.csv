@@ -1,2 +1,2 @@
 id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
-access_sale_order_approval_reason,access.sale.order.approval.reason,model_sale_order_approval_reason,base.group_user,1,1,1,1
+access_de_approval_state_de_approval_state,de_approval_state.de_approval_state,model_de_approval_state_de_approval_state,base.group_user,1,1,1,1

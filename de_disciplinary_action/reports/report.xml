@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <report
+            id="action_disciplinary_case"
+            string="disciplinary case"
+            model="hr.disciplinary.case"
+            report_type="qweb-pdf"
+            file="de_disciplinary_action.report_case"
+            name="de_disciplinary_action.report_case" />
+     <report
+            id="action_disciplinary_case_action"
+            string="disciplinary  action"
+            model="hr.disciplinary.action"
+            report_type="qweb-pdf"
+            file="de_disciplinary_action.report_action"
+            name="de_disciplinary_action.report_action" />
+<!--     <report-->
+<!--            id="action_disciplinary_xlx"-->
+<!--            string="case Excel"-->
+<!--            model="hr.disciplinary.case"-->
+<!--            report_type="xlsx"-->
+<!--            file="de_disciplinary_action.report_case_xls"-->
+<!--            name="de_disciplinary_action.report_case_xls" />-->
+</odoo>

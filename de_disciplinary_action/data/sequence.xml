@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <data noupdate="1">
+       <record id="hr_desciplinary_seq" model="ir.sequence">
+           <field name="name">hr disciplinary case Sequence</field>
+           <field name="code">hr.disciplinary.case.sequence</field>
+           <field name="prefix">HR</field>
+           <field name="padding">3</field>
+           <field name="company_id" eval="False"/>
+       </record>
+    </data>
+</odoo>

@@ -1,0 +1,130 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+        <template id="report_case">
+        <t t-call="web.html_container">
+            <t t-foreach="docs" t-as="o">
+                 <t t-call="web.external_layout">
+
+<!--                <t t-call="report_patient_card"/>-->
+                     <div class="page">
+                          <div  style="background-color:green;height=70px;color:white;">
+                    <p style=""><h1>Add Disciplinary Case</h1></p>
+                </div>
+                                                          <div class="col-xs-8" style="margin:auto">
+                                     <table class="table table-condensed" style="border: 3px solid black !important;">
+                                         <tr>
+                                             <td width="50%">
+                                             <table>
+                                                     <tr>
+                                                         <td>
+                                                            <p style="text-align:right;"><strong>Employee Name:</strong></p>
+                                                            <p style="text-align:right;"><strong>Description:</strong></p>
+                                                         </td>
+                                                         <td>
+                                                             <p style="text-align:left;padding-left:10px;" t-field="o.employee_name"/>
+                                                             <p style="text-align:left;padding-left:10px;" t-field="o.description_field"/>
+                                                         </td>
+                                                     </tr>
+                                                 </table>
+                                             </td>
+                                             <td width="50%">
+                                                 <table>
+                                                     <tr>
+                                                         <td>
+                                                            <p style="text-align:right;"><strong>Case Name:</strong></p>
+                                                         </td>
+                                                         <td>
+                                                             <p style="text-align:left;padding-left:10px;" t-field="o.title"/>
+
+                                                         </td>
+                                                     </tr>
+                                                 </table>
+                                             </td>
+                                         </tr>
+                                     </table>
+                                 </div>
+
+                         </div>
+
+
+            </t>
+        </t>
+        </t>
+    </template>
+
+      <template id="report_action">
+        <t t-call="web.html_container">
+            <t t-foreach="docs" t-as="o">
+                 <t t-call="web.external_layout">
+
+<!--                <t t-call="report_patient_card"/>-->
+                     <div class="page">
+                              <h2>Add Action</h2>
+                                                          <div class="col-xs-8" style="margin:auto">
+                                     <table class="table table-condensed" style="border: 0px solid black !important;">
+                                         <tr>
+                                              <td width="33%">
+                                             <table>
+                                                     <tr>
+                                                         <td>
+                                                            <p style="text-align:right;"><strong>Desciplinary case:</strong></p>
+                                                            <p style="text-align:right;"><strong>Owner:</strong></p>
+                                                            <p style="text-align:right;"><strong>Description:</strong></p>
+                                                         </td>
+                                                         <td>
+                                                             <p style="text-align:left;padding-left:10px;" t-field="o.desciplinart_case"/>
+                                                             <p style="text-align:left;padding-left:10px;" t-field="o.owner"/>
+                                                             <p style="text-align:left;padding-left:10px;" t-field="o.description_page"/>
+                                                         </td>
+                                                     </tr>
+                                                 </table>
+                                             </td>
+                                             <td width="33%">
+                                             <table>
+                                                     <tr>
+                                                         <td>
+                                                            <p style="text-align:right;"><strong>Action Type:</strong></p>
+                                                            <p style="text-align:right;"><strong>Due Date:</strong></p>
+                                                         </td>
+                                                         <td>
+                                                             <p style="text-align:left;padding-left:10px;" t-field="o.action_type"/>
+                                                             <p style="text-align:left;padding-left:10px;" t-field="o.due_date"/>
+                                                         </td>
+                                                     </tr>
+                                                 </table>
+                                             </td>
+                                             <td width="34%">
+                                                 <table>
+                                                     <tr>
+                                                         <td>
+                                                            <p style="text-align:right;"><strong>Action Created By:</strong></p>
+                                                            <p style="text-align:right;"><strong>Status:</strong></p>
+                                                         </td>
+                                                         <td>
+                                                             <p style="text-align:left;padding-left:10px;" t-field="o.action_created_by"/>
+                                                             <p style="text-align:left;padding-left:10px;" t-field="o.status"/>
+
+                                                         </td>
+                                                     </tr>
+                                                 </table>
+                                             </td>
+                                         </tr>
+
+                                     </table>
+
+                                 </div>
+
+                         </div>
+
+   <div style="text-align:right;">
+                    <button name="test" string="CANCEL" style="background-color:orange;color:white;"/>
+                    <button name="test" string="VIEW DISCIPLINARY CASE" height="20%" width="20%" style="background-color:orange;color:white;"/>
+                    <button name="test" string="SAVE" style="background-color:green;color:white;"/>
+                </div>
+            </t>
+        </t>
+        </t>
+    </template>
+
+
+</odoo>

@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+<!--    <template id="report_patient_card">-->
+<!--        <t t-call="web.htmlcontainer">-->
+<!--            <t t-foreach="docs" t-as="doc">-->
+<!--              <h2>Student Card</h2>-->
+<!--            </t>-->
+<!--        </t>-->
+<!--    </template>-->
+    <template id="report_student">
+        <t t-call="web.html_container">
+            <t t-foreach="docs" t-as="o">
+                 <t t-call="web.external_layout">
+<!--                <t t-call="report_patient_card"/>-->
+                     <div class="page">
+                         <br></br>
+                         <br></br>
+                         <br></br>
+                         <div class="oe_structure"/>
+                         <div class="row">
+                             <div class="col-xs-2" style="margin:auto;"></div>
+                             <centre>
+                     <table class="table table-bordered mb-0" style="border: 2px solid black;">
+                    <tr>
+                        <td class="text-center align-middle" style="height: 6rem;">
+                                <img alt="Barcode"  t-att-src="'/report/barcode/?type=%s&amp;value=%s&amp;width=%s&amp;height=%s' % ('EAN13', o.name_seq, 600, 150)" style="width:100%;height:4rem;"/>
+                                <span t-field="o.name_seq"/>
+                        </td>
+                    </tr>
+                </table>
+<!--                                 <div class="col-xs-8" style="margin:auto">-->
+<!--                                     <table class="table table-condensed" style="border: 3px solid black !important;">-->
+<!--                                         <tr>-->
+<!--                                             <td width="40%">-->
+<!--                                               <p style="text-align:center;padding-top:10px;">-->
+<!--                                                   <img t-if="not o.student_image" t-att-src="'modulename/static/src/img/allied.png'" height="120px" border="1" width="120px"/>-->
+<!--                                                   <img t-if="o.student_image" t-att-src="'data:image/png;base64,%s' %to_text(o.student_image)" height="120px" border="1" width="120px"/>-->
+<!--                                               </p>-->
+<!--                                                 <p style="text-align:center;">-->
+<!--                                                     <h2><strong><span t-field="o.name"/></strong></h2>-->
+<!--                                                 </p>-->
+<!--                                             </td>-->
+<!--                                             <td width="60%">-->
+<!--                                                 <table>-->
+<!--                                                     <tr>-->
+<!--                                                         <td>-->
+<!--                                                            <p style="text-align:right;"><strong>Name:</strong></p>-->
+<!--                                                            <p style="text-align:right;"><strong>Age:</strong></p>-->
+<!--                                                            <p style="text-align:right;"><strong>Age group:</strong></p>-->
+<!--                                                         </td>-->
+<!--                                                         <td>-->
+<!--                                                             <p style="text-align:left;padding-left:10px;" t-field="o.name"/>-->
+<!--                                                             <p style="text-align:left;padding-left:10px;" t-field="o.age"/>-->
+<!--                                                             <p style="text-align:left;padding-left:10px;" t-field="o.age_group"/>-->
+<!--                                                         </td>-->
+<!--                                                     </tr>-->
+<!--                                                 </table>-->
+<!--                                             </td>-->
+<!--                                         </tr>-->
+<!--                                     </table>-->
+<!--                                 </div>-->
+                             </centre>
+
+                         </div>
+                     </div>
+                <h2>printed student record</h2>
+                student name:<t t-esc="o.name"/>
+                student age: <t t-esc="o.age"/>
+                start date : <t t-esc="o.start_date"/>
+            </t>
+        </t>
+        </t>
+    </template>
+</odoo>
