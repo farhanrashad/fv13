@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Create menu to open wizard for report-->
+    <menuitem
+        id="menu_customer_invoice_outstanding_report"
+        name="Order Stock Report"
+        parent="sale.menu_sale_report"
+        sequence="6"
+        action="de_order_stock_report.open_order_stock_action"
+    />
+</odoo>
