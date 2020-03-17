@@ -13,6 +13,7 @@
                     <field name="reconciled"/>
                     <newline/>
                     <field name="partner_id"/>
+                    <field name="category_id" widget="many2many_tags" options="{'color_field': 'color', 'no_create_edit': True}" placeholder="Tags..."/>
             <newline/>
                 </xpath>
             </data>

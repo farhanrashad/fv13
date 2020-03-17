@@ -146,6 +146,8 @@ class ReportPartnerLedger(models.AbstractModel):
         #partners = obj_partner.browse(partner_ids)
         if data['form']['partner_id']:
             partners = obj_partner.browse(data['form']['partner_id'])
+        elif data['form']['category_ids']:
+            partners = obj_partner.search([('category_id','in',data['form']['category_ids'])])
         else:
             partners = obj_partner.browse(partner_ids)
             

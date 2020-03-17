@@ -44,13 +44,18 @@ class AccountReportGeneralLedger(models.TransientModel):
                                    string='Journals', required=True)
     
     account_id = fields.Many2one('account.account',string='Account')
+    analytic_account_id = fields.Many2one('account.analytic.account', string='Analytic Account', index=True)
+    analytic_tag_ids = fields.Many2many('account.analytic.tag', string='Analytic Tags')
+    partner_id = fields.Many2one('res.partner',string='Partner')
 
     def _print_report(self, data):
         data = self.pre_print_report(data)
-        data['form'].update(self.read(['initial_balance', 'sortby','account_id'])[0])
+        data['form'].update(self.read(['initial_balance', 'sortby','account_id','analytic_account_id','analytic_tag_ids','partner_id'])[0])
         
-        data['form'].update({'account_id':self.account_id.id,
-                             })
+        data['form'].update({'account_id':self.account_id.id,})
+        data['form'].update({'analytic_account_id':self.analytic_account_id.id,})
+        data['form'].update({'analytic_tag_ids':self.analytic_tag_ids.ids,})
+        data['form'].update({'partner_id':self.partner_id.id,})
         
         if data['form'].get('initial_balance') and not data['form'].get(
                 'date_from'):
