@@ -1,0 +1,2 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_de_stock_move_real_qty_de_stock_move_real_qty,de_stock_move_real_qty.de_stock_move_real_qty,model_de_stock_move_real_qty_de_stock_move_real_qty,base.group_user,1,1,1,1
