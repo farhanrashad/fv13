@@ -55,16 +55,16 @@ from stock_move o
 join stock_move_line l on l.move_id = o.id
 join stock_location ls on o.location_id = ls.id
 join stock_location ld on o.location_dest_id = ld.id
-left join stock_picking k on l.picking_id = k.id
-left join stock_picking_type pt on k.picking_type_id = pt.id
-left join sale_order so on l.sale_id = so.id
-left join sale_order_line sl on sl.order_id = so.id
-left join job_order j on l.job_order_id = j.id
+join stock_picking k on l.picking_id = k.id
+join stock_picking_type pt on k.picking_type_id = pt.id
+join sale_order so on l.sale_id = so.id
+join sale_order_line sl on sl.order_id = so.id
+join job_order j on l.job_order_id = j.id
 left join res_partner p on o.partner_id = p.id
 join product_product m on o.product_id = m.id
 join product_template t on m.product_tmpl_id = t.id
 join product_category c on t.categ_id = c.id
-left join res_company b on o.company_id = b.id
+join res_company b on o.company_id = b.id
 left join crm_team r on p.team_id = r.id
 where o.state = 'done'
 ) x
