@@ -10,13 +10,14 @@ class SaleOrderLine(models.Model):
     _inherit = 'sale.order.line'
     
     weight = fields.Float(related='product_id.weight',string='Weight Unit',readonly=False, store=True,default=1.0)
-    total_weight = fields.Float('Total Weight', digits=dp.get_precision('Stock Weight'), store=True, compute="_calculate_total_weight", help="Weight of the product in order line",default=1.0)
+    total_weight = fields.Float('Total Weight', digits=dp.get_precision('Stock Weight'), store=True, readonly=True, compute="_calculate_total_weight", help="Weight of the product in order line",default=1.0)
     price_weight = fields.Float('Weight Price', required=True, digits=dp.get_precision('Weight Price'), default=1.0)
     #price_weight_subtotal = fields.Float(compute='_compute_weight_subtotal', string='Subtotal', readonly=True, store=True)
     
-   
+    @api.depends('product_uom_qty', 'weight')
     def _calculate_total_weight(self):
-        self.total_weight = self.product_uom_qty * self.weight
+        for line in self:
+            line.total_weight = line.product_uom_qty * line.weight
 
     @api.onchange('product_id','product_uom_qty','weight')
     def _onchange_quantity(self):
