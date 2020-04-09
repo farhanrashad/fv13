@@ -3,3 +3,4 @@
 
 from . import sale_report
 from . import order_stock_report
+from . import order_subcontract_report

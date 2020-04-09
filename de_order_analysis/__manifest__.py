@@ -32,6 +32,7 @@
         'security/ir.model.access.csv',
         'report/sale_report_views.xml',
         'report/order_stock_report_views.xml',
+        'report/order_subcontract_views.xml',
     ],
     # only loaded in demonstration mode
     'demo': [
