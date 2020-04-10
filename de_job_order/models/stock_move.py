@@ -7,8 +7,10 @@ from odoo.addons import decimal_precision as dp
 class StockMove(models.Model):
     _inherit = 'stock.move'
     
-    job_order_id = fields.Many2one("job.order", compute="_assign_sale_order", store=False, string="Job Order", readonly=True, required=False)
+    ref_job_order_id = fields.Many2one("job.order", compute="_assign_sale_order", store=False, string="Job Order", readonly=True, required=False,oldname="job_order_id")
     ref_sale_id = fields.Many2one("sale.order",compute="_assign_sale_order", store=False, readonly=True,)
+    #job_order_id = fields.Many2one("job.order", related="ref_job_order_id", string="Job Order", readonly=True, store=True)
+    sale_id = fields.Many2one("sale.order", related="ref_sale_id", string="Sale Order", readonly=True, store=True)
     
     @api.model
     def _assign_sale_order(self):
@@ -48,19 +50,22 @@ where m.reference = %(picking_ref)s or k.name = %(picking_ref)s
             #cr = self._cr
             for order in self._cr.dictfetchall():
                 line.update ({
-                    'job_order_id': order['job_order_id'] or picking.job_order_id.id or stock_move.job_order_id.id,
+                    'ref_job_order_id': order['job_order_id'] or picking.job_order_id.id or stock_move.job_order_id.id,
                     'ref_sale_id': order['sale_id'] or picking.ref_sale_id.id or stock_move.ref_sale_id.id,
                 })
                 
 class StockMoveLine(models.Model):
     _inherit = 'stock.move.line'
     
-    ref_job_order_id = fields.Many2one("job.order", related="move_id.job_order_id", store=False, string="Reference Job Order", readonly=True)
-    ref_sale_id = fields.Many2one("sale.order",related="move_id.ref_sale_id", string="Reference Sale", store=False, readonly=True,)
+    #ref_job_order_id = fields.Many2one("job.order", store=False, string="Reference Job Order", readonly=True)
+    #ref_sale_id = fields.Many2one("sale.order", string="Reference Sale", store=False, readonly=True,)
+    job_order_id = fields.Many2one("job.order", string="Job Order", readonly=True, store=True)
+    sale_id = fields.Many2one("sale.order", string="Sale Order", readonly=True, store=True)
     
-    #job_order_id = fields.Many2one("job.order", compute="_assign_sale_order", store=False, string="Job Order", readonly=True, required=False)
-    #ref_sale_id = fields.Many2one("sale.order",compute="_assign_sale_order", store=False, readonly=True,)
+    in_qty_dummy = fields.Float('In Qty Dummy', readonly=True, compute="_calculate_all_dummy_qty")
+    out_qty_dummy = fields.Float('In Qty Dummy', readonly=True, compute="_calculate_all_dummy_qty")
+    bal_qty_dummy = fields.Float('In Qty Dummy', readonly=True, compute="_calculate_all_dummy_qty")
     
-    job_order_id = fields.Many2one("job.order", readonly=True, store=True)
-    #job_order2_id = fields.Many2one("job.order", readonly=True, store=True)
-    sale_id = fields.Many2one("sale.order", readonly=True, store=True)
+    def _calculate_all_qty(self):
+        for line in self:
+            line.in_qty_dummy = 0
