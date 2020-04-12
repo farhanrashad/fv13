@@ -5,7 +5,16 @@
         <field name="inherit_id" ref="purchase.purchase_order_form"/>
         <field name="arch" type="xml">
             <xpath expr="//field[@name='qty_received']" position="after">
+                
+                <field name="qty_issued100" optional="hide" />
+                <field name="weight_issued100" optional="hide" />
                 <field name="qty_issued" optional="show" />
+                <field name="weight_issued" optional="show" />
+                
+                <field name="qty_consume" optional="show" />
+                <field name="weight_consume" optional="show" />
+                <field name="qty_consume100" optional="hide" />
+                <field name="weight_consume100" optional="hide" />
             </xpath>
             
         </field>
