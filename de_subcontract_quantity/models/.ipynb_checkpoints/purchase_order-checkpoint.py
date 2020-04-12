@@ -19,25 +19,6 @@ class PurchaseOrderLine(models.Model):
 
     
     
-    #@api.depends('qty_received', 'move_ids', 'move_dest_ids')
-    def _compute_qty_issued1(self):
-        for line in self:
-            sml_obj = self.env['stock.move.line']
-            domain = [('product_id', '=', line.product_id.id),
-                      ('ref_sale_id', '=', line.order_id.sale_id.id),
-                      ('move_id.is_subcontract', '=', True),
-                      ('move_id.state', '=', 'done')
-                     ]
-            where_query = sml_obj._where_calc(domain)
-            sml_obj._apply_ir_rules(where_query, 'read')
-            from_clause, where_clause, where_clause_params = where_query.get_sql()
-            select = "SELECT sum(qty_done) from stock_move_line where id in (select id from" + from_clause + " where " + where_clause + ")"
-
-            self.env.cr.execute(select, where_clause_params)
-            line.qty_issued = self.env.cr.fetchone()[0] or 0.0
-    
-    
-    
     @api.depends('move_ids.move_orig_ids.production_id.move_raw_ids.state', 'move_ids.move_orig_ids.production_id.move_raw_ids.product_uom_qty', 'move_ids.move_orig_ids.production_id.move_raw_ids.product_uom')
     def _compute_qty_consume(self):
         #super(PurchaseOrderLine, self)._compute_qty_consume()

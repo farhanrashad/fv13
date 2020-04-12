@@ -17,10 +17,10 @@
     # Check https://github.com/odoo/odoo/blob/13.0/odoo/addons/base/data/ir_module_category_data.xml
     # for the full list
     'category': 'Purchase',
-    'version': '0.1',
+    'version': '0.2',
 
     # any module necessary for this one to work correctly
-    'depends': ['base','stock','mrp','purchase','de_job_order'],
+    'depends': ['base','purchase_stock','de_job_order'],
 
     # always loaded
     'data': [
