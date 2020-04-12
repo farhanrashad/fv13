@@ -9,7 +9,7 @@ class StockMove(models.Model):
     
     ref_job_order_id = fields.Many2one("job.order", compute="_assign_sale_order", store=False, string="Job Order", readonly=True, required=False,oldname="job_order_id")
     ref_sale_id = fields.Many2one("sale.order",compute="_assign_sale_order", store=False, readonly=True,)
-    #job_order_id = fields.Many2one("job.order", related="ref_job_order_id", string="Job Order", readonly=True, store=True)
+    job_order_id = fields.Many2one("job.order", related="ref_job_order_id", string="Job Order", readonly=True, store=True)
     sale_id = fields.Many2one("sale.order", related="ref_sale_id", string="Sale Order", readonly=True, store=True)
     
     @api.model
@@ -56,16 +56,31 @@ where m.reference = %(picking_ref)s or k.name = %(picking_ref)s
                 
 class StockMoveLine(models.Model):
     _inherit = 'stock.move.line'
-    
-    #ref_job_order_id = fields.Many2one("job.order", store=False, string="Reference Job Order", readonly=True)
-    #ref_sale_id = fields.Many2one("sale.order", string="Reference Sale", store=False, readonly=True,)
-    job_order_id = fields.Many2one("job.order", string="Job Order", readonly=True, store=True)
-    sale_id = fields.Many2one("sale.order", string="Sale Order", readonly=True, store=True)
-    
-    in_qty_dummy = fields.Float('In Qty Dummy', readonly=True, compute="_calculate_all_dummy_qty")
-    out_qty_dummy = fields.Float('In Qty Dummy', readonly=True, compute="_calculate_all_dummy_qty")
-    bal_qty_dummy = fields.Float('In Qty Dummy', readonly=True, compute="_calculate_all_dummy_qty")
-    
-    def _calculate_all_qty(self):
+       
+    @api.depends('qty_done')
+    def _calculate_all_dummy_qty(self):
         for line in self:
-            line.in_qty_dummy = 0
+            if line.location_id.usage == 'internal':
+                line.out_qty_d = line.qty_done
+            elif line.location_dest_id.usage == 'internal':
+                line.in_qty_d = line.qty_done
+                
+    ref_job_order_id = fields.Many2one("job.order", compute="_compute_move_reference_order", store=True, string="Reference Job Order", readonly=True)
+    ref_sale_id = fields.Many2one("sale.order", related="move_id.ref_sale_id", string="Reference Sale", store=True, readonly=True,)
+    job_order_id = fields.Many2one("job.order", related="move_id.job_order_id", string="Job Order", readonly=True, store=False)
+    sale_id = fields.Many2one("sale.order", related="move_id.sale_id", string="Sale Order", readonly=True, store=True)
+    
+    in_qty_d = fields.Float(string='In Qty', store=False, readonly=False, compute='_calculate_all_dummy_qty')
+    out_qty_d = fields.Float(string='Out Qty', store=False, readonly=False, compute='_calculate_all_dummy_qty')
+    
+    #bal_qty_dummy = fields.Float('Bal Qty Dummy', readonly=True, compute="_calculate_all_dummy_qty")
+    
+    in_qty = fields.Float('In Qty', related='in_qty_d', readonly=True)
+    out_qty = fields.Float('Out Qty', related='out_qty_d', readonly=True)
+    
+    @api.depends('move_id')
+    def _compute_move_reference_order(self):
+        for line in self:
+            line.ref_job_order_id = line.move_id.ref_job_order_id or line.move_id.job_order_id
+    
+    
