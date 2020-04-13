@@ -25,7 +25,7 @@
     'version': '1.4',
 
     # any module necessary for this one to work correctly
-    'depends': ['base','sale','purchase','stock','mrp','de_sale_global_ref','de_product_weight','de_job_order','sale_management','de_subcontract_quantity'],
+    'depends': ['base','sale','purchase','stock','mrp','de_sale_global_ref','de_product_weight','de_job_order','sale_management'],
 
     # always loaded
     'data': [
