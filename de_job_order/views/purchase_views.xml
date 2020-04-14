@@ -8,8 +8,22 @@
                 <field name="job_order_id" />
                 <field name="sale_id" />
             </field>
+            <xpath expr="//field[@name='qty_received']" position="after">
+                
+                <field name="qty_issued100" optional="hide" />
+                <field name="weight_issued100" optional="hide" />
+                <field name="qty_issued" optional="show" />
+                <field name="weight_issued" optional="show" />
+                
+                <field name="qty_consume" optional="show" />
+                <field name="weight_consume" optional="show" />
+                <field name="qty_consume100" optional="hide" />
+                <field name="weight_consume100" optional="hide" />
+            </xpath>
+            
         </field>
     </record>
+    
 	<record id="purchase_order_tree_inherit" model="ir.ui.view">
         <field name="name">purchase.purchase.order.tree.inherit</field>
         <field name="model">purchase.order</field>

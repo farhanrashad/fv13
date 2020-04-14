@@ -12,6 +12,8 @@ class StockMove(models.Model):
     job_order_id = fields.Many2one("job.order", related="ref_job_order_id", string="Job Order", readonly=True, store=True)
     sale_id = fields.Many2one("sale.order", related="ref_sale_id", string="Sale Order", readonly=True, store=True)
     
+    subcontract_order_line_id = fields.Many2one('purchase.order.line', 'Subcontract Order Line', domain="['|', ('order_id.job_order_id', '=', ref_job_order_id), ('order_id.job_order_id', '=', job_order_id) ]")
+    
     @api.model
     def _assign_sale_order(self):
         #picking_id = self.id
@@ -70,13 +72,7 @@ class StockMoveLine(models.Model):
     job_order_id = fields.Many2one("job.order", related="move_id.job_order_id", string="Job Order", readonly=True, store=False)
     sale_id = fields.Many2one("sale.order", related="move_id.sale_id", string="Sale Order", readonly=True, store=True)
     
-    in_qty_d = fields.Float(string='In Qty', store=False, readonly=False, compute='_calculate_all_dummy_qty')
-    out_qty_d = fields.Float(string='Out Qty', store=False, readonly=False, compute='_calculate_all_dummy_qty')
     
-    #bal_qty_dummy = fields.Float('Bal Qty Dummy', readonly=True, compute="_calculate_all_dummy_qty")
-    
-    in_qty = fields.Float('In Qty', related='in_qty_d', readonly=True)
-    out_qty = fields.Float('Out Qty', related='out_qty_d', readonly=True)
     
     @api.depends('move_id')
     def _compute_move_reference_order(self):

@@ -44,7 +44,7 @@ class MRPProduction(models.Model):
     
     #ref_sale_id = fields.Many2one("sale.order",compute="_assign_sale_order", store=False, readonly=True,)
     ref_sale_id = fields.Many2one("sale.order",related="job_order_id.sale_id", store=True, readonly=True,)
-    ref_sale_product_template_id = fields.Many2one('product.template', string='Sale Product')
+    ref_sale_product_tmpl_id = fields.Many2one('product.template', string='Sale Product')
     
     def _assign_sale_order(self):
         #picking_id = self.id
