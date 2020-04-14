@@ -25,7 +25,7 @@ class PurchaseOrderLine(models.Model):
     weight_issued = fields.Float(related='weight_issued100', string='Issued Weight', store=True)
     
     qty_consume100 = fields.Float('Consumed Qty', copy=False, compute='_compute_qty_consume', compute_sudo=True, store=False, digits='Product Unit of Measure', default=0.0)
-    weight_consume100 = fields.Float('Consumed(Kg)', copy=False, compute='_compute_qty_consume', compute_sudo=True, store=True, digits='Product Unit of Measure', default=0.0)
+    weight_consume100 = fields.Float('Consumed(Kg)', copy=False, compute='_compute_qty_consume', compute_sudo=True, store=False, digits='Product Unit of Measure', default=0.0)
     qty_consume = fields.Float(related='qty_consume100', string='Cons.Qty', store=True)
     weight_consume = fields.Float(related='weight_consume100', string='Cons.Wght', store=True)
 
