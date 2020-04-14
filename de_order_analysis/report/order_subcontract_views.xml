@@ -84,6 +84,6 @@
         <field name="help">This report performs analysis on your quotations and sales orders. Analysis check your sales revenues and sort it by different group criteria (salesman, partner, product, etc.) Use this report to perform analysis on sales not having invoiced yet. If you want to analyse your turnover, you should use the Invoice Analysis report in the Accounting application.</field>
     </record>
     
-    <menuitem id="sale_order_subcontract_menu" name="Order Purchase Analysis" parent="sale.menu_sale_report" action="action_order_subcontract_report" sequence="0"/>
+    <menuitem id="sale_order_subcontract_menu" name="Order Purchase Analysis" parent="sale.menu_sale_report" action="action_order_subcontract_report" sequence="20"/>
     
 </odoo>

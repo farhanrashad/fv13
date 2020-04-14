@@ -30,8 +30,8 @@
     # always loaded
     'data': [
         'security/ir.model.access.csv',
-        'report/sale_report_views.xml',
-        'report/order_stock_report_views.xml',
+        #'report/sale_report_views.xml',
+        #'report/order_stock_report_views.xml',
         'report/order_subcontract_views.xml',
         'report/order_production_report_views.xml',
     ],
