@@ -27,14 +27,14 @@ class OrderSubcontractingReport(models.Model):
     remaining_qty = fields.Float('Remaining Qty', readonly=True)
     remaining_weight = fields.Float('Remaining Weight', readonly=True)
     
-    issued_qty = fields.Float('Issued qty', readonly=True)
-    issued_weight = fields.Float('Issued Weight', readonly=True)
+    consumed_qty = fields.Float('consumed qty', readonly=True)
+    consumed_weight = fields.Float('consumed Weight', readonly=True)
     
     diff_qty = fields.Float('Diff. Qty', readonly=True)
     diff_weight = fields.Float('Diff. Weight', readonly=True)
     
-    consumed_qty = fields.Float('Issued qty', readonly=True)
-    consumed_weight = fields.Float('Issued Weight', readonly=True)
+    issued_qty = fields.Float('Issued qty', readonly=True)
+    issued_weight = fields.Float('Issued Weight', readonly=True)
     
     supplier_diff_qty = fields.Float('Sup.Diff.Qty', readonly=True)
     supplier_diff_weight = fields.Float('Sup.Diff.(Kg)', readonly=True)
