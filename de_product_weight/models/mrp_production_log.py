@@ -1,6 +1,9 @@
 # -*- coding: utf-8 -*-
 from odoo import models,fields,api,_
 
+from odoo.addons import decimal_precision as dp
+
+
 class MrpProductionLog(models.Model):
     _name = 'mrp.production.log'
 
