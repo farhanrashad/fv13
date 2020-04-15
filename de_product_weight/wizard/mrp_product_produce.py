@@ -106,7 +106,7 @@ class MrpProductProduce(models.TransientModel):
         else:
             rounding = production_move.product_uom.rounding
             production_move._set_quantity_done(
-                float_round(self.qty_producing, precision_rounding=rounding),self.produced_weight
+                float_round(self.qty_producing, precision_rounding=rounding),self.produced_weight or 0.0
             )
             
     
