@@ -5,3 +5,4 @@ from . import sale_report
 from . import order_stock_report
 from . import order_subcontract_report
 from . import order_production_report
+from . import sale_stock_report
