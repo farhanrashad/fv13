@@ -12,6 +12,7 @@
                 <field name="product_tmpl_id"/>
                 <field name="product_id"/>
                 <field name="quantity"/>
+                <field name="product_weight"/>
             </tree>
         </field>
     </record>
@@ -24,6 +25,7 @@
                  <field name="sale_id" type="row"/>
                  <field name="location_id" type="column"/>
                  <field name="quantity" type="measure"/>
+                 <field name="product_weight" type="measure"/>
              </pivot>
          </field>
     </record>
@@ -42,13 +44,13 @@
                 <field name="product_tmpl_id"/>
                 <field name="product_id"/>
                 <group expand="1" string="Group By">
-                    <filter string="sale_id" name="Sale Order" context="{'group_by':'sale_id'}"/>
+                    <filter string="Sale Order" name="sale_id" context="{'group_by':'sale_id'}"/>
                     <separator/>
-                    <filter string="location_id" name="Location" context="{'group_by':'location_id'}"/>
-                    <filter string="categ_id" name="Product Category" context="{'group_by':'categ_id'}"/>
+                    <filter string="Location" name="location_id" context="{'group_by':'location_id'}"/>
+                    <filter string="Product Category" name="categ_id" context="{'group_by':'categ_id'}"/>
                     <separator/>
-                    <filter string="Product Template" name="ProductTemplate" context="{'group_by':'product_tmpl_id'}"/>
-                    <filter string="Product" name="Product" context="{'group_by':'product_id'}"/>
+                    <filter string="Product Template" name="product_template" context="{'group_by':'product_tmpl_id'}"/>
+                    <filter string="Product" name="product" context="{'group_by':'product_id'}"/>
                     <separator/>
                 </group>
             </search>

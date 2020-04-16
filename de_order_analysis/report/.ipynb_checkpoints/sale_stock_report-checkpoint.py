@@ -22,19 +22,22 @@ class SaleStockReport(models.Model):
     product_id = fields.Many2one('product.product', 'Variant', readonly=True)
     
     quantity = fields.Float('Quantity', readonly=True)
+    product_weight = fields.Float('Weight', readonly=True)
     
         
     def _query(self, with_clause='', fields={}, groupby='', from_clause=''):
         with_ = ("WITH %s" % with_clause) if with_clause else ""
 
         select_ = """
-        count(a.*) as nbr, min(a.sale_id) as id, min(a.sale_id) as name, max(a.date) as date, a.sale_id, a.location_id, a.categ_id, a.product_tmpl_id, a.product_id, sum(a.quantity) as quantity from (
-select m.product_id, m.sale_id, m.date, q.quantity, q.location_id, t.categ_id, p.product_tmpl_id
+        count(a.*) as nbr, min(a.sale_id) as id, min(a.sale_id) as name, max(a.date) as date, a.sale_id, a.location_id, a.categ_id, a.product_tmpl_id, a.product_id, sum(a.quantity) as quantity, sum(a.product_weight) as product_weight from (
+select m.product_id, m.sale_id, m.date, q.quantity, q.product_weight, q.location_id, t.categ_id, p.product_tmpl_id
 from stock_move m
 join stock_quant q on q.product_id = m.product_id
+join stock_location l on q.location_id = l.id
 join product_product p on m.product_id = p.id
 join product_template t on p.product_tmpl_id = t.id
 where m.sale_id IS NOT NULL
+and l.usage = 'internal'
 ) a
 group by a.sale_id, a.location_id, a.product_tmpl_id, a.product_id, a.categ_id
         
