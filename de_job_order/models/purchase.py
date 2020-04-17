@@ -39,7 +39,7 @@ class PurchaseOrderLine(models.Model):
             total_weight = 0.0
             for move in line.move_ids.move_orig_ids.production_id.move_raw_ids:
                 if move.state == 'done':
-                    total += move.product_uom._compute_quantity(move.product_uom_qty, line.product_uom)
+                    total += move.product_uom._compute_quantity(move.product_uom_qty, move.product_uom)
                     total_weight = move.total_weight
             line.qty_consume100 = total
             line.weight_consume100 = total_weight
