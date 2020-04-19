@@ -10,5 +10,5 @@ from odoo.addons import decimal_precision as dp
 class StockQuant(models.Model):
     _inherit = 'stock.quant'
     
-    product_weight = fields.Float('On Hand Weight(Kg)')    
+    product_weight = fields.Float('On Hand Weight(Kg)', readonly=False)    
     

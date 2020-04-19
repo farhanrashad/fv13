@@ -40,7 +40,8 @@ class MrpProductProduce(models.TransientModel):
     def _update_finished_move(self):
         action = super(MrpProductProduce, self)._update_finished_move()
         if self.subcontract_move_id:
-            for ml in self.subcontract_move_id.move_line_ids:
+            subcontract_move = self.subcontract_move_id.filtered(lambda move: move.product_id == self.product_id and move.state not in ('done', 'cancel'))
+            for ml in subcontract_move.move_line_ids.filtered(lambda line: line.lot_id.id == self.finished_lot_id.id):
                 ml.total_weight = self.produced_weight
         
         production_move = self.production_id.move_finished_ids.filtered(
@@ -124,9 +125,9 @@ class MRPProductProduceLine(models.TransientModel):
                     'product_uom_qty': new_qty_reserved,
                     'qty_done': 0
                 })
-            ml.write({
-                'total_weight': self.produced_weight,
-            })
+            #ml.write({
+            #    'total_weight': self.produced_weight,
+            #})
             
     def _create_extra_move_lines(self):
         """Create new sml if quantity produced is bigger than the reserved one"""
