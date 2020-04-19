@@ -42,9 +42,20 @@ class MrpProductProduce(models.TransientModel):
         if self.subcontract_move_id:
             for ml in self.subcontract_move_id.move_line_ids:
                 ml.total_weight = self.produced_weight
-        if self.production_id:
-            for ml in self.production_id.move_finished_ids.move_line_ids:
-                ml.total_weight = self.produced_weight
+        
+        production_move = self.production_id.move_finished_ids.filtered(
+            lambda move: move.product_id == self.product_id and
+            move.state not in ('done', 'cancel')
+        )
+        if production_move and production_move.product_id.tracking != 'none':
+            move_line = production_move.move_line_ids.filtered(lambda line: line.lot_id.id == self.finished_lot_id.id)
+            if move_line:
+                move_line.total_weight += self.produced_weight
+        else:
+            move_lines = production_move.move_line_ids
+            for ml in move_lines:
+                if ml.total_weight == 0 or not ml.total_weight:
+                    ml.total_weight = self.produced_weight
         return action
     
                         

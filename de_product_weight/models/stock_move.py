@@ -1,7 +1,16 @@
 # -*- coding: utf-8 -*-
-from datetime import datetime
+# Part of Odoo. See LICENSE file for full copyright and licensing details.
+
+from psycopg2 import OperationalError, Error
+
 from odoo import api, fields, models, _
-from odoo.exceptions import UserError, ValidationError, Warning
+from odoo.exceptions import UserError, ValidationError
+from odoo.osv import expression
+from odoo.tools.float_utils import float_compare, float_is_zero, float_round
+
+import logging
+
+_logger = logging.getLogger(__name__)
 
 from odoo.addons import decimal_precision as dp
 
@@ -39,46 +48,47 @@ class StockMoveLine(models.Model):
             self.qty_done = self.lot_id.product_qty
                 
         
-    def write(self, vals):
+    def write1(self, vals):
         #Raw Material Assignment
         res = super(StockMoveLine, self).write(vals)
-        #self.product_id.product_tmpl_id.weight_available = self.product_id.product_tmpl_id.weight_available + self.total_weight
-        for rs in self.filtered(lambda x: x.move_id.state in ('done')):
-            if rs.product_id.product_tmpl_id.is_weight_uom:
-                if rs.location_dest_id.usage == 'internal':
-                    rs.product_id.weight_available += rs.total_weight
-                    if not (rs.product_id.product_tmpl_id.tracking) == 'none':
-                        rs.lot_id.product_weight += rs.total_weight
-                        quant = self.env['stock.quant'].search([('product_id', '=', rs.product_id.id),('location_id', '=', rs.location_dest_id.id),('lot_id', '=', rs.lot_id.id)])
-                        quant.sudo().write({
-                            'product_weight':rs.lot_id.product_weight
-                        })
-                    else:
-                        quant = self.env['stock.quant'].search([('product_id', '=', rs.product_id.id),('location_id', '=', rs.location_dest_id.id)])
-                        quant.sudo().write({
-                            'product_weight':rs.total_weight
-                        }) 
-                elif rs.location_id.usage == 'internal':
-                    rs.product_id.weight_available -= rs.total_weight
-                    if not (rs.product_id.product_tmpl_id.tracking) == 'none':
-                        rs.lot_id.product_weight -= rs.total_weight
-                        quant = self.env['stock.quant'].search([('product_id', '=', rs.product_id.id),('location_id', '=', rs.location_id.id),('lot_id', '=', rs.lot_id.id)])
-                        quant.sudo().write({
-                            'product_weight':rs.lot_id.product_weight
-                        })
-                    else:
-                        quant = self.env['stock.quant'].search([('product_id', '=', rs.product_id.id),('location_id', '=', rs.location_id.id)])
-                        quant.sudo().write({
-                            'product_weight':rs.total_weight
-                        }) 
-                    
-                #if rs.location_id.usage == 'internal':
-                    #rs.product_id.product_tmpl_id.weight_available = rs.total_weight
-                    #if not (rs.product_id.product_tmpl_id.tracking) == 'none':
-                        #rs.lot_id.product_weight -= rs.total_weight
-                #elif rs.location_dest_id == 'internal':
-                    #rs.product_id.product_tmpl_id.weight_available = rs.product_id.product_tmpl_id.weight_available + rs.total_weight
-                    #if not (rs.product_id.product_tmpl_id.tracking) == 'none':
-                        #rs.lot_id.product_weight += rs.total_weight
-                    
+        
         return res
+    
+    def _action_done(self):
+        res = super(StockMoveLine, self)._action_done()
+        for ml in self:
+            self._update_product_weight(ml.product_id.id,ml.location_id.id,ml.total_weight*-1, ml.lot_id.id, ml.package_id.id, ml.owner_id.id, ml.date)
+            self._update_product_weight(ml.product_id.id,ml.location_dest_id.id,ml.total_weight, ml.lot_id.id, ml.package_id.id, ml.owner_id.id, ml.date)
+        return res
+    
+    @api.model
+    def _update_product_weight(self, product_id, location_id, weight, lot_id=None, package_id=None, owner_id=None, in_date=None):
+        self = self.sudo()
+        lot = self.env['stock.production.lot'].search([('id','=',lot_id)])
+        lot.update({
+            'product_weight': lot.product_weight + weight
+        })
+        query = query_params = ''
+        
+        if lot_id:
+            query_params = query_params + ' and lot_id = ' + str(lot_id)
+            
+        if package_id:
+            query_params = query_params + ' and package_id = ' + str(package_id)
+            
+        if owner_id:
+            query_params = query_params + ' and owner_id = ' + str(owner_id)
+            
+        params = {'product_id': product_id, 'weight':weight,'location_id': location_id, 'lot_id': lot_id}
+        
+        if lot_id: 
+            query = """
+        update stock_quant set product_weight = product_weight + %(weight)s where lot_id = %(lot_id)s and location_id = %(location_id)s 
+        """ 
+            self.env.cr.execute(query, params=params)
+        
+        
+        
+        #self._cr.execute("update stock_quant set product_weight=15")
+        #.search([('product_id','=',product_id),('location_id','=',location_id),('lot_id','=',lot_id),])
+        #quants = self._gather(product_id, location_id, lot_id=lot_id, package_id=package_id, owner_id=owner_id, strict=True)
