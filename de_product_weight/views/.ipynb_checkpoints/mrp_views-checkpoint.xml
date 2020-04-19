@@ -6,8 +6,9 @@
         <field name="inherit_id" ref="mrp.mrp_production_form_view"/>
         <field name="arch" type="xml">
             <xpath expr="//field[@name='bom_id']" position="before">
-                <label for="production_weight"/>
-                <div class="o_row no-gutters d-flex">
+                <field name="is_weight_uom" invisible="1" />
+                <label for="production_weight" attrs="{'invisible':[('is_weight_uom', '!=', True)]}" />
+                <div class="o_row no-gutters d-flex" attrs="{'invisible':[('is_weight_uom', '!=', True)]}">
                     <div class="col">
                         <field name="production_weight" class="mr-1" />
                     </div>
@@ -58,19 +59,7 @@
         
         
         
-    <record id="view_mrp_product_produce_wizard_inherit" model="ir.ui.view">
-        <field name="name">view.mrp.product.produce.wizard.inherit</field>
-        <field name="model">mrp.product.produce</field>
-        <field name="inherit_id" ref="mrp.view_mrp_product_produce_wizard"/>
-        <field name="arch" type="xml">
-			<xpath expr="//field[@name='product_tracking']" position="before">
-				<field name="produced_weight"/>
-			</xpath>
-            <xpath expr="//field[@name='raw_workorder_line_ids']/tree" position="inside">
-                <field name="produced_weight"/>
-            </xpath>
-        </field>
-    </record>
+   
         
     </data>
 </odoo>

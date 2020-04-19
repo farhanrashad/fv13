@@ -12,17 +12,22 @@ from odoo.tools import float_compare, float_round, float_is_zero
 
 class MrpProductProduce(models.TransientModel):
     _inherit = "mrp.product.produce"
+        
+    produced_weight = fields.Float('Weight Produced', readonly=False, compute='_calcualte_produced_weight', digits=dp.get_precision('Stock Weight'), help="Weight produced")
     
-    produced_weight = fields.Float('Weight Produced', digits=dp.get_precision('Stock Weight'), help="Weight produced")
-    
-    @api.onchange('qty_producing')
-    def _compute_produced_weight(self):
+    @api.depends('qty_producing')
+    def _calcualte_produced_weight(self):
         """
         Compute the weight on change in quantity
         """
         self.produced_weight = self.qty_producing * self.product_id.weight
-        
-    @api.onchange('finished_lot_id')
+    
+    @api.onchange('produced_weight')
+    def _onchange_produced_weight(self):
+        for line in self.raw_workorder_line_ids:
+            line.produced_weight = line.product_id.weight * line.qty_done
+            
+    #@api.onchange('finished_lot_id')
     def onchange_finished_lot(self):
         total_qty = 0
         total_weight = 0
@@ -46,33 +51,12 @@ class MrpProductProduce(models.TransientModel):
 class MRPProductProduceLine(models.TransientModel):
     _inherit = 'mrp.product.produce.line'
     
-    produced_weight = fields.Float('Weight Consumed', store=True, digits=dp.get_precision('Stock Weight'), help="Weight produced")
+    produced_weight = fields.Float('Weight Consumed', readonly=False, digits=dp.get_precision('Stock Weight'), help="Weight produced")
     
-    
-    #api.depends('raw_product_produce_id.produced_weight','product_id','lot_id','qty_done')
-    api.onchange('raw_product_produce_id.produced_weight','product_id','lot_id','qty_done')
-    def _calculate_produced_weight(self):
-        tw = 0
-        for rs in self:
-            tw = 0
-            tq = 0
-            if rs.product_id.product_tmpl_id.is_weight_uom:
-                #if self.finished_product_produce_id.subcontract_move_id:
-                if rs.move_id.bom_line_id.bom_id.type == 'normal':
-                    rs.produced_weight = rs.raw_product_produce_id.produced_weight * (rs.move_id.bom_line_id.product_qty/rs.move_id.bom_line_id.bom_id.product_qty)
-                else:
-                    move_lines = self.env['stock.move.line'].search([('product_id', '=', rs.product_id.id),('lot_id', '=', rs.lot_id.id),('state', '=', 'done')])
-                    for line in move_lines:
-                        if line.location_id.usage == 'internal':
-                            tw -= line.total_weight
-                            tq -= line.qty_done
-                        elif line.location_dest_id.usage == 'internal':
-                            tw += line.total_weight
-                            tq += line.qty_done
-                            
-                    rs.produced_weight = rs.qty_done * (tw/tq)
-            else:
-                rs.produced_weight = 0
+    #api.depends('raw_product_produce_id.produced_weight')
+    @api.onchange('raw_product_produce_id.produced_weight','qty_done')
+    def _calculate_consumption_weight(self):
+        self.produced_weight = self.product_id.weight * self.qty_done
             
     @api.onchange('raw_product_produce_id.produced_weight')
     def _change_produced_qty(self):
