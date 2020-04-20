@@ -41,6 +41,7 @@ class MrpProductProduce(models.TransientModel):
         """ Update the finished move & move lines in order to set the finished
         product lot on it as well as the produced quantity. This method get the
         information either from the last workorder or from the Produce wizard."""
+        
         production_move = self.production_id.move_finished_ids.filtered(
             lambda move: move.product_id == self.product_id and
             move.state not in ('done', 'cancel')
