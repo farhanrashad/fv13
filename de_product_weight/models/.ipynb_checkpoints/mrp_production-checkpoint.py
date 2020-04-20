@@ -12,7 +12,7 @@ class MrpProduction(models.Model):
     
     is_weight_uom = fields.Boolean(related='product_id.product_tmpl_id.is_weight_uom',string='Weight UOM',readonly=True)
   
-    production_weight = fields.Float('Weight to produce', compute='_get_production_weight', readonly=True, store=True, digits=dp.get_precision('Stock Weight'), help="Weight to be produce")
+    production_weight = fields.Float('Weight To Produce', compute='_get_production_weight', readonly=True, store=True, digits=dp.get_precision('Stock Weight'), help="Weight to be produce")
     
     @api.depends('product_id','product_qty')
     def _get_production_weight(self):
