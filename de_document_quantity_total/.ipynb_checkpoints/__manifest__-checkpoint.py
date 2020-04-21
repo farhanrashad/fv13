@@ -28,12 +28,14 @@
     # always loaded
     'data': [
         # 'security/ir.model.access.csv',
-        'views/purchase_views.xml',
-        'views/sale_views.xml',
+        'views/purchase_order_views.xml',
+        'views/sale_order_views.xml',
         'views/stock_picking_views.xml',
+        'views/account_invoice_views.xml',
         'report/purchase_order_document_template.xml',
         'report/sale_order_document_template.xml',
         'report/delivery_slip_document_template.xml',
+        'report/invoice_document_template.xml',
     ],
     "images":  ['static/description/banner.jpg'],
     'license': 'LGPL-3',

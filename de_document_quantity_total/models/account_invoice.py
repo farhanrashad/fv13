@@ -6,22 +6,22 @@ from odoo.exceptions import UserError, ValidationError, Warning
 
 from odoo.addons import decimal_precision as dp
 
-class SaleOrder(models.Model):
-    _inherit = 'sale.order'
+class AccountMove(models.Model):
+    _inherit = 'account.move'
         
     tot_products = fields.Integer(string='Total Products:',compute='_compute_total_products')
     tot_qty = fields.Float(string='Total Quantity', compute='_compute_sum_quantity')
     
     def _compute_total_products(self):
-        for order in self:
+        for invoice in self:
             list_of_product=[]
-            for line in order.order_line:
+            for line in invoice.invoice_line_ids:
                 list_of_product.append(line.product_id)
-            order.tot_products = len(set(list_of_product))
+            invoice.tot_products = len(set(list_of_product))
     
     def _compute_sum_quantity(self):
-        for order in self:
+        for invoice in self:
             tot_qty = 0
-            for line in order.order_line:
-                tot_qty += line.product_uom_qty
-            order.tot_qty = tot_qty
+            for line in invoice.invoice_line_ids:
+                tot_qty += line.quantity
+            invoice.tot_qty = tot_qty

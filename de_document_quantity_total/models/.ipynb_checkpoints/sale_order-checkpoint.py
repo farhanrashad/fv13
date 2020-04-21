@@ -8,18 +8,20 @@ from odoo.addons import decimal_precision as dp
 
 class SaleOrder(models.Model):
     _inherit = 'sale.order'
+        
+    tot_products = fields.Integer(string='Total Products:',compute='_compute_total_products')
+    tot_qty = fields.Float(string='Total Quantity', compute='_compute_sum_quantity')
     
-    tot_qty = fields.Float(string='Total Quantity', compute='_quantity_all', store=True, readonly=True)
-    
-    @api.depends('order_line','order_line.product_uom_qty')
-    def _quantity_all(self):
-        """
-        Compute the total Quantity and Weight of the SO.
-        """
-        tot_qty = 0.0
+    def _compute_total_products(self):
         for order in self:
+            list_of_product=[]
+            for line in order.order_line:
+                list_of_product.append(line.product_id)
+            order.tot_products = len(set(list_of_product))
+    
+    def _compute_sum_quantity(self):
+        for order in self:
+            tot_qty = 0
             for line in order.order_line:
                 tot_qty += line.product_uom_qty
             order.tot_qty = tot_qty
-            
-            
