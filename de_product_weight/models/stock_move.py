@@ -46,22 +46,25 @@ class StockMoveLine(models.Model):
     def onchange_product(self):
         if self.lot_id:
             self.qty_done = self.lot_id.product_qty
-                
-        
-    def write1(self, vals):
-        #Raw Material Assignment
-        res = super(StockMoveLine, self).write(vals)
-        
-        return res
     
-    def _action_done(self):
-        res = super(StockMoveLine, self)._action_done()
+    def write(self, vals):
+        res = super(StockMoveLine, self).write(vals)
         for ml in self:
             self._update_product_weight(ml.product_id.id,ml.location_id.id,ml.total_weight*-1, ml.lot_id.id, ml.package_id.id, ml.owner_id.id, ml.date)
             self._update_product_weight(ml.product_id.id,ml.location_dest_id.id,ml.total_weight, ml.lot_id.id, ml.package_id.id, ml.owner_id.id, ml.date)
         return res
     
-    @api.model
+    def _action_done1(self):
+        
+        for ml in self:
+            if ml.qty_done == 0 or not ml.qty_done:
+                ml.unlink()
+            self._update_product_weight(ml.product_id.id,ml.location_id.id,ml.total_weight*-1, ml.lot_id.id, ml.package_id.id, ml.owner_id.id, ml.date)
+            self._update_product_weight(ml.product_id.id,ml.location_dest_id.id,ml.total_weight, ml.lot_id.id, ml.package_id.id, ml.owner_id.id, ml.date)
+        res = super(StockMoveLine, self)._action_done()
+        return res
+    
+    #@api.model
     def _update_product_weight(self, product_id, location_id, weight, lot_id=None, package_id=None, owner_id=None, in_date=None):
         self = self.sudo()
         lot = self.env['stock.production.lot'].search([('id','=',lot_id)])
