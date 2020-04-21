@@ -17,23 +17,22 @@ from datetime import datetime
 class CustomReport(models.AbstractModel):
     _name = "report.de_partner_balance.de_partner_balance_pdf_report"
 
-    def get_report_values(self,docids,data=None):
+    
+    def _get_report_values(self, docids, data=None):
         
         query_partner_type = ''
         
         if data['is_vendor']:
-            query_partner_type = query_partner_type + ' or x.supplier = True '
+            query_partner_type = query_partner_type + ' or x.supplier_rank = 0 '
         
         if data['is_customer']:
-            query_partner_type = query_partner_type + ' or x.customer = True '
-        
-            
+            query_partner_type = query_partner_type + ' or x.customer_rank = 1 '
 
         cr = self._cr
         query = """
         select x.city, x.partner_name, sum(x.obal) as obal, sum(x.debit) as debit, sum(x.credit) as credit, sum(x.obal)+sum(x.debit)+sum(x.credit) as cbal from
         (
-        select p.city, p.name as partner_name, p.supplier, p.customer, 0 as obal, l.debit, l.credit
+        select p.city, p.name as partner_name, p.supplier_rank, p.customer_rank, 0 as obal, l.debit, l.credit
 from account_move_line l
 join account_move m on l.move_id = m.id
 join res_partner p on l.partner_id = p.id
@@ -42,7 +41,7 @@ join account_journal j on m.journal_id = j.id
 where a.reconcile = True
         and (m.date between %(start_date)s and %(end_date)s)
         union all
-select p.city, p.name as partner_name, p.supplier, p.customer, (l.debit - l.credit) as obal, 0 as debit, 0 as credit
+select p.city, p.name as partner_name, p.supplier_rank, p.customer_rank, (l.debit - l.credit) as obal, 0 as debit, 0 as credit
 from account_move_line l
 join account_move m on l.move_id = m.id
 join res_partner p on l.partner_id = p.id
@@ -55,10 +54,7 @@ group by x.city, x.partner_name
 order by 1
         """ 
         
-        params = {
-            'start_date': data['start_date'],
-			'end_date':data['end_date'],
-        }
+        params = {'start_date': data['start_date'], 'end_date':data['end_date'],}
 
         self.env.cr.execute(query, params=params)
         

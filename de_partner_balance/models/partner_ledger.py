@@ -33,6 +33,6 @@ class PartnerLedger(models.TransientModel):
     is_customer = fields.Boolean('Customer Balances', default=False)
     #partner_id = fields.Many2one('res.partner', string='Partner', required=True, help='Select Partner for movement')
 
-    def print_report(self, data):
+    def print_report(self, data=None):
         data = {'start_date': self.start_date, 'end_date': self.end_date,'is_vendor': self.is_vendor,'is_customer': self.is_customer}
         return self.env.ref('de_partner_balance.partner_balance_pdf').report_action(self, data=data)

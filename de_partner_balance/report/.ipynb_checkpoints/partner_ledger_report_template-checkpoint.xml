@@ -54,6 +54,7 @@
                         </tr>
                         <tr>
                             <td><strong>Total</strong></td>
+                            <td><strong></strong></td>
                             <td class="text-right"><strong><t t-esc="tot_obal" /></strong></td>
                             <td class="text-right"><strong><t t-esc="tot_debit" /></strong></td>
                             <td class="text-right"><strong><t t-esc="tot_credit" /></strong></td>
