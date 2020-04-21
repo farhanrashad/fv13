@@ -19,6 +19,8 @@ Display total on the following pages:
  - Material Receipt
  - Delivery Order
  - Internal Transfer
+ - Customer Invoice
+ - Vendor Bills
  
 
 Total on reports
@@ -29,3 +31,6 @@ Display quantity total on footer of following reports:
  - Print Purchase Order
  - Print Order/Quotation
  - Print Delivery Slip
+ - Print Customer Invoice
+ - Print Vendor Bill
+ 
