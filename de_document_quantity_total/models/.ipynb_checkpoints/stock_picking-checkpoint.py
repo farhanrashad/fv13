@@ -12,6 +12,7 @@ class StockPicking(models.Model):
     tot_qty = fields.Float(string='Total Demand', compute='_compute_sum_quantity')
     tot_qty_done = fields.Float(string='Total Quantity', compute='_compute_sum_quantity')
 
+    @api.depends('move_lines','move_lines.product_id')
     def _compute_total_products(self):
         for picking in self:
             list_of_products=[]
@@ -19,6 +20,7 @@ class StockPicking(models.Model):
                 list_of_products.append(line.product_id)
             picking.tot_products = len(set(list_of_products))
 
+    @api.depends('move_lines','move_lines.quantity_done')
     def _compute_sum_quantity(self):
         for picking in self:
             tot_qty = tot_qty_done = 0
