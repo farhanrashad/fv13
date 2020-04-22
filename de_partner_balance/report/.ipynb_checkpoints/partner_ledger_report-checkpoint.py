@@ -30,9 +30,9 @@ class CustomReport(models.AbstractModel):
 
         cr = self._cr
         query = """
-        select x.city, x.partner_name, sum(x.obal) as obal, sum(x.debit) as debit, sum(x.credit) as credit, sum(x.obal)+sum(x.debit)+sum(x.credit) as cbal from
+        select x.partner_name, sum(x.obal) as obal, sum(x.debit) as debit, sum(x.credit) as credit, sum(x.obal)+sum(x.debit)+sum(x.credit) as cbal from
         (
-        select p.city, p.name as partner_name, p.supplier_rank, p.customer_rank, 0 as obal, l.debit, l.credit
+        select p.name as partner_name, p.supplier_rank, p.customer_rank, 0 as obal, l.debit, l.credit
 from account_move_line l
 join account_move m on l.move_id = m.id
 join res_partner p on l.partner_id = p.id
@@ -41,7 +41,7 @@ join account_journal j on m.journal_id = j.id
 where a.reconcile = True
         and (m.date between %(start_date)s and %(end_date)s)
         union all
-select p.city, p.name as partner_name, p.supplier_rank, p.customer_rank, (l.debit - l.credit) as obal, 0 as debit, 0 as credit
+select p.name as partner_name, p.supplier_rank, p.customer_rank, (l.debit - l.credit) as obal, 0 as debit, 0 as credit
 from account_move_line l
 join account_move m on l.move_id = m.id
 join res_partner p on l.partner_id = p.id
@@ -50,7 +50,7 @@ join account_journal j on m.journal_id = j.id
 where a.reconcile = True
         and (m.date <= %(start_date)s)
 ) x where x.partner_name != '' """ + query_partner_type + """
-group by x.city, x.partner_name
+group by x.partner_name
 order by 1
         """ 
         
