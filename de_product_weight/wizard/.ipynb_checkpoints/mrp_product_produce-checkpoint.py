@@ -13,7 +13,7 @@ from odoo.tools import float_compare, float_round, float_is_zero
 class MrpProductProduce(models.TransientModel):
     _inherit = "mrp.product.produce"
         
-    produced_weight = fields.Float('Weight Produced', readonly=False, compute='_calcualte_produced_weight', digits=dp.get_precision('Stock Weight'), help="Weight produced")
+    produced_weight = fields.Float('Weight Produced', readonly=False, digits=dp.get_precision('Stock Weight'), help="Weight produced")
     
     @api.depends('qty_producing')
     def _calcualte_produced_weight(self):
@@ -21,6 +21,14 @@ class MrpProductProduce(models.TransientModel):
         Compute the weight on change in quantity
         """
         self.produced_weight = self.qty_producing * self.product_id.weight
+        
+    @api.onchange('qty_producing')
+    def _onchange_produced_finish_weight(self):
+        """
+        Compute the weight on change in quantity
+        """
+        self.produced_weight = self.qty_producing * self.product_id.weight
+        
     
     @api.onchange('produced_weight')
     def _onchange_produced_weight(self):
@@ -41,6 +49,7 @@ class MrpProductProduce(models.TransientModel):
         """ Update the finished move & move lines in order to set the finished
         product lot on it as well as the produced quantity. This method get the
         information either from the last workorder or from the Produce wizard."""
+        
         production_move = self.production_id.move_finished_ids.filtered(
             lambda move: move.product_id == self.product_id and
             move.state not in ('done', 'cancel')
