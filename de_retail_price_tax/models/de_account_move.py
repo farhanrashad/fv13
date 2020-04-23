@@ -2,7 +2,7 @@
 # Part of Dynexcel Technologies.
 from odoo import models,fields,api,_
 
-class DeAccountMoveLine(models.Model):
+class ShAccountMoveLine(models.Model):
     _inherit='account.move.line'
     
     def _get_default_price(self):
