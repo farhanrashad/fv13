@@ -36,11 +36,11 @@ class StockMoveLine(models.Model):
     weight = fields.Float(related='product_id.weight',string='Weight/kg',readonly=True, store=True)
     total_weight = fields.Float('Total Weight', digits=dp.get_precision('Stock Weight'), readonly=False, help="Weight of the product in order line")
     
-    @api.depends('product_id','lot_id','qty_done', 'weight')
-    def _calculate_total_weight(self):
-        for line in self:
-            if line.total_weight == 0 or not line.total_weight:
-                line.total_weight = line.qty_done * line.weight
+    #@api.depends('product_id','lot_id','qty_done', 'weight')
+    #def _calculate_total_weight(self):
+        #for line in self:
+            #if line.total_weight == 0 or not line.total_weight:
+                #line.total_weight = line.qty_done * line.weight
             
     @api.onchange('product_id','lot_id')
     def onchange_product(self):
