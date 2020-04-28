@@ -11,7 +11,7 @@ class AccountMoveLine(models.Model):
     
     
     weight = fields.Float(related='product_id.weight',string='Weight Unit',readonly=True, store=True)
-    total_weight = fields.Float(string='Total Weight',default=1.0, readonly=False,compute="_compute_total_weight",store=True)
+    total_weight = fields.Float(string='Total Weight',default=1.0, readonly=False, store=True)
     price_weight = fields.Float(string='Price Weight', readonly=False, store=True, digits='Product Price')
     
     #price_qty_weight = fields.Float(string='Price Qty/Weight', store=False, digits='Product Price',compute='_compute_price_weight')

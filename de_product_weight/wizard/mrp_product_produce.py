@@ -161,6 +161,7 @@ class MRPProductProduceLine(models.TransientModel):
                 ml.write({
                     'qty_done': new_quantity_done,
                     'lot_produced_ids': self._get_produced_lots(),
+                    'total_weight': self.produced_weight,
                 })
             else:
                 new_qty_reserved = ml.product_uom_qty - new_quantity_done
