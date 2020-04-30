@@ -16,7 +16,7 @@ class print_check(models.AbstractModel):
     _name = 'report.dev_print_cheque.report_print_cheque'
 
     def get_date(self,date):
-        date = date.split('-')
+        date = date.strftime("%m/%d/%Y")
         return date
 
     def get_partner_name(self,obj,p_text):
@@ -78,7 +78,7 @@ class print_cheque_wizard(models.AbstractModel):
     _name = 'report.dev_print_cheque.cheque_report'
 
     def get_date(self, date):
-        date = date.split('-')
+        date = date.strftime("%m/%d/%Y")
         return date
 
     def amount_word(self, obj):
