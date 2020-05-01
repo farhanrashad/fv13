@@ -1,0 +1,18 @@
+<odoo>
+  <data>
+    <!-- explicit list view definition -->
+    <record id="view_website_form_inherit" model="ir.ui.view">
+        <field name="name">view.website.form.inherit</field>
+        <field name="model">website</field>
+        <field name="type">form</field>
+        <field name="inherit_id" ref="website.view_website_form"/>
+        <field name="arch" type="xml">
+            <field name='logo' position='after'>
+                <field name="home_logo" widget="image" class="oe_avatar float-left"/>
+            </field>
+        </field>
+    </record>
+
+   
+  </data>
+</odoo>

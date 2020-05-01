@@ -1,0 +1,15 @@
+<odoo>
+    <data>
+        <template id="website_layout_inherit" inherit_id="website.layout">
+            <xpath expr="//header//a[hasclass('navbar-brand')]" position="replace">
+                <a href="/" class="navbar-brand page logo">
+                    <span t-field="website.logo" t-options="{'widget': 'image'}" role="img" t-att-aria-label="'Logo of %s' % website.name" t-att-title="website.name"/>
+                </a>
+                <a t-if="website.home_logo" href="/" class="navbar-brand home logo">
+                    <span t-field="website.home_logo" t-options="{'widget': 'image'}" role="img" t-att-aria-label="'Logo of %s' % website.name" t-att-title="website.name"/>
+                </a>
+                
+            </xpath>
+        </template>
+    </data>
+</odoo>
