@@ -6,15 +6,15 @@
 #
 ##############################################################################
 {
-    'name': 'Partner Ledger',
-    'version': '1.0',
+    'name': 'Partner Balances',
+    'version': '1.2',
     'summary': 'This module will add Partner Ledger Report',
     'description': 'This module provides the movement of individual products with opening and closing stocks',
     'author': 'Dynexcel',
     'maintainer': 'Dynexcel',
     'company': 'Dynexcel',
     'website': 'https://www.dynexcel.com',
-    'depends': ['account'],
+    'depends': ['base', 'account'],
     'category': 'Accounting',
     'demo': [],
     'data': ['views/partner_ledger_views.xml',
@@ -24,9 +24,8 @@
     'installable': True,
     'images': ['static/description/banner.png'],
     'qweb': [],
-    'license': "Other proprietary",
+    'installable': True,
     'auto_install': False,
-    'price':29.0,
-    'currency':'EUR',
-    'live_test_url':'https://youtu.be/5OqXXKO6gRA',
+    'application': False,
+    'live_test_url': 'https://youtu.be/5OqXXKO6gRA',
 }

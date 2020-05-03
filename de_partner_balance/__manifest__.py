@@ -6,7 +6,7 @@
 #
 ##############################################################################
 {
-    'name': 'Partner Ledger',
+    'name': 'Partner Balances',
     'version': '1.2',
     'summary': 'This module will add Partner Ledger Report',
     'description': 'This module provides the movement of individual products with opening and closing stocks',
