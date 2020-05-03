@@ -15,7 +15,7 @@
                     <group>
                         <field name="is_vendor"/>
                         <field name="is_customer"/>
-
+                       <field name="category_id" widget="many2many_tags" options="{'store': True}"/>
                     </group>
                 </group>
 
@@ -30,7 +30,6 @@
     <record id="action_partner_balance_wizard" model="ir.actions.act_window">
         <field name="name">Partner Balance</field>
         <field name="res_model">partner.balance</field>
-        <field name="view_type">form</field>
         <field name="view_mode">form</field>
         <field name="target">new</field>
     </record>

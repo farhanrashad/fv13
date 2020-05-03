@@ -15,7 +15,7 @@
                     <group>
                         <field name="is_vendor"/>
                         <field name="is_customer"/>
-
+                       <field name="category_id" widget="many2many_tags" options="{'store': True}"/>
                     </group>
                 </group>
 

@@ -2,7 +2,7 @@
 ##############################################################################
 #
 #    Odoo, Open Source Management Solution
-#    Copyright (C) 2015 Dynexcel (<http://dynexcel.com/>).
+#    Copyright (C) 2020 Dynexcel (<http://dynexcel.com/>).
 #
 ##############################################################################
 
@@ -31,8 +31,8 @@ class PartnerLedger(models.TransientModel):
     )
     is_vendor = fields.Boolean('Vendor Balances', default=False)
     is_customer = fields.Boolean('Customer Balances', default=False)
-    #partner_id = fields.Many2one('res.partner', string='Partner', required=True, help='Select Partner for movement')
+    category_id = fields.Many2many('res.partner.category', string='Partner Balance',)
 
     def print_report(self, data=None):
-        data = {'start_date': self.start_date, 'end_date': self.end_date,'is_vendor': self.is_vendor,'is_customer': self.is_customer}
+        data = {'start_date': self.start_date, 'end_date': self.end_date,'category_id': self.category_id,'is_vendor': self.is_vendor,'is_customer': self.is_customer}
         return self.env.ref('de_partner_balance.partner_balance_pdf').report_action(self, data=data)
