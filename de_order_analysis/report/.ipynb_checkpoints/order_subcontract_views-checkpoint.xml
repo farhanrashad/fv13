@@ -8,6 +8,8 @@
             <tree string="Order Subcontract Report">
                 <field name="partner_id"/>
                 <field name="sale_id"/>
+                <field name="global_ref"/>
+                <field name="categ_id"/>
                 <field name="product_id"/>
                 <field name="order_qty"/>
                 <field name="order_weight"/>
@@ -61,6 +63,7 @@
             <search string="Order Subcontract Stock Report">
                 <field name="name"/>
                 <separator/>
+                <field name="categ_id"/>
                 <field name="product_id"/>
                 <field name="sale_id"/>
                 <field name="partner_id"/>

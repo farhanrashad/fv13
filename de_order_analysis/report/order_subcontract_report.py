@@ -13,7 +13,9 @@ class OrderSubcontractingReport(models.Model):
     _order = 'date desc'
     
     name = fields.Char('Reference', readonly=True)
+    global_ref = fields.Char('Global Ref.', readonly=True)
     date = fields.Datetime('Date', readonly=True)
+    categ_id = fields.Many2one('product.category', 'Product_category', readonly=True)
     product_id = fields.Many2one('product.product', 'Product', readonly=True)
     partner_id = fields.Many2one('res.partner', 'Partner', readonly=True)
     sale_id = fields.Many2one('sale.order', 'Sale Order', readonly=True)
@@ -74,12 +76,15 @@ class OrderSubcontractingReport(models.Model):
         with_ = ("WITH %s" % with_clause) if with_clause else ""
 
         select_ = """
-        count(a.*) as nbr, min(a.id) as id, min(a.name) as name, max(date_order) as date, a.sale_id, a.partner_id, a.product_id, sum(a.order_qty) as order_qty, sum(a.order_weight) as order_weight, sum(a.received_qty) as received_qty, sum(a.received_weight) as received_weight, sum(a.issued_qty) as issued_qty, sum(a.issued_weight) as issued_weight, sum(a.consumed_qty) as consumed_qty, sum(a.consumed_weight) as consumed_weight, sum(a.order_qty - a.received_qty) as remaining_qty, sum(a.order_weight - a.received_weight) as remaining_weight, sum(a.received_qty - a.issued_qty) as diff_qty, sum(a.received_weight - a.issued_weight) as diff_weight, sum(a.received_qty - a.issued_qty) as supplier_diff_qty, sum(a.received_weight - a.issued_weight) as supplier_diff_weight from (
-select po.id, po.sale_id,po.date_order, po.partner_id,po.name, pl.product_id,pl.product_qty as order_qty, pl.total_weight as order_weight, pl.qty_received as received_qty, 0 as received_weight, pl.qty_issued as issued_qty, pl.weight_issued as issued_weight, pl.qty_consume as consumed_qty, pl.weight_consume as consumed_weight
+        count(a.*) as nbr, min(a.id) as id, min(a.name) as name, max(date_order) as date, a.sale_id, a.global_ref, a.partner_id, a.categ_id, a.product_id, sum(a.order_qty) as order_qty, sum(a.order_weight) as order_weight, sum(a.received_qty) as received_qty, sum(a.received_weight) as received_weight, sum(a.issued_qty) as issued_qty, sum(a.issued_weight) as issued_weight, sum(a.consumed_qty) as consumed_qty, sum(a.consumed_weight) as consumed_weight, sum(a.order_qty - a.received_qty) as remaining_qty, sum(a.order_weight - a.received_weight) as remaining_weight, sum(a.received_qty - a.consumed_qty) as diff_qty, sum(a.received_weight - a.consumed_weight) as diff_weight, sum(a.received_qty - a.issued_qty) as supplier_diff_qty, sum(a.received_weight - a.issued_weight) as supplier_diff_weight from (
+select po.id, po.sale_id,so.global_ref,po.date_order, po.partner_id,po.name, pt.categ_id, pl.product_id,pl.product_qty as order_qty, pl.total_weight as order_weight, pl.qty_received as received_qty, 0 as received_weight, pl.qty_issued as issued_qty, pl.weight_issued as issued_weight, pl.qty_consume as consumed_qty, pl.weight_consume as consumed_weight
 from purchase_order po 
 join purchase_order_line pl on pl.order_id = po.id
+join product_product pp on pl.product_id = pp.id
+join product_template pt on pp.product_tmpl_id = pt.id
+left join sale_order so on po.sale_id = so.id
 ) a
-group by a.sale_id, a.partner_id, a.product_id
+group by a.sale_id, a.global_ref, a.partner_id, a.categ_id, a.product_id
         
         """
 

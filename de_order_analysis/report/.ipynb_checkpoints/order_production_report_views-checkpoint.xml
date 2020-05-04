@@ -19,6 +19,8 @@
                 <field name="prd_weight"/>
                 <field name="produced_qty"/>
                 <field name="produced_weight"/>
+                <field name="remaining_qty"/>
+                <field name="remaining_weight"/>
                 
                 
             </tree>
@@ -40,6 +42,9 @@
                  
                 <field name="produced_qty" type="measure"/>
                 <field name="produced_weight" type="measure"/>
+                
+                 <field name="remaining_qty" type="measure"/>
+                <field name="remaining_weight" type="measure"/>
                 
              </pivot>
          </field>
