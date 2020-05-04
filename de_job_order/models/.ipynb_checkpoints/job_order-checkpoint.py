@@ -315,184 +315,7 @@ class JobOrder(models.Model):
          #   'price':1,
          #   'product_tmpl_id':product_template.id,
          #   'is_subcontractor':True,
-       # }
-    
-    def action_process2(self):
-        
-        bom_type = 'normal'
-        pname = ''
-        
-        #get list of contractors
-        contractors = []
-        
-                
-        for sale in self.job_order_sale_lines:
-            parent_product_template = find_product_id = sale.product_tmpl_id
-            component_id = sale.product_id
-            
-            job_gwpu = self.env['job.order.line'].search([('job_sale_line_id', '=', sale.id),('code', '=', 'GWPU')],limit=1)
-            job_dwp = self.env['job.order.line'].search([('job_sale_line_id', '=', sale.id),('code', '=', 'DWP')],limit=1)
-            job_dwp_qty = 1 + (1 * (job_dwp.quantity/100))
-            for routing in self.job_order_routing_ids:
-                if routing.routing_include:
-                    contractors.clear()
-                    category = self.env['product.category'].search([('name', '=', routing.routing_id.name)],limit=1)
-                    partner_category = self.env['res.partner.category'].search([('name', '=', parent_product_template.categ_id.name)],limit=1)
-                    contractor_ids = self.env['res.partner'].search([('category_id', '=', partner_category.id)])
-                    for ct in contractor_ids:
-                        contractors.append(ct.id)
-                        
-                    # Create Product and BOM
-                    if routing.apply_on_variant:
-                        pname = sale.product_id.display_name + '-' + routing.routing_id.name
-                        product_tmpl_id = self.env['product.template'].create(self._prepare_product(pname,category,sale.product_tmpl_id,job_gwpu.quantity))
-                        component_id = self.env['product.product'].search([('product_tmpl_id', '=', product_tmpl_id.id)],limit=1)
-                        
-                        
-                        if routing.sequence == 10:
-                            bom_type = 'normal'
-                            bom_id = self.env['mrp.bom'].create(self._prepare_bom(parent_product_template, sale.product_id, bom_type, 1, contractors ))
-                            bom_line_id = self.env['mrp.bom.line'].create(self._prepare_bom_line(bom_id, component_id, job_dwp_qty))
-                        else:
-                            bom_id = self.env['mrp.bom'].create(self._prepare_bom1(parent_product_template, bom_type, 1, contractors ))
-                            bom_line_id = self.env['mrp.bom.line'].create(self._prepare_bom_line(bom_id, component_id, 1))
-                        
-                    else:
-                        pname = sale.product_tmpl_id.name + '-' + routing.routing_id.name
-                        find_product_id = self.env['product.template'].search([('name', '=', pname)])
-                        if find_product_id:
-                            component_id = self.env['product.product'].search([('product_tmpl_id', '=', find_product_id.id)],limit=1)
-                        else:
-                            product_tmpl_id = self.env['product.template'].create(self._prepare_product(pname,category,sale.product_tmpl_id,job_gwpu.quantity))
-                            component_id = self.env['product.product'].search([('product_tmpl_id', '=', product_tmpl_id.id)],limit=1)
-                        bom_id = self.env['mrp.bom'].create(self._prepare_bom1(parent_product_template, bom_type, 1, contractors ))
-                        bom_line_id = self.env['mrp.bom.line'].create(self._prepare_bom_line(bom_id, component_id, 1))
-                    
-                    if routing.is_subcontracting:
-                        bom_type = 'subcontract'
-                    else:
-                        bom_type = 'normal'
-                 
-                rule_id = self.env['stock.warehouse.orderpoint'].create(self._prepare_reorder(component_id, 8))
-                sc_rule_id = self.env['stock.warehouse.orderpoint'].create(self._prepare_reorder(component_id, 19))
-                #for pl in contractor_ids:
-                    #vendor_pricelist_id = self.env['product.supplierinfo'].create(self._prepare_vendor_pricelist(pl,product_tmpl_id))
-                parent_product_template = product_tmpl_id
-        self.state = 'processed'
-    
-    def action_process1(self):
-        self.state = 'processed'
-        
-        dyed_category_id = self.env['product.category'].search([('name', 'like', 'Dyed Greige')],limit=1)
-        fresh_category_id = self.env['product.category'].search([('name', 'like', 'Greige')],limit=1)
-        
-        for rs in self.job_order_sale_lines:
-            fresh_product_id = rs.product_id
-            job_gwpu = self.env['job.order.line'].search([('job_sale_line_id', '=', rs.id),('code', '=', 'GWPU')],limit=1)
-            job_dwp = self.env['job.order.line'].search([('job_sale_line_id', '=', rs.id),('code', '=', 'DWP')],limit=1)
-            #create fresh or greige fabric produt
-            find_fresh_product = self.env['product.template'].search([('ref_product_tmpl_id', '=', rs.product_tmpl_id.id)],limit=1)
-            fvals = {
-                'name': rs.product_tmpl_id.name + '-Fresh',
-                'type':rs.product_tmpl_id.type,
-                'categ_id':fresh_category_id.id,
-                'sale_ok':False,
-                'purchase_ok':True,
-                'uom_id':rs.product_tmpl_id.uom_id.id,
-                'uom_po_id':rs.product_tmpl_id.uom_po_id.id,
-                #'route_ids':  [( 6, 0, list)],
-                'ref_product_tmpl_id': rs.product_tmpl_id.id,
-                #'ref_product_id': rs.product_id.id,
-                'tracking':'lot',
-                'weight':job_gwpu.quantity,
-            }
-            if not(find_fresh_product):
-                fresh_product_tmpl_id = self.env['product.template'].create(fvals)
-                fresh_product_id = self.env['product.product'].search([('product_tmpl_id', '=', fresh_product_tmpl_id.id)])
-                # Reordering rule data for fresh
-                fresh_ordering_rule_id = self.env['stock.warehouse.orderpoint'].create({
-                    'product_id':fresh_product_id.id,
-                    'product_min_qty':0,
-                    'product_max_qty':0,
-                    'qty_multiple':1,
-                    'location_id':8,
-                })
-                #reordering rule for fresh subcontracting
-                fresh_ordering_srule_id = self.env['stock.warehouse.orderpoint'].create({
-                    'product_id':fresh_product_id.id,
-                    'product_min_qty':0,
-                    'product_max_qty':0,
-                    'qty_multiple':1,
-                    'location_id':19,
-                })
-            
-  
-            #create Dyed Products
-            vals = {
-                'name': rs.product_id.display_name,
-                'type':rs.product_tmpl_id.type,
-                'categ_id':dyed_category_id.id,
-                'sale_ok':False,
-                'purchase_ok':True,
-                'uom_id':rs.product_tmpl_id.uom_id.id,
-                'uom_po_id':rs.product_tmpl_id.uom_po_id.id,
-                #'route_ids':  [( 6, 0, list)],
-                'ref_product_tmpl_id': rs.product_tmpl_id.id,
-                'ref_product_id': rs.product_id.id,
-                'tracking':'lot',
-                'weight':job_gwpu.quantity,
-            }
-            dyed_product_tmpl_id = self.env['product.template'].create(vals)
-            dyed_product_id = self.env['product.product'].search([('product_tmpl_id', '=', dyed_product_tmpl_id.id)],limit=1)
-            #BOM for finish products
-            finish_bom_id = self.env['mrp.bom'].create({
-                'product_tmpl_id':rs.product_tmpl_id.id,
-                'product_id':rs.product_id.id,
-                'product_uom_id':rs.product_tmpl_id.uom_id.id,
-                'product_qty':1,
-                'type':'normal'
-            })
-            self.env['mrp.bom.line'].create({
-                'bom_id': finish_bom_id.id,
-                'product_id':dyed_product_id.id,
-                'product_qty':1 + (1 * (job_dwp.quantity/100)),
-            })
-            #BOM for Dyed Products
-            contractor_ids = self.env['res.partner'].search([('category_id', '=', 'Dyeing Contractor')])
-            contractors = []
-            for rs in contractor_ids:
-                contractors.append(rs.id)
-            
-            dyed_bom_id = self.env['mrp.bom'].create({
-                'product_tmpl_id':dyed_product_tmpl_id.id,
-                'product_uom_id':dyed_product_tmpl_id.uom_id.id,
-                'product_qty':1,
-                'type':'subcontract',
-                'subcontractor_ids':[( 6, 0, contractors)],
-            })
-            self.env['mrp.bom.line'].create({
-                'bom_id': dyed_bom_id.id,
-                'product_id':fresh_product_id.id,
-                'product_qty':1,
-            })
-            # Reordering rule data for dyed
-            dyed_ordering_rule_id = self.env['stock.warehouse.orderpoint'].create({
-                'product_id':dyed_product_id.id,
-                'product_min_qty':0,
-                'product_max_qty':0,
-                'qty_multiple':1,
-                'location_id':8,
-            })
-            
-            for pl in contractor_ids:
-                dyed_vendor_pricelist_id = self.env['product.supplierinfo'].create({
-                    'name':pl.id,
-                    'min_qty':1,
-                    'price':1,
-                    'product_tmpl_id':dyed_product_tmpl_id.id,
-                    'is_subcontractor':True,
-                })
-            
+       # }        
                 
         
     def action_cancel(self):
@@ -501,6 +324,87 @@ class JobOrder(models.Model):
     def action_draft(self):
         self.state = 'draft'
     
+    def action_update_so_in_product(self):
+        #update reference in all MO
+        #for bom in self.job_order_sale_lines:
+        productions = self.env['mrp.production'].search(['|',('ref_sale_id','=',self.sale_id.id),('job_order_id','=',self.id)])
+        pickings = self.env['stock.picking'].search(['|',('ref_sale_id','=',self.sale_id.id),('job_order_id','=',self.id)])
+        
+        for production in productions:
+            for finish_move_line in production.finished_move_line_ids:
+                finish_move_line.update({
+                    'job_order_id': self.id,
+                    'sale_id':self.sale_id.id,
+                })
+            for finish_move in production.move_finished_ids:
+                finish_move.update({
+                    'job_order_id': self.id,
+                    'sale_id':self.sale_id.id,
+                })
+            for raw_move in production.move_raw_ids:
+                raw_move.update({
+                    'job_order_id':self.id,
+                    'sale_id':self.sale_id.id,
+                })
+                for raw_move_line in raw_move.move_line_ids:
+                    raw_move_line.update({
+                        'job_order_id':self.id,
+                        'sale_id':self.sale_id.id,
+                    })
+        
+        for picking in pickings:
+            for move in picking.move_lines:
+                move.update({
+                    'job_order_id':self.id,
+                    'sale_id':self.sale_id.id,
+                })
+            for move_line in picking.move_line_ids:
+                move_line.update({
+                    'job_order_id':self.id,
+                    'sale_id':self.sale_id.id,
+                })
+        ref_moves = self.env['stock.move'].search(['|',('ref_sale_id','=',self.sale_id.id),('ref_job_order_id','=',self.id)])
+        for move in ref_moves:
+            move.update({
+                'job_order_id': move.ref_job_order_id.id,
+                'sale_id': move.ref_sale_id.id,
+            })
+            
+        ref_move_lines = self.env['stock.move.line'].search(['|',('ref_sale_id','=',self.sale_id.id),('ref_job_order_id','=',self.id)])
+        for line in ref_move_lines:
+            line.update({
+                'job_order_id': line.ref_job_order_id.id,
+                'sale_id': line.ref_sale_id.id,
+            })
+        #update product for components
+        for cline in self.job_order_mrp_ids:
+            for product in cline.bom_id.product_tmpl_id:
+                for variant in product.product_variant_ids:
+                    variant.update({
+                        'sale_id': self.sale_id.id
+                    })
+                product.update({
+                    'sale_id': self.sale_id.id
+                })
+                
+                
+        for sline in self.job_order_sale_lines:
+            for product in sline.bom_id.product_tmpl_id:
+                product.update({
+                    'sale_id': self.sale_id.id,
+                })
+                for variant in product.product_variant_ids:
+                    variant.update({
+                        'sale_id': self.sale_id.id,
+                    })
+                for c_variant in sline.bom_id.bom_line_ids.product_id:
+                    for c_product in c_variant.product_tmpl_id:
+                        c_product.update({
+                            'sale_id': self.sale_id.id,
+                        })
+                    c_variant.update({
+                        'sale_id': self.sale_id.id,
+                    })
     def action_process(self):
         bom_ids = []
         all_boms = []
@@ -645,6 +549,10 @@ class JobOrderBOM(models.Model):
     bom_id = fields.Many2one('mrp.bom', string='BOM',readonly=True)
     bom_type = fields.Selection('mrp.bom', related='bom_id.type',string='Type',readonly=True, store=True)
     quantity = fields.Float(string='Quantity',digits=dp.get_precision('Product Unit of Measure'),default=1.0)
+    production_quantity = fields.Float(string='Production Quantity', compute='_calcualte_production_quantity', store=False)
+    
+    def _calcualte_production_quantity(self):
+        self.production_quantity = 0
     
     
     

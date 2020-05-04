@@ -63,3 +63,32 @@ where s.id = %(sale_id)s
 
             self.env.cr.execute(select, where_clause_params)
             line.total_weight = self.env.cr.fetchone()[0] or 0.0
+            
+    def button_validate(self):
+        for movewp in self.move_ids_without_package:
+            movewp.update({
+                'job_order_id':self.job_order_id.id,
+                'sale_id':self.ref_sale_id.id,
+            })
+            for line in movewp.move_line_ids:
+                line.update({
+                    'job_order_id':self.job_order_id.id,
+                    'sale_id':self.ref_sale_id.id,
+                })
+        for move in self.move_lines:
+            move.update({
+                'job_order_id':self.job_order_id.id,
+                'sale_id':self.ref_sale_id.id,
+            })
+            for line in move.move_line_ids:
+                line.update({
+                    'job_order_id':self.job_order_id.id,
+                    'sale_id':self.ref_sale_id.id,
+                })
+        for mline in self.move_line_ids:
+            mline.update({
+                'job_order_id':self.job_order_id.id,
+                'sale_id':self.ref_sale_id.id,
+            })
+        res = super(Picking,self).button_validate()
+        return res

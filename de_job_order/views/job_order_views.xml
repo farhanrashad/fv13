@@ -13,6 +13,8 @@
                     <button string="Confirm" name="action_confirm" type="object" states="draft" class="oe_highlight"/>
                     <button string="Process Job" name="action_process" type="object" states="confirmed" class="oe_highlight"/>
                     <button string="Approve" name="action_approve" type="object" states="processed" class="oe_highlight"/>
+                    
+                    <button string="Update SO in Product/BOM" name="action_update_so_in_product" type="object" class="oe_highlight"/>
 					
                     <!--<button string="Generate Orders" name="generate_orders" type="object" states="draft,confirmed,planned" class="oe_highlight"/>-->
                     <field name="state" widget="statusbar" statusbar_visible="draft,confirmed,computed,processed,done"/>
@@ -82,6 +84,7 @@
                                     <field name="bom_id"/>
                                     <field name="bom_type"/>
                                     <field name="quantity"/>
+                                    <field name="production_quantity"/>
                                     <!--
                                     <button name="generate_mo" type="object" string="Generate MO" colspan="2" icon="fa-cogs"/> -
 -->

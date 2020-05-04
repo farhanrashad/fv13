@@ -69,8 +69,9 @@ class StockMoveLine(models.Model):
                 
     ref_job_order_id = fields.Many2one("job.order", compute="_compute_move_reference_order", store=True, string="Reference Job Order", readonly=True)
     ref_sale_id = fields.Many2one("sale.order", related="move_id.ref_sale_id", string="Reference Sale", store=True, readonly=True,)
-    job_order_id = fields.Many2one("job.order", related="move_id.job_order_id", string="Job Order", readonly=True, store=False)
-    sale_id = fields.Many2one("sale.order", related="move_id.sale_id", string="Sale Order", readonly=True, store=True)
+    
+    job_order_id = fields.Many2one("job.order", string="Job Order", readonly=True, store=True)
+    sale_id = fields.Many2one("sale.order", string="Sale Order", readonly=True, store=True)
     
     
     
