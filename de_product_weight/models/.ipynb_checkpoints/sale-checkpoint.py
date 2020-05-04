@@ -36,8 +36,8 @@ class SaleOrderLine(models.Model):
 class SaleOrder(models.Model):
     _inherit = 'sale.order'
     
-    sum_qty = fields.Float(string='Total Quantity', compute='_quantity_all', store=True, readonly=True)
-    sum_weight = fields.Float(string='Total Weight', compute='_quantity_all', store=True, readonly=True)
+    sum_qty = fields.Float(string='Total Quantity', compute='_quantity_all', store=False, readonly=True)
+    sum_weight = fields.Float(string='Total Weight', compute='_quantity_all', store=False, readonly=True)
     is_sale_weight = fields.Boolean(related='partner_id.is_sale_weight',string='Compute prices in weight',readonly=True)
     
     @api.depends('order_line.product_uom_qty','order_line.total_weight')

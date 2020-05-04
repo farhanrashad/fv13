@@ -41,8 +41,8 @@ class PurchaseOrderLine(models.Model):
 class PurchaseOrder(models.Model):
     _inherit = 'purchase.order'
     
-    sum_qty = fields.Float(string='Total Quantity', compute='_sum_quantity', store=True, readonly=True)
-    sum_weight = fields.Float(string='Total Weight', compute='_sum_quantity', store=True, readonly=True)
+    sum_qty = fields.Float(string='Total Quantity', compute='_sum_quantity', store=False, readonly=True)
+    sum_weight = fields.Float(string='Total Weight', compute='_sum_quantity', store=False, readonly=True)
     
     is_purchase_weight = fields.Boolean(related='partner_id.is_purchase_weight',string='Compute prices in weight',readonly=True)
 
