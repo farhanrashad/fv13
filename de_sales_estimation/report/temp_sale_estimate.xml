@@ -1,0 +1,182 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+
+        <template id="report_sale_estimate_report">
+            <t t-call="web.html_container">
+                <t t-foreach="docs" t-as="o">
+                    <t t-call="web.external_layout">
+                        <div class="page">
+                            <div class="row justify-content-end">
+                                <div class="col-4">
+                                    <table class="table table-bordered" style="table-layout: fixed">
+                                        <thead>
+                                            <tr class="text-center">
+                                                <td>
+                                                    Estimates
+                                                </td>
+                                                <td>
+                                                    Date
+                                                </td>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr>
+                                                <td>
+                                                    <span t-field="o.est_date"/>
+                                                </td>
+                                                <td>
+                                                    <!--                                                    <span t-field="o.est_date"/>-->
+                                                </td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                            <span t-field="o.partner_id"/>
+                            <br/>
+                            <br/>
+                            <div class="row justify-content-end">
+                                <div class="col-12">
+                                    <table class="table table-bordered" style="table-layout: fixed"
+                                           id="sale_hash_config_table">
+
+                                        <tr>
+                                            <td>
+                                                <strong>Your Refferance</strong>
+                                            </td>
+                                            <td>
+                                                <span t-field="o.client_ref"/>
+                                            </td>
+                                            <td>
+                                                <strong>Payment Terms</strong>
+                                            </td>
+                                            <td>
+                                                <span t-field="o.payment_terms_id"/>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>
+                                                <strong>Sales Person</strong>
+                                            </td>
+                                            <td>
+                                                <span t-field="o.est_user_id"/>
+                                            </td>
+                                            <td>
+                                                <strong>Sales Team</strong>
+                                            </td>
+                                            <td>
+                                                <span t-field="o.est_team"/>
+                                            </td>
+                                        </tr>
+                                    </table>
+                                    <br></br>
+                                    <table class="table table-bordered" style="table-layout: fixed"
+                                           id="sale_hash_config_table">
+                                        <thead>
+                                            <tr>
+                                                <th class="text-left">Description of Work</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody class="sale_tbody">
+
+                                            <t t-set="current_subtotal" t-value="0"/>
+
+                                            <t t-foreach="o.est_order_line" t-as="line">
+
+
+                                                <tr t-att-class="'font-weight-bold o_line_section'">
+
+                                                    <td name="td_quantity" class="text-left">
+                                                        <span t-field="line.est_name"/>
+                                                    </td>
+
+                                                </tr>
+                                            </t>
+                                        </tbody>
+
+                                    </table>
+                                    <br></br>
+                                    <h1 class="text-left">Estimation Lines</h1>
+                                    <table class="table table-bordered" style="table-layout: fixed">
+
+                                        <thead>
+                                            <tr>
+                                                <th name="th_product" class="text-center">Product</th>
+                                                <th name="th_description" class="text-center">Description</th>
+                                                <th name="th_quantity" class="text-center">Quantity</th>
+                                                <th name="th_measure" class="text-center">Unit of Measure</th>
+                                                <th name="th_priceunit" class="text-center">Unit Price</th>
+                                                <th name="th_discount" class="text-center">Discount</th>
+                                                <th name="th_subtotal" class="text-center">Sub Total</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+
+                                            <t t-set="current_subtotal" t-value="0"/>
+
+                                            <t t-foreach="o.est_order_line" t-as="line">
+
+
+                                                <tr t-att-class="'o_line_section'">
+                                                    <td name="td_quantity" class="text-center">
+                                                        <span t-field="line.product_id"/>
+                                                    </td>
+                                                    <td name="td_quantity" class="text-center">
+                                                        <span t-field="line.est_name"/>
+                                                    </td>
+                                                    <td name="td_quantity" class="text-center">
+                                                        <span t-field="line.product_uom_qty"/>
+                                                    </td>
+                                                    <td name="td_quantity" class="text-center">
+                                                        <span t-field="line.product_uom_id"/>
+                                                    </td>
+                                                    <td name="td_quantity" class="text-center">
+                                                        <span t-field="line.price_unit"/>
+                                                    </td>
+                                                    <td name="td_quantity" class="text-center">
+                                                        <span t-field="line.discount"/>
+                                                    </td>
+                                                    <td name="td_quantity" class="text-center">
+                                                        <!--                                                        <span t-field="line.price_subtotal"/>-->
+                                                        <!--                                                        <span-->
+                                                        <!--                                                                t-esc="current_subtotal"-->
+                                                        <!--                                                                t-options='{"widget": "monetary", "display_currency": doc.pricelist_id.currency_id}'-->
+                                                        <!--                                                        />-->
+                                                    </td>
+                                                </tr>
+                                            </t>
+                                        </tbody>
+                                    </table>
+
+                                    <table class="table table-bordered" style="table-layout: fixed">
+                                        <thead></thead>
+                                        <tbody>
+                                            <tr class="text-center">
+                                                <td class="text-center">Thank you for your business</td>
+                                                <td class="text-center">Total Estimate</td>
+                                                <td class="text-center">
+                                                    <!--                                                    <span t-field="o.amount_total"/>-->
+                                                </td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+
+                    </t>
+                </t>
+            </t>
+        </template>
+        <template id="sale_estimate_report">
+            <t t-call="web.html_container">
+                <t t-foreach="docs" t-as="o">
+                    <t t-call="de_sales_estimation.report_sale_estimate_report"/>
+                </t>
+            </t>
+        </template>
+
+    </data>
+
+</odoo>
