@@ -47,6 +47,7 @@ class SaleOrder(models.Model):
         """
         sum_qty = sum_weight = 0.0
         for order in self:
+            sum_qty = sum_weight = 0.0
             for line in order.order_line:
                 sum_qty += line.product_uom_qty
                 sum_weight += (line.weight * line.product_uom_qty)
