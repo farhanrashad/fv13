@@ -23,22 +23,27 @@ class CustomReport(models.AbstractModel):
         self.model = self.env.context.get('active_model')
         docs = self.env[self.model].browse(self.env.context.get('active_id'))
 
-        query_partner_type = ''
+        query_param = ''
         
-        if data['is_vendor']:
-            query_partner_type = query_partner_type + ' or a.supplier_rank = 1 '
+        if data['is_posted']:
+            query_param = query_param + " and a.state in ('posted') "
+        else:
+            query_param = query_param + " and a.state in ('draft','posted') "
+            
         
-        if data['is_customer']:
-            query_partner_type = query_partner_type + ' or a.customer_rank = 1 '
+        if data['partner_type'] =='supplier':
+            query_param = query_param + ' and a.supplier_rank = 1 '
+        elif data['partner_type'] == 'customer':
+            query_param = query_param + ' and a.customer_rank = 1 '
 
         if data['category_id']:
-            query_partner_type = query_partner_type + ' or a.partner_id in (select partner_id from res_partner_res_partner_category_rel where category_id = ' + data['category_id'] + ') '
+            query_param = query_param + ' and a.partner_id in (select partner_id from res_partner_res_partner_category_rel where category_id = ' + "%(category_id)s" + ') '
 
         cr = self._cr
         query = """
         select a.partner_name, sum(a.obal) as obal, sum(a.debit) as debit, sum(a.credit) as credit, sum(a.obal)+sum(a.debit-a.credit) as cbal from
 (
-select p.name as partner_name, p.category_id ,l.partner_id, 0 as obal, l.debit, l.credit
+select m.state, p.name as partner_name,l.partner_id, p.customer_rank , p.supplier_rank , 0 as obal, l.debit, l.credit
 from account_move m
 join account_move_line l on l.move_id = m.id
 join res_partner p on l.partner_id = p.id
@@ -47,7 +52,7 @@ join account_journal j on m.journal_id = j.id
 where a.reconcile = True
 and (m.date between %(start_date)s and %(end_date)s)
 union all
-select p.name as partner_name, p.category_id ,l.partner_id, l.debit - l.credit as obal, 0 as debit, 0 as credit
+select m.state, p.name as partner_name,l.partner_id, p.customer_rank , p.supplier_rank ,l.debit - l.credit as obal, 0 as debit, 0 as credit
 from account_move m
 join account_move_line l on l.move_id = m.id
 join res_partner p on l.partner_id = p.id
@@ -55,7 +60,7 @@ join account_account a on l.account_id = a.id
 join account_journal j on m.journal_id = j.id
 where a.reconcile = True
 and (m.date <= %(start_date)s)
-) a where a.partner_name != '' """ + query_partner_type + """
+) a where a.partner_name != '' """ + query_param + """
 group by a.partner_name
 order by 1
         """ 

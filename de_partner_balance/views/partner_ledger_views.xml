@@ -6,17 +6,16 @@
         <field name="model">partner.balance</field>
         <field name="arch" type="xml">
             <form string="Partner Balance">
-                <group>
-                    <group>
+                <group col="4">
+                    
                         <field name="start_date"/>
                         <field name="end_date"/>
                         
-                    </group>
-                    <group>
-                        <field name="is_vendor"/>
-                        <field name="is_customer"/>
-                       <field name="category_id" widget="many2many_tags" options="{'store': True}"/>
-                    </group>
+                   
+                        <field name="partner_type"/>
+                        <field name="is_posted"/>
+                       <field name="category_id"/>
+                  
                 </group>
 
                 <footer>
