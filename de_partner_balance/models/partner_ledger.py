@@ -34,5 +34,5 @@ class PartnerLedger(models.TransientModel):
     category_id = fields.Many2many('res.partner.category', string='Select Category(s)',)
 
     def print_report(self, data=None):
-        data = {'start_date': self.start_date, 'end_date': self.end_date,'category_id': self.category_id,'is_vendor': self.is_vendor,'is_customer': self.is_customer}
+        data = {'start_date': self.start_date, 'end_date': self.end_date,'category_id': self.category_id.id,'is_vendor': self.is_vendor,'is_customer': self.is_customer}
         return self.env.ref('de_partner_balance.partner_balance_pdf').report_action(self, data=data)
