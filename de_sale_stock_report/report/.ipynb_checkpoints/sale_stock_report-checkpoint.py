@@ -40,7 +40,7 @@ join product_template pt on pp.product_tmpl_id = pt.id
 join uom_uom um on pt.uom_id = um.id
 join stock_location sl on q.location_id = sl.id
 left join stock_production_lot lot on q.lot_id = lot.id
-where q.in_date <=  %(date)s and q.location_id = %(location_id)s
+where q.in_date <=  %(date)s and (q.location_id = %(location_id)s or q.location_id in (select z.id from stock_location z where z.location_id = %(location_id)s ) )
 and q.product_id in (
 select l.product_id from sale_order s join sale_order_line l on l.order_id = s.id where s.id = %(sale_id)s
 union
@@ -61,7 +61,7 @@ join product_template pt on pp.product_tmpl_id = pt.id
 join uom_uom um on pt.uom_id = um.id
 join stock_location sl on q.location_id = sl.id
 left join stock_production_lot lot on q.lot_id = lot.id
-where q.in_date <=  %(date)s and q.location_id = %(location_id)s
+where q.in_date <=  %(date)s and (q.location_id = %(location_id)s or q.location_id in (select z.id from stock_location z where z.location_id = %(location_id)s ) )
 and q.product_id in (
 select l.product_id from sale_order s join sale_order_line l on l.order_id = s.id where s.id = %(sale_id)s
 union

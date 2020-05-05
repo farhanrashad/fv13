@@ -22,6 +22,7 @@
                             <th>Lot #</th>
                             <th>Quantity In Hand</th>
                             <th>Weight In Hand</th>
+                            <th>Location</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -33,6 +34,7 @@
                            <td><span t-esc="d['lot']"/></td>
                             <td class="text-right"><t t-esc="'{0:,.2f}'.format(float(d['quantity']))" /></td>
                             <td class="text-right"><t t-esc="'{0:,.2f}'.format(float(d['product_weight']))" /></td> 
+                           <td><span t-esc="d['location']"/></td>
                         </tr>
                         <tr>
                             <td colspan="3"><strong>Total</strong></td>
@@ -53,6 +55,7 @@
                             <th>UOM</th>
                             <th>Quantity In Hand</th>
                             <th>Weight In Hand</th>
+                            <th>Location</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -63,11 +66,13 @@
                            <td><span t-esc="d['uom']"/></td>
                             <td class="text-right"><t t-esc="'{0:,.2f}'.format(float(d['quantity']))" /></td>
                             <td class="text-right"><t t-esc="'{0:,.2f}'.format(float(d['product_weight']))" /></td> 
+                           <td><span t-esc="d['location']"/></td>
                         </tr>
                         <tr>
                             <td colspan="2"><strong>Total</strong></td>
                             <td class="text-right"><strong><t t-esc="round(tot_quantity,2)" /></strong></td>
-                            <td class="text-right"><strong><t t-esc="round(tot_weight,2)" /></strong></td>                            
+                            <td class="text-right"><strong><t t-esc="round(tot_weight,2)" /></strong></td>
+                            <td/>
                         </tr>
 
                     </tbody>
