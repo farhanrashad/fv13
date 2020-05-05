@@ -7,7 +7,7 @@
 ##############################################################################
 {
     'name': 'Sale Stock',
-    'version': '1.2',
+    'version': '0.2',
     'summary': 'This module will add Sale Stock Report',
     'description': 'This module provides the movement of individual products with opening and closing stocks',
     'author': 'Dynexcel',
