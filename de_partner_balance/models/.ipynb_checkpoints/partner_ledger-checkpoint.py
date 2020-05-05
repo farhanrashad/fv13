@@ -28,9 +28,9 @@ class PartnerLedger(models.TransientModel):
         required=True
     )
     partner_type = fields.Selection([
-        ('supplier', 'Vendor Balances'),
-        ('customer', 'Customer Balances'),
-        ], string='Partner Type',  default='supplier')
+        ('receivable', 'Account Receivable'),
+        ('payable', 'Account Payable'),
+        ], string='Type',  default='receivable')
     is_posted = fields.Boolean('Posted Entries Only', default=False)
     category_id = fields.Many2one('res.partner.category', string='Select Category',)
 

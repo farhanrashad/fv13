@@ -32,9 +32,9 @@ class CustomReport(models.AbstractModel):
             
         
         if data['partner_type'] =='supplier':
-            query_param = query_param + ' and a.supplier_rank = 1 '
+            query_param = query_param + " and a.internal_type = 'receivable' "
         elif data['partner_type'] == 'customer':
-            query_param = query_param + ' and a.customer_rank = 1 '
+            query_param = query_param + " and a.internal_type = 'payable' "
 
         if data['category_id']:
             query_param = query_param + ' and a.partner_id in (select partner_id from res_partner_res_partner_category_rel where category_id = ' + "%(category_id)s" + ') '
@@ -43,7 +43,7 @@ class CustomReport(models.AbstractModel):
         query = """
         select a.partner_name, sum(a.obal) as obal, sum(a.debit) as debit, sum(a.credit) as credit, sum(a.obal)+sum(a.debit-a.credit) as cbal from
 (
-select m.state, p.name as partner_name,l.partner_id, p.customer_rank , p.supplier_rank , 0 as obal, l.debit, l.credit
+select m.state, p.name as partner_name,l.partner_id, p.customer_rank , l.account_id, a.internal_type, 0 as obal, l.debit, l.credit
 from account_move m
 join account_move_line l on l.move_id = m.id
 join res_partner p on l.partner_id = p.id
@@ -52,7 +52,7 @@ join account_journal j on m.journal_id = j.id
 where a.reconcile = True
 and (m.date between %(start_date)s and %(end_date)s)
 union all
-select m.state, p.name as partner_name,l.partner_id, p.customer_rank , p.supplier_rank ,l.debit - l.credit as obal, 0 as debit, 0 as credit
+select m.state, p.name as partner_name,l.partner_id, p.customer_rank , l.account_id, a.internal_type ,l.debit - l.credit as obal, 0 as debit, 0 as credit
 from account_move m
 join account_move_line l on l.move_id = m.id
 join res_partner p on l.partner_id = p.id
