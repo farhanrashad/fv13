@@ -22,21 +22,17 @@ class PartnerLedger(models.TransientModel):
     start_date = fields.Date(
         string='From Date',
         required=True
-        #default=lambda *a: (parser.parse(datetime.now().date))
     )
     end_date = fields.Date(
         string='To Date',
         required=True
-        # default=lambda *a: (parser.parse(datetime.now().date))
     )
-    #is_vendor = fields.Boolean('Vendor Balances', default=False)
-    #is_customer = fields.Boolean('Customer Balances', default=False)
     partner_type = fields.Selection([
         ('supplier', 'Vendor Balances'),
         ('customer', 'Customer Balances'),
         ], string='Partner Type',  default='supplier')
     is_posted = fields.Boolean('Posted Entries Only', default=False)
-    category_id = fields.Many2one('res.partner.category', string='Select Category(s)',)
+    category_id = fields.Many2one('res.partner.category', string='Select Category',)
 
     def print_report(self, data=None):
         data = {'start_date': self.start_date, 'end_date': self.end_date,'category_id': self.category_id.id,'partner_type': self.partner_type,'is_posted': self.is_posted}

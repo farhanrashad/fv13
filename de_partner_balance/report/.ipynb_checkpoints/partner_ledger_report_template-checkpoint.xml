@@ -22,7 +22,6 @@
                     <thead class="thead-dark">
                         <tr class="table-active">
                             <th>Partner</th>
-<!--                             <th>Partner Category</th> -->
                             <th>Initial Balance</th>
                             <th>Debit</th>
                             <th>Credit</th>
@@ -31,25 +30,19 @@
                     </thead>
                     <tbody>
                        <tr t-foreach="dat" t-as="d" style="border-bottom:1px solid #000;">
-<!--                          <t t-foreach="docs.category_id" t-as="dcat"> -->
-<!--                            <t t-if="d['partner_category']== dcat.name"> -->
                            <t t-set="tot_obal" t-value="tot_obal+d['obal']"/>
                            <t t-set="tot_debit" t-value="tot_debit+d['debit']"/>
                            <t t-set="tot_credit" t-value="tot_credit+d['credit']"/>
                            <t t-set="tot_cbal" t-value="tot_cbal+d['cbal']"/>
                            <td><span t-esc="d['partner_name']"/></td>
-<!--                            <td><span t-esc="d['partner_category']"/></td> -->
                            <td class="text-right"><t t-esc="'{0:,.2f}'.format(float(d['obal']))" /></td>
                             <td class="text-right"><t t-esc="'{0:,.2f}'.format(float(d['debit']))" /></td>
                             <td class="text-right"><t t-esc="'{0:,.2f}'.format(float(d['credit']))" /></td>
                             <td class="text-right"><t t-esc="'{0:,.2f}'.format(float(d['cbal']))" /></td>
-<!--                            </t> -->
-<!--                        </t>
- -->
+ 
                         </tr>
                         <tr>
                             <td><strong>Total</strong></td>
-<!--                              <td><strong></strong></td> -->
                             <td class="text-right"><strong><t t-esc="round(tot_obal,2)" /></strong></td>
                             <td class="text-right"><strong><t t-esc="round(tot_debit,2)" /></strong></td>
                             <td class="text-right"><strong><t t-esc="round(tot_credit,2)" /></strong></td>
