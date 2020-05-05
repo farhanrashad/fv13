@@ -4,7 +4,7 @@
         <t t-call="web.html_container">
             <t t-call="web.internal_layout">
                 <div class="page">
-                    <h2 class="text-center">Stoc Report</h2>
+                    <h2 class="text-center">Stock Report</h2>
                     <hr/>
                     <h4 class="text-center">As on <span t-esc="data['date']" t-options="{'widget': 'date'}" /></h4>
                     <h4 class="text-center">on <span t-esc="data['location']" /> for <span t-esc="data['sale']" /></h4>
