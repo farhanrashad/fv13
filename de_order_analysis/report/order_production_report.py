@@ -39,7 +39,7 @@ class OrderProductionReport(models.Model):
         with_ = ("WITH %s" % with_clause) if with_clause else ""
 
         select_ = """
-        count(a.*) as nbr, min(a.line_id) as id, min(a.name) as name, max(a.date_order) as date, a.id as sale_id, a.partner_id, a.global_ref, a.product_id,a.product_tmpl_id, 
+       count(a.*) as nbr, min(a.line_id) as id, min(a.name) as name, max(a.date_order) as date, coalesce(a.id,0) as sale_id, a.partner_id, coalesce(a.global_ref,'') as global_ref, a.product_id,a.product_tmpl_id, 
 sum(a.order_qty) as order_qty, sum(a.order_weight) as order_weight, sum(a.qty_delivered) as delivered_qty,
 sum(a.prd_order_qty) as prd_order_qty, sum(a.production_weight) as prd_weight, sum(a.produced_qty) as produced_qty, 0 as produced_weight, sum(a.prd_order_qty)-sum(a.produced_qty) as remaining_qty, 0 as remaining_weight from (
 select so.id, m.id as line_id, so.partner_id, so.global_ref, m.name,so.date_order, m.product_id, p.product_tmpl_id, 
