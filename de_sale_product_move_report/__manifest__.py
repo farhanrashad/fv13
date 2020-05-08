@@ -6,15 +6,15 @@
 #
 ##############################################################################
 {
-    'name': 'Sale Stock',
+    'name': 'Sale Product Move',
     'version': '0.2',
-    'summary': 'This module will add Sale Stock Report',
+    'summary': 'This module will add Sale Product Move Report',
     'description': 'This module provides the movement of individual products with opening and closing stocks',
     'author': 'Dynexcel',
     'maintainer': 'Dynexcel',
     'company': 'Dynexcel',
     'website': 'https://www.dynexcel.com',
-    'depends': ['base', 'stock'],
+    'depends': ['base', 'sale','stock'],
     'category': 'Inventory',
     'demo': [],
     'data': ['views/sale_stock_views.xml',

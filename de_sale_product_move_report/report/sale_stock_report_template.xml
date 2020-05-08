@@ -74,6 +74,38 @@
                     </tbody>
                   </table>
                 
+                <t t-set="tot_quantity" t-value="0"/>
+                <t t-set="tot_weight" t-value="0"/>
+                
+                <table t-if="data['group_by_report']=='category' " class="table table-striped table-bordered" name="account_lines_table">
+                    <thead class="thead-dark">
+                        <tr class="table-active">
+                            <th>Product Category</th>
+                            <th>Quantity In Hand</th>
+                            <th>Weight In Hand</th>
+                            <th>Location</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                       <tr t-foreach="dat2" t-as="d" style="border-bottom:1px solid #000;">
+                           <t t-set="tot_quantity" t-value="tot_quantity+d['quantity']"/>
+                           <t t-set="tot_weight" t-value="tot_weight+d['product_weight']"/>
+                           <td><span t-esc="d['product_category']"/></td>
+                            <td class="text-right"><t t-esc="'{0:,.2f}'.format(float(d['quantity']))" /> <span t-esc="d['uom']"/></td>
+                            <td class="text-right"><t t-esc="'{0:,.2f}'.format(float(d['product_weight']))" /> Kg</td>
+                           <td><span t-esc="d['location']"/></td>
+                        </tr>
+                        <tr>
+                            <td colspan="1"><strong>Total</strong></td>
+                            <td class="text-right"><strong><t t-esc="round(tot_quantity,2)" /></strong></td>
+                            <td class="text-right"><strong><t t-esc="round(tot_weight,2)" /></strong></td>
+                            <td/>
+                        </tr>
+
+                    </tbody>
+                  </table>
+                
+                
             </t>
         </t>
     </template>
