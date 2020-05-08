@@ -43,7 +43,7 @@ join product_template pt on pp.product_tmpl_id = pt.id
 join uom_uom um on pt.uom_id = um.id
 join stock_location sl on l.location_dest_id = sl.id
 left join stock_production_lot lot on l.lot_id = lot.id 
-where m.state in ('done' ) and l.date <=  %(date)s and l.location_dest_id = %(location_id)s
+where m.state in ('done' ) and l.date <=  %(date)s and (l.location_dest_id = %(location_id)s or l.location_dest_id in (select z.id from stock_location z where z.location_id = %(location_id)s ) )
 union all
 select l.product_id, pt.name as product_name, um.name as uom, m.partner_id, l.sale_id, sl.name as location, lot.name as lot, l.qty_done*-1 as quantity, coalesce(l.total_weight,0)*-1 as product_weight 
 from stock_move m
@@ -53,7 +53,7 @@ join product_template pt on pp.product_tmpl_id = pt.id
 join uom_uom um on pt.uom_id = um.id
 join stock_location sl on l.location_id = sl.id
 left join stock_production_lot lot on l.lot_id = lot.id 
-where m.state in ('done' ) and l.date <=  %(date)s and l.location_id = %(location_id)s
+where m.state in ('done' ) and l.date <=  %(date)s and (l.location_id = %(location_id)s or l.location_id in (select z.id from stock_location z where z.location_id = %(location_id)s ) )
 ) a where a.location is not null """ + query_param + """
 group by a.product_id, a.product_name,a.uom, a.location,a.lot
 order by 1
@@ -68,7 +68,7 @@ join product_template pt on pp.product_tmpl_id = pt.id
 join uom_uom um on pt.uom_id = um.id
 join stock_location sl on l.location_dest_id = sl.id
 left join stock_production_lot lot on l.lot_id = lot.id 
-where m.state in ('done' ) and l.date <=  %(date)s and l.location_dest_id = %(location_id)s
+where m.state in ('done' ) and l.date <=  %(date)s and (l.location_dest_id = %(location_id)s or l.location_dest_id in (select z.id from stock_location z where z.location_id = %(location_id)s ) )
 union all
 select l.product_id, pt.name as product_name, um.name as uom, m.partner_id, l.sale_id, sl.name as location, lot.name as lot, l.qty_done*-1 as quantity, coalesce(l.total_weight,0)*-1 as product_weight 
 from stock_move m
@@ -78,7 +78,7 @@ join product_template pt on pp.product_tmpl_id = pt.id
 join uom_uom um on pt.uom_id = um.id
 join stock_location sl on l.location_id = sl.id
 left join stock_production_lot lot on l.lot_id = lot.id 
-where m.state in ('done' ) and l.date <=  %(date)s and l.location_id = %(location_id)s
+where m.state in ('done' ) and l.date <=  %(date)s and (l.location_id = %(location_id)s or l.location_id in (select z.id from stock_location z where z.location_id = %(location_id)s ) )
 ) a where a.location is not null """ + query_param + """
 group by a.product_id, a.product_name,a.uom, a.location
 order by 1
@@ -95,7 +95,7 @@ join product_category pc on pt.categ_id = pc.id
 join uom_uom um on pt.uom_id = um.id
 join stock_location sl on l.location_dest_id = sl.id
 left join stock_production_lot lot on l.lot_id = lot.id 
-where m.state in ('done' ) and l.date <=  %(date)s and l.location_dest_id = %(location_id)s
+where m.state in ('done' ) and l.date <=  %(date)s and (l.location_dest_id = %(location_id)s or l.location_dest_id in (select z.id from stock_location z where z.location_id = %(location_id)s ) )
 union all
 select l.product_id, pt.name as product_name, um.name as uom, pt.categ_id, pc.name as product_category, m.partner_id, l.sale_id, sl.name as location, lot.name as lot, l.qty_done*-1 as quantity, coalesce(l.total_weight,0)*-1 as product_weight 
 from stock_move m
@@ -106,7 +106,7 @@ join product_category pc on pt.categ_id = pc.id
 join uom_uom um on pt.uom_id = um.id
 join stock_location sl on l.location_id = sl.id
 left join stock_production_lot lot on l.lot_id = lot.id 
-where m.state in ('done' ) and l.date <=  %(date)s and l.location_id = %(location_id)s
+where m.state in ('done' ) and l.date <=  %(date)s and (l.location_id = %(location_id)s or l.location_id in (select z.id from stock_location z where z.location_id = %(location_id)s ) )
 ) a where a.location is not null """ + query_param + """
 group by a.product_category, a.location
 order by 1
