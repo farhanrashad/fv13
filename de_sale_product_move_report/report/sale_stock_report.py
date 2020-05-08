@@ -26,7 +26,7 @@ class CustomReport(models.AbstractModel):
         query_param = ''
         
         if data['sale_id']:
-            query_param = query_param + " and a.sale_id = " + data['sale_id']
+            query_param = query_param + " and a.sale_id = %(sale_id)s "
         
         if data['partner_id']:
             query_param = query_param + " and a.partner_id = %(partner_id)s "

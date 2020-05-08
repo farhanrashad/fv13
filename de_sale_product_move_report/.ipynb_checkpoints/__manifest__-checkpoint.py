@@ -6,8 +6,8 @@
 #
 ##############################################################################
 {
-    'name': 'Sale Product Move',
-    'version': '0.2',
+    'name': 'Sale Product Move Report',
+    'version': '0.3',
     'summary': 'This module will add Sale Product Move Report',
     'description': 'This module provides the movement of individual products with opening and closing stocks',
     'author': 'Dynexcel',
