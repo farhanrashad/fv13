@@ -18,6 +18,7 @@ class StockPicking(models.Model):
         """
         sum_qty = sum_weight = 0.0
         for mv in self:
+            sum_qty = sum_weight = 0.0
             for line in mv.move_line_ids:
                 sum_qty += line.qty_done
                 sum_weight += line.total_weight
