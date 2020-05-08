@@ -4,8 +4,41 @@ from datetime import datetime, timedelta
 from odoo.addons import decimal_precision as dp
 
 
+class SaleOrderLineInhert(models.Model):
+    _inherit = 'sale.order.line'
+
+    @api.onchange('product_id')
+    def product_id_change(self):
+        res = super(SaleOrderLineInhert, self).product_id_change()
+        for line in self:
+            print("Yess.........", line)
+        return res
+
+
 class CrmLead(models.Model):
     _inherit = 'crm.lead'
+
+    def action_estimate_new_crm(self):
+        if not self.partner_id:
+            return self.env.ref("de_sales_estimation.crm_estimate_partner_action").read()[0]
+        else:
+            return self.action_new_estimate_crm()
+
+    def action_new_estimate_crm(self):
+        action = self.env.ref("de_sales_estimation.estime_action_quotations_new").read()[0]
+        action['context'] = {
+            'search_default_partner_id': self.id,
+            'default_opportunity_id': self.id,
+            'search_default_partner_id': self.partner_id.id,
+            'default_partner_id': self.partner_id.id,
+            'default_est_team': self.team_id.id,
+            'default_campaign_id': self.campaign_id.id,
+            'default_est_user_id': self.user_id.id,
+            'default_origin': self.name,
+            'default_source_id': self.source_id.id,
+            'default_company_id': self.company_id.id or self.env.company.id,
+        }
+        return action
 
     def open_sale_estimates(self):
         self.ensure_one()
@@ -17,12 +50,12 @@ class CrmLead(models.Model):
             'view_mode': 'tree,form',
             'res_model': 'sales.estimate',
             'type': 'ir.actions.act_window',
-            'domain': [],
-            'context': "{'create': True}"
+            # 'domain': [],
+            # 'context': "{'create': True}"
         }
 
     def estimate_count(self):
-        count = self.env['sales.estimate'].search_count([('partner_id', '=', self.id)])
+        count = self.env['sales.estimate'].search_count([('opportunity_id', '=', self.id)])
         self.estimate_count_id = count
 
     estimate_count_id = fields.Integer(string="Estimate", compute="estimate_count")
@@ -30,6 +63,30 @@ class CrmLead(models.Model):
 
 class SaleOrderInhert(models.Model):
     _inherit = 'sale.order'
+
+    def action_sale_quotations(self):
+        if not self.partner_id:
+            return self.env.ref("de_sales_estimation.crm_quotation_partner_action").read()[0]
+        else:
+            return self.action_new_quotation_new()
+
+    def action_new_quotation_new(self):
+        action = self.env.ref("de_sales_estimation.sale_action_quotations_new").read()[0]
+        action['context'] = {
+            # 'search_default_opportunity_id': self.id,
+            # 'default_opportunity_id': self.id,
+            'search_default_partner_id': self.partner_id.id,
+            'default_partner_id': self.partner_id.id,
+            'default_payment_terms_id': self.payment_terms_id,
+            'default_team_id': self.est_team.id,
+            'default_order_line': self.est_order_line.id,
+            # 'default_campaign_id': self.campaign_id.id,
+            # 'default_medium_id': self.medium_id.id,
+            # 'default_origin': self.name,
+            # 'default_source_id': self.source_id.id,
+            # 'default_company_id': self.company_id.id or self.env.company.id,
+        }
+        return action
 
     @api.onchange('est_src')
     def onchange_method(self):
@@ -49,20 +106,75 @@ class SalesEstimate(models.Model):
     _rec_name = 'name_seq'
     _description = 'Sale Estimates to Customer'
 
+    # def action_sale_quotations(self):
+    #     if not self.partner_id:
+    #         return self.env.ref("de_sales_estimation.crm_quotation_partner_action").read()[0]
+    #     else:
+    #         return self.action_new_quotation_new()
+    #
+    # def action_new_quotation_new(self):
+    #     action = self.env.ref("de_sales_estimation.sale_action_quotations_new").read()[0]
+    #     action['context'] = {
+    #         # 'search_default_opportunity_id': self.id,
+    #         # 'default_opportunity_id': self.id,
+    #         'search_default_partner_id': self.partner_id.id,
+    #         'default_partner_id': self.partner_id.id,
+    #         'default_payment_terms_id': self.payment_terms_id,
+    #         'default_team_id': self.est_team.id,
+    #         'default_order_line': self.est_order_line.id,
+    #         # 'default_campaign_id': self.campaign_id.id,
+    #         # 'default_medium_id': self.medium_id.id,
+    #         # 'default_origin': self.name,
+    #         # 'default_source_id': self.source_id.id,
+    #         # 'default_company_id': self.company_id.id or self.env.company.id,
+    #     }
+    #     return action
+
+    def ban_open_sale_estimates(self):
+        self.write({'state': 'create'})
+        return True
+        if not self.partner_id:
+            return self.env.ref("de_sales_estimation.crm_quotation_partner_action").read()[0]
+        else:
+            return self.action_new_quote()
+
+    def action_new_quote(self):
+        action = self.env.ref("de_sales_estimation.quote_action_quotations_new").read()[0]
+        action['context'] = {
+            # 'search_default_opportunity_id': self.id,
+            'default_opportunity_id': self.id,
+            'search_default_partner_id': self.partner_id.id,
+            'default_partner_id': self.partner_id.id,
+            'default_team_id': self.est_team.id,
+            'default_client_ref': self.est_src,
+            # 'default_est_user_id': self.est_user_id,
+            'default_origin': self.origin.id,
+            # 'default_source_id': self.source_id.id,
+            # 'default_company_id': self.company_id.id or self.env.company.id,
+        }
+        return action
+
+    # def action_cancel(self):
+    #     for rec in self:
+    #         rec.state = 'cancel'
+
     def action_cancel(self):
-        for rec in self:
-            rec.state = 'cancel'
+        return self.write({'state': 'draft'})
 
     def action_confirm(self):
         for rec in self:
-            rec.state = 'done'
+            rec.state = 'confirm'
 
     def reset(self):
         self.write({'state': 'draft'})
 
-    def create_qute(self):
+    def action_quotation_form(self):
         for rec in self:
             rec.state = 'create'
+
+    def action_approved(self):
+        for rec in self:
+            rec.state = 'done'
 
     @api.model
     def create(self, vals):
@@ -113,7 +225,6 @@ class SalesEstimate(models.Model):
             'model_description': self.with_context(lang=lang),
             'mark_so_as_sent': True,
             'model_description': self.with_context(lang=lang).type_name,
-
         }
         return {
             'type': 'ir.actions.act_window',
@@ -138,25 +249,40 @@ class SalesEstimate(models.Model):
             'context': "{'create': True}"
         }
 
-
     def qute_count(self):
         count = self.env['sales.estimate'].search_count([('name_seq', '=', self.id)])
         self.qute_count_id = count
+
+    @api.model
+    def _default_note(self):
+        return self.env['ir.config_parameter'].sudo().get_param(
+            'account.use_invoice_terms') and self.env.company.invoice_terms or ''
+
+    date_order = fields.Datetime(string='Order Date', required=True, readonly=True, index=True,
+                                 states={'draft': [('readonly', False)], 'sent': [('readonly', False)]}, copy=False,
+                                 default=fields.Datetime.now,
+                                 help="Creation date of draft/sent orders,\nConfirmation date of confirmed orders.")
 
     qute_count_id = fields.Integer(string="Qutations", compute="qute_count")
     sale_create_qute = fields.Char(string="create button", required=False, )
     type_name = fields.Char('Type Name', compute='_compute_type_name')
     partner_id = fields.Many2one(comodel_name="res.partner", string="Customer", required=False, )
     payment_terms_id = fields.Many2one('account.payment.term', string='Payment Terms')
-    client_ref = fields.Char(string="Customer Reference", required=True, )
-    est_date = fields.Datetime(string="Date", required=True, )
-    est_src = fields.Char(string="Source Document", required=True, )
+    client_ref = fields.Char(string="Customer Reference")
+    est_date = fields.Datetime(string='Date', required=True, readonly=True, index=True,
+                               states={'draft': [('readonly', False)], 'sent': [('readonly', False)]}, copy=False,
+                               default=fields.Datetime.now,
+                               help="Creation date of draft/sent orders,\nConfirmation date of confirmed orders.")
+
+    est_src = fields.Char(string="Source Document")
     est_user_id = fields.Many2one(comodel_name="res.users", string="Sales Person", required=True, )
     est_team = fields.Many2one(comodel_name="crm.team", string="Sales Team", required=True, )
     est_order_line = fields.One2many(comodel_name="sales.estimate.line", inverse_name="order_id", required=True, )
     company_id = fields.Many2one('res.company', 'Company', required=True, index=True,
                                  default=lambda self: self.env.company)
     sale_qute = fields.Many2one(comodel_name="sale.order", string="Sales Qutation", required=False, )
+    note = fields.Text('Terms and conditions', default=_default_note)
+
     state = fields.Selection([
         ('draft', 'Draft'),
         ('sent', 'Estimate Sent'),
@@ -166,7 +292,9 @@ class SalesEstimate(models.Model):
     ], string='Status', readonly=True, copy=False, index=True, tracking=3, default='draft')
     name_seq = fields.Char(string='Number', required=True, copy=False, readonly=True,
                            index=True, default=lambda self: _('New'))
-    amount_total = fields.Monetary(string='Total Estimate', store=True, readonly=True, compute='_amount_all', tracking=4)
+    amount_total = fields.Monetary(string='Total Estimate', store=True, readonly=True, compute='_amount_all',
+                                   tracking=4)
+    opportunity_id = fields.Many2one(comodel_name="crm.lead", string="Opportunity", required=False, )
 
     currency_id = fields.Many2one('res.currency', string='Currency')
 
@@ -188,6 +316,13 @@ class SalesEstimate(models.Model):
 class SalesEstimateLine(models.Model):
     _name = 'sales.estimate.line'
 
+    @api.onchange('product_id')
+    def set_products_auto(self):
+        for rec in self:
+            rec.price_unit = rec.product_id.lst_price
+            rec.est_name = rec.product_id.name
+            rec.product_uom = rec.product_id.uom_id
+
     product_id = fields.Many2one('product.product', string='Product')
     order_id = fields.Many2one('sales.estimate', string='Reference')
     est_name = fields.Text(string='Description')
@@ -197,12 +332,16 @@ class SalesEstimateLine(models.Model):
     # price_subtotal = fields.Monetary(string='Subtotal', required=True)
     currency_id = fields.Many2one('res.currency', string='Currency')
     discount = fields.Float(string='Discount (%)', digits='Discount', default=0.0, required=True, )
-    product_uom_id = fields.Many2one('uom.uom', string='Unit of Measure', required=True)
+    product_uom = fields.Many2one('uom.uom', string='Unit of Measure', required=True)
     price_unit_id = fields.Float('Unit Price', required=True, digits='Product Price', default=0.0)
     product_uom_qty = fields.Float(string='Quantity', digits='Product Unit of Measure', required=True, default=1.0)
     tax_id = fields.Many2many('account.tax', string='Taxes',
                               domain=['|', ('active', '=', False), ('active', '=', True)])
     price_total = fields.Monetary(compute='_compute_amount', string='Total Estimate', readonly=True, store=True)
+    product_custom_attribute_value_ids = fields.One2many('product.attribute.custom.value', 'sale_order_line_id',
+                                                         string="Custom Values")
+    product_no_variant_attribute_value_ids = fields.Many2many('product.template.attribute.value', string="Extra Values",
+                                                              ondelete='restrict')
 
     @api.depends('product_uom_qty', 'discount', 'price_unit', 'tax_id')
     def _compute_amount(self):
