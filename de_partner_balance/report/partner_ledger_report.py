@@ -35,6 +35,8 @@ class CustomReport(models.AbstractModel):
             query_param = query_param + " and a.internal_type = 'receivable' "
         elif data['partner_type'] == 'payable':
             query_param = query_param + " and a.internal_type = 'payable' "
+        else:
+            query_param = query_param + " and (a.internal_type = 'payable' or a.internal_type = 'receivable') "
 
         if data['category_id']:
             query_param = query_param + ' and a.partner_id in (select partner_id from res_partner_res_partner_category_rel where category_id = ' + "%(category_id)s" + ') '

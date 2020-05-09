@@ -28,10 +28,12 @@ class PartnerLedger(models.TransientModel):
         required=True
     )
     partner_type = fields.Selection([
-        ('receivable', 'Account Receivable'),
-        ('payable', 'Account Payable'),
-        ], string='Type',  default='receivable')
-    is_posted = fields.Boolean('Posted Entries Only', default=False)
+        ('receivable', 'Receivable Accounts'),
+        ('payable', 'Payable Accounts'),
+        ('all', 'Receivable & Payable Accounts'),
+        ], string='Type',  default='all', required=True)
+    
+    is_posted = fields.Boolean('All Posted Entries', default=False)
     category_id = fields.Many2one('res.partner.category', string='Select Category',)
 
     def print_report(self, data=None):
