@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+
+        <!--   action for Estimates     -->
+        <act_window id="sale_estimates_action" name="Estimates" res_model="sale.estimate" view_mode="tree,form"/>
+
+        <!--   action for CRM Estimates     -->
+        <act_window id="crm_estimates_action" name="Estimates" res_model="sale.estimate" view_mode="tree,form"/>
+
+        <!--   menu name estimates in sale order     -->
+        <menuitem id="sale_estimates_menu" name="Estimates" parent="sale.sale_order_menu" action="sale_estimates_action"
+                  sequence="3"/>
+
+        <!--   menu for crm estimates-->
+        <menuitem id="crm_estimates_menu" name="Estimates" parent="crm.crm_menu_sales" action="crm_estimates_action"
+                  sequence="3"/>
+
+    </data>
+</odoo>
