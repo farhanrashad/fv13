@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+
+        <!--        Action for Estimate Smart Button    -->
+        <record model="ir.actions.act_window" id="open_sale_estimates">
+            <field name="name">Estimate</field>
+            <field name="res_model">sale.estimate</field>
+            <field name="view_mode">tree,form</field>
+            <field name="domain">[]</field>
+            <field name="context">{'search_default_estimate_id': name}</field>
+        </record>
+
+        <record id="crm_estimate_partner_action" model="ir.actions.act_window">
+            <field name="name">Estimate</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">sale.estimate</field>
+            <field name="view_mode">form</field>
+            <field name="view_id" ref="sale_estimates_form"/>
+            <field name="target">new</field>
+        </record>
+
+        <record id="sale_crm_smart_btton" model="ir.ui.view">
+            <field name="name">sale.smart.button</field>
+            <field name="model">crm.lead</field>
+            <field name="inherit_id" ref="crm.crm_lead_view_form"/>
+            <field name="arch" type="xml">
+                <xpath expr="//form//sheet//div[@name='button_box']" position="inside">
+                    <button name="open_sale_estimates" type="object" class="oe_stat_button" icon="fa-usd"
+                            context="{'default_estimate_id': id}">
+                        <field name="estimate_count_id" string="Estimate" widget="statinfo"/>
+                    </button>
+                </xpath>
+            </field>
+        </record>
+
+        <record id="sale_estimate_action" model="ir.ui.view">
+            <field name="name">Sale.Estimate.CRM</field>
+            <field name="model">crm.lead</field>
+            <field name="inherit_id" ref="crm.crm_lead_view_form"/>
+            <field name="arch" type="xml">
+                <xpath expr="//header" position="inside">
+                    <button name="action_estimate_new_crm" type="object" string="Estimate" class="oe_stat_button"/>
+                </xpath>
+            </field>
+        </record>
+
+        <!--        Crm Estimate    -->
+        <record id="estime_action_quotations_new" model="ir.actions.act_window">
+            <field name="name">Estimate</field>
+            <field name="res_model">sale.estimate</field>
+            <field name="view_mode">form,tree,graph</field>
+            <field name="domain">[('opportunity_id', '=', active_id)]</field>
+            <field name="context">{'search_default_opportunity_id': active_id, 'default_opportunity_id': active_id}
+            </field>
+        </record>
+    </data>
+</odoo>

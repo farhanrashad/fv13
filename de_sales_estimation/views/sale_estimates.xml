@@ -1,240 +1,74 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
     <data>
-        <!--        New Qutation    -->
-
-        <record id="sale_action_quotations_new" model="ir.actions.act_window">
-            <field name="name">Quotation</field>
-            <field name="res_model">sale.order</field>
-            <field name="view_mode">form,tree,graph</field>
-            <field name="domain">[]</field>
-            <field name="context">{'default_order_line': order_line, 'default_payment_terms_id': payment_terms_id}
-            </field>
-        </record>
-
-        <record id="crm_quotation_partner_action" model="ir.actions.act_window">
-            <field name="name">New Quotation</field>
-            <field name="type">ir.actions.act_window</field>
-            <field name="res_model">sales.estimate</field>
-            <field name="view_mode">form</field>
-            <!--            <field name="view_id" ref="sale_quotation_partner_view_form"/>-->
-            <field name="target">new</field>
-        </record>
-
-
-        <!--        !!! New Qutaiotn for estimate -->
-        <record id="sale_estimate_quotations_new" model="ir.actions.act_window">
-            <field name="name">Quotation</field>
-            <field name="res_model">sale.order</field>
-            <field name="view_mode">form,tree,graph</field>
-            <field name="domain">[('opportunity_id', '=', active_id)]</field>
-            <!--                        <field name="context">{'search_default_opportunity_id': active_id, 'default_opportunity_id': active_id}-->
-            <!--                        </field>-->
-        </record>
-
-        <record id="sale_quotation_partner_action" model="ir.actions.act_window">
-            <field name="name">New Quotation</field>
-            <field name="type">ir.actions.act_window</field>
-            <field name="res_model">sales.estimate</field>
-            <field name="view_mode">form</field>
-            <!--            <field name="view_id" ref="crm_quotation_partner_view_form"/>-->
-            <field name="target">new</field>
-        </record>
-        <record id="crm_estimate_partner_action" model="ir.actions.act_window">
-            <field name="name">Estimate</field>
-            <field name="type">ir.actions.act_window</field>
-            <field name="res_model">sales.estimate</field>
-            <field name="view_mode">form</field>
-            <field name="view_id" ref="sale_estimates_form"/>
-            <field name="target">new</field>
-        </record>
-
-        <record id="crm_quotation_partner_action" model="ir.actions.act_window">
-            <field name="name">Estimate</field>
-            <field name="type">ir.actions.act_window</field>
-            <field name="res_model">crm.lead</field>
-            <field name="view_mode">form</field>
-            <field name="view_id" ref="sale_estimates_form"/>
-            <field name="target">new</field>
-        </record>
-
-        <!--        Crm Estimate    -->
-
-        <record id="estime_action_quotations_new" model="ir.actions.act_window">
-            <field name="name">Estimate</field>
-            <field name="res_model">sales.estimate</field>
-            <field name="view_mode">form,tree,graph</field>
-            <field name="domain">[('opportunity_id', '=', active_id)]</field>
-            <field name="context">{'search_default_opportunity_id': active_id, 'default_opportunity_id': active_id}
-            </field>
-        </record>
-
-        <record id="crm_quote_partner_action" model="ir.actions.act_window">
-            <field name="name">Estimate</field>
-            <field name="type">ir.actions.act_window</field>
-            <field name="res_model">crm.lead</field>
-            <field name="view_mode">form</field>
-            <field name="view_id" ref="sale_estimates_form"/>
-            <field name="target">new</field>
-        </record>
-
-
-        <record id="quote_action_quotations_new" model="ir.actions.act_window">
-            <field name="name">Estimate</field>
-            <field name="res_model">sales.estimate</field>
-            <field name="view_mode">form,tree,graph</field>
-            <!--            <field name="domain">[('partner_id', '=', active_id)]</field>-->
-            <!--            <field name="context">{'search_default_partner_id': active_id, 'default_partner_id': active_id}-->
-            <!--            </field>-->
-        </record>
-
-        <!--        Qutaions Smart Button Action Window    -->
-        <record model="ir.actions.act_window" id="open_qute_estimates">
-            <field name="name">Qutations</field>
-            <field name="res_model">sales.estimate</field>
-            <field name="view_mode">tree,form</field>
-            <field name="domain">[('partner_id','=','active_id')]</field>
-            <field name="context"></field>
-        </record>
-
-        <!--        Action for Estimate Smart Button    -->
-        <!--        <record model="ir.actions.act_window" id="ban_open_sale_estimates">-->
-        <record model="ir.actions.act_window" id="ban_open_sale_estimates">
-
-            <field name="name">Estimate</field>
-            <field name="res_model">crm.lead</field>
-            <field name="view_mode">tree,form</field>
-            <field name="domain">[]</field>
-            <!--                         <field name="context">{'search_default_opportunity_id': 'active_id'} </field>-->
-        </record>
-
-        <!--        Smart Button in CRM Of Estimate -->
-        <record id="sale_crm_smart_btton" model="ir.ui.view">
-            <field name="name">sale.smart.button</field>
-            <field name="model">crm.lead</field>
-            <field name="inherit_id" ref="crm.crm_lead_view_form"/>
-            <field name="arch" type="xml">
-                <xpath expr="//form//sheet//div[@name='button_box']" position="inside">
-                    <button class="oe_stat_button" type="object" name="action_view_estimation" icon="fa-pencil-square-o">
-                        <field name="estimation_count" widget="statinfo" string="Estimations"/>
-                    </button>        
-                </xpath>
-            </field>
-        </record>
-
-
-        <!-- Inherit Form View to Modify it -->
-        <record id="view_order_form_inherit" model="ir.ui.view">
-            <field name="name">view.order.form.inherit</field>
-            <field name="model">sale.order</field>
-            <field name="inherit_id" ref="sale.view_order_form"/>
-            <field name="arch" type="xml">
-                <xpath expr="//group[@name='sale_reporting']/group[2]" position="inside">
-                    <field name='estimate_id' />
-                </xpath>
-
-            </field>
-        </record>
-        
-        
-        <!-- Inherit Form View to Modify it -->
-        <record id="sale_estimate_action" model="ir.ui.view">
-            <field name="name">Sale.Estimate.CRM</field>
-            <field name="model">crm.lead</field>
-            <field name="inherit_id" ref="crm.crm_lead_view_form"/>
-            <field name="arch" type="xml">
-                <xpath expr="//header" position="inside">
-                    <button name="action_estimate_new_crm" type="object" string="Estimate" class="oe_stat_button"/>
-                </xpath>
-
-            </field>
-        </record>
 
         <record id="action_quotation_form" model="ir.actions.act_window">
             <field name="name">Create a Quotation Order</field>
             <field name="type">ir.actions.act_window</field>
-            <field name="res_model">sales.estimate</field>
+            <field name="res_model">sale.estimate</field>
             <field name="view_mode">form,tree</field>
-            <!--            <field name="view_type">form</field>-->
         </record>
 
         <!--       Sales Estimates form View    -->
         <record id="sale_estimates_form" model="ir.ui.view">
-            <field name="name">sales.estimate.form</field>
-            <field name="model">sales.estimate</field>
+            <field name="name">sale.estimate.form</field>
+            <field name="model">sale.estimate</field>
             <field name="arch" type="xml">
                 <form string="">
                     <header>
-                        <button name="action_confirm" id="action_confirm" states="draft"
-                                string="Confirm" class="btn-primary" type="object"/>
-                        <!--                        <button name="action_quote_new" string="Create Qutation" type="object"-->
-                        <button name="action_sale_quotations" string="Create Qutation" type="object"
+                        <button name="action_confirm" id="action_confirm" states="draft" string="Confirm"
+                                class="btn-primary" type="object"/>
+                        <button name="action_sale_quotations" string="Create Quotation" type="object"
                                 class="oe_highlight"
-                                attrs="{'invisible': ['|','|',('state', 'in', 'draft'),('state', 'in', 'create')]}"
-                        />
-                         <button name="action_approved" string="Approved" type="object"
-                                class="oe_highlight" attrs="{'invisible': [('state', 'in', 'draft')]}"/>
-
-                        <!--                                context="{'default_payment_terms_id': payment_terms_id, 'default_client_ref': client_ref, 'default_est_team': est_team, 'default_est_user_id': est_user_id, 'default_est_src': est_src, 'default_sale_qute': sale_qute, 'default_est_order_line': est_order_line}"/>-->
+                                attrs="{'invisible': ['|','|',('state', 'in', 'cancel'), ('state', 'in', 'draft'),('state', 'in', 'create')]}"/>
+                        <button name="action_approved" string="Approved" type="object" class="oe_highlight"
+                                attrs="{'invisible': ['|','|',('state', 'in', ['cancel', 'done', 'draft']),('state', 'in', 'create')]}"/>
                         <button name="action_quotation_estimate" string="Send by Email" type="object"
-                                class="btn-primary"/>
+                                class="btn-primary" states="draft,done"/>
                         <button name="action_cancel" states="draft,sent,create" type="object" string="Cancel"
                                 attrs="{'invisible': ['|','|',('state', 'in', 'done'),('state', 'in', 'create')]}"/>
                         <button name="reset" string="Reset to Draft" type="object" class="btn-primary"
-                                attrs="{'invisible': ['|','|',('state', 'not in', 'done'),('state', 'in', 'create')]}"
-                        />
-                        <field name="state" widget="statusbar" statusbar_visible=""
-                               statusbar_colors="draft,sent,sale"/>
+                                attrs="{'invisible': ['|','|',('state', 'not in', ['cancel','create']), ('state', 'in', 'done')]}"/>
+                        <field name="state" widget="statusbar" statusbar_visible="draft,sent,confirm,done,create,cancel"/>
                     </header>
                     <sheet>
-                        
                         <div class="oe_title">
                             <h1>
-                                <field name="name_seq" readonly="1"/>
+                                <field name="name" readonly="1"/>
                             </h1>
                         </div>
                         <group>
                             <group>
-                                <field name="partner_id" attrs="{'readonly': [('state', 'in', ['done','create'])]}"/>
-                                <field name="payment_terms_id"
-                                       attrs="{'readonly': [('state', 'in', ['done','create'])]}"/>
-
+                                <field name="partner_id"/>
+                                <field name="payment_term_id"/>
                             </group>
                             <group>
-                                <field name="est_date"
-                                       eval="(DateTime.today() - relativedelta(months=1)).strftime('%Y-%m-%d %H:%M')"
-                                       attrs="{'readonly': [('state', 'in', ['done','create'])]}"/>
-                                <field name="est_src" invisible="1"
-                                       attrs="{'readonly': [('state', 'in', ['done','create'])]}"/>
-                                <field name="est_user_id" attrs="{'readonly': [('state', 'in', ['done','create'])]}"/>
-                                <field name="est_team" attrs="{'readonly': [('state', 'in', ['done','create'])]}"/>
+                                <field name="date_estimate" eval="(DateTime.today() - relativedelta(months=1)).strftime('%Y-%m-%d %H:%M')"/>
+                                <field name="origin" invisible="1"/>
+                                <field name="user_id" />
+                                <field name="team_id"/>
                                 <field name="sale_id" />
                             </group>
                         </group>
                         <notebook>
                             <page string="Estimation Lines">
-                                <field name="est_order_line"
-                                       attrs="{'readonly': [('state', 'in', ['done','create','confirm'])]}">
+                                <field name="est_order_line">
                                     <tree editable="bottom">
                                         <field name="product_id"/>
-                                        <field name="est_name"/>
+                                        <field name="name"/>
                                         <field name="product_uom_qty"/>
                                         <field name="product_uom"/>
                                         <field name="price_unit"/>
                                         <field name="discount"/>
                                         <field name="currency_id" invisible="True"/>
-                                        <field name="price_subtotal" widget="monetary"
-                                               options="{'currency_field': 'currency_id'}"/>
+                                        <field name="price_subtotal" widget="monetary" options="{'currency_field': 'currency_id'}"/>
                                     </tree>
                                 </field>
-                                <!--                               group for subtotal-->
+                                <!--     group for subtotal     -->
                                 <group class="oe_subtotal_footer oe_right" colspan="2" name="sale_total">
-                                    <!--                                    <div class="oe_subtotal_footer_separator oe_inline o_td_label">-->
                                     <label for="amount_total"/>
-                                    <field name="amount_total" nolabel="1"
-                                           widget='monetary' options="{'currency_field': 'currency_id'}"/>
-
-                                    <!--                                    </div>-->
+                                    <field name="amount_total" nolabel="1" widget='monetary'
+                                           options="{'currency_field': 'currency_id'}"/>
                                 </group>
                             </page>
                             <page string="Notes">
@@ -252,12 +86,15 @@
                                         <field name="opportunity_id"
                                                attrs="{'readonly': [('state', 'in', ['done','create'])]}"/>
                                     </group>
-
                                 </group>
-
                             </page>
                         </notebook>
                     </sheet>
+                    <div class="oe_chatter">
+                        <field name="message_follower_ids" widget="mail_followers" groups="base.group_user"/>
+                        <field name="activity_ids" widget="mail_activity"/>
+                        <field name="message_ids" widget="mail_thread"/>
+                    </div>
                 </form>
             </field>
         </record>
@@ -265,39 +102,17 @@
         <!--        Sales Estimates Tree View      -->
         <record id="sale_estimates_tree" model="ir.ui.view">
             <field name="name">sale.estimates.tree</field>
-            <field name="model">sales.estimate</field>
+            <field name="model">sale.estimate</field>
             <field name="arch" type="xml">
                 <tree string="">
-                    <field name="name_seq" readonly="1"/>
+                    <field name="name" readonly="1"/>
                     <field name="partner_id"/>
-                    <field name="est_date"/>
+                    <field name="date_estimate"/>
                     <field name="amount_total"/>
-                    <field name="est_user_id"/>
+                    <field name="user_id"/>
                     <field name="state"/>
                 </tree>
             </field>
         </record>
-
-        <!--   action for Estimates     -->
-        <act_window id="sale_estimates_action"
-                    name="Estimates"
-                    res_model="sales.estimate"
-                    view_mode="tree,form"
-        />
-
-        <!--   action for CRM Estimates     -->
-        <act_window id="crm_estimates_action"
-                    name="Estimates"
-                    res_model="sales.estimate"
-                    view_mode="tree,form"
-        />
-
-        <!--        menu name estimates in sale order     -->
-        <menuitem id="sale_estimates_menu" name="Estimates" parent="sale.sale_order_menu" action="sale_estimates_action"
-                  sequence="3"/>
-
-        <!--        menu for crm estimates-->
-        <menuitem id="crm_estimates_menu" name="Estimates" parent="crm.crm_menu_sales" action="crm_estimates_action"
-                  sequence="3"/>
     </data>
 </odoo>

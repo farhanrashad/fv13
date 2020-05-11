@@ -5,7 +5,7 @@
           <report
             id="sale_estimates_reprot"
             string="Estimate"
-            model="sales.estimate"
+            model="sale.estimate"
             report_type="qweb-pdf"
             name="de_sales_estimation.sale_estimate_report"
             file="de_sales_estimation.sale_estimate_report"
