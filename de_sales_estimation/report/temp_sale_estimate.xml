@@ -23,10 +23,10 @@
                                         <tbody>
                                             <tr>
                                                 <td>
-                                                    <span t-field="o.date_estimate"/>
+                                                    <span t-field="o.est_date"/>
                                                 </td>
                                                 <td>
-                                                    <!--                                                    <span t-field="o.date_estimate"/>-->
+                                                    <!--                                                    <span t-field="o.est_date"/>-->
                                                 </td>
                                             </tr>
                                         </tbody>
@@ -52,7 +52,7 @@
                                                 <strong>Payment Terms</strong>
                                             </td>
                                             <td>
-                                                <span t-field="o.payment_term_id"/>
+                                                <span t-field="o.payment_terms_id"/>
                                             </td>
                                         </tr>
                                         <tr>
@@ -60,13 +60,13 @@
                                                 <strong>Sales Person</strong>
                                             </td>
                                             <td>
-                                                <span t-field="o.user_id"/>
+                                                <span t-field="o.est_user_id"/>
                                             </td>
                                             <td>
                                                 <strong>Sales Team</strong>
                                             </td>
                                             <td>
-                                                <span t-field="o.team_id"/>
+                                                <span t-field="o.est_team"/>
                                             </td>
                                         </tr>
                                     </table>
@@ -88,7 +88,7 @@
                                                 <tr t-att-class="'font-weight-bold o_line_section'">
 
                                                     <td name="td_quantity" class="text-left">
-                                                        <span t-field="line.name"/>
+                                                        <span t-field="line.est_name"/>
                                                     </td>
 
                                                 </tr>
@@ -123,7 +123,7 @@
                                                         <span t-field="line.product_id"/>
                                                     </td>
                                                     <td name="td_quantity" class="text-center">
-                                                        <span t-field="line.name"/>
+                                                        <span t-field="line.est_name"/>
                                                     </td>
                                                     <td name="td_quantity" class="text-center">
                                                         <span t-field="line.product_uom_qty"/>
