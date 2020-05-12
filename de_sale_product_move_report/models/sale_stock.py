@@ -26,6 +26,8 @@ class SaleStockMove(models.TransientModel):
         ('category', 'Product Category'),
         ('product', 'Product'),
         ('lot', 'Lot'),
+        ('sale', 'Sale'),
+        ('partner', 'Partner'),
         ], string='Group By',  default='product')
     filter_by_report = fields.Selection([
         ('sale', 'Sale'),
