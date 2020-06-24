@@ -7,9 +7,11 @@ from odoo.addons import decimal_precision as dp
 class Picking(models.Model):
     _inherit = 'stock.picking'
     
-    #job_order_id = fields.Many2one('job.order', related='purchase_id.job_order_id', string='Job Order', readonly=True, store=True)
+#     job_order_id = fields.Many2one('job.order', related='purchase_id.job_order_id', string='Job Order', readonly=True, store=True)
     job_order_id = fields.Many2one("job.order", compute="_assign_sale_order", store=False, string="Job Order", readonly=True, required=False)
     ref_sale_id = fields.Many2one("sale.order",compute="_assign_sale_order", store=False, readonly=True,)
+    job_order_new = fields.Many2one("job.order",string="Job Order",readonly=True,required=False)
+    ref_sale_new = fields.Many2one("sale.order", readonly=True,string="Ref Sale",related="job_order_new.sale_id")
     
     def _assign_sale_order2(self):
         #move_line_obj = self.env['stock.move.line'].search[()]
@@ -42,7 +44,9 @@ where s.id = %(sale_id)s
             for order in self._cr.dictfetchall():
                 line.update ({
                     'job_order_id': order['job_order_id'] or picking.job_order_id.id,
+                    'job_order_new': order['job_order_id'] or picking.job_order_id.id,
                     'ref_sale_id': order['sale_id'] or picking.ref_sale_id.id,
+                    'ref_sale_new': order['sale_id'] or picking.ref_sale_id.id,
                 })
         
     def _assign_sale_order1(self):
