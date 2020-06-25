@@ -5,10 +5,11 @@
         <field name="inherit_id" ref="stock.view_picking_form"/>
         <field name="arch" type="xml">
             <field name="origin" position="after">
-<!--                 <field name="job_order_id" /> -->
-<!--                 <field name="ref_sale_id" /> -->
-                <field name="ref_sale_new" />
+<!--                 <field name="job_order_id" />-->
+<!--                 <field name="ref_sale_id" />-->
                 <field name="job_order_new"/>
+                <field name="ref_sale_new" />
+                <field name="ref_po_id" />
             </field>
         </field>
     </record>
@@ -18,11 +19,23 @@
         <field name="inherit_id" ref="stock.vpicktree"/>
         <field name="arch" type="xml">
             <field name="origin" position="after">
-<!--                 <field name="job_order_id" /> -->
-<!--                 <field name="ref_sale_id" /> -->
-                <field name="ref_sale_new" />
+<!--                 <field name="job_order_id" />-->
+<!--                 <field name="ref_sale_id" />-->
                 <field name="job_order_new"/>
+                <field name="ref_sale_new" />
             </field>
+        </field>
+    </record>
+
+    <record id="ir_actions_server_confirm_multiple_tickets" model="ir.actions.server">
+        <field name="name">Fetch</field>
+        <field name="type">ir.actions.server</field>
+        <field name="model_id" ref="model_stock_picking"/>
+        <field name="binding_model_id" ref="model_stock_picking" />
+        <field name="state">code</field>
+        <field name="code">
+            if records:
+            action = records.fetch_details()
         </field>
     </record>
 </odoo>

@@ -12,6 +12,7 @@ class Picking(models.Model):
     ref_sale_id = fields.Many2one("sale.order",compute="_assign_sale_order", store=False, readonly=True,)
     job_order_new = fields.Many2one("job.order",string="Job Order",readonly=True,required=False)
     ref_sale_new = fields.Many2one("sale.order", readonly=True,string="Ref Sale",related="job_order_new.sale_id")
+    ref_po_id = fields.Many2one('purchase.order',string="Ref PO")
     
     def _assign_sale_order2(self):
         #move_line_obj = self.env['stock.move.line'].search[()]
@@ -19,7 +20,15 @@ class Picking(models.Model):
             line.update({
                 'ref_sale_id': line.sale_id.id
             })
-        
+
+    def fetch_details(self):
+        records = self.env['stock.picking'].browse(self._context.get('active_ids'))
+        for rec in records:
+            if rec.picking_type_id.name == 'Delivery Orders':
+                if rec.job_order_id and rec.ref_sale_id:
+                    rec.job_order_new = rec.job_order_id.id
+                    rec.ref_sale_new = rec.ref_sale_id.id
+
     def _assign_sale_order(self):
         #picking_id = self.id
         for line in self:
