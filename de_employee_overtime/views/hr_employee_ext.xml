@@ -1,0 +1,36 @@
+<?xml version="1.0" ?>
+
+<odoo>
+
+    <!--  Inherits HR Employee View-->
+	<record id="de_employee_overtime.hr_employee_ext_view" model="ir.ui.view">
+        <field name="name">employee inherit form</field>
+        <field name="model">hr.employee</field>
+        <field name="inherit_id" ref="hr.view_employee_form"/>
+        <field name="arch" type="xml">
+			<xpath expr="//field[@name='coach_id']" position="before">
+				<field name="overtime_cost"/>
+			</xpath>
+			<xpath expr="//page[@name='hr_settings']" position="inside">
+                <group>
+                    <group string="Overtime Pay" name="overtime_pay">
+                        <label for="weekday_ot_rate"/>
+                        <div>
+                            <field name="weekday_ot_rate" class="oe_inline"/>
+						</div>
+						<label for="weekend_ot_rate"/>
+						<div>
+							<field name="weekend_ot_rate" class="oe_inline"/>
+                        </div>
+                    </group>
+                </group>
+            </xpath>
+			<div class="oe_button_box" name="button_box" position="inside">
+                <button class="oe_stat_button"
+                        type="object" name="open_employee_overtime" icon="fa-calendar">
+                    <field name="overtime_count" widget="statinfo" string="Overtime"/>
+                </button>
+            </div>
+        </field>
+    </record>
+</odoo>

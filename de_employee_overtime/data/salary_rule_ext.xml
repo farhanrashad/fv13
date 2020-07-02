@@ -1,0 +1,14 @@
+<?xml version="1.0" ?>
+<odoo>
+
+        <record id="employee_overtime" model="hr.salary.rule">
+            <field name="amount_select">code</field>
+            <field name="amount_python_compute">result=payslip.env['hr.payslip'].overtime_calculation()</field>
+            <field eval="150" name="sequence"/>
+            <field eval="0" name="amount_fix"/>
+            <field name="code">OT</field>
+            <field name="category_id" ref="om_hr_payroll.BASIC"/>
+            <field name="name">Employee Overtime Salary Rule</field>
+        </record>
+
+</odoo>
