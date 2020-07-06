@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
     <data noupdate="1">
-        <function model="res.company" name="create_missing_subcontracting_location" />
+        <function model="res.company" name="create_missing_maintenance_location" />
     </data>
 </odoo>
 

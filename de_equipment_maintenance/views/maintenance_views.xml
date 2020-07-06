@@ -1,11 +1,11 @@
 <odoo>
     <data>
+
         <record id="action_maintenance_order_form" model="ir.actions.act_window">
             <field name="name">Create a Maintenance Order</field>
             <field name="type">ir.actions.act_window</field>
             <field name="res_model">maintenance.order</field>
-            <field name="view_mode">form</field>
-            <field name="target">current</field>
+            <field name="view_mode">form,tree</field>
         </record>
         
         <record id="hr_equipment_request_view_form_inherit" model="ir.ui.view">
@@ -15,18 +15,24 @@
         <field name="arch" type="xml">
             <xpath expr="//form[1]/sheet[1]/div[not(@name)][1]" position="before">
                 <div class="oe_button_box" name="button_box">
-                    <!--  -->
-                    <button class="oe_stat_button" name="action_view_maintenance" icon="fa-wrench" type="action" attrs="{'invisible': [('maintenance_count', '=', 0)]}" >
-                        <field name="maintenance_count" string="EM Order" widget="statinfo"/>
+                    <field name="maintenance_count" invisible="1"/>
+                    <button type="object"
+                        name="action_view_order"
+                        class="oe_stat_button"
+                        icon="fa-wrench"
+                        attrs="{'invisible': [('maintenance_count', '=', 0)]}" groups="base.group_user">
+                        <field name="maintenance_count" widget="statinfo" string="EM Order"/>
                     </button>
                 </div>
             </xpath>
             <xpath expr="//button[@name='archive_equipment_request']" position="before">
                 <button name="%(action_maintenance_order_form)d" type="action"
-                    string="Maintenance Order" class="oe_highlight" context="{'default_maintenance_request_id': id, 'default_company_id': company_id}"/>
+                    string="Maintenance Order" class="oe_highlight" context="{'default_maintenance_request_id': id,'default_equipment_id': equipment_id,'default_pfiled': pfiled, 'default_company_id': company_id, 'default_maintenance_team_id':maintenance_team_id, 'default_user_id': user_id,'default_schedule_start_date':schedule_date}"/>
+            </xpath>
+            <xpath expr="//field[@name='equipment_id']" position="after">
+                <field name="pfiled" options="{'no_create': True, 'no_open': True}"/>
             </xpath>
         </field>
     </record>
-        
     </data>
 </odoo>

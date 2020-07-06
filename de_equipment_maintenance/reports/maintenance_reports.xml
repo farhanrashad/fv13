@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <report 
+            string="PM / Order" 
+            id="action_report_pm_order"
+            model="maintenance.order"
+            name="de_equipment_maintenance.report_pmorder2"
+            file="de_equipment_maintenance.report_pmorder"
+            report_type="qweb-pdf"
+            print_report_name="(
+                object.state == 'draft' and 'Mainteance Quotation - %s' % (object.name) or
+                'PM Order - %s' % (object.name))"
+        />
+
+    </data>
+</odoo>

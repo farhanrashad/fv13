@@ -1,0 +1,28 @@
+<odoo>
+       
+        
+        <record id="de_hr_equipment_request_view_form_inherit" model="ir.ui.view">
+        <field name='name'>de.hr.equipment.view.form.inherit</field>
+        <field name="model">maintenance.equipment</field>
+        <field name="inherit_id" ref="maintenance.hr_equipment_view_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='name']" position="after">
+                <label for="equipment_id" class="oe_edit_only"/>
+                <h2><field name="equipment_id" options="{'no_create': True}"/></h2>
+            </xpath>
+        </field>
+    </record>
+    
+    <record id="de_hr_equipment_request_view_tree_inherit" model="ir.ui.view">
+        <field name='name'>de.hr.equipment.view.tree.inherit</field>
+        <field name="model">maintenance.equipment</field>
+        <field name="inherit_id" ref="maintenance.hr_equipment_view_tree"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='name']" position="before">
+                <field name="complete_name"/>
+            </xpath>
+        </field>
+    </record>
+    
+        
+</odoo>

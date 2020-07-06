@@ -17,7 +17,7 @@
     # Check https://github.com/odoo/odoo/blob/13.0/odoo/addons/base/data/ir_module_category_data.xml
     # for the full list
     'category': 'Manufacturing',
-    'version': '0.1',
+    'version': '0.3',
 
     # any module necessary for this one to work correctly
     'depends': ['base','stock','maintenance'],
@@ -27,8 +27,11 @@
         'security/ir.model.access.csv',
         'data/em_order_seq.xml',
         'data/maintenance_data.xml',
+        'views/equipment_views.xml',
         'views/em_order_views.xml',
         'views/maintenance_views.xml',
+        'reports/maintenance_reports.xml',
+        'reports/pm_templates_pm_order_report.xml',
         
     ],
     # only loaded in demonstration mode
