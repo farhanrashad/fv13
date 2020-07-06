@@ -119,27 +119,38 @@ class MaintenanceOrder(models.Model):
         qty_available = quant_obj._get_available_quantity(stock_moves.product_id, location)
         if stock_moves.product_uom_qty > qty_available:
             raise ValidationError(_("Quantity is not available at current location."))
-        # else:
-        #     self.env['stock.move'].create({
-        #         'name': self.name,
-        #         'location_id': self.location_src_id.id,
-        #         'location_dest_id': self.location_dest_id.id,
-        #         'company_id': self.company_id.id,
-        #         'product_id': stock_moves.product_id.id,
-        #         'product_uom_qty': stock_moves.product_uom_qty,
-        #         'date_expected': self.schedule_end_date,
-        #         'date': self.schedule_start_date,
-        #         'product_uom': stock_moves.product_uom.id,
-        #     })
-        #     print('done')
+        else:
+            for line in self.move_lines:
+                line.quantity_done = line.product_uom_qty
+            supplier_line = {
+                'product_id': self.move_lines.product_id.id,
+                'product_uom_qty': self.move_lines.product_uom_qty,
+                'product_uom': self.move_lines.product_uom.id,
+                'name': self.name,
+                'quantity_done': self.move_lines.quantity_done,
+            }
+            record_line = {
+                'picking_type_id': self.picking_type_id.id,
+                'location_id': self.location_src_id.id,
+                'location_dest_id': self.location_dest_id.id,
+                'origin': self.name,
+                'move_ids_without_package': [(0, 0, supplier_line)],
+            }
+            record = self.env['stock.picking'].create(record_line)
+            print('done')
+
         self.write({
             'state': 'inprocess',
             'start_date': fields.Datetime.now()
         })
+        return record
 
     def action_end_maintenance(self):
         for order in self.filtered(lambda order: order.partner_id not in order.message_partner_ids):
             order.message_subscribe([order.partner_id.id])
+        ex_pick_doc = self.env['stock.picking'].search([('origin', '=', self.name)])
+        for ex in ex_pick_doc:
+            ex.state = 'confirmed'
         self.write({
             'state': 'done',
             'end_date': fields.Datetime.now()
@@ -181,6 +192,11 @@ class MaintenanceOrder(models.Model):
             vals = {
                 'test': 1,
             }
+
+    @api.onchange('picking_type_id')
+    def _onchange_picking_type(self):
+        self.location_src_id = self.picking_type_id.default_location_src_id
+        self.location_dest_id = self.picking_type_id.default_location_dest_id
 
     maintenance_request_id = fields.Many2one('maintenance.request', string="Maintenance Request",
                                              help="Related Maintenance Request")
