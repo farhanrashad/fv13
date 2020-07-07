@@ -14,7 +14,7 @@ class MaintenanceOrder(models.Model):
     @api.model
     def _get_default_picking_type(self):
         return self.env['stock.picking.type'].search([
-            ('code', '=', 'mrp_operation'),
+            ('code', '=', 'internal'),
             (
                 'warehouse_id.company_id', 'in',
                 [self.env.context.get('company_id', self.env.user.company_id.id), False])],
