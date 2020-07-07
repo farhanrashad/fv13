@@ -22,32 +22,36 @@ class MaintenanceOrder(models.Model):
 
     @api.model
     def _get_default_location_src_id(self):
-        location = False
-        if self._context.get('default_picking_type_id'):
-            location = self.env['stock.picking.type'].browse(
-                self.env.context['default_picking_type_id']).default_location_src_id
-        if not location:
-            location = self.env.ref('stock.stock_location_stock', raise_if_not_found=False)
-            try:
-                location.check_access_rule('read')
-            except (AttributeError, AccessError):
-                location = self.env['stock.warehouse'].search([('company_id', '=', self.env.user.company_id.id)],
-                                                              limit=1).lot_stock_id
-        return location and location.id or False
+        location = self.picking_type_id.default_location_src_id.id
+        # location = False
+        # if self._context.get('default_picking_type_id'):
+        #     location = self.env['stock.picking.type'].browse(
+        #         self.env.context['default_picking_type_id']).default_location_src_id
+        # if not location:
+        #     location = self.env.ref('stock.stock_location_stock', raise_if_not_found=False)
+        #     try:
+        #         location.check_access_rule('read')
+        #     except (AttributeError, AccessError):
+        #         location = self.env['stock.warehouse'].search([('company_id', '=', self.env.user.company_id.id)],
+        #                                                       limit=1).lot_stock_id
+        # return location and location.id or False
+        return location
 
     @api.model
     def _get_default_location_dest_id(self):
-        location = False
-        if self._context.get('default_picking_type_id'):
-            location = self.env['stock.picking.type'].browse(
-                self.env.context['default_picking_type_id']).default_location_dest_id
-        if not location:
-            location = self.env.ref('stock.stock_location_stock', raise_if_not_found=False)
-            try:
-                location.check_access_rule('read')
-            except (AttributeError, AccessError):
-                location = self.env['stock.warehouse'].search([('company_id', '=', self.env.user.company_id.id)],
-                                                              limit=1).lot_stock_id
+        location = self.picking_type_id.default_location_dest_id
+        # location = False
+        # if self._context.get('default_picking_type_id'):
+        #     location = self.env['stock.picking.type'].browse(
+        #         self.env.context['default_picking_type_id']).default_location_dest_id
+        # if not location:
+        #     location = self.env.ref('stock.stock_location_stock', raise_if_not_found=False)
+        #     try:
+        #         location.check_access_rule('read')
+        #     except (AttributeError, AccessError):
+        #         location = self.env['stock.warehouse'].search([('company_id', '=', self.env.user.company_id.id)],
+        #                                                       limit=1).lot_stock_id
+        # return location and location.id or False
         return location and location.id or False
 
     @api.depends('maintenance_part_ids.unit_cost', 'maintenance_part_ids.product_uom_qty',
@@ -150,7 +154,7 @@ class MaintenanceOrder(models.Model):
             order.message_subscribe([order.partner_id.id])
         ex_pick_doc = self.env['stock.picking'].search([('origin', '=', self.name)])
         for ex in ex_pick_doc:
-            ex.state = 'confirmed'
+            ex.state = 'done'
         self.write({
             'state': 'done',
             'end_date': fields.Datetime.now()
@@ -195,8 +199,8 @@ class MaintenanceOrder(models.Model):
 
     @api.onchange('picking_type_id')
     def _onchange_picking_type(self):
-        self.location_src_id = self.picking_type_id.default_location_src_id
-        self.location_dest_id = self.picking_type_id.default_location_dest_id
+        self.location_src_id = self.picking_type_id.default_location_src_id.id
+        self.location_dest_id = self.picking_type_id.default_location_dest_id.id
 
     maintenance_request_id = fields.Many2one('maintenance.request', string="Maintenance Request",
                                              help="Related Maintenance Request")
@@ -259,14 +263,14 @@ class MaintenanceOrder(models.Model):
         default=_get_default_picking_type, required=True)
     location_src_id = fields.Many2one(
         'stock.location', 'Raw Materials Location',
+        required=True, readonly=True,
         default=_get_default_location_src_id,
-        readonly=True, required=True,
         states={'confirmed': [('readonly', False)]},
         help="Location where the system will look for components.")
     location_dest_id = fields.Many2one(
         'stock.location', 'Finished Products Location',
+        required=True, readonly=True,
         default=_get_default_location_dest_id,
-        readonly=True, required=True,
         states={'confirmed': [('readonly', False)]},
         help="Location where the system will stock the finished products.")
 
