@@ -1,14 +1,13 @@
 # -*- coding: utf-8 -*-
 {
-    'name': "Account Invoice Filter",
+    'name': "Unlock Authorization",
 
     'summary': """
-        Account Invoice Reference/Desription Filter added
-               """,
+         Unlock Authorization """,
 
     'description': """
-        Account Invoice Filter added
-        1- Reference/Description field filter added
+        Unlock Authorization
+        1- Only provide authorization to  usman user
     """,
 
     'author': "Dynexcel",
@@ -17,17 +16,17 @@
     # Categories can be used to filter modules in modules listing
     # Check https://github.com/odoo/odoo/blob/12.0/odoo/addons/base/data/ir_module_category_data.xml
     # for the full list
-    'category': 'Accounting',
+    'category': 'Extra Tools',
     'version': '0.1',
 
     # any module necessary for this one to work correctly
-    'depends': ['base','account'],
+    'depends': ['base','account','sale','purchase','sales_team'],
 
     # always loaded
     'data': [
         # 'security/ir.model.access.csv',
         'security/security.xml',
-        'views/account_invoice.xml',
+        'views/views.xml',
         'views/templates.xml',
     ],
     # only loaded in demonstration mode
