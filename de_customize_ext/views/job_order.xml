@@ -2,16 +2,28 @@
 
 <odoo>
 
-<!--    <record id="de_customize_ext.mrp_bom_ext_from_view" model="ir.ui.view">-->
-<!--        <field name="name">mrp bom ext form view</field>-->
-<!--        <field name="model">mrp.bom</field>-->
-<!--        <field name="inherit_id" ref="mrp.mrp_bom_form_view"/>-->
-<!--        <field name="arch" type="xml">-->
-<!--            <xpath expr="//field[@name='salvage_value']" position="after">-->
-<!--            <field name="emp_name"/>-->
-<!--            </xpath>-->
-<!--      </field>-->
-<!--    </record>-->
+    <record id="de_customize_ext.mrp_production_ext_from_view" model="ir.ui.view">
+        <field name="name">mrp production ext form view</field>
+        <field name="model">mrp.production</field>
+        <field name="inherit_id" ref="mrp.mrp_production_form_view"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='product_id']" position="after">
+            <field name="jo_reference_no"/>
+            </xpath>
+      </field>
+    </record>
+
+    <record id="de_customize_ext.purchase_order_ext_from_view" model="ir.ui.view">
+        <field name="name">purchase order ext form view</field>
+        <field name="model">purchase.order</field>
+        <field name="inherit_id" ref="purchase.purchase_order_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='partner_id']" position="after">
+            <field name="jo_reference_no"/>
+            <field name="sale_order_ref"/>
+            </xpath>
+      </field>
+    </record>
 
 <!--    job order form view-->
     <record id="de_customize_ext.job_order_view_form" model="ir.ui.view">
@@ -19,6 +31,14 @@
         <field name="model">mrp.job.order</field>
         <field name="arch" type="xml">
             <form string="Job Order">
+                <header>
+                    <field name="state" widget="statusbar" statusbar_visible="draft,approved,done"/>
+                    <button name="action_approve" type="object" string="Approve" class="oe_highlight"
+                            groups="hr.group_hr_manager"
+                            states="draft"/>
+                    <button name="action_completed" type="object" string="Done" class="oe_highlight"
+                            states="draft,approved"/>
+                </header>
                 <sheet>
                     <div class="oe_title">
                         <h1><field name="name" placeholder="Job Order Reference" nolabel="1"/></h1>
@@ -27,7 +47,7 @@
                         <group>
 <!--                            <field name="name"/>-->
                             <field name="date"/>
-                            <field name="sale_id"/>
+                            <field name="sale_order_id"/>
                         </group>
                     </group>
                     <button name="get_bom_lines" type="object" string="Process"
@@ -36,6 +56,7 @@
                         <page string="Material Planing" name="job_order_lines">
                             <field name="job_order_ids">
                                 <tree editable="bottom">
+                                    <field name="name" invisible="1"/>
                                     <field name="product_id"/>
                                     <field name="prod_quantity"/>
                                     <field name="prod_uom"/>
@@ -43,8 +64,14 @@
                                     <field name="stock_quantity"/>
                                     <field name="forecast_quantity"/>
                                     <field name="order_quantity"/>
-                                    <button name="mrp_process_method" type="object" string="Mrp Process"
-                                            class="oe_highlight"/>
+                                    <field name="bom_ext_id"/>
+                                    <field name="bom_type"/>
+                                    <field name="vendor_id"
+                                           attrs="{'invisible': [('bom_type', '=', 'normal')]}"/>
+                                    <field name="progress" invisible="1"/>
+                                    <button name="mrp_process_method" type="object" icon="fa-gear"
+                                            attrs="{'invisible': [('progress', '=', 'done')]}"/>
+                                    <button name="cancel_mrp_documents" type="object" icon="fa-remove"/>
                                 </tree>
                             </field>
                         </page>
@@ -61,7 +88,7 @@
         <field name="arch" type="xml">
             <tree string="Job Order">
                 <field name="date"/>
-                <field name="sale_id"/>
+                <field name="sale_order_id"/>
             </tree>
         </field>
     </record>

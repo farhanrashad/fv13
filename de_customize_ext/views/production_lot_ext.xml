@@ -12,11 +12,11 @@
 <!--                    <field name="sale_order_id"/>-->
                     <field name="partner_id"/>
                 </xpath>
-                <xpath expr="/form/*" position="before">
-                    <header>
-                        <button type="object" string="Same Partner" name="btn_action_same_partner" class="btn btn-primary"/>
-                    </header>
-                </xpath>
+<!--                <xpath expr="/form/*" position="before">-->
+<!--                    <header>-->
+<!--                        <button type="object" string="Same Partner" name="btn_action_same_partner" class="btn btn-primary"/>-->
+<!--                    </header>-->
+<!--                </xpath>-->
             </field>
         </record>
 
