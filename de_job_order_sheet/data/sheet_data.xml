@@ -1,0 +1,28 @@
+<?xml version="1.0" ?>
+
+<odoo>
+
+    <data noupdate="1">
+
+        <record id="job_order_sheet_sequence" model="ir.sequence">
+            <field name="name">JobOrder</field>
+            <field name="code">job.order.sheet</field>
+            <field name="prefix">JO/</field>
+            <field name="padding">5</field>
+            <field name="number_next">1</field>
+            <field name="number_increment">1</field>
+            <field name="company_id" eval="False"/>
+        </record>
+
+        <record id="job_order_sheet_line_sequence" model="ir.sequence">
+            <field name="name">JobOrderLine</field>
+            <field name="code">job.order.sheet.line</field>
+            <field name="prefix">JOL/</field>
+            <field name="padding">5</field>
+            <field name="number_next">1</field>
+            <field name="number_increment">1</field>
+            <field name="company_id" eval="False"/>
+        </record>
+
+    </data>
+</odoo>

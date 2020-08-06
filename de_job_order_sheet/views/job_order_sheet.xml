@@ -1,0 +1,92 @@
+<?xml version="1.0" ?>
+
+<odoo>
+
+    <record id="de_job_order_sheet.mrp_production_ext_from_view" model="ir.ui.view">
+        <field name="name">mrp production ext form view</field>
+        <field name="model">mrp.production</field>
+        <field name="inherit_id" ref="mrp.mrp_production_form_view"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='product_id']" position="after">
+                <field name="sale_reference"/>
+            </xpath>
+      </field>
+    </record>
+
+    <record id="de_job_order_sheet.mrp_production_ext_tree_view" model="ir.ui.view">
+        <field name="name">mrp production ext tree view</field>
+        <field name="model">mrp.production</field>
+        <field name="inherit_id" ref="mrp.mrp_production_tree_view"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='origin']" position="after">
+                <field name="sale_reference"/>
+            </xpath>
+      </field>
+    </record>
+
+    <record id="de_job_order_sheet.job_order_sheet_view_form" model="ir.ui.view">
+        <field name="name">job order  sheet form view</field>
+        <field name="model">job.order.sheet</field>
+        <field name="arch" type="xml">
+            <form string="Job Order Sheet">
+                <header>
+                    <field name="state" widget="statusbar" statusbar_visible="draft,approved,done"/>
+                    <button name="action_approve" type="object" string="Approve" class="oe_highlight"
+                            groups="hr.group_hr_manager"
+                            states="draft"/>
+                    <button name="action_completed" type="object" string="Done" class="oe_highlight"
+                            states="draft,approved"/>
+                </header>
+                <sheet>
+                    <div class="oe_title">
+                        <h1><field name="name" placeholder="Job Order Reference" nolabel="1"/></h1>
+                    </div>
+                    <group>
+                        <group>
+                            <field name="date"/>
+                            <field name="sale_order_id"/>
+                        </group>
+                    </group>
+                    <button name="get_sheet_lines" type="object" string="Process"
+                                    class="oe_highlight"/>
+                    <button name="action_quantity_update" type="object" string="Update"
+                                    class="oe_link"/>
+                    <notebook>
+                        <page string="Material Planing" name="job_order_sheet_lines">
+                            <field name="sheet_ids">
+                                <tree editable="bottom">
+                                    <field name="mo_order_id"/>
+                                    <field name="product_id"/>
+                                    <field name="product_quantity"/>
+                                    <field name="in_house_production"/>
+                                    <field name="outsource_production"/>
+                                </tree>
+                            </field>
+                        </page>
+                    </notebook>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="de_job_order_sheet.job_order_sheet_view_tree" model="ir.ui.view">
+        <field name="name">job order sheet tree view</field>
+        <field name="model">job.order.sheet</field>
+        <field name="arch" type="xml">
+            <tree string="Job Order Sheet">
+                <field name="date"/>
+                <field name="sale_order_id"/>
+            </tree>
+        </field>
+    </record>
+
+    <record id="de_job_order_sheet.job_order_sheet_action" model="ir.actions.act_window">
+        <field name="name">Job Order</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">job.order.sheet</field>
+        <field name="view_mode">tree,form</field>
+    </record>
+
+    <menuitem id="de_job_order_sheet.job_order_sheet_menu" name="Job Order" parent="mrp.menu_mrp_manufacturing" action="de_job_order_sheet.job_order_sheet_action" sequence="2"/>
+
+</odoo>
