@@ -69,7 +69,10 @@ class JobOrderSheet(models.Model):
     def get_sheet_lines(self):
         for rec in self:
             rec.sheet_ids.unlink()
-            order_data = self.env['mrp.production'].search([('sale_reference', '=', rec.sale_order_id.name)])
+            order_data = self.env['mrp.production'].search(['&', ('sale_reference', '=', rec.sale_order_id.name),
+                                                            '|',
+                                                            ('product_id', '=like', '[Unfinished]%'),
+                                                            ('product_id', '=like', '[Module]%')])
             for order in order_data:
                 rec.sheet_ids |= rec.sheet_ids.new({
                     'mo_order_id': order.id,
