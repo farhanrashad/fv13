@@ -1,0 +1,2 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_de_employee_disciplinary_case_de_employee_disciplinary_case,de_employee_disciplinary_case.de_employee_disciplinary_case,model_de_employee_disciplinary_case_de_employee_disciplinary_case,base.group_user,1,1,1,1
