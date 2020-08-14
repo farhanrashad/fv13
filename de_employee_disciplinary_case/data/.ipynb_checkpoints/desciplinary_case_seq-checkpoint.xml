@@ -1,0 +1,10 @@
+<odoo>
+    <data noupdate="1">
+    	<record forcecreate="True" id="hr_employee_disciplinary_case_sequence" model="ir.sequence">
+		    <field name="name">Desiplinary Case</field>
+		    <field name="code">hr.employee.disciplinary.case</field>
+		    <field name="prefix">DC/</field>
+		    <field name="padding">4</field>
+		</record>
+    </data>
+</odoo>

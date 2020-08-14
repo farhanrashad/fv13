@@ -1,15 +1,5 @@
 <odoo>
-  <data>
-     <record id="stock_icking_form_view" model="ir.ui.view">
-			<field name="name">stock.picking.form.view</field>
-			<field name="model">stock.picking</field>
-			<field name="inherit_id" ref="stock.view_picking_form"/>
-			<field name="arch" type="xml">
-				<xpath expr="//field[@name='origin']" position="before">
-					<field name="test"/>
-				</xpath>
-			</field>
-		</record>      
+  <data>      
     <record model="ir.ui.view" id="disciplinary_case_type_tree_view">
             <field name="name">hr.employee.disciplinary.case.type.tree</field>
             <field name="model">hr.employee.disciplinary.case.type</field>
@@ -54,6 +44,10 @@
             <field name="arch" type="xml">
                 <form>
                     <header>
+                        <button name="action_waiting_case" states="draft" string="Process" type="object"/>
+                        <button name="action_case_send" states="waiting" string="Send by Email" type="object"/>
+                        <button name="action_close_case" states="waiting,response" string="Close Case" type="object"/>
+
                         <field name="state" widget="statusbar" statusbar_visible="draft,waiting,response,close"/>
                     </header>
                     <sheet>

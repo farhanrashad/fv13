@@ -21,11 +21,13 @@
     'version': '0.1',
 
     # any module necessary for this one to work correctly
-    'depends': ['base','employee'],
+    'depends': ['base','hr','mail'],
 
     # always loaded
     'data': [
-        # 'security/ir.model.access.csv',
+        'data/desciplinary_case_seq.xml',
+        'data/mail_template_data.xml',
+        'security/ir.model.access.csv',
         'views/desciplinary_case_views.xml',
         'views/templates.xml',
     ],
