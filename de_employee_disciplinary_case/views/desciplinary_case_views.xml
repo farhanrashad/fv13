@@ -1,121 +1,60 @@
 <odoo>
   <data>
-          <menuitem name="Disciplinary Case" id="desciplinary_main_menu" parent="hr.menu_hr_root" sequence="2"             groups="base.group_no_one"
- />
-     <record id="stock_icking_form_view" model="ir.ui.view">
-			<field name="name">stock.picking.form.view</field>
-			<field name="model">stock.picking</field>
-			<field name="inherit_id" ref="stock.view_picking_form"/>
-			<field name="arch" type="xml">
-				<xpath expr="//field[@name='origin']" position="before">
-					<field name="test"/>
-				</xpath>
-			</field>
-		</record>      
-    <record model="ir.ui.view" id="disciplinary_case_type_tree_view">
-            <field name="name">hr.employee.disciplinary.case.type.tree</field>
-            <field name="model">hr.employee.disciplinary.case.type</field>
-            <field name="arch" type="xml">
-                <tree>
-                    <field name="name"/>
-                </tree>
-            </field>
-        </record>
-      
-       <record model="ir.ui.view" id="disciplinary_case_tree_view">
-            <field name="name">hr.employee.disciplinary.case.tree</field>
-            <field name="model">hr.employee.disciplinary.case</field>
-            <field name="arch" type="xml">
-                <tree>
-                    <field name="name"/>
-                    <field name="employee_id"/>
-                    <field name="date"/>
-                    <field name="case_type"/>
-                    <field name="user_id"/>
-                    <field name="state"/>
-
-                </tree>
-            </field>
-        </record>
-      
-      <record model="ir.ui.view" id="con_job_order_form">
-            <field name="name">hr.employee.disciplinary.case.type.form</field>
-            <field name="model">hr.employee.disciplinary.case.type</field>
-            <field name="arch" type="xml">
-            <form>
-              <field name="name"/>
-            </form>
-          </field>
-      </record> 
-      
-      
-      
-      <record model="ir.ui.view" id="disciplinary_case_form">
-            <field name="name">hr.employee.disciplinary.case.form</field>
-            <field name="model">hr.employee.disciplinary.case</field>
-            <field name="arch" type="xml">
-                <form>
-                    <header>
-                        <field name="state" widget="statusbar" statusbar_visible="draft,waiting,response,close"/>
-                    </header>
-                    <sheet>
-                        <div class="oe_title">
-                            <h1>
-                                <field name="name" placeholder="Name..."/>
-                            </h1>
-                        </div>
-                        <group>
-                            <group>
-                                <field name="employee_id"/>
-                                <field name="case_type"/>
-                            </group>
-                            <group>
-                                <field name="date"/>
-                                <field name="user_id"/>
-                            </group>
-                        </group>
-                        <notebook>
-                            <page string="Description">
-                                <group>
-                                    <field name="note"/>
-                                </group>
-                            </page>
-                            <page string="Attachment">
-                              <field name="attachment_id"/>
-                            </page>
-                            
-                        </notebook>
-                    </sheet>
-                </form>
-            </field>
-        </record>
-      
-       <record id="disciplinary_case_type_menu_action" model="ir.actions.act_window">
-        <field name="name">Disciplinary Case type</field>
-        <field name="type">ir.actions.act_window</field>
-        <field name="res_model">hr.employee.disciplinary.case.type</field>
-        <field name="view_mode">tree,form</field>
-        <field name="help" type="html">
-            <p class="o_view_nocontent_smiling_face">
-                Add a New Disciplinary case type
-            </p>
-        </field>
+    <!-- explicit list view definition -->
+<!--
+    <record model="ir.ui.view" id="de_employee_disciplinary_case.list">
+      <field name="name">de_employee_disciplinary_case list</field>
+      <field name="model">de_employee_disciplinary_case.de_employee_disciplinary_case</field>
+      <field name="arch" type="xml">
+        <tree>
+          <field name="name"/>
+          <field name="value"/>
+          <field name="value2"/>
+        </tree>
+      </field>
     </record>
-      
-      <record id="disciplinary_case_menu_action" model="ir.actions.act_window">
-        <field name="name">Disciplinary Case</field>
-        <field name="type">ir.actions.act_window</field>
-        <field name="res_model">hr.employee.disciplinary.case</field>
-        <field name="view_mode">tree,form</field>
-        <field name="help" type="html">
-            <p class="o_view_nocontent_smiling_face">
-                Add a New Disciplinary case 
-            </p>
-        </field>
-    </record>
-      
+-->
 
-    <menuitem name="Disciplinary Case type" id="desciplinary_sub_menu" parent="desciplinary_main_menu" action="disciplinary_case_type_menu_action" sequence="1"/>
-    <menuitem name="Disciplinary Case " id="desciplinary_case_sub_menu" parent="desciplinary_main_menu" action="disciplinary_case_menu_action" sequence="2"/>
+    <!-- actions opening views on models -->
+<!--
+    <record model="ir.actions.act_window" id="de_employee_disciplinary_case.action_window">
+      <field name="name">de_employee_disciplinary_case window</field>
+      <field name="res_model">de_employee_disciplinary_case.de_employee_disciplinary_case</field>
+      <field name="view_mode">tree,form</field>
+    </record>
+-->
+
+    <!-- server action to the one above -->
+<!--
+    <record model="ir.actions.server" id="de_employee_disciplinary_case.action_server">
+      <field name="name">de_employee_disciplinary_case server</field>
+      <field name="model_id" ref="model_de_employee_disciplinary_case_de_employee_disciplinary_case"/>
+      <field name="state">code</field>
+      <field name="code">
+        action = {
+          "type": "ir.actions.act_window",
+          "view_mode": "tree,form",
+          "res_model": model._name,
+        }
+      </field>
+    </record>
+-->
+
+    <!-- Top menu item -->
+<!--
+    <menuitem name="de_employee_disciplinary_case" id="de_employee_disciplinary_case.menu_root"/>
+-->
+    <!-- menu categories -->
+<!--
+    <menuitem name="Menu 1" id="de_employee_disciplinary_case.menu_1" parent="de_employee_disciplinary_case.menu_root"/>
+    <menuitem name="Menu 2" id="de_employee_disciplinary_case.menu_2" parent="de_employee_disciplinary_case.menu_root"/>
+-->
+    <!-- actions -->
+<!--
+    <menuitem name="List" id="de_employee_disciplinary_case.menu_1_list" parent="de_employee_disciplinary_case.menu_1"
+              action="de_employee_disciplinary_case.action_window"/>
+    <menuitem name="Server to list" id="de_employee_disciplinary_case" parent="de_employee_disciplinary_case.menu_2"
+              action="de_employee_disciplinary_case.action_server"/>
+-->
   </data>
 </odoo>
