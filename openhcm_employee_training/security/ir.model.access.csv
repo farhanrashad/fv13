@@ -1,0 +1,2 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_openhcm_employee_training_openhcm_employee_training,openhcm_employee_training.openhcm_employee_training,model_openhcm_employee_training_openhcm_employee_training,base.group_user,1,1,1,1
