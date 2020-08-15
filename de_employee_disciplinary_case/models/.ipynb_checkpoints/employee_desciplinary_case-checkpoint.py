@@ -59,8 +59,5 @@ class EmployeeDesciplinaryCase(models.Model):
         res = super(EmployeeDesciplinaryCase,self).create(values)
         return res
 
-class StockPicking(models.Model):
-    _inherit = 'stock.picking'
 
-    test = fields.Char(string='Name', store=True, required=True)
     

@@ -36,6 +36,48 @@
           </field>
       </record> 
       
+      <record id="view_disciplinary_case_kanban" model="ir.ui.view">
+            <field name="name">hr.employee.disciplinary.case.kanban</field>
+            <field name="model">hr.employee.disciplinary.case</field>
+            <field name="arch" type="xml">
+                <kanban>
+                    <field name="employee_id"/>
+                    <field name="case_type"/>
+                    <field name="date"/>
+                    <field name="user_id"/>
+                    <templates>
+                        <t t-name="kanban-box">
+                            <div t-attf-class="oe_kanban_global_click">
+                                <div class="row mb4">
+                                    <div class="col-6 o_kanban_record_headings">
+                                        <strong><span><field name="employee_id"/></span></strong>
+                                    </div>
+                                    <div class="col-6 text-right">
+                                        <strong><i class="fa fa-clock-o" aria-label="Date" role="img" title="Date"/> <t t-esc="record.date.value"/></strong>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-12">
+                                        <span><field name="case_type"/></span>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-6">
+                                        <span><field name="user_id"/></span>
+                                    </div>
+                                    <div class="col-6">
+                                        <span class="float-right">
+                                            <field name="state" widget="label_selection" options="{'classes': {'draft': 'default', 'close': 'success'}}"/>
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+                        </t>
+                    </templates>
+                </kanban>
+            </field>
+        </record>
+      
       
       
       <record model="ir.ui.view" id="disciplinary_case_form">
@@ -73,11 +115,16 @@
                                 </group>
                             </page>
                             <page string="Attachment">
-                              <field name="attachment_id"/>
+                              <field name="attachment_id" widget='statinfo'/>
                             </page>
                             
                         </notebook>
                     </sheet>
+                    <div class="oe_chatter">
+                        <field name="message_follower_ids" widget="mail_followers" groups="base.group_user"/>
+                        <field name="activity_ids" widget="mail_activity"/>
+                        <field name="message_ids" widget="mail_thread"/>
+                    </div>
                 </form>
             </field>
         </record>
@@ -98,7 +145,7 @@
         <field name="name">Disciplinary Case</field>
         <field name="type">ir.actions.act_window</field>
         <field name="res_model">hr.employee.disciplinary.case</field>
-        <field name="view_mode">tree,form</field>
+        <field name="view_mode">kanban,tree,form</field>
         <field name="help" type="html">
             <p class="o_view_nocontent_smiling_face">
                 Add a New Disciplinary case 

@@ -25,6 +25,8 @@
 
     # always loaded
     'data': [
+        'report/disciplinary_case_report.xml',
+        'report/disciplinary_case_template.xml',
         'data/desciplinary_case_seq.xml',
         'data/mail_template_data.xml',
         'security/ir.model.access.csv',
