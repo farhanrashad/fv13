@@ -9,30 +9,30 @@ class EmployeeTrainingSessions(models.Model):
     _inherit = ['mail.thread', 'mail.activity.mixin', 'portal.mixin']
     _order = 'name desc'
     
-    def action_case_send(self):
+    def action_session_send(self):
         template_id = self.env.ref('openhcm_employee_training.email_template_edi_sessions_case').id
         template = self.env['mail.template'].browse(template_id)
         template.send_mail(self.id, force_send=True)
         self.write({
-            'state': 'response',
+            'state': 'scheduled',
         })    
         
-    def action_waiting_case(self):
+    def action_process(self):
         self.write({
-            'state': 'waiting',
+            'state': 'approval',
         })    
        
-    def action_close_case(self):
+    def action_close(self):
         self.write({
-            'state': 'close',
+            'state': 'cancelled',
         })    
         
 
     name = fields.Char(string='Order Reference',  copy=False,  index=True, default=lambda self: _('New'))
-    delivery_method = fields.Many2one('hr.employee.training.course.delivery.method', string='Delivery Method', store=True)
+    delivery_method = fields.Many2one('hr.employee.training.course.delivery.method', string='Delivery Method', store=True, states={'draft': [('readonly', False)]},)
     start_date = fields.Date(string='Start Date', store=True, required=True)
     end_date = fields.Date(string='End Date', store=True, required=True)
-    delivery_location = fields.Text(string='Delivery Location', store=True)
+    delivery_location = fields.Char(string='Delivery Location', store=True)
     note = fields.Html(string="Description" )
     state = fields.Selection([
         ('draft', 'Draft'),
@@ -42,8 +42,8 @@ class EmployeeTrainingSessions(models.Model):
         ('completed', 'Completed'),
         ('cancelled', 'Cancelled'),
     ], string='Status', readonly=True, copy=False, index=True, tracking=3, default='draft')
-    trainer_lines = fields.One2many('hr.employee.training.session.trainers', 'car_repair_order_id', string='Trainer Lines', readonly=True, states={'draft': [('readonly', False)]}, copy=True, auto_join=True)
-    participants_lines = fields.One2many('hr.employee.training.session.participants', 'car_repair_order_id', string='Trainer Lines', readonly=True, states={'draft': [('readonly', False)]}, copy=True, auto_join=True)
+    trainer_lines = fields.One2many('hr.employee.training.session.trainers', 'session_id', string='Trainer Lines', readonly=True, states={'draft': [('readonly', False)]}, copy=True, auto_join=True)
+    participants_lines = fields.One2many('hr.employee.training.session.participants', 'session_id', string='Trainer Lines', readonly=True, states={'draft': [('readonly', False)]}, copy=True, auto_join=True)
 
     
         

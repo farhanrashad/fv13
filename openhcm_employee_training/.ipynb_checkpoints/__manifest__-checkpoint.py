@@ -21,17 +21,17 @@ Employee Training
     'version': '0.1',
 
     # any module necessary for this one to work correctly
-    'depends': ['base','hr'],
+    'depends': ['base','hr','mail'],
 
     # always loaded
     'data': [
         'data/sessions_seq.xml',
         'data/course_seq.xml',
         'data/mail_template_data.xml',
-#         'security/ir.model.access.csv',
+        'security/ir.model.access.csv',
         'views/sessions_views.xml',
         'views/course_views.xml',
-        'views/configuration_views.xml',
+        'views/configuration_view.xml',
     ],
     # only loaded in demonstration mode
     'demo': [

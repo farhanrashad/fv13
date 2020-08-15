@@ -22,7 +22,7 @@ class EmployeeTrainingCourse(models.Model):
     trainer_id = fields.Many2one('res.partner', string='Trainer', store=True, required=True)
     currency_id = fields.Many2one('res.currency',string='Currency', store=True)
     amount = fields.Float(string='Cost')
-    note = Fields.Html(string='Description')
+    note = fields.Html(string='Description')
 
     
 
