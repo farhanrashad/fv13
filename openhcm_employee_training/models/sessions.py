@@ -25,6 +25,11 @@ class EmployeeTrainingSessions(models.Model):
     def action_close(self):
         self.write({
             'state': 'cancelled',
+        })
+        
+    def action_completed(self):
+        self.write({
+            'state': 'completed',
         })    
         
 
