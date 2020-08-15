@@ -78,6 +78,22 @@
             </field>
         </record>
       
+      <record id="disciplinary_case_search" model="ir.ui.view">
+            <field name="name">hr.employee.disciplinary.case.search</field>
+            <field name="model">hr.employee.disciplinary.case</field>
+            <field name="arch" type="xml">
+                <search string="Search Disciplinary Case">
+                    <field name="name" filter_domain="['|', '|', ('date', 'ilike', self), ('name', 'ilike', self), ('employee_id', 'ilike', self)]" string="Reference"/>
+                    <field name="date" string='Date'/>
+                    <field name="employee_id" string='Employee'/>
+                    <group expand="0" string="Group By">
+                        <filter name="employee_id" string="Employee" domain="[]" context="{'group_by' : 'employee_id'}" />
+                        <filter string="Status" name="status" domain="[]" context="{'group_by' : 'state'}" />
+                    </group>
+                </search>
+            </field>
+        </record>
+      
       <record model="ir.ui.view" id="disciplinary_case_calendar">
             <field name="name">hr.employee.disciplinary.case.calendar</field>
             <field name="model">hr.employee.disciplinary.case</field>
@@ -122,13 +138,13 @@
                             </group>
                         </group>
                         <notebook>
-                            <page string="Description">
+                            <page string="Reason">
                                 <group>
                                     <field name="note"/>
                                 </group>
                             </page>
-                            <page string="Attachment">
-                              <field name="attachment_id"/>
+                            <page string="Attachments">
+                                <field name="attachment_id"/>
                             </page>
                             
                         </notebook>

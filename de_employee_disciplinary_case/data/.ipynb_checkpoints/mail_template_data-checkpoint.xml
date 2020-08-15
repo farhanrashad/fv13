@@ -14,12 +14,7 @@
             <field name="body_html" type="html">
 <div style="margin: 0px; padding: 0px;">
     <p style="margin: 0px; padding: 0px; font-size: 13px;">
-        Dear
-        % if object.employee_id.parent_id:
-            ${object.employee_id.name} (${object.employee_id.parent_id.name}),
-        % else:
-            ${object.employee_id.name},
-        % endif
+        Dear ${object.employee_id.name},
         <br /><br />
         Here is your
         % if object.name:
@@ -32,10 +27,10 @@
 </div>
             </field>
             <field name="report_template" ref="employee_disciplinary_case"/>
-            <field name="report_name">Case_${(object.name or '').replace('/','_')}${object.state == 'draft' and '_draft' or ''}</field>
-            <field name="lang">${object.employee_id.lang}</field>
+            <field name="report_name">Case_${(object.name or '').replace('/','_')}</field>
+<!--             <field name="lang">${object.employee_id.lang}</field>
             <field name="user_signature" eval="False"/>
-            <field name="auto_delete" eval="True"/>
+            <field name="auto_delete" eval="True"/> -->
         </record>
     </data>
 </odoo>

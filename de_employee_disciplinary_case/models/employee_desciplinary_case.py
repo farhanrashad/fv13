@@ -50,8 +50,7 @@ class EmployeeDesciplinaryCase(models.Model):
         ('response', 'Response'),
         ('close', 'Close'),
     ], string='Status', readonly=True, copy=False, index=True, tracking=3, default='draft')
-    attachment_id = fields.Many2one('ir.attachment', string="Attachment", required=True)
-    
+    attachment_id = fields.Many2one('ir.attachment', string='Attachment')    
     @api.model
     def create(self,values):
         seq = self.env['ir.sequence'].get('hr.employee.disciplinary.case') 
