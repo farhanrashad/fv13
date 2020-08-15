@@ -82,8 +82,9 @@
             </p>
         </field>
     </record>
-      
-    <menuitem name="Sessions" id="sessions_main_menu" sequence="1"/>
+    <menuitem name="Training" id="training_root_menu" sequence="3"
+              web_icon="openhcm_employee_training,static/description/icon.png"/> 
+    <menuitem name="Sessions" id="sessions_main_menu" parent="training_root_menu"  sequence="1"/>
     <menuitem name="Sessions" id="sessions_sub_menu" parent="sessions_main_menu" action="sessions_menu_action" sequence="1"/>
   </data>
 </odoo>

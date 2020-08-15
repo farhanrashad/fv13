@@ -67,7 +67,7 @@
         </field>
     </record>
       
-    <menuitem name="Training" id="training_main_menu"  sequence="0"/>
+    <menuitem name="Training" id="training_main_menu" parent="training_root_menu"  sequence="0"/>
     <menuitem name="Course" id="course_sub_menu" parent="training_main_menu" action="course_menu_action" sequence="1"/>
   </data>
 </odoo>
