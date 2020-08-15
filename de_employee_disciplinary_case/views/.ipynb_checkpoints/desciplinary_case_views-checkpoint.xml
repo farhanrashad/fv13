@@ -78,6 +78,19 @@
             </field>
         </record>
       
+      <record model="ir.ui.view" id="disciplinary_case_calendar">
+            <field name="name">hr.employee.disciplinary.case.calendar</field>
+            <field name="model">hr.employee.disciplinary.case</field>
+            <field name="priority" eval="2"/>
+            <field name="arch" type="xml">
+                <calendar string="Calendar View" date_start="date" color="employee_id" hide_time="true" event_limit="5">
+                    <field name="name"/>
+                    <field name="case_type"/>
+                    <field name="date"/>
+                    <field name="employee_id"/>
+                </calendar>
+            </field>
+        </record>
       
       
       <record model="ir.ui.view" id="disciplinary_case_form">
@@ -115,7 +128,7 @@
                                 </group>
                             </page>
                             <page string="Attachment">
-                              <field name="attachment_id" widget='statinfo'/>
+                              <field name="attachment_id"/>
                             </page>
                             
                         </notebook>
@@ -145,7 +158,7 @@
         <field name="name">Disciplinary Case</field>
         <field name="type">ir.actions.act_window</field>
         <field name="res_model">hr.employee.disciplinary.case</field>
-        <field name="view_mode">kanban,tree,form</field>
+        <field name="view_mode">kanban,tree,calendar,form</field>
         <field name="help" type="html">
             <p class="o_view_nocontent_smiling_face">
                 Add a New Disciplinary case 
@@ -153,7 +166,7 @@
         </field>
     </record>
       
-    <menuitem name="Disciplinary Case" id="desciplinary_main_menu" parent="hr.menu_hr_root" sequence="2"/>
+    <menuitem name="Disciplinary Case" id="desciplinary_main_menu" parent="hr.menu_hr_root" sequence="4"/>
     <menuitem name="Disciplinary Case type" id="desciplinary_sub_menu" parent="desciplinary_main_menu" action="disciplinary_case_type_menu_action" sequence="1"/>
     <menuitem name="Disciplinary Case " id="desciplinary_case_sub_menu" parent="desciplinary_main_menu" action="disciplinary_case_menu_action" sequence="2"/>
   </data>
