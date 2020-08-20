@@ -23,31 +23,131 @@ class MrpProduction(models.Model):
     
     
                 
-    def button_plans(self):
-        """ Create work orders. And probably do stuff, like things. """
-        orders_to_plan = self.filtered(lambda order: order.routing_f_id and order.state == 'confirmed')
-        for order in orders_to_plan:
-            order.move_raw_ids.filtered(lambda m: m.state == 'draft')._action_confirm()
-            quantity = self.product_f_qty
-            boms, lines = order.bom_id.explode(order.product_id, quantity, picking_type=order.bom_id.picking_type_id)
-            order._generate_workorders(boms)
-            order._plan_workorders()
-        return True
+    def button_plans(self):      
+        if self.routing_f_id != '':
+            work_order_line = self.env['mrp.workorder.line']
+            quantity = max(self.product_f_qty - sum(self.move_finished_ids.filtered(lambda move: move.product_id == self.product_id).mapped('quantity_done')), 0)
+            quantity = self.product_id.uom_id._compute_quantity(quantity, self.product_uom_id)
+            for line in self.move_raw_ids:
+                flines = {
+                    'product_id': line.product_id.id,
+                    'qty_to_consume': self.product_f_qty,
+#                     'qty_reserved': self.product_s_qty,
+#                     'qty_done': self.product_s_qty,
+                    
+                }
+#                 workorder_lines = work_order_line.create(flines)
+            fval = {
+                'name': self.name,
+                'production_id': self.id,
+                'workcenter_id': self.routing_f_id.id,
+#                 'date_planned_start': self.date_planned_start,
+                'product_uom_id': self.product_id.uom_id.id,
+                'operation_id': self.routing_f_id.operation_ids.id,
+                'state':'ready' or 'pending',
+                'qty_producing': quantity,
+                'consumption': self.bom_id.consumption,
+                 'raw_workorder_line_ids': [(0, 0, flines)]
+                
+            }
+            workorders = self.env['mrp.workorder'].create(fval)
+            
+        if self.routing_s_id != '':
+            work_orders_line = self.env['mrp.workorder.line']
+            quantity = max(self.product_s_qty - sum(self.move_finished_ids.filtered(lambda move: move.product_id == self.product_id).mapped('quantity_done')), 0)
+            quantity = self.product_id.uom_id._compute_quantity(quantity, self.product_uom_id)
+            for line in self.move_raw_ids:
+                slines = {
+                    'product_id': line.product_id.id,
+                    'qty_to_consume': self.product_s_qty,
+#                     'qty_reserved': self.product_s_qty,
+#                     'qty_done': self.product_s_qty,
+                }
+#                 workorder_lines = work_orders_line.create(slines)
+            sval = {
+                'name': self.name,
+                'production_id': self.id,
+                'workcenter_id': self.routing_s_id.id,
+#                 'date_planned_start': self.date_planned_start,
+                'product_uom_id': self.product_id.uom_id.id,
+                'operation_id': self.routing_s_id.operation_ids.id,
+                'state':'ready' or 'pending',
+                'qty_producing': quantity,
+                'consumption': self.bom_id.consumption,
+                 'raw_workorder_line_ids': [(0, 0, slines)]
+                
+            }
+            workorders = self.env['mrp.workorder'].create(sval)
+            
+
+        if self.routing_t_id != '':
+            work_ordert_line = self.env['mrp.workorder.line']
+            quantity = max(self.product_t_qty - sum(self.move_finished_ids.filtered(lambda move: move.product_id == self.product_id).mapped('quantity_done')), 0)
+            quantity = self.product_id.uom_id._compute_quantity(quantity, self.product_uom_id)
+            for line in self.move_raw_ids:
+                tlines = {
+                    'product_id': line.product_id.id,
+                    'qty_to_consume': self.product_t_qty,
+#                     'qty_reserved': self.product_t_qty,
+#                     'qty_done': self.product_t_qty,
+                }
+#                 workorder_lines = work_ordert_line.create(tlines)
+            tval = {
+                'name': self.name,
+                'production_id': self.id,
+                'workcenter_id': self.routing_t_id.id,
+#                 'date_planned_start': self.date_planned_start,                
+                'product_uom_id': self.product_id.uom_id.id,
+                'operation_id': self.routing_t_id.operation_ids.id,
+                'state':'ready' or 'pending',
+                'qty_producing': quantity,
+                'consumption': self.bom_id.consumption,
+                 'raw_workorder_line_ids': [(0, 0, tlines)]
+            }
+            workorders = self.env['mrp.workorder'].create(tval)
+            
+            
+        if self.routing_fo_id != '':
+            work_orderfo_line = self.env['mrp.workorder.line']
+            quantity = max(self.product_fo_qty - sum(self.move_finished_ids.filtered(lambda move: move.product_id == self.product_id).mapped('quantity_done')), 0)
+            quantity = self.product_id.uom_id._compute_quantity(quantity, self.product_uom_id)
+            for line in self.move_raw_ids:
+                folines = {
+                    'product_id': line.product_id.id,
+                    'qty_to_consume': self.product_fo_qty,
+#                     'qty_reserved': self.product_fo_qty,
+#                     'qty_done': self.product_fo_qty,                   
+                }
+#                 workorder_lines = work_orderfo_line.create(folines)
+            foval = {
+                'name': self.name,
+                'production_id': self.id,
+                'workcenter_id': self.routing_fo_id.id,
+#                 'date_planned_start': self.date_planned_start,             
+                'product_uom_id': self.product_id.uom_id.id,
+                'operation_id': self.routing_fo_id.operation_ids.id,
+                'state':'ready' or 'pending',
+                'qty_producing': quantity,
+                'consumption': self.bom_id.consumption,
+                'raw_workorder_line_ids': [(0, 0, folines)]
+            } 
+            workorders = self.env['mrp.workorder'].create(foval)
+            
         
     
-    def _prepare_workorder_vals(self, operation, workorders, quantity):
-        self.ensure_one()
-        data = {
-            'name': operation.name,
-            'production_id': self.id,
-            'workcenter_id': operation.workcenter_id.id,
-            'product_uom_id': self.product_id.uom_id.id,
-            'operation_id': operation.id,
-            'state':'ready' or 'pending',
-            'qty_producing': quantity,
-            'consumption': self.bom_id.consumption,
-        }
-        return data
+#     def _prepare_workorder_vals(self, operation, workorders, quantity):
+#         self.ensure_one()
+#         data = {
+#             'name': operation.name,
+#             'production_id': self.id,
+#             'workcenter_id': operation.workcenter_id.id,
+#             'product_uom_id': self.product_id.uom_id.id,
+#             'operation_id': operation.id,
+#             'state':'ready' or 'pending',
+#             'qty_producing': quantity,
+#             'consumption': self.bom_id.consumption,
+#         }
+#         return data
 #     def action_confirm(self):
 #         self._check_company()
 #         for production in self:

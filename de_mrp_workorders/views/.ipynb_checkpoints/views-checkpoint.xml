@@ -25,15 +25,19 @@
 				</xpath>
 				<xpath expr="//field[@name='routing_id']" position="after">
                         <field name="routing_f_id"/>
+                        <field name="product_f_qty"/>
                         <field name="routing_s_id"/>
-                        <field name="routing_t_id"/>
-                        <field name="routing_fo_id"/>
-                           <field name="product_f_qty"/>
-                            <field name="product_s_qty"/>
-                           <field name="product_t_qty"/>
-                           <field name="product_fo_qty"/>
+                        <field name="product_s_qty"/>
+                        
       
 				</xpath>
+                <xpath expr="//field[@name='origin']" position="after">
+                       <field name="routing_t_id"/>
+                        <field name="product_t_qty"/>              
+                        <field name="routing_fo_id"/>
+                        <field name="product_fo_qty"/>
+                </xpath>    
+
 			</field>
 	  </record>
         
