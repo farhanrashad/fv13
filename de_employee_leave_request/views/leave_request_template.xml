@@ -1,0 +1,151 @@
+<odoo>
+
+<!--    leave request template-->
+    <template id="leave_template" name="Leave Request">
+        <t t-call="website.layout">
+            <div id="wrap">
+                <div class="oe_structure">
+                    <div class="container">
+                        <div class='row mt32'>
+                            <div class='section-custom col-md-12 title'>
+                                <p>Create a Leave
+                                </p>
+                                <p>Request</p>
+                            </div>
+                            <div class="container">
+                                <div class="row">
+                                    <div class="col-md-8 col-xs-12 col-md-offset-2 sell-page-contact">
+                                        <form id="saleForm" data-toggle="validator" action="/create/leave" class="mt32">
+                                            <div class="form-row">
+                                                <div class="col form-group col-md-6 col-xs-12">
+                                                    <label class="control-label" for="holiday_status_id">Time Off Type</label>
+                                                    <select class="form-control" name="holiday_status_id" required="True">
+                                                        <t t-foreach="leave_type" t-as="country">
+                                                            <option t-att-value="country.id">
+                                                                <t t-esc="country.name"/>
+                                                            </option>
+                                                        </t>
+                                                    </select>
+                                                </div>
+                                                <div class="col form-group col-md-6 col-xs-12">
+                                                    <label class="control-label" for="employee_id">Employee</label>
+                                                    <select class="form-control" name="employee_id" required="True">
+                                                        <t t-foreach="employees" t-as="employee">
+                                                            <option t-att-value="employee.id">
+                                                                <t t-esc="employee.name"/>
+                                                            </option>
+                                                        </t>
+                                                    </select>
+                                                </div>
+                                            </div>
+                                            <div class="form-row">
+                                                <div class="col form-group col-md-6 col-xs-12">
+                                                    <label class="control-label" for="request_date_from">From</label>
+                                                    <input type="date" class="form-control" name="request_date_from" required="True"/>
+                                                </div>
+                                                <div class="col form-group col-md-6 col-xs-12">
+                                                    <label class="control-label" for="request_date_to">To</label>
+                                                    <input type="date" class="form-control" name="request_date_to" required="True"/>
+                                                </div>
+                                            </div>
+                                            <div class="form-row">
+                                                <div class="col form-group col-md-6 col-xs-12">
+                                                    <label class="control-label" for="number_of_days">Duration</label>
+                                                    <input type="number" class="form-control" name="number_of_days" required="True"/>
+                                                </div>
+                                            </div>
+                                            <div class="form-row">
+                                                <div class="col form-group col-md-6 col-xs-12">
+                                                    <label class="control-label" for="name">Description</label>
+                                                    <input type="text" class="form-control" name="name" required="True"/>
+                                                </div>
+                                            </div>
+                                            <div class="form-row">
+                                                <div class="clearfix oe_login_buttons">
+                                                    <button type="submit" class="btn btn-primary pull-left">Submit</button>
+                                                </div>
+                                            </div>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </t>
+    </template>
+
+<!--    leave details page-->
+    <template id="leave_page_template" name="Leave Details">
+        <t t-call="website.layout">
+            <div class="oe_structure">
+                <div class="container">
+                    <br/>
+                    <center><h3>Leaves Details</h3></center>
+                    <br/>
+                    <table class="table-striped table">
+                        <thead style="font-size:23px;">
+                            <tr>
+                                <h4>
+                                    <b>
+                                        <th>Employee</th>
+                                        <th>Leave Type</th>
+                                        <th>Description</th>
+                                        <th><b>Start Date</b></th>
+                                        <th><b>End Date</b></th>
+                                        <th><b>Number Of Days</b></th>
+                                        <th><b>Status</b></th>
+                                    </b>
+                                </h4>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <t t-foreach="my_details" t-as="order">
+                                <tr>
+                                    <td><span t-esc="order.employee_id.name"/></td>
+                                    <td><span t-esc="order.holiday_status_id.name"/></td>
+                                    <td><span t-esc="order.name"/></td>
+                                    <td><span t-esc="order.request_date_from"/></td>
+                                    <td><span t-esc="order.request_date_to"/></td>
+                                    <td><span t-esc="order.number_of_days"/></td>
+                                    <td><span t-esc="order.state"/></td>
+                                </tr>
+                            </t>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </t>
+    </template>
+
+<!--    thanks page-->
+    <record id="patient_thanks" model="website.page">
+        <field name="name">Thanks</field>
+        <field name="type">qweb</field>
+        <field name="url">/patient-thank-you</field>
+        <field name="website_published">True</field>
+        <field name="key">de_employee_leave_request.patient_thanks</field>
+        <field name="arch" type="xml">
+            <t name="Thanks" t-name="de_employee_leave_request.patient_thanks">
+                <t t-call="website.layout">
+                  <div id="wrap">
+                    <div class="container">
+                        <h1>Thanks!</h1>
+                        <div class="row">
+                            <div class="col-lg-8">
+                                <div class="alert alert-success" role="status">
+                                    Leave request has been Created successfully.
+                                </div>
+                                <p>
+                                    Take care of yourself.
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                  </div>
+                </t>
+            </t>
+        </field>
+    </record>
+</odoo>

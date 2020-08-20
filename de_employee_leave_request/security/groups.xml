@@ -1,0 +1,13 @@
+<odoo>
+
+    <record model="ir.module.category" id="leave_management">
+        <field name="name">Leaves</field>
+        <field name="description">User access level for leaves</field>
+        <field name="sequence">20</field>
+    </record>
+
+    <record id="portal_user" model="res.groups">
+        <field name="name">User</field>
+        <field name="category_id" ref="leave_management"/>
+    </record>
+</odoo>

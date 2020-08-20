@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<odoo>
+
+    <record id="menu_website_sale" model="website.menu">
+        <field name="name">Leave Request</field>
+        <field name="url">/leave_page</field>
+        <field name="parent_id" ref="website.main_menu"/>
+        <field name="sequence" type="int">55</field>
+<!--        <field name="group_ids">77</field>-->
+    </record>
+
+    <record id="menu_website_leave" model="website.menu">
+        <field name="name">My Leaves</field>
+        <field name="url">/my_leave_page</field>
+        <field name="parent_id" ref="website.main_menu"/>
+        <field name="sequence" type="int">56</field>
+    </record>
+
+</odoo>
