@@ -3,23 +3,35 @@
 # -*- coding: utf-8 -*-
 from odoo import models, fields, api, _
 
+class MrpWorkorder(models.Model):
+    _inherit = 'mrp.workorder'
+    
+    qty_f_production = fields.Float('Original Production Quantity', readonly=True)
+#     qty_s_production = fields.Float('Original Production Quantity', readonly=True, related='production_id.product_s_qty')
+#     qty_t_production = fields.Float('Original Production Quantity', readonly=True, related='production_id.product_t_qty')
+#     qty_fo_production = fields.Float('Original Production Quantity', readonly=True, related='production_id.product_fo_qty')
+
+
+
+
+
 
 class MrpProduction(models.Model):
     _inherit = 'mrp.production'
     
    
     routing_f_id = fields.Many2one(
-        'mrp.routing', srting='Routing', store=True)
+        'mrp.routing', srting='First Routing', store=True)
     routing_s_id = fields.Many2one(
-        'mrp.routing', string='Routing', store=True)
+        'mrp.routing', string='Second Routing', store=True)
     routing_t_id = fields.Many2one(
-        'mrp.routing', string='Routing', store=True)
+        'mrp.routing', string='Third Routing', store=True)
     routing_fo_id = fields.Many2one(
-        'mrp.routing', string='Routing', store=True)
-    product_f_qty = fields.Float(string='Quantity To Produce')
-    product_s_qty = fields.Float(string='Quantity To Produce')
-    product_t_qty = fields.Float(string='Quantity To Produce')
-    product_fo_qty = fields.Float(string='Quantity To Produce')
+        'mrp.routing', string='Four Routing', store=True)
+    product_f_qty = fields.Float(string='First Routing Quantity')
+    product_s_qty = fields.Float(string='Second Routing Quantity')
+    product_t_qty = fields.Float(string='Third Routing Quantity')
+    product_fo_qty = fields.Float(string='Four Routing Quantity')
     
     
                 
@@ -32,19 +44,23 @@ class MrpProduction(models.Model):
                 flines = {
                     'product_id': line.product_id.id,
                     'qty_to_consume': self.product_f_qty,
-#                     'qty_reserved': self.product_s_qty,
-#                     'qty_done': self.product_s_qty,
+                    'qty_reserved': self.product_f_qty,
+                    'qty_done': self.product_f_qty,
                     
                 }
 #                 workorder_lines = work_order_line.create(flines)
             fval = {
-                'name': self.name,
+                'name': self.routing_f_id.name,
                 'production_id': self.id,
                 'workcenter_id': self.routing_f_id.id,
-#                 'date_planned_start': self.date_planned_start,
+                'qty_f_production': self.product_f_qty,
+                'date_planned_start': self.date_planned_start,
+                'date_planned_finished': self.date_planned_start,                             
                 'product_uom_id': self.product_id.uom_id.id,
                 'operation_id': self.routing_f_id.operation_ids.id,
+                'duration_expected': self.routing_f_id.operation_ids.time_cycle,
                 'state':'ready' or 'pending',
+                'qty_production': self.product_f_qty,                
                 'qty_producing': quantity,
                 'consumption': self.bom_id.consumption,
                  'raw_workorder_line_ids': [(0, 0, flines)]
@@ -60,18 +76,22 @@ class MrpProduction(models.Model):
                 slines = {
                     'product_id': line.product_id.id,
                     'qty_to_consume': self.product_s_qty,
-#                     'qty_reserved': self.product_s_qty,
-#                     'qty_done': self.product_s_qty,
+                    'qty_reserved': self.product_s_qty,
+                    'qty_done': self.product_s_qty,
                 }
 #                 workorder_lines = work_orders_line.create(slines)
             sval = {
-                'name': self.name,
+                'name': self.routing_s_id.name,
                 'production_id': self.id,
                 'workcenter_id': self.routing_s_id.id,
-#                 'date_planned_start': self.date_planned_start,
+                'date_planned_start': self.date_planned_start,
+                'date_planned_finished': self.date_planned_start,             
                 'product_uom_id': self.product_id.uom_id.id,
                 'operation_id': self.routing_s_id.operation_ids.id,
+                'duration_expected': self.routing_s_id.operation_ids.time_cycle,
                 'state':'ready' or 'pending',
+                'qty_production': self.product_s_qty,
+                'qty_f_production': self.product_s_qty,
                 'qty_producing': quantity,
                 'consumption': self.bom_id.consumption,
                  'raw_workorder_line_ids': [(0, 0, slines)]
@@ -88,18 +108,22 @@ class MrpProduction(models.Model):
                 tlines = {
                     'product_id': line.product_id.id,
                     'qty_to_consume': self.product_t_qty,
-#                     'qty_reserved': self.product_t_qty,
-#                     'qty_done': self.product_t_qty,
+                    'qty_reserved': self.product_t_qty,
+                    'qty_done': self.product_t_qty,
                 }
 #                 workorder_lines = work_ordert_line.create(tlines)
             tval = {
-                'name': self.name,
+                'name': self.routing_t_id.name,
                 'production_id': self.id,
                 'workcenter_id': self.routing_t_id.id,
-#                 'date_planned_start': self.date_planned_start,                
+                'date_planned_start': self.date_planned_start,
+                'date_planned_finished': self.date_planned_start,                           
                 'product_uom_id': self.product_id.uom_id.id,
                 'operation_id': self.routing_t_id.operation_ids.id,
+                'duration_expected': self.routing_t_id.operation_ids.time_cycle,
                 'state':'ready' or 'pending',
+                'qty_production': self.product_t_qty, 
+                'qty_f_production': self.product_t_qty,                
                 'qty_producing': quantity,
                 'consumption': self.bom_id.consumption,
                  'raw_workorder_line_ids': [(0, 0, tlines)]
@@ -115,18 +139,22 @@ class MrpProduction(models.Model):
                 folines = {
                     'product_id': line.product_id.id,
                     'qty_to_consume': self.product_fo_qty,
-#                     'qty_reserved': self.product_fo_qty,
-#                     'qty_done': self.product_fo_qty,                   
+                    'qty_reserved': self.product_fo_qty,
+                    'qty_done': self.product_fo_qty,                   
                 }
 #                 workorder_lines = work_orderfo_line.create(folines)
             foval = {
-                'name': self.name,
+                'name': self.routing_fo_id.name,
                 'production_id': self.id,
                 'workcenter_id': self.routing_fo_id.id,
-#                 'date_planned_start': self.date_planned_start,             
+                'date_planned_start': self.date_planned_start,
+                'date_planned_finished': self.date_planned_start,             
                 'product_uom_id': self.product_id.uom_id.id,
                 'operation_id': self.routing_fo_id.operation_ids.id,
+                'duration_expected': self.routing_fo_id.operation_ids.time_cycle,
                 'state':'ready' or 'pending',
+                'qty_production': self.product_fo_qty,
+                 'qty_f_production': self.product_fo_qty,               
                 'qty_producing': quantity,
                 'consumption': self.bom_id.consumption,
                 'raw_workorder_line_ids': [(0, 0, folines)]
