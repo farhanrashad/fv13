@@ -45,7 +45,7 @@
 			<field name="inherit_id" ref="mrp.mrp_production_form_view"/>
 			<field name="arch" type="xml">
                 <xpath expr="//button[@name='action_assign']" position="after">
-                    <button name="button_plans" attrs="{'invisible': ['|', ('state', '!=', 'confirmed')]}" type="object" string="Plan b" class="oe_highlight"/>
+                    <button name="button_plans" attrs="{'invisible': ['|', ('state', '!=', 'confirmed')]}" type="object" string="Plan Production" class="oe_highlight"/>
 				</xpath>
                 
                	<xpath expr="//notebook" position="inside">

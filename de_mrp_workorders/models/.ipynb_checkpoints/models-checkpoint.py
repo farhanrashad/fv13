@@ -36,8 +36,9 @@ class MrpProduction(models.Model):
     
                 
     def button_plans(self):      
-        if self.routing_f_id != '':
+        if self.routing_f_id != '' and self.product_f_qty != 0.0:
             work_order_line = self.env['mrp.workorder.line']
+            
             quantity = max(self.product_f_qty - sum(self.move_finished_ids.filtered(lambda move: move.product_id == self.product_id).mapped('quantity_done')), 0)
             quantity = self.product_id.uom_id._compute_quantity(quantity, self.product_uom_id)
             for line in self.move_raw_ids:
@@ -48,9 +49,10 @@ class MrpProduction(models.Model):
                     'qty_done': self.product_f_qty,
                     
                 }
+        
 #                 workorder_lines = work_order_line.create(flines)
             fval = {
-                'name': self.routing_f_id.name,
+                'name': self.operation_ids.name,
                 'production_id': self.id,
                 'workcenter_id': self.routing_f_id.id,
                 'qty_f_production': self.product_f_qty,
@@ -67,8 +69,10 @@ class MrpProduction(models.Model):
                 
             }
             workorders = self.env['mrp.workorder'].create(fval)
+        else:
+            pass
             
-        if self.routing_s_id != '':
+        if self.routing_s_id != '' and self.product_s_qty != 0.0:
             work_orders_line = self.env['mrp.workorder.line']
             quantity = max(self.product_s_qty - sum(self.move_finished_ids.filtered(lambda move: move.product_id == self.product_id).mapped('quantity_done')), 0)
             quantity = self.product_id.uom_id._compute_quantity(quantity, self.product_uom_id)
@@ -81,7 +85,7 @@ class MrpProduction(models.Model):
                 }
 #                 workorder_lines = work_orders_line.create(slines)
             sval = {
-                'name': self.routing_s_id.name,
+                'name': self.operation_ids.name,
                 'production_id': self.id,
                 'workcenter_id': self.routing_s_id.id,
                 'date_planned_start': self.date_planned_start,
@@ -98,9 +102,10 @@ class MrpProduction(models.Model):
                 
             }
             workorders = self.env['mrp.workorder'].create(sval)
-            
+        else:
+            pass
 
-        if self.routing_t_id != '':
+        if self.routing_t_id != '' and self.product_t_qty != 0.0:
             work_ordert_line = self.env['mrp.workorder.line']
             quantity = max(self.product_t_qty - sum(self.move_finished_ids.filtered(lambda move: move.product_id == self.product_id).mapped('quantity_done')), 0)
             quantity = self.product_id.uom_id._compute_quantity(quantity, self.product_uom_id)
@@ -113,7 +118,7 @@ class MrpProduction(models.Model):
                 }
 #                 workorder_lines = work_ordert_line.create(tlines)
             tval = {
-                'name': self.routing_t_id.name,
+                'name': self.operation_ids.name,
                 'production_id': self.id,
                 'workcenter_id': self.routing_t_id.id,
                 'date_planned_start': self.date_planned_start,
@@ -129,9 +134,10 @@ class MrpProduction(models.Model):
                  'raw_workorder_line_ids': [(0, 0, tlines)]
             }
             workorders = self.env['mrp.workorder'].create(tval)
+        else:
+            pass
             
-            
-        if self.routing_fo_id != '':
+        if self.routing_fo_id != '' and self.product_fo_qty != 0.0:
             work_orderfo_line = self.env['mrp.workorder.line']
             quantity = max(self.product_fo_qty - sum(self.move_finished_ids.filtered(lambda move: move.product_id == self.product_id).mapped('quantity_done')), 0)
             quantity = self.product_id.uom_id._compute_quantity(quantity, self.product_uom_id)
@@ -144,7 +150,7 @@ class MrpProduction(models.Model):
                 }
 #                 workorder_lines = work_orderfo_line.create(folines)
             foval = {
-                'name': self.routing_fo_id.name,
+                'name': self.operation_ids.name,
                 'production_id': self.id,
                 'workcenter_id': self.routing_fo_id.id,
                 'date_planned_start': self.date_planned_start,
@@ -160,7 +166,8 @@ class MrpProduction(models.Model):
                 'raw_workorder_line_ids': [(0, 0, folines)]
             } 
             workorders = self.env['mrp.workorder'].create(foval)
-            
+        else:
+            pass
         
     
 #     def _prepare_workorder_vals(self, operation, workorders, quantity):
