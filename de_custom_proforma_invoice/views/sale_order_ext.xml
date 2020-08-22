@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<odoo>
+
+    <record id="sale_custom_proforma_invoice_view" model="ir.ui.view">
+            <field name="name">custom proforma invoice1</field>
+                <field name="model">sale.order</field>
+                <field name="type">form</field>
+                <field name="inherit_id" ref="sale.view_order_form"/>
+                <field name="arch" type="xml">
+                    <xpath expr="//header" position="inside">
+                        <button name="custom_proforma_invoice1_button" type="object" string="Custom Proforma Invoice"
+                                class="oe_highlight"  attrs="{'invisible':[('partner_id','!=', 1071)]}"/>
+                        <button name="custom_commercial_invoice1_button" type="object" string="Commercial Invoice"
+                                class="oe_highlight"  attrs="{'invisible':[('partner_id','!=', 1071)]}"/>
+                        <button name="custom_proforma_invoice2_button" type="object" string="Custom Proforma Invoice"
+                                class="oe_highlight"  attrs="{'invisible':[('partner_id','!=', 1038)]}"/>
+                        <button name="custom_commercial_invoice2_button" type="object" string="Commercial Invoice"
+                                class="oe_highlight"  attrs="{'invisible':[('partner_id','!=', 1038)]}"/>
+                    </xpath>
+                </field>
+        </record>
+
+</odoo>

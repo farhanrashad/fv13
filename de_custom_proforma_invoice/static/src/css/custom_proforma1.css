@@ -1,0 +1,126 @@
+.invoice_address{
+    font-family: 'Ubuntu', sans-serif;font-weight:100;color:red;
+}
+
+.invoice_title{
+    font-family: 'Ubuntu', sans-serif;font-weight:100;color:blue;background-color:#ffa700
+}
+
+.invoice_general_information{
+    font-family: 'Ubuntu', sans-serif;font-weight:100;color:green;padding:20px;
+}
+
+.newspaper{
+  column-gap: 400px;
+}
+
+.sidebar {
+    background: red;
+    margin: 10px;
+    padding: 0 7px 0 7px;
+    width: 400px;
+    border-radius: 10px;
+}
+
+.box1 {
+    display: block;
+    padding: 5px;
+    /* SIMPLY SET THIS PROPERTY AS MUCH AS YOU WANT. This changes the space below box1 */
+
+}
+
+.box2 {
+    display: block;
+    padding: 10px;
+}
+
+/* Adjusting the margin,padding to make it look good. You can remove or change it according to your needs */
+.header{
+    margin-left: -15px;
+    margin-right: -15px;
+    border-top: 5px solid #000;
+    padding-left: 20px;
+    padding-top: 10px;
+    padding-right: 20px;
+}
+
+/* Adjusting the margin,padding to make it look good. You can remove or change it according to your needs */
+.footer{
+    margin-left: -15px;
+    margin-right: -15px;
+    padding-left: 20px;
+    padding-right: 20px;
+    padding-top: 20px;
+    padding-bottom: 20px;
+    border-bottom: 5px solid #000;
+
+    /* To Fix Footer overlapping page_border div */
+    border-left: 5px solid #000;
+    border-right: 5px solid #000;
+}
+
+/* Adjusting the margin,padding to make it look good. You can remove or change it according to your needs */
+.page{
+    margin-left: -15px;
+    margin-right: -15px;
+    padding-left: 20px;
+    padding-right: 20px;
+}
+
+
+/* Magic happens here */
+.page_border{
+    border-left: 5px solid #000;
+    border-right: 5px solid #000;
+    position: fixed;
+    z-index: 9999;
+/* If you don't get full page border, play around with the height */
+    height: 350mm;
+    left: 0px;
+    top:0;
+    width:100%
+}
+
+.sidebar {
+    background: red;
+    margin: 10px;
+    padding: 0 7px 0 7px;
+    width: 400px;
+    border-radius: 10px;
+}
+
+.hline-bottom {
+    padding-bottom: 10px;
+    border-bottom: 2px solid #000; /* whichever color you prefer */
+}
+
+.split {
+  height: 100%;
+  width: 50%;
+  position: fixed;
+  z-index: 1;
+  top: 0;
+  overflow-x: hidden;
+  padding-top: 20px;
+}
+
+/* Control the left side */
+.left {
+  left: 0;
+  background-color: #111;
+}
+
+/* Control the right side */
+.right {
+  right: 0;
+  background-color: red;
+}
+
+/* If you want the content centered horizontally and vertically */
+.centered {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  text-align: center;
+}

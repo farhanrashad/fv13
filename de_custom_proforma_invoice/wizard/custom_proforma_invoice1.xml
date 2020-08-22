@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<odoo>
+
+    <record id="custom_proforma_invoice1_wizard" model="ir.ui.view">
+        <field name="name">custom proforma invoice1 wizard</field>
+        <field name="model">custom.proforma.invoice</field>
+        <field name="arch" type="xml">
+            <form string="Proforma Invoice">
+                <group string="Proforma Invoice">
+                    <group>
+                        <field name="proforma_invoice_no"/>
+                        <field name="order_id"/>
+                        <field name="partner_id"/>
+                        <field name="payment_term"/>
+                        <field name="shipment_by"/>
+                        <field name="shipment"/>
+                    </group>
+                    <group>
+                        <field name="date"/>
+                        <field name="fca_price_total"/>
+                        <field name="income_term"/>
+                        <field name="latest_shipment_date"/>
+                        <field name="partial_shipment"/>
+                        <field name="lot_no"/>
+                        <field name="prs_no"/>
+                    </group>
+                </group>
+                <footer>
+                    <button name="action_print_custom_proforma_invoice1" string="Print" type="object" class="btn-primary"/>
+                    <button string="Cancel" class="btn-secondary" special="cancel"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+</odoo>

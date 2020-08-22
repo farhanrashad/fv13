@@ -1,0 +1,19 @@
+
+<odoo>
+
+    <data>
+
+        <template id="external_layout">
+            <t t-if="o and 'company_id' in o">
+                <t t-set="company" t-value="o.company_id"> </t>
+            </t>
+            <t t-if="not o or not 'company_id' in o">
+                <t t-set="company" t-value="res_company"> </t>
+            </t>
+<!--            <t t-call="report.external_layout_header"/>-->
+<!--            <t t-raw="0"/>-->
+<!--            <t t-call="report.external_layout_footer"/>-->
+        </template>
+
+    </data>
+</odoo>

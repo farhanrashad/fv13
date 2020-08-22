@@ -1,0 +1,416 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+<!--    <template id="custom_proforma_invoice1">-->
+<!--        <t t-call="web.html_container">-->
+<!--            <t t-foreach="docs" t-as="o">-->
+<!--                &lt;!&ndash;                <t t-call="web.external_layout">&ndash;&gt;-->
+<!--                <div style="border: 1px solid black;">-->
+<!--                    <div class="page">-->
+<!--                        <div class="oe_structure"/>-->
+<!--                        <div class="row">-->
+<!--                            <center>-->
+<!--                                <div name="company_address">-->
+<!--                                    <span t-field="o.company_id.partner_id"-->
+<!--                                          t-field-options='{"widget": "contact", "fields": ["address", "name"], "no_marker": true}'/>-->
+<!--                                </div>-->
+<!--                                <div class="text-center">-->
+<!--                                    Phone:-->
+<!--                                    <span t-field="o.company_id.phone"/>-->
+<!--                                    <br/>-->
+<!--                                    Email:-->
+<!--                                    <span t-field="o.company_id.email"/>-->
+<!--                                    <br/>-->
+<!--                                    Web:-->
+<!--                                    <span t-field="o.company_id.website"/>-->
+<!--                                </div>-->
+<!--                            </center>-->
+<!--                            <strong>-->
+<!--                                <center>-->
+<!--                                    <h4 class="invoice_address" style="text-decoration:underline;">Proforma Invoice :-->
+
+<!--                                    </h4>-->
+<!--                                </center>-->
+<!--                            </strong>-->
+<!--                            <div>-->
+<!--                                <div class="col-auto mw-100 mb-2" style="width: 15%; float:left; margin: 9px;">-->
+<!--                                    <strong>P/N:</strong>-->
+<!--                                    <t t-esc="o.name"/>-->
+<!--                                </div>-->
+<!--                                <div style="width: 20%; float:left; margin: 9px;">-->
+<!--                                    <strong>Date:</strong>-->
+<!--                                    <t t-esc="o.date_order"/>-->
+<!--&lt;!&ndash;                                    <t t-if="data['form']['date']">&ndash;&gt;-->
+<!--&lt;!&ndash;                                        <t t-esc="data['form']['date']" style="text-decoration:underline;"/>&ndash;&gt;-->
+<!--&lt;!&ndash;                                    </t>&ndash;&gt;-->
+<!--&lt;!&ndash;                                    <t t-else="">&ndash;&gt;-->
+<!--&lt;!&ndash;                                        - &ndash;&gt;-->
+<!--&lt;!&ndash;                                    </t>&ndash;&gt;-->
+<!--                                </div>-->
+<!--                                <div style="width: 25%; float:left; margin: 9px;">-->
+<!--                                    <strong>Order No:</strong>-->
+<!--                                    <t t-esc="data['form']['order_id']"/>-->
+<!--                                </div>-->
+<!--                                <div style="width: 25%; float:left; margin: 9px;">-->
+<!--                                    <strong>Total FCA Sialkot Price:</strong>-->
+<!--                                    <t t-esc="data['form']['fca_price_total']"/>-->
+<!--                                </div>-->
+<!--                                <br/>-->
+<!--                                <div style="width: 50%; float:left; margin: 9px;">-->
+<!--                                    <strong>Customer/Applicant:</strong>-->
+<!--                                    <t t-esc="o.partner_id.name"/>-->
+<!--                                </div>-->
+<!--                                <br/>-->
+<!--                                <br/>-->
+<!--                                <div style="width: 20%; margin: 9px;">-->
+<!--                                    <strong>Income Term:</strong>-->
+<!--                                    <t t-esc="data['form']['income_term']"/>-->
+<!--                                </div>-->
+<!--                                <div style="width: 30%; float:left; margin: 9px;">-->
+<!--                                    <strong>Latest Shipment Date:</strong>-->
+<!--                                    <t t-esc="data['form']['latest_shipment_date']"/>-->
+<!--                                </div>-->
+<!--                                <div style="width: 30%; float:right; margin: 40px;">-->
+<!--                                    <strong>Payment Term:</strong>-->
+<!--                                    <t t-esc="data['form']['payment_term']"/>-->
+<!--                                </div>-->
+<!--                                <br/>-->
+<!--                                <div style="width: 30%; float:left; margin: 9px;">-->
+<!--                                    <strong>Shipment By:</strong>-->
+<!--                                    <t t-esc="data['form']['shipment_by']"/>-->
+<!--                                </div>-->
+<!--                                <div style="width: 30%; float:left; margin: 9px;">-->
+<!--                                    <strong>Partial Shipment:</strong>-->
+<!--                                    <t t-esc="data['form']['partial_shipment']"/>-->
+<!--                                </div>-->
+<!--                                <div style="width: 30%; margin: 9px;">-->
+<!--                                    <strong>TranShipment:</strong>-->
+<!--                                    <t t-esc="data['form']['shipment']"/>-->
+<!--                                </div>-->
+<!--                            </div>-->
+<!--                        </div>-->
+<!--                        <br/>-->
+<!--                        <br/>-->
+<!--                        <table border="1" style="width:100%;">-->
+<!--                            <thead>-->
+<!--                                <tr>-->
+<!--                                    <th>Items</th>-->
+<!--                                    <th>Description Goods</th>-->
+<!--                                    <th>Size</th>-->
+<!--                                    <th>Quantity</th>-->
+<!--                                    <th>Unit Price</th>-->
+<!--                                    <th>Total US$</th>-->
+<!--                                </tr>-->
+<!--                            </thead>-->
+<!--                            <tbody>-->
+<!--                                <t t-set="current_subtotal" t-value="0"/>-->
+<!--                                <t t-set="total_unit_qty" t-value="0.0"/>-->
+<!--                                <t t-set="total_unit_price" t-value="0.0"/>-->
+<!--                                <t t-foreach="o.order_line" t-as="line">-->
+<!--                                    <t t-set="total_unit_qty" t-value="float(total_unit_qty) + float(line.product_uom_qty)"/>-->
+<!--                                    <t t-set="total_unit_price" t-value="float(total_unit_price) + float(line.price_unit)"/>-->
+<!--&lt;!&ndash;                                    <t t-as="total" t-value=""&ndash;&gt;-->
+<!--                                    <tr>-->
+<!--                                        <td>-->
+<!--                                            Style: <span t-esc="1"/><br/><br/>-->
+<!--                                            Color:<span t-esc="1"/><br/><br/>-->
+<!--                                            Order:<span t-esc="1"/><br/><br/>-->
+<!--                                            H.S Code:<span t-esc="1"/><br/><br/>-->
+<!--                                            Composition:<span t-esc="1"/><br/><br/>-->
+<!--&lt;!&ndash;                                            <t t-if="line.product_id.name">&ndash;&gt;-->
+<!--&lt;!&ndash;                                                <td>&ndash;&gt;-->
+<!--&lt;!&ndash;                                                    <span t-field="line.product_id.name"/>&ndash;&gt;-->
+<!--&lt;!&ndash;                                                </td>&ndash;&gt;-->
+<!--&lt;!&ndash;                                            </t>&ndash;&gt;-->
+<!--&lt;!&ndash;                                            <t t-else="">&ndash;&gt;-->
+<!--&lt;!&ndash;                                                <span>-</span>&ndash;&gt;-->
+<!--&lt;!&ndash;                                            </t>&ndash;&gt;-->
+<!--                                        </td>-->
+<!--                                        <td>-->
+<!--                                            <ul t-foreach="line.product_id.attribute_line_ids" t-as="attrib_value">-->
+<!--                                                <li t-esc="attrib_value.attribute_id.name"/>-->
+<!--                                            </ul>-->
+<!--                                        </td>-->
+<!--                                        <td>-->
+<!--                                            <t t-if="line.name">-->
+<!--                                                <td>-->
+<!--                                                    <span t-field="line.name"/>-->
+<!--                                                </td>-->
+<!--                                            </t>-->
+<!--                                            <t t-else="">-->
+<!--                                                <span>-</span>-->
+<!--                                            </t>-->
+<!--                                        </td>-->
+<!--&lt;!&ndash;                                        <td name="td_name"><span t-field="line.name"/></td>&ndash;&gt;-->
+<!--                                        <td>-->
+<!--                                            <t t-if="line.product_uom_qty">-->
+<!--                                                <td>-->
+<!--                                                    <span t-field="line.product_uom_qty"/>-->
+<!--                                                </td>-->
+<!--                                            </t>-->
+<!--                                            <t t-else="">-->
+<!--                                                <span>-</span>-->
+<!--                                            </t>-->
+<!--                                        </td>-->
+<!--&lt;!&ndash;                                        <td name="td_name"><span t-field="line.product_uom_qty"/></td>&ndash;&gt;-->
+<!--                                        <td>-->
+<!--                                            <t t-if="line.price_unit">-->
+<!--                                                <td>-->
+<!--                                                    <span t-field="line.price_unit"/>-->
+<!--                                                </td>-->
+<!--                                            </t>-->
+<!--                                            <t t-else="">-->
+<!--                                                <span>-</span>-->
+<!--                                            </t>-->
+<!--                                        </td>-->
+<!--                                        <td>-->
+<!--&lt;!&ndash;                                            <span t-esc="total_unit_qty * total_unit_price"/>&ndash;&gt;-->
+<!--                                            <span t-field="line.price_unit"/>-->
+<!--                                        </td>-->
+
+<!--                                    </tr>-->
+
+<!--                                </t>-->
+<!--                            </tbody>-->
+<!--                        </table>-->
+<!--                    </div>-->
+<!--                </div>-->
+<!--            </t>-->
+<!--        </t>-->
+<!--    </template>-->
+
+    <template id="custom_proforma_invoice1">
+        <t t-call="web.html_container">
+            <t t-call="web.external_layout">
+                <div class="page">
+                    <style>
+                        p {
+                        font-family: "arial";
+                        font-size: 16px;
+                        color: black;
+                        }
+                        li {
+                        font-family: "arial";
+                        font-size: 16px;
+                        color: black;
+                        }
+                        .member {
+                        font-size: 16px !important;
+                        }
+                    </style>
+                    <h4 class="invoice_address" style="text-decoration:underline;" align="center">Proforma Invoice</h4>
+                    <t t-foreach="docs" t-as='o'>
+                        <t t-set="grand_total" t-value="0" />
+                        <div>
+                            <div style="width: 15%; float:left; margin: 9px;">
+                                <strong>P/N:</strong>
+                                <u>
+                                    <t t-esc="o.name"/>
+                                </u>
+                            </div>
+                            <div style="width: 20%; float:left; margin: 9px;">
+                                <strong>Date:</strong>
+                                <u>
+                                    <t t-esc="o.date_order"/>
+                                </u>
+                            </div>
+                            <div style="width: 25%; float:left; margin: 9px;">
+                                <strong>Order No:</strong>
+                                <u>
+                                    <t t-esc="data['form']['order_id']"/>
+                                </u>
+                            </div>
+                            <div style="width: 25%; float:left; margin: 9px;">
+                                <strong>Total FCA Sialkot Price:</strong>
+                                <u>
+                                    <t t-esc="data['form']['fca_price_total']"/>
+                                </u>
+                            </div>
+                            <br/>
+                            <div style="width: 50%; float:left; margin: 9px;">
+                                <strong>Customer/Applicant:</strong>
+                                <u>
+                                    <t t-esc="o.partner_id.name"/>
+                                </u>
+                            </div>
+                            <br/>
+                            <br/>
+                            <div style="width: 20%; margin: 9px;">
+                                <strong>Income Term:</strong>
+                                <u>
+                                    <t t-esc="data['form']['income_term']"/>
+                                </u>
+                            </div>
+                            <div style="width: 30%; float:left; margin: 9px;">
+                                <strong>Latest Shipment Date:</strong>
+                                <u>
+                                    <t t-esc="data['form']['latest_shipment_date']"/>
+                                </u>
+                            </div>
+                            <div style="width: 30%; float:right; margin: 40px;">
+                                <strong>Payment Term:</strong>
+                                <u>
+                                    <t t-esc="data['form']['payment_term']"/>
+                                </u>
+                            </div>
+                            <br/>
+                            <div style="width: 30%; float:left; margin: 9px;">
+                                <strong>Shipment By:</strong>
+                                <u>
+                                    <t t-esc="data['form']['shipment_by']"/>
+                                </u>
+                            </div>
+                            <div style="width: 30%; float:left; margin: 9px;">
+                                <strong>Partial Shipment:</strong>
+                                <u>
+                                    <t t-esc="data['form']['partial_shipment']"/>
+                                </u>
+                            </div>
+                            <div style="width: 30%; margin: 9px;">
+                                <strong>TranShipment:</strong>
+                                <u>
+                                    <t t-esc="data['form']['shipment']"/>
+                                </u>
+                            </div>
+                        </div>
+                        <div>
+                            <strong>Description Of Goods:</strong>
+                            <br/>
+                            <div style="width: 15%; float:left; margin: 9px;">
+                                <strong>LOT No :</strong>
+                            </div>
+                            <div style="width: 20%; float:left; margin: 9px;">
+                                <strong>PRS :</strong>
+                            </div>
+                        </div>
+                        <table class="table table-bordered">
+                            <thead>
+                                <tr>
+                                    <th width="25%">Items</th>
+                                    <th>Description Goods</th>
+                                    <th width="20%">Size</th>
+                                    <th>Quantity</th>
+                                    <th>Unit Price</th>
+                                    <th>Total US$</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <t t-set="current_subtotal" t-value="0"/>
+                                <t t-set="total_unit_qty" t-value="0.0"/>
+                                <t t-set="total_unit_price" t-value="0.0"/>
+                                <t t-foreach="o.order_line" t-as="line">
+                                    <t t-set="total_unit_qty" t-value="float(total_unit_qty) + float(line.product_uom_qty)"/>
+                                    <t t-set="total_unit_price" t-value="float(total_unit_price) + float(line.price_unit)"/>
+<!--                                    <t t-as="total" t-value=""-->
+                                    <tr>
+<!--                                        1-->
+                                        <td>
+                                            <strong>Style</strong>:  <t t-esc="line.product_id.item_style"/><br/>
+                                            <strong>Color:</strong>  <t t-esc="line.product_id.item_color"/><br/>
+                                            <strong>Order:</strong>  <t t-esc="line.product_id.item_order"/><br/>
+                                            <strong>H.S Code:</strong>  <t t-esc="line.product_id.hs_code"/><br/>
+                                            <strong>Composition:</strong>  <t t-esc="line.product_id.composition"/><br/>
+                                        </td>
+<!--                                        2-->
+                                        <td>
+                                            <t t-esc="line.product_id.name"/>
+                                            <br/>
+                                            <br/>
+<!--                                            Total:  <t t-esc="1"/>-->
+                                        </td>
+<!--                                        3-->
+                                        <td>
+<!--                                            <ul t-foreach="line.product_id.attribute_line_ids" t-as="attrib_value">-->
+<!--                                                <li t-esc="attrib_value.attribute_id.name"/>-->
+<!--                                            </ul>-->
+                                            <t t-foreach="line.product_id.product_template_attribute_value_ids" t-as="attrib_value">
+                                                <span t-field="attrib_value.product_attribute_value_id.name"/>
+                                            </t>
+                                        </td>
+<!--                                        4-->
+                                        <td>
+                                            <span t-field="line.product_uom_qty"/>
+                                        </td>
+<!--                                        5-->
+                                        <td>
+                                            <span t-field="line.price_unit"/>
+                                        </td>
+<!--                                        6-->
+                                        <td>
+                                            <span t-esc="line.product_uom_qty * line.price_unit"/>
+<!--                                            <span t-esc="Float(line.product_uom_qty) * Float(line.price_unit)"/>-->
+                                        </td>
+
+                                    </tr>
+<!--                                    <tr class="is-subtotal text-right">-->
+<!--                                        <td colspan="99">-->
+<!--                                            <strong class="mr32">Total :</strong>-->
+<!--                                            <span t-esc="line.product_uom_qty * line.price_unit"/>-->
+<!--                                        </td>-->
+<!--                                    </tr>-->
+                                    <t t-set="grand_total"
+                                       t-value="grand_total + (line.product_uom_qty * line.price_unit)"/>
+                                </t>
+                            </tbody>
+                        </table>
+                        <div class="clearfix">
+                            <div id="total" class="row" name="total">
+                                <div t-attf-class="#{'col-4' if report_type != 'html' else 'col-sm-7 col-md-5'} ml-auto">
+                                    <table class="table table-sm">
+<!--                                        <tr class="border-black o_subtotal" style="">-->
+<!--                                            <td><strong>Total Amount in Words :</strong></td>-->
+<!--                                            <td class="text-left">-->
+<!--                                                <span t-esc="round(grand_total,2)"/>-->
+<!--                                            </td>-->
+<!--                                        </tr>-->
+                                        <tr class="border-black o_subtotal" style="">
+                                            <td><strong>Total :</strong></td>
+                                            <td class="text-right">
+                                                <span t-esc="round(grand_total,2)"/>
+                                            </td>
+                                        </tr>
+                                        <tr class="border-black o_subtotal" style="">
+                                            <td><strong>30% Advance Payment :</strong></td>
+                                            <td class="text-right">
+                                                <span t-esc="round(grand_total * 0.3,2)"/>
+                                            </td>
+                                        </tr>
+                                        <tr class="border-black o_total">
+                                            <td><strong>70% L/C 60 Days After Shipment "</strong></td>
+                                            <td class="text-right">
+                                                <span t-esc="round(grand_total * 0.7, 2)"/>
+                                            </td>
+                                        </tr>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                        <strong>Bank Details :</strong><br/>
+                        <strong>Account Title :</strong>
+                        <t t-esc="o.partner_id.bank_ids.acc_number"/><br/>
+                        <strong>Bank Name :</strong>
+                        <t t-esc="o.partner_id.bank_ids.bank_id.name"/><br/>
+                        <strong>Bank Address :</strong>
+                        <t t-esc="o.partner_id.bank_ids.bank_id.street"/><br/>
+                        <t t-esc="o.partner_id.bank_ids.bank_id.street2"/><br/>
+                        <t t-esc="o.partner_id.bank_ids.bank_id.city"/>
+                        <t t-esc="o.partner_id.bank_ids.bank_id.state.name"/>
+                        <t t-esc="o.partner_id.bank_ids.bank_id.zip"/><br/>
+                        <t t-esc="o.partner_id.bank_ids.bank_id.country.name"/><br/>
+                        <strong>Swift Code :</strong>
+                        <t t-esc="o.partner_id.bank_ids.bank_id.bic"/><br/><br/><br/>
+                        <div class="split left" style="width:400px;height:200px;border:2px solid #000; margin-left: 20px; padding-top: 20px;">
+                            <center>
+                                <div class="centered" style="width:300px;height:50px;border:2px solid #000; margin-top: 70px;">
+                                    <p>Sign and Stamp</p>
+                                </div>
+                            </center>
+                        </div>
+                    </t>
+                </div>
+            </t>
+        </t>
+    </template>
+
+
+</odoo>

@@ -1,0 +1,18 @@
+
+<odoo>
+
+    <record id="de_custom_proforma_invoice.product_ext_view_form" model="ir.ui.view">
+            <field name="name">product ext view form</field>
+            <field name="model">product.product</field>
+            <field name="inherit_id" ref="product.product_normal_form_view"/>
+            <field name="arch" type="xml">
+                <xpath expr="//field[@name='barcode']" position="after">
+                    <field name="item_style"/>
+                    <field name="item_color"/>
+                    <field name="item_order"/>
+                    <field name="hs_code"/>
+                    <field name="composition"/>
+                </xpath>
+            </field>
+        </record>
+</odoo>
