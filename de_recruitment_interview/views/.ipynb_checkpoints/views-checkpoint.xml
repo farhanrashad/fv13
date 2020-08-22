@@ -1,0 +1,243 @@
+<odoo>
+  <data>      
+        
+      
+      <record model="ir.ui.view" id="interview_assessment_criteria_tree_view">
+            <field name="name">hr.employee.interview.assessment.line.tree</field>
+            <field name="model">hr.employee.interview.assessment.line</field>
+            <field name="arch" type="xml">
+                <tree>
+                    <field name="name"/>
+                    <field name="scope"/>
+                    <field name="remarks"/>
+
+                </tree>
+            </field>
+        </record>
+      
+       <record model="ir.ui.view" id="interview_assessment_tree_view">
+            <field name="name">hr.employee.interview.assessment.tree</field>
+            <field name="model">hr.employee.interview.assessment</field>
+            <field name="arch" type="xml">
+                <tree>
+                    <field name="name"/>
+                    <field name="position_id"/>
+                    <field name="date"/>
+                    <field name="phone"/>
+                    <field name="department_id"/>
+                    <field name="business_type"/>
+
+                </tree>
+            </field>
+        </record>
+      
+     
+      
+<!--       <record id="view_disciplinary_case_kanban" model="ir.ui.view">
+            <field name="name">hr.employee.disciplinary.case.kanban</field>
+            <field name="model">hr.employee.disciplinary.case</field>
+            <field name="arch" type="xml">
+                <kanban>
+                    <field name="employee_id"/>
+                    <field name="case_type"/>
+                    <field name="date"/>
+                    <field name="user_id"/>
+                    <templates>
+                        <t t-name="kanban-box">
+                            <div t-attf-class="oe_kanban_global_click">
+                                <div class="row mb4">
+                                    <div class="col-6 o_kanban_record_headings">
+                                        <strong><span><field name="employee_id"/></span></strong>
+                                    </div>
+                                    <div class="col-6 text-right">
+                                        <strong><i class="fa fa-clock-o" aria-label="Date" role="img" title="Date"/> <t t-esc="record.date.value"/></strong>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-12">
+                                        <span><field name="case_type"/></span>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-6">
+                                        <span><field name="user_id"/></span>
+                                    </div>
+                                    <div class="col-6">
+                                        <span class="float-right">
+                                            <field name="state" widget="label_selection" options="{'classes': {'draft': 'default', 'close': 'success'}}"/>
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+                        </t>
+                    </templates>
+                </kanban>
+            </field>
+        </record>
+       -->
+      <record id="interview_assessment_search" model="ir.ui.view">
+            <field name="name">hr.employee.interview.assessment.search</field>
+            <field name="model">hr.employee.interview.assessment</field>
+            <field name="arch" type="xml">
+                <search string="Search Interview Assessment">
+                    <field name="name" filter_domain="['|', '|', ('date', 'ilike', self), ('name', 'ilike', self), ('position_id', 'ilike', self)]" string="Reference"/>
+                    <field name="date" string='Date'/>
+                    <field name="position_id" string='Position'/>
+                    <group expand="0" string="Group By">
+                        <filter name="position_id" string="Position" domain="[]" context="{'group_by' : 'position_id'}" />
+                    </group>
+                </search>
+            </field>
+        </record>
+      
+<!--       <record model="ir.ui.view" id="disciplinary_case_calendar">
+            <field name="name">hr.employee.disciplinary.case.calendar</field>
+            <field name="model">hr.employee.disciplinary.case</field>
+            <field name="priority" eval="2"/>
+            <field name="arch" type="xml">
+                <calendar string="Calendar View" date_start="date" color="employee_id" hide_time="true" event_limit="5">
+                    <field name="name"/>
+                    <field name="case_type"/>
+                    <field name="date"/>
+                    <field name="employee_id"/>
+                </calendar>
+            </field>
+        </record> -->
+      
+      
+      <record model="ir.ui.view" id="interview_assessment_form_view">
+            <field name="name">hr.employee.interview.assessment.form</field>
+            <field name="model">hr.employee.interview.assessment</field>
+            <field name="arch" type="xml">
+                <form>
+                    <header>
+<!--                         <button name="action_waiting_case" states="draft" string="Process" type="object"/>
+                        <button name="action_case_send" states="waiting" string="Send by Email" type="object"/>
+                        <button name="action_close_case" states="waiting,response" string="Close Case" type="object"/>
+
+                        <field name="state" widget="statusbar" statusbar_visible="draft,waiting,response,close"/> -->
+                    </header>
+                    <sheet>
+                        <div class="oe_title">
+                            <h1>
+                                <field name="name" placeholder="Name..."/>
+                            </h1>
+                        </div>
+                        <group>
+                            <group>
+                                <field name="position_id"/>
+                                <field name="phone"/>
+                                <field name="address"/>
+                                <field name="work"/>
+                                <field name="age"/>
+                                <field name="martial_status"/>
+                                <field name="family_origin"/>
+                            </group>
+                            <group>
+                                <field name="date"/>
+                                <field name="department_id"/>
+                                <field name="last_job"/>
+                                <field name="business_type"/>
+                                <field name="notice_period"/>
+<!--                                 <field name="martial_status"/>
+                                <field name="family_origin"/> -->
+                            </group>
+                        </group>
+                        <notebook>
+                            <page string="Reason">
+                                <group>
+                                    <field name="assessment_ds"/>
+                                </group>
+                                <group>
+                                <group>
+                                    <field name="strength"/>
+                                    
+                                </group>
+                                <group>
+                                    <field name="weakness"/>
+                                </group>
+                               </group>    
+                            </page>
+                        </notebook>
+                    </sheet>
+                    <div class="oe_chatter">
+                        <field name="message_follower_ids" widget="mail_followers" groups="base.group_user"/>
+                        <field name="activity_ids" widget="mail_activity"/>
+                        <field name="message_ids" widget="mail_thread"/>
+                    </div>
+                </form>
+            </field>
+        </record>
+      
+      <record model="ir.ui.view" id="assessment_form_criteria">
+            <field name="name">hr.employee.interview.assessment.line.form</field>
+            <field name="model">hr.employee.interview.assessment.line</field>
+            <field name="arch" type="xml">
+                <form>
+                    <header>
+<!--                         <button name="action_waiting_case" states="draft" string="Process" type="object"/>
+                        <button name="action_case_send" states="waiting" string="Send by Email" type="object"/>
+                        <button name="action_close_case" states="waiting,response" string="Close Case" type="object"/>
+
+                        <field name="state" widget="statusbar" statusbar_visible="draft,waiting,response,close"/> -->
+                    </header>
+                    <sheet>
+                        <div class="oe_title">
+                            <h1>
+                                <field name="name" placeholder="Criteria..."/>
+                            </h1>
+                        </div>
+                        <group>
+                            <group>
+                                <field name="scope"/>                                
+                            </group>
+                            <group>
+                                <field name="remarks"/>
+                            </group>
+                        </group>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+      
+<!--        <record id="interview_assessment_menu_action" model="ir.actions.act_window">
+        <field name="name">Disciplinary Case type</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">hr.employee.disciplinary.case.type</field>
+        <field name="view_mode">tree,form</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Add a New Disciplinary case type
+            </p>
+        </field>
+    </record> -->
+       <record id="interview_assessment_criteria_menu_action" model="ir.actions.act_window">
+        <field name="name">Interview</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">hr.employee.interview.assessment.line</field>
+        <field name="view_mode">tree,form</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Add a New Interview Assessment Criteria
+            </p>
+        </field>
+    </record>
+      
+      <record id="interview_assessment_menu_action" model="ir.actions.act_window">
+        <field name="name">Interview</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">hr.employee.interview.assessment</field>
+        <field name="view_mode">tree,form</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Add a New Interview Assessment 
+            </p>
+        </field>
+    </record>
+      
+    <menuitem name="Interview" id="interview_main_menu" parent="hr_recruitment.menu_hr_recruitment_root" sequence="4"/>
+    <menuitem name="Interview Assessment" id="desciplinary_sub_menu" parent="interview_main_menu" action="interview_assessment_menu_action" sequence="1"/>
+    <menuitem name="Interview Assessment Criteria" id="criteria_sub_menu" parent="interview_main_menu" action="interview_assessment_criteria_menu_action" sequence="1"/>
+  
+  </data>
+</odoo>
