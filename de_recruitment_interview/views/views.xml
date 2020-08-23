@@ -146,7 +146,9 @@
                         <notebook>
                             <page string="Reason">
                                 <group>
-                                    <field name="assessment_ds"/>
+                                    <tree editable='bottom'>
+                                      <field name="assessment_ds"/>
+                                    </tree>    
                                 </group>
                                 <group>
                                 <group>
@@ -236,7 +238,7 @@
     </record>
       
     <menuitem name="Interview" id="interview_main_menu" parent="hr_recruitment.menu_hr_recruitment_root" sequence="4"/>
-    <menuitem name="Interview Assessment" id="desciplinary_sub_menu" parent="interview_main_menu" action="interview_assessment_menu_action" sequence="1"/>
+    <menuitem name="Interview Assessment" id="interview_sub_menu" parent="interview_main_menu" action="interview_assessment_menu_action" sequence="1"/>
     <menuitem name="Interview Assessment Criteria" id="criteria_sub_menu" parent="interview_main_menu" action="interview_assessment_criteria_menu_action" sequence="1"/>
   
   </data>

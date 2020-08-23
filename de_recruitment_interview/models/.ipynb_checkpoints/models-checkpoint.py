@@ -6,7 +6,14 @@ from odoo import models, fields, api, _
 class EmployeeInterviewAssessment(models.Model):
     _name = 'hr.employee.interview.assessment'
     _description = 'HR Employee Interview Assessment'
+    _inherit = ['mail.thread', 'mail.activity.mixin', 'portal.mixin']
     _order = 'name desc'
+    
+    @api.model
+    def _load_default_vals(self):
+        user_obj = self.env['hr.employee.interview.assessment.line']
+        for rec in self:
+            rec.assessment_ds = user_obj 
 
 
     name = fields.Char(string='Order Reference',  copy=False,  index=True)
@@ -47,20 +54,20 @@ class EmployeeInterviewAssessment(models.Model):
     interviewer_id = fields.Many2one('res.users', string='INTERVIEWER', store=True)
     date = fields.Date(string='Date', store=True)
     
-    assessment_ds = fields.Many2many('hr.employee.interview.assessment.line', 'interview_id', 'criteria', 'scope', 'remarks')
+    assessment_ds = fields.Many2many('hr.employee.interview.assessment.line', 'interview_id', 'criteria', 'scope', default =_load_default_vals)
 
 
     
     
     class EmployeeInterviewAssessmentLine(models.Model):
-    _name = 'hr.employee.interview.assessment.line'
-    _description = 'HR Employee Interview Assessment Line'
+        _name = 'hr.employee.interview.assessment.line'
+        _description = 'HR Employee Interview Assessment Line'
 
-    interview_id = fields.Many2one('hr.employee.interview.assessment', string='Interview', store=True)
-    name = fields.Char(string='Criteria',  copy=False,  index=True)
-    scope = fields.Char(string='Scope (1-5)', store=True)
-    remarks = fields.Char(string='Remarks', store=True)
-    
+        interview_id = fields.Many2one('hr.employee.interview.assessment', string='Interview', store=True)
+        name = fields.Char(string='Criteria',  copy=False,  index=True)
+        scope = fields.Char(string='Scope (1-5)', store=True)
+        remarks = fields.Char(string='Remarks', store=True)
+
     
 #     @api.model
 #     def create(self,values):
