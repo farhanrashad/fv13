@@ -117,7 +117,7 @@ class JobOrderSheet(models.Model):
 
 
 class JobOrderSheetLine(models.Model):
-    _name = 'job.order.sheet.line'
+    _name = 'purchase.order.multiple.line'
     _description = 'Material Planning'
 
     def update_product_quantity(self):

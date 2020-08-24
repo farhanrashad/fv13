@@ -1,2 +1,3 @@
 id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
-access_de_purchase_multiple_rfq_de_purchase_multiple_rfq,de_purchase_multiple_rfq.de_purchase_multiple_rfq,model_de_purchase_multiple_rfq_de_purchase_multiple_rfq,base.group_user,1,1,1,1
+access_purchase_order_multiple,access.purchase.order.multiple,model_purchase_order_multiple,,1,1,1,1
+access_purchase_order_multiple_line,access.purchase.order.multiple.line,model_purchase_order_multiple_line,,1,1,1,1
