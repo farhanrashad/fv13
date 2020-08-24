@@ -1,0 +1,77 @@
+<?xml version="1.0" ?>
+
+<odoo>
+
+    <record id="de_sale_mrp_properties.properties_set_value_view_form" model="ir.ui.view">
+        <field name="name">properties set value form view</field>
+        <field name="model">property.value</field>
+        <field name="arch" type="xml">
+            <form string="Property Set Value">
+                <sheet>
+                    <group>
+                        <group>
+                            <field name="value"/>
+                        </group>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="de_sale_mrp_properties.properties_set_value_view_form" model="ir.ui.view">
+        <field name="name">properties set value form view</field>
+        <field name="model">property.value</field>
+        <field name="arch" type="xml">
+            <tree string="Property Set Value">
+                <field name="value"/>
+            </tree>
+        </field>
+    </record>
+
+    <record id="de_sale_mrp_properties.properties_set_value_view_action" model="ir.actions.act_window">
+        <field name="name">Property Set Value</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">property.value</field>
+        <field name="view_mode">tree,form</field>
+    </record>
+
+<!--    property ser form view-->
+    <record id="de_sale_mrp_properties.sale_properties_view_form" model="ir.ui.view">
+        <field name="name">sale properties set form view</field>
+        <field name="model">mrp.production.property.set</field>
+        <field name="arch" type="xml">
+            <form string="Property Set">
+                <sheet>
+                    <group string="Property Set">
+                        <group>
+                            <field name="name"/>
+                            <field name="value" widget="many2many_tags"/>
+                        </group>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+
+<!--    property set tree view-->
+    <record id="de_sale_mrp_properties.sale_properties_view_tree" model="ir.ui.view">
+        <field name="name">sale properties tree view</field>
+        <field name="model">mrp.production.property.set</field>
+        <field name="arch" type="xml">
+            <tree string="Property Set">
+                <field name="name"/>
+                <field name="value"/>
+            </tree>
+        </field>
+    </record>
+
+<!--    property set view action-->
+    <record id="de_sale_mrp_properties.sale_properties_view_action" model="ir.actions.act_window">
+        <field name="name">Property Set</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">mrp.production.property.set</field>
+        <field name="view_mode">tree,form</field>
+    </record>
+
+</odoo>

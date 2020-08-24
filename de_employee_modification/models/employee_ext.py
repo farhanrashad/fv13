@@ -20,6 +20,16 @@ class HrAttendanceExt(models.Model):
 class HrEmployeeExt(models.Model):
     _inherit = 'hr.employee'
 
+    def action_check_in(self):
+        self.write({
+            'emp_state': 'present',
+        })
+
+    def action_check_out(self):
+        self.write({
+            'emp_state': 'absent',
+        })
+
     skype_id = fields.Char(string='Skype Id')
     whatsapp = fields.Char(string='Whatsapp ID')
     assign_region = fields.Char(string='Assigned Region')

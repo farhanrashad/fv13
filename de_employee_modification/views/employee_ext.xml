@@ -106,15 +106,25 @@
                             <field name="journal_id"/>
                         </group>
                         <group string="Active">
-                            <field name="emp_state"/>
+
                             <field name="active"/>
                             <field name="induction_pack_received"/>
                             <field name="is_blacklist"/>
                             <field name="fingerprint_id"/>
                         </group>
+                        <group>
+                            <field name="emp_state"/>
+                        </group>
+
                     </group>
+                    <button name="action_check_in" type="object" string="Check In" class="oe_highlight"
+                            attrs="{'invisible':[('emp_state', '!=', 'absent')]}"
+                    />
+                    <button name="action_check_out" type="object" string="Check Out" class="oe_highlight"
+                            attrs="{'invisible':[('emp_state', '!=', 'present')]}"
+                    />
                 </xpath>
             </field>
         </record>
-    
+
 </odoo>

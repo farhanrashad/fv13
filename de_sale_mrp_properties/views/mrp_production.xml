@@ -1,0 +1,20 @@
+<?xml version="1.0" ?>
+
+<odoo>
+
+<!--    mrp production ext form view-->
+    <record id="mrp_production_ext_view_form" model="ir.ui.view">
+        <field name="name">mrp production ext form view</field>
+        <field name="model">mrp.production</field>
+        <field name="inherit_id" ref="mrp.mrp_production_form_view"/>
+        <field name="arch" type="xml">
+            <div name="button_box" position="inside">
+                <button class="oe_stat_button" type="object" name="order_properties"
+                        icon="fa-calendar">
+                    <field string="Vehicle" name="order_properties_count" widget="statinfo"/>
+                </button>
+            </div>
+        </field>
+    </record>
+
+</odoo>

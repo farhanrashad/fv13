@@ -1,0 +1,47 @@
+<?xml version="1.0" ?>
+
+<odoo>
+
+<!--    mrp properties form view-->
+    <record id="de_sale_mrp_properties.sale_mrp_properties_view_form" model="ir.ui.view">
+        <field name="name">sale mrp properties form</field>
+        <field name="model">mrp.production.properties</field>
+        <field name="arch" type="xml">
+            <form string="Mrp Properties">
+                <sheet>
+                    <group string="Properties">
+                        <group>
+                            <field name="property_id"/>
+                            <field name="value_id" options="{'no_open': True}"/>
+                            <field name="sale_id"/>
+                            <field name="production_id"/>
+                        </group>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+<!--    mrp properties tree view-->
+    <record id="de_sale_mrp_properties.sale_mrp_properties_view_tree" model="ir.ui.view">
+        <field name="name">sale mrp properties form</field>
+        <field name="model">mrp.production.properties</field>
+        <field name="arch" type="xml">
+            <tree string="Mrp Properties" editable="top">
+                <field name="property_id"/>
+                <field name="value_id"/>
+                <field name="sale_id"/>
+                <field name="production_id"/>
+            </tree>
+        </field>
+    </record>
+
+<!--    mrp properties action-->
+    <record id="de_sale_mrp_properties.sale_mrp_properties_view_action" model="ir.actions.act_window">
+        <field name="name">Mrp Properties</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">mrp.production.properties</field>
+        <field name="view_mode">tree,form</field>
+    </record>
+
+</odoo>

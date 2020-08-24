@@ -1,0 +1,34 @@
+<?xml version="1.0" ?>
+
+<odoo>
+
+    <template id="production_order_inherit_template" inherit_id="mrp.report_mrporder">
+        <xpath expr="//div[@class='page']" position="after">
+            <h3>Order Properties:</h3>
+            <br/>
+            <table class="table table-sm">
+                <thead>
+                    <tr>
+                        <th width="25%">Property Set</th>
+                        <th>Tag Id</th>
+                        <th width="20%">Sale Order</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr t-foreach="o._get_report_date()" t-as="raw_line">
+                        <td>
+                            <span t-field="raw_line.property_id"/>
+                        </td>
+                        <td>
+                            <span t-field="raw_line.value_id"/>
+                        </td>
+                        <td>
+                            <span t-field="raw_line.sale_id"/>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </xpath>
+    </template>
+
+</odoo>

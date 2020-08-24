@@ -1,0 +1,4 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_mrp_production_property_set,mrp.production.property.set,model_mrp_production_property_set,,1,1,1,1
+access_mrp_production_properties,mrp.production.properties,model_mrp_production_properties,,1,1,1,1
+access_property_value,property.value,model_property_value,,1,1,1,1
