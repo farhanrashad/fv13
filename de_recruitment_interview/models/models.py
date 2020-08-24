@@ -30,7 +30,7 @@ class EmployeeInterviewAssessment(models.Model):
     martial_status = fields.Selection([
         ('married', 'Married'),
         ('single', 'Single'),
-    ], string='Martial Status', readonly=True, copy=False, index=True, default='single')
+    ], string='Martial Status',  copy=False, index=True, default='single')
     last_job = fields.Char(string='Last Job')
     strength = fields.Char(string='Strengths')
     weakness = fields.Char(string='Weakness')
@@ -38,19 +38,19 @@ class EmployeeInterviewAssessment(models.Model):
     suit_recruit = fields.Selection([
         ('yes', 'YES'),
         ('no', 'NO'),
-    ], string='SUITABILITY TO RECRUIT', readonly=True, copy=False, index=True, default='yes')
+    ], string='SUITABILITY TO RECRUIT',  copy=False, index=True, default='yes')
     suit_develop = fields.Selection([
         ('yes', 'YES'),
         ('no', 'NO'),
-    ], string='POTENTIAL TO DEVELOP', readonly=True, copy=False, index=True, default='yes')
+    ], string='POTENTIAL TO DEVELOP',  copy=False, index=True, default='yes')
     recruit_reservation = fields.Selection([
         ('yes', 'YES'),
         ('no', 'NO'),
-    ], string='RESERVATION', readonly=True, copy=False, index=True, default='yes')
+    ], string='RESERVATION', copy=False, index=True, default='yes')
     develop_reservation = fields.Selection([
         ('yes', 'YES'),
         ('no', 'NO'),
-    ], string='RESERVATION', readonly=True, copy=False, index=True, default='yes')
+    ], string='RESERVATION',  copy=False, index=True, default='yes')
     interviewer_id = fields.Many2one('res.users', string='INTERVIEWER', store=True)
     date = fields.Date(string='Date', store=True)
     

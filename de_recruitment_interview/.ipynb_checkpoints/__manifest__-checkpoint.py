@@ -3,11 +3,11 @@
     'name': "Interview Assessment",
 
     'summary': """
-        Short (1 phrase/line) summary of the module's purpose, used as
-        subtitle on modules listing or apps.openerp.com""",
+        Interview Assessment Form 
+        """,
 
     'description': """
-        Long description of module's purpose
+        Interview Assessment Form 
     """,
 
     'author': "Dynexcel",
@@ -24,8 +24,10 @@
 
     # always loaded
     'data': [
+        'report/interview_assessment_report.xml',
+        'report/interview_assessment_template.xml',
         'security/ir.model.access.csv',
-        'views/views.xml',
+        'views/interview_assessment_views.xml',
         'views/templates.xml',
     ],
     # only loaded in demonstration mode

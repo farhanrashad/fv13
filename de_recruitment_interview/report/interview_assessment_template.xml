@@ -1,0 +1,227 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <template id="report_interview_assessment_template">
+        <t t-call="web.html_container">
+            <t t-foreach="docs" t-as="o">
+                <t t-call="web.internal_layout">
+                    <div class="page">
+                        <div class="row justify-content-end">
+                            <div class="col-12">
+                                <table class="table table-bordered" style="table-layout: fixed">
+
+                                    <tbody>
+                                        <tr>
+                                            <th>
+                                                Name
+                                            </th>
+                                            <td>
+                                                <span t-field="o.name"/>
+                                            </td>
+                                            <th>
+                                                Position
+                                            </th>
+                                            <td>
+                                                <span t-field="o.position_id"/>
+                                            </td>
+                                        </tr>
+                                         <tr>
+                                            <th>
+                                                Age
+                                            </th>
+                                            <td>
+                                                <span t-field="o.age"/>
+                                            </td>
+                                            <th>
+                                                Department
+                                            </th>
+                                            <td>
+                                                <span t-field="o.department_id"/>
+                                            </td>
+                                        </tr>
+                                         <tr>
+                                            <th>
+                                                Family Origin
+                                            </th>
+                                            <td>
+                                                <span t-field="o.family_origin"/>
+                                            </td>
+                                            <th>
+                                                Current/Last Job
+                                            </th>
+                                            <td>
+                                                <span t-field="o.last_job"/>
+                                            </td>
+                                        </tr>
+                                         <tr>
+                                            <th>
+                                                Phone
+                                            </th>
+                                            <td>
+                                                <span t-field="o.phone"/>
+                                            </td>
+                                            <th>
+                                                Type of Business
+                                            </th>
+                                            <td>
+                                                <span t-field="o.business_type"/>
+                                            </td>
+                                        </tr>
+                                         <tr>
+                                            <th>
+                                                Family/Friend  working in company
+                                            </th>
+                                            <td>
+                                                <span t-field="o.work"/>
+                                            </td>
+                                            <th>
+                                                Notice Period
+                                            </th>
+                                            <td>
+                                                <span t-field="o.notice_period"/>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <th>
+                                                Martial Status
+                                            </th>
+                                            <td>
+                                                <span t-field="o.martial_status"/>
+                                            </td>
+                                            <th>
+                                                Address
+                                            </th>
+                                            <td>
+                                                <span t-field="o.address"/>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+
+                                <table class="table table-bordered" style="table-layout: fixed">
+
+                                    <thead>
+                                        <tr>
+                                            <th name="th_product" class="text-left">Criteria</th>
+                                            <th name="th_description" class="text-left">Scope</th>
+                                            <th name="th_quantity" class="text-left">Remarks</th>
+
+
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+
+
+                                      <t t-foreach="o.assessment_ds" t-as="line">
+
+                                            <tr t-att-class="'o_line_section'">
+                                                <td  class="text-center">
+                                                    <span t-field="line.name"/>
+                                                </td>
+                                                <td  class="text-center">
+                                                    <span t-field="line.scope"/>
+                                                </td>
+                                                <td  class="text-center">
+                                                    <span t-field="line.remarks"/>
+                                                </td>
+                                                
+                                            </tr>
+                                        </t>
+                                    </tbody>
+                                </table>
+
+                                <table class="table table-bordered" style="table-layout: fixed">
+
+                                    <tbody>
+
+                                            <tr>
+                                                <th class="text-center">
+                                                    Strength
+                                                </th>
+                                                <td name="td_strength" class="text-center">
+                                                    <span t-field="o.strength"/>
+                                                </td>
+                                                <th class="text-center">
+                                                    Weakness
+                                                </th>
+                                                <td name="td_weakness" class="text-center">
+                                                    <span t-field="o.weakness"/>
+                                                </td>
+                                            </tr>
+                                    </tbody>
+                                </table>
+                                 <p style="margin: 0px; padding: 0px; font-weight: bold;">
+                                    <span t-field="o.comments"/>
+                                </p>
+
+                      <table class="table table-bordered" style="table-layout: fixed">
+
+                                    <tbody>
+                                        <tr>
+                                            <th>
+                                                SUITABILITY TO RECRUIT
+                                            </th>
+                                            <td>
+                                                <span t-field="o.suit_recruit"/>
+                                            </td>
+                                            <th>
+                                                RESERVATION
+                                            </th>
+                                            <td>
+                                                <span t-field="o.recruit_reservation"/>
+                                            </td>
+                                        </tr>
+                                         <tr>
+                                            <th>
+                                                SUITABILITY TO DEVELOP
+                                            </th>
+                                            <td>
+                                                <span t-field="o.suit_develop"/>
+                                            </td>
+                                            <th>
+                                                RESERVATION
+                                            </th>
+                                            <td>
+                                                <span t-field="o.develop_reservation"/>
+                                            </td>
+                                        </tr>
+                                         
+                                    </tbody>
+                                </table>
+                              <table class="table table-bordered" style="table-layout: fixed">
+
+                                    <tbody>
+                                        
+                                         <tr>
+                                            <th>
+                                                INTERVIEWER
+                                            </th>
+                                            <td>
+                                                <span t-field="o.interviewer_id"/>
+                                            </td>
+                                            <th>
+                                               DATE
+                                             </th>
+                                            <td>
+                                                <span t-field="o.date"/>
+                                            </td>
+                                        </tr>
+                                         
+                                    </tbody>
+                                </table>
+
+
+                            </div>
+                        </div>
+                    </div>
+                </t>
+            </t>
+        </t>
+    </template>
+    <template id="interview_assessment_report">
+        <t t-call="web.html_container">
+            <t t-foreach="docs" t-as="o">
+                <t t-call="de_recruitment_interview.report_interview_assessment_template"/>
+            </t>
+        </t>
+    </template>
+</odoo>

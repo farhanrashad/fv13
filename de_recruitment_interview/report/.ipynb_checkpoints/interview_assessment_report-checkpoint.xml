@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <report
+            id="interview_assessment_report"
+            string="Interview Assessment"
+            model="hr.employee.interview.assessment"
+            report_type="qweb-pdf"
+            file="de_recruitment_interview.report_interview_assessment_template"
+            name="de_recruitment_interview.report_interview_assessment_template" />
+</odoo>

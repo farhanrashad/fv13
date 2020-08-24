@@ -130,7 +130,7 @@
                                 <field name="address"/>
                                 <field name="work"/>
                                 <field name="age"/>
-                                <field name="martial_status"/>
+                                <field name="martial_status" widget='selection'/>
                                 <field name="family_origin"/>
                             </group>
                             <group>
@@ -144,7 +144,7 @@
                             </group>
                         </group>
                         <notebook>
-                            <page string="Reason">
+                            <page string="Criteria">
                                 <group>
                                     <tree editable='bottom'>
                                       <field name="assessment_ds"/>
@@ -158,7 +158,28 @@
                                 <group>
                                     <field name="weakness"/>
                                 </group>
-                               </group>    
+                               </group>
+                                <group>
+                                    <field name="comments"/>
+                                 </group>
+                                <group>
+                                <group>
+                                    <field name="suit_recruit" widget='selection'/>
+                                    <field name="suit_develop" widget='selection'/>
+                                </group>
+                                <group>
+                                    <field name="recruit_reservation" widget='selection'/>
+                                    <field name="develop_reservation" widget='selection'/> 
+                                </group>
+                               </group>
+                                <group>
+                                <group>
+                                    <field name="interviewer_id"/>
+                                </group>
+                                <group>
+                                    <field name="date"/>
+                                </group>
+                               </group>
                             </page>
                         </notebook>
                     </sheet>
