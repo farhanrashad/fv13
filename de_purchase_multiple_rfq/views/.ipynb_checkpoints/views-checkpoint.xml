@@ -1,0 +1,76 @@
+<odoo>
+  <data>
+      <record id="multiple_rfqs_form_view" model="ir.ui.view">
+        <field name="name">purchase.order.multiple.form.view</field>
+        <field name="model">purchase.order.multiple</field>
+        <field name="arch" type="xml">
+            <form string="Job Order Sheet">
+                <header>
+<!--                     <field name="state" widget="statusbar" statusbar_visible="draft,approved,done"/>
+                    <button name="action_approve" type="object" string="Approve" class="oe_highlight"
+                            groups="hr.group_hr_manager"
+                            states="draft"/>
+                    <button name="action_completed" type="object" string="Done" class="oe_highlight"
+                            states="draft,approved"/> -->
+                </header>
+                <sheet>
+                    <div class="oe_title">
+                        <h1><field name="name" placeholder="Reference" nolabel="1"/></h1>
+                    </div>
+                    <group>
+                        <group>
+                            <field name="date"/>
+                            <field name="sale_order_id"/>
+                            <field name="progress" invisible="1"/>
+                            <field name="po_created" invisible="1"/>
+                        </group>
+                    </group>
+<!--                     <button name="get_sheet_lines" type="object" string="Process"
+                            attrs="{'invisible': [('progress', '=', 'done')]}"
+                            class="oe_highlight" style="margin:5px;"/>
+                    <button name="action_quantity_update" type="object" string="Update"
+                                    class="oe_highlight" style="margin:5px;"/> -->
+                    <button name="action_generate_po" type="object" string="Create PO"
+                            class="oe_highlight"/>
+                    <notebook>
+                        <page string="Material Planing" name="job_order_sheet_lines">
+                            <field name="sheet_ids">
+                                <tree editable="bottom">
+                                    <field name="mo_order_id"/>
+                                    <field name="product_id"/>
+                                    <field name="product_name" invisible="1"/>
+                                    <field name="product_quantity"/>
+                                    <field name="in_house_production"/>
+                                    <field name="outsource_production"
+                                           attrs="{'invisible': [('product_name', '=like', '[Module]%')]}"/>
+                                    <field name="vendor_id"/>
+                                </tree>
+                            </field>
+                        </page>
+                    </notebook>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="multiple_rfqs_tree_view" model="ir.ui.view">
+        <field name="name">purchase.order.multiple.tree.view</field>
+        <field name="model">purchase.order.multiple</field>
+        <field name="arch" type="xml">
+            <tree string="Job Order Sheet">
+                <field name="date"/>
+                <field name="sale_order_id"/>
+            </tree>
+        </field>
+    </record>
+
+    <record id="multiple_rfqs_action" model="ir.actions.act_window">
+        <field name="name">Multiple RFQs</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">purchase.order.multiple</field>
+        <field name="view_mode">tree,form</field>
+    </record>
+   
+      <menuitem id="purchase_multiple_rfqs" name="Multiple RFQs" parent="purchase.menu_purchase_form_action" action="multiple_rfqs_action" sequence="2"/>
+  </data>
+</odoo>
