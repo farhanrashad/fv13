@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 
 from odoo import models, fields, api, _
+from odoo.exceptions import RedirectWarning, UserError, ValidationError, AccessError
 
 
 class EmployeeInterviewAssessment(models.Model):
@@ -9,15 +10,24 @@ class EmployeeInterviewAssessment(models.Model):
     _inherit = ['mail.thread', 'mail.activity.mixin', 'portal.mixin']
     _order = 'name desc'
     
-    @api.model
-    def _load_default_vals(self):
-        user_obj = self.env['hr.employee.interview.assessment.line']
-        for rec in self:
-            rec.assessment_ds = user_obj 
+    @api.onchange('name')
+    def onchange_name(self):
+        
+        user_obj = self.env['hr.employee.interview.assessment.line'].search([])
+        if self.name:
+            for rec in user_obj:
+                data = []
+                data.append((0,0,{
+                        'name': rec.name,
+                        'scope': rec.scope,
+                        'remarks': rec.remarks,
+                        'interview_id': self.id
+                        }))
+                self.assessment_ds = data 
 
 
-    name = fields.Char(string='Order Reference',  copy=False,  index=True)
-    position_id = fields.Many2one('hr.applicant', string='Position', store=True)
+    name = fields.Char(string='Order Reference',  copy=False,  index=True, required=True)
+    position_id = fields.Many2one('hr.applicant', string='Position', store=True, required=True)
     date = fields.Date(string='Date', store=True)
     phone = fields.Char(string='Phone', store=True, related='position_id.partner_phone')
     address = fields.Char(string='Address')
@@ -52,9 +62,8 @@ class EmployeeInterviewAssessment(models.Model):
         ('no', 'NO'),
     ], string='RESERVATION',  copy=False, index=True, default='yes')
     interviewer_id = fields.Many2one('res.users', string='INTERVIEWER', store=True)
-    date = fields.Date(string='Date', store=True)
-    
-    assessment_ds = fields.Many2many('hr.employee.interview.assessment.line', 'interview_id', 'criteria', 'scope', default =_load_default_vals)
+    date = fields.Date(string='Date', store=True)   
+    assessment_ds = fields.One2many('hr.employee.interview.assessment.line', 'interview_id',)
 
 
     
@@ -65,9 +74,13 @@ class EmployeeInterviewAssessment(models.Model):
 
         interview_id = fields.Many2one('hr.employee.interview.assessment', string='Interview', store=True)
         name = fields.Char(string='Criteria',  copy=False,  index=True)
-        scope = fields.Char(string='Scope (1-5)', store=True)
+        scope = fields.Float(string='Scope (1-5)', store=True, size=5)
         remarks = fields.Char(string='Remarks', store=True)
-
+        
+        @api.constrains('scope')
+        def _check_value(self):
+            if self.scope > 0.0 or self.field_name <= 5.0:
+                raise ValidationError(_('Enter Scope Value Between 0-5.'))
     
 #     @api.model
 #     def create(self,values):

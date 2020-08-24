@@ -147,7 +147,14 @@
                             <page string="Criteria">
                                 <group>
                                     <tree editable='bottom'>
-                                      <field name="assessment_ds"/>
+                                        <field name="assessment_ds">
+                                          <tree editable='bottom'>
+                                            <field name="name"/>
+                                            <field name="scope"/>
+                                            <field name="remarks"/>
+                                              
+                                          </tree> 
+                                        </field>
                                     </tree>    
                                 </group>
                                 <group>
