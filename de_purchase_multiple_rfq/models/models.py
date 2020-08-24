@@ -73,11 +73,11 @@ class JobOrderSheet(models.Model):
 
     def action_generate_po(self):
         for line in self.sheet_ids:
-            if line.outsource_production > 0:
+            if line.product_quantity > 0:
                 supplier_line = {
                     'product_id': line.product_id.id,
                     'name': 'Product',
-                    'product_qty': line.outsource_production,
+                    'product_qty': line.product_quantity,
                     'price_unit': line.product_id.list_price,
                     'order_id': self.id,
                     'date_planned': fields.Date.today(),
@@ -88,7 +88,7 @@ class JobOrderSheet(models.Model):
                 print(b_prod_line.name.name)
                 self.env['purchase.order'].create({
                     'partner_id': line.vendor_id.id,
-                    'jo_sheet_reference': self.name,
+#                     'jo_sheet_reference': self.name,
                     # 'sale_order_ref': rec.job_order_id.sale_order_id.name,
                     'date_order': fields.Date.today(),
                     'order_line': [(0, 0, supplier_line)],
@@ -113,7 +113,7 @@ class JobOrderSheet(models.Model):
         default='in_progress')
     po_created = fields.Boolean(string='PO Created')
     space = fields.Char(default=" ", readonly=True)
-    sheet_ids = fields.One2many(comodel_name='job.order.sheet.line', inverse_name='sheet_id')
+    sheet_ids = fields.One2many(comodel_name='purchase.order.multiple.line', inverse_name='sheet_id')
 
 
 class JobOrderSheetLine(models.Model):
@@ -130,11 +130,11 @@ class JobOrderSheetLine(models.Model):
                 'product_qty': rec.update_quantity,
             })
 
-    sheet_id = fields.Many2one(comodel_name='job.order.sheet')
-    mo_order_id = fields.Many2one(comodel_name='mrp.production', string='Reference', required=True)
+    sheet_id = fields.Many2one(comodel_name='purchase.order.multiple')
+#     mo_order_id = fields.Many2one(comodel_name='mrp.production', string='Reference', required=True)
     product_id = fields.Many2one(comodel_name='product.product', string='Product')
     product_name = fields.Char(string='Product Name', related='product_id.name')
     product_quantity = fields.Float(string='Quantity')
-    in_house_production = fields.Float(string='InHouse Production')
-    outsource_production = fields.Float(string='Outsource Production')
+#     in_house_production = fields.Float(string='InHouse Production')
+#     outsource_production = fields.Float(string='Outsource Production')
     vendor_id = fields.Many2one(comodel_name='res.partner', string='Vendor')
