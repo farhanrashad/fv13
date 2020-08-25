@@ -96,7 +96,30 @@ class ReportPartnerLedger(models.AbstractModel):
         if contemp is not None:
             result = contemp[0] or 0.0
         return result
+    
+#=============================  
 
+    def _sum_partner_tot_opening(self, partner_id, start_date):
+#         if field not in ['debit', 'credit', 'debit - credit']:
+#             return
+        balance_list = []
+        sum_balance = 0
+        sum_debit = 0
+        sum_credit = 0
+        result = self.env['account.move.line'].search([('partner_id', '=', partner_id), ('date', '<', start_date)])
+        for p in result:
+            sum_balance = sum_balance + p.balance
+            sum_debit = sum_debit + p.debit        
+            sum_credit = sum_credit + p.credit 
+        balance_list.append(sum_balance)
+        balance_list.append(sum_debit)
+        balance_list.append(sum_credit)
+
+        return balance_list
+
+
+    
+#===============================
     @api.model
     def _get_report_values(self, docids, data=None):
         if not data.get('form'):
@@ -161,4 +184,5 @@ class ReportPartnerLedger(models.AbstractModel):
             'time': time,
             'lines': self._lines,
             'sum_partner': self._sum_partner,
+            'sum_partner_open':self._sum_partner_tot_opening,
         }
