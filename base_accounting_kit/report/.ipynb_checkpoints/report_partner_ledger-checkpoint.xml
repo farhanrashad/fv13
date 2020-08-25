@@ -48,9 +48,9 @@
                             <tbody>
                                 <tr>
                                     <td colspan="4">
-                                        <strong t-esc="o.ref"/>
-                                        -
-                                        <strong t-esc="sum_partner_open(o.id,data['form']['date_from'])[0]"/>
+                                        <strong>
+                                         Opening Balnce
+                                        </strong>
                                     </td>
                                     <td class="text-right">
                                         <strong t-esc="sum_partner_open(o.id,data['form']['date_from'])[1]"
