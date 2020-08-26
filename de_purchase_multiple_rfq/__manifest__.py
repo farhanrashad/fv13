@@ -20,10 +20,12 @@
     'version': '0.1',
 
     # any module necessary for this one to work correctly
-    'depends': ['base','purchase','sale'],
+    'depends': ['base','mail','purchase','sale'],
 
     # always loaded
     'data': [
+        'report/purchase_demand_report.xml',
+        'report/demand_report_template.xml',
         'data/data_seq_views.xml',
         'security/ir.model.access.csv',
         'views/views.xml',

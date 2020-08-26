@@ -3,13 +3,15 @@
 from odoo import fields, models, api, _
 from collections import defaultdict
 from odoo.exceptions import UserError
-
+from datetime import date
+from datetime import datetime , timedelta
 
 
 
 
 class PurchaseOrderMultiple(models.Model):
     _name = 'purchase.order.multiple'
+    _inherit = ['portal.mixin', 'mail.thread', 'mail.activity.mixin']
     _description = 'Multiple Purchase Order'
 
     @api.model
@@ -52,7 +54,7 @@ class PurchaseOrderMultiple(models.Model):
 
     name = fields.Char(
         'Reference', copy=False, readonly=True, default=lambda x: _('New'))
-    date = fields.Date(string='Date', required=True)
+    date = fields.Date(string='Date', store=True, default=datetime.today())
     po_created = fields.Boolean(string='PO Created')
     space = fields.Char(default=" ", readonly=True)
     sheet_ids = fields.One2many(comodel_name='purchase.order.multiple.line', inverse_name='sheet_id')
@@ -67,5 +69,6 @@ class JobOrderSheetLine(models.Model):
     sheet_id = fields.Many2one(comodel_name='purchase.order.multiple')
     product_id = fields.Many2one(comodel_name='product.product', string='Product')
     product_name = fields.Char(string='Product Name', related='product_id.name')
+    analytic_tag_ids = fields.Many2many('account.analytic.tag', string='Analytic Tags')
     product_quantity = fields.Float(string='Quantity')
     vendor_id = fields.Many2one(comodel_name='res.partner', string='Vendor', required=True)

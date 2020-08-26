@@ -33,12 +33,18 @@
                                     <field name="product_id"/>
                                     <field name="product_name" invisible="1"/>
                                     <field name="product_quantity"/>
+                                    <field name="analytic_tag_ids" widget='many2many_tags'/>
                                     <field name="vendor_id"/>
                                 </tree>
                             </field>
                         </page>
                     </notebook>
                 </sheet>
+                <div class="oe_chatter">
+                    <field name="message_follower_ids" widget="mail_followers"/>
+                    <field name="activity_ids" widget="mail_activity"/>
+                    <field name="message_ids" widget="mail_thread"/>
+                </div>
             </form>
         </field>
     </record>
@@ -47,7 +53,8 @@
         <field name="name">purchase.order.multiple.tree.view</field>
         <field name="model">purchase.order.multiple</field>
         <field name="arch" type="xml">
-            <tree string="Job Order Sheet">
+            <tree string="Demand Sheet">
+                <field name="name"/>
                 <field name="date"/>
             </tree>
         </field>
@@ -60,6 +67,6 @@
         <field name="view_mode">tree,form</field>
     </record>
    
-      <menuitem id="purchase_multiple_rfqs" name="Multiple RFQs" parent="purchase.menu_procurement_management" action="multiple_rfqs_action" sequence="2"/>
+      <menuitem id="purchase_multiple_rfqs" name="Demand" parent="purchase.menu_procurement_management" action="multiple_rfqs_action" sequence="2"/>
   </data>
 </odoo>
