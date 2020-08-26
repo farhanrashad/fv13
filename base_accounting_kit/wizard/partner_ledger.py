@@ -48,7 +48,9 @@ class AccountPartnerLedger(models.TransientModel):
         data['form'].update({'reconciled': self.reconciled,
                              'partner_id':self.partner_id.id,
                              'category_ids':self.category_id.ids,
-                             'amount_currency': self.amount_currency})
+                             'amount_currency': self.amount_currency,
+                             'initial_balance': self.initial_balance,
+                            })
         return self.env.ref(
             'base_accounting_kit.action_report_partnerledger').report_action(
             self, data=data)

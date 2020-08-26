@@ -46,22 +46,22 @@
                         </thead>
                         <t t-foreach="docs" t-as="o">
                             <tbody>
-                                <tr>
+                                <tr t-if="data['form']['initial_balance'] == True">
                                     <td colspan="4">
                                         <strong>
                                          Opening Balnce
                                         </strong>
                                     </td>
                                     <td class="text-right">
-                                        <strong t-esc="sum_partner_open(o.id,data['form']['date_from'])[1]"
+                                        <strong t-esc="sum_partner_open(o.id ,data['form']['date_from'])[1]"
                                                 t-options="{'widget': 'monetary', 'display_currency': res_company.currency_id}"/>
                                     </td>
                                     <td class="text-right">
-                                        <strong t-esc="sum_partner_open(o.id,data['form']['date_from'])[0]"
+                                        <strong t-esc="sum_partner_open(o.id ,data['form']['date_from'])[0]"
                                                 t-options="{'widget': 'monetary', 'display_currency': res_company.currency_id}"/>
                                     </td>
                                     <td class="text-right">
-                                        <strong t-esc="sum_partner_open(o.id,data['form']['date_from'])[2]"
+                                        <strong t-esc="sum_partner_open(o.id ,data['form']['date_from'])[2]"
                                                 t-options="{'widget': 'monetary', 'display_currency': res_company.currency_id}"/>
                                     </td>
                                 </tr>

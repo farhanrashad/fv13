@@ -27,6 +27,13 @@ class AccountPartnerLedger(models.TransientModel):
     _name = "account.report.partner.ledger"
     _inherit = "account.common.partner.report"
     _description = "Account Partner Ledger"
+    
+    initial_balance = fields.Boolean(string='Include Opening Balances',
+                                     help='If you selected date, this field '
+                                          'allow you to add a row to display '
+                                          'the amount of debit/credit/balance '
+                                          'that precedes the filter you\'ve '
+                                          'set.')
 
     amount_currency = fields.Boolean("With Currency",
                                      help="It adds the currency column on report if the "
@@ -41,7 +48,9 @@ class AccountPartnerLedger(models.TransientModel):
         data['form'].update({'reconciled': self.reconciled,
                              'partner_id':self.partner_id.id,
                              'category_ids':self.category_id.ids,
-                             'amount_currency': self.amount_currency})
+                             'amount_currency': self.amount_currency,
+                             'initial_balance': self.initial_balance,
+                            })
         return self.env.ref(
             'base_accounting_kit.action_report_partnerledger').report_action(
             self, data=data)
