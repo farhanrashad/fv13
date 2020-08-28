@@ -51,6 +51,12 @@ class MrpProduction(models.Model):
 
     sale_id = fields.Char(string='Ref Sale')
 
+
+class StockPicking(models.Model):
+    _inherit = 'stock.picking'
+
+    sale_ref = fields.Char(string='Ref Sale')
+
     # @api.depends('origin')
     # def _compute_sale_ref(self):
     #     for list in self:
