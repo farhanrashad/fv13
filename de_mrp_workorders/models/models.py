@@ -6,7 +6,7 @@ from odoo import models, fields, api, _
 class MrpWorkorder(models.Model):
     _inherit = 'mrp.workorder'
     
-    qty_f_production = fields.Float('Original Production Quantity', readonly=True)
+    qty_production = fields.Float('Original Production Quantity', readonly=True)
 
 
 
@@ -35,20 +35,10 @@ class MrpProduction(models.Model):
                 
     def button_plans(self):      
         if self.routing_f_id != '' and self.product_f_qty != 0.0:
-            work_order_line = self.env['mrp.workorder.line']
             
             quantity = max(self.product_f_qty - sum(self.move_finished_ids.filtered(lambda move: move.product_id == self.product_id).mapped('quantity_done')), 0)
             quantity = self.product_id.uom_id._compute_quantity(quantity, self.product_uom_id)
-            for line in self.move_raw_ids:
-                flines = {
-                    'product_id': line.product_id.id,
-                    'qty_to_consume': self.product_f_qty,
-                    'qty_reserved': self.product_f_qty,
-                    'qty_done': self.product_f_qty,
-                    
-                }
-        
-#                 workorder_lines = work_order_line.create(flines)
+            
             fval = {
                 'name': self.name,
                 'production_id': self.id,
@@ -60,14 +50,25 @@ class MrpProduction(models.Model):
                 'operation_id': self.routing_f_id.operation_ids.id,
                 'duration_expected': self.routing_f_id.operation_ids.time_cycle,
                 'state':'ready' or 'pending',
-                'qty_f_production': self.product_f_qty,
+                'qty_production': self.product_f_qty,
                 'qty_remaining': self.product_f_qty,                            
                 'qty_producing': quantity,
                 'consumption': self.bom_id.consumption,
-                 'raw_workorder_line_ids': [(0, 0, flines)]
+#                  'raw_workorder_line_ids': [(0, 0, flines)]
                 
             }
             workorders = self.env['mrp.workorder'].create(fval)
+            for line in self.move_raw_ids:
+                flines = {
+                    'raw_workorder_id': workorders.id,
+                    'product_id': line.product_id.id,
+                    'qty_to_consume': self.product_f_qty,
+                    'qty_reserved': self.product_f_qty,
+                    'qty_done': self.product_f_qty,
+                    
+                }
+        
+                workorder_lines = self.env['mrp.workorder.line'].create(flines)
         else:
             pass
             
@@ -75,14 +76,7 @@ class MrpProduction(models.Model):
             work_orders_line = self.env['mrp.workorder.line']
             quantity = max(self.product_s_qty - sum(self.move_finished_ids.filtered(lambda move: move.product_id == self.product_id).mapped('quantity_done')), 0)
             quantity = self.product_id.uom_id._compute_quantity(quantity, self.product_uom_id)
-            for line in self.move_raw_ids:
-                slines = {
-                    'product_id': line.product_id.id,
-                    'qty_to_consume': self.product_s_qty,
-                    'qty_reserved': self.product_s_qty,
-                    'qty_done': self.product_s_qty,
-                }
-#                 workorder_lines = work_orders_line.create(slines)
+            
             sval = {
                 'name': self.name,
                 'production_id': self.id,
@@ -93,14 +87,23 @@ class MrpProduction(models.Model):
                 'operation_id': self.routing_s_id.operation_ids.id,
                 'duration_expected': self.routing_s_id.operation_ids.time_cycle,
                 'state':'ready' or 'pending',
-                'qty_f_production': self.product_s_qty,
+                'qty_production': self.product_s_qty,
                 'qty_remaining': self.product_s_qty,               
                 'qty_producing': quantity,
                 'consumption': self.bom_id.consumption,
-                 'raw_workorder_line_ids': [(0, 0, slines)]
+#                  'raw_workorder_line_ids': [(0, 0, slines)]
                 
             }
             workorders = self.env['mrp.workorder'].create(sval)
+            for line in self.move_raw_ids:
+                slines = {
+                    'raw_workorder_id': workorders.id,
+                    'product_id': line.product_id.id,
+                    'qty_to_consume': self.product_s_qty,
+                    'qty_reserved': self.product_s_qty,
+                    'qty_done': self.product_s_qty,
+                }
+                workorder_lines = self.env['mrp.workorder.line'].create(slines)
         else:
             pass
 
@@ -108,14 +111,7 @@ class MrpProduction(models.Model):
             work_ordert_line = self.env['mrp.workorder.line']
             quantity = max(self.product_t_qty - sum(self.move_finished_ids.filtered(lambda move: move.product_id == self.product_id).mapped('quantity_done')), 0)
             quantity = self.product_id.uom_id._compute_quantity(quantity, self.product_uom_id)
-            for line in self.move_raw_ids:
-                tlines = {
-                    'product_id': line.product_id.id,
-                    'qty_to_consume': self.product_t_qty,
-                    'qty_reserved': self.product_t_qty,
-                    'qty_done': self.product_t_qty,
-                }
-#                 workorder_lines = work_ordert_line.create(tlines)
+            
             tval = {
                 'name': self.name,
                 'production_id': self.id,
@@ -126,13 +122,22 @@ class MrpProduction(models.Model):
                 'operation_id': self.routing_t_id.operation_ids.id,
                 'duration_expected': self.routing_t_id.operation_ids.time_cycle,
                 'state':'ready' or 'pending',
-                'qty_f_production': self.product_t_qty, 
+                'qty_production': self.product_t_qty, 
                 'qty_remaining': self.product_t_qty,               
                 'qty_producing': quantity,
                 'consumption': self.bom_id.consumption,
-                 'raw_workorder_line_ids': [(0, 0, tlines)]
+#                  'raw_workorder_line_ids': [(0, 0, tlines)]
             }
             workorders = self.env['mrp.workorder'].create(tval)
+            for line in self.move_raw_ids:
+                tlines = {
+                    'raw_workorder_id': workorders.id,                    
+                    'product_id': line.product_id.id,
+                    'qty_to_consume': self.product_t_qty,
+                    'qty_reserved': self.product_t_qty,
+                    'qty_done': self.product_t_qty,
+                }
+                workorder_lines = self.env['mrp.workorder.line'].create(tlines)
         else:
             pass
             
@@ -140,14 +145,7 @@ class MrpProduction(models.Model):
             work_orderfo_line = self.env['mrp.workorder.line']
             quantity = max(self.product_fo_qty - sum(self.move_finished_ids.filtered(lambda move: move.product_id == self.product_id).mapped('quantity_done')), 0)
             quantity = self.product_id.uom_id._compute_quantity(quantity, self.product_uom_id)
-            for line in self.move_raw_ids:
-                folines = {
-                    'product_id': line.product_id.id,
-                    'qty_to_consume': self.product_fo_qty,
-                    'qty_reserved': self.product_fo_qty,
-                    'qty_done': self.product_fo_qty,                   
-                }
-#                 workorder_lines = work_orderfo_line.create(folines)
+            
             foval = {
                 'name': self.name,
                 'production_id': self.id,
@@ -159,13 +157,22 @@ class MrpProduction(models.Model):
                 'duration_expected': self.routing_fo_id.operation_ids.time_cycle,
                 'state':'ready' or 'pending',
 #                 'qty_production': self.product_fo_qty,
-                 'qty_f_production': self.product_fo_qty, 
+                 'qty_production': self.product_fo_qty, 
                  'qty_remaining': self.product_fo_qty,               
                 'qty_producing': quantity,
                 'consumption': self.bom_id.consumption,
-                'raw_workorder_line_ids': [(0, 0, folines)]
+#                 'raw_workorder_line_ids': [(0, 0, folines)]
             } 
             workorders = self.env['mrp.workorder'].create(foval)
+            for line in self.move_raw_ids:
+                folines = {
+                    'raw_workorder_id': workorders.id,                    
+                    'product_id': line.product_id.id,
+                    'qty_to_consume': self.product_fo_qty,
+                    'qty_reserved': self.product_fo_qty,
+                    'qty_done': self.product_fo_qty,                   
+                }
+                workorder_lines = self.env['mrp.workorder.line'].create(folines)
         else:
             pass
         
