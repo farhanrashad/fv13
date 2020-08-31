@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 
 # -*- coding: utf-8 -*-
+
 from odoo import models, fields, api, _
 
 class MrpWorkorder(models.Model):
