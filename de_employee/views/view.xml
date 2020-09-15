@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<odoo>
+    <data>
+        <record model="ir.ui.view" id="de_employee_inherit_form">
+            <field name="name">de_employee_customization form</field>
+            <field name="model">hr.employee</field>
+            <field name="inherit_id" ref="hr.view_employee_form"/>
+            <field name="arch" type="xml">
+                <xpath expr="//page[@name='personal_information']/group/group[1]/field[@name='address_home_id']" position="after">
+                    <field name="emp_location" widget="url" placeholder="www.google.com"/>
+                </xpath>
+            </field>
+        </record>
+    </data>
+</odoo>

@@ -28,7 +28,7 @@ class JobOrderSheet(models.Model):
             order_data = self.env['mrp.production'].search([('sale_id', '=', rec.sale_order_id.name),
                                                             '|',
                                                             '|',
-                                                            ('product_id.name', '=ilike', 'Un-Finished%'),
+                                                            ('product_id.name', '=ilike', ' %'),
                                                             ('product_id.name', '=ilike', 'Module%'),
                                                             '|',
                                                             ('product_id.name', '=ilike', '[Un-Finished]%'),
@@ -57,6 +57,15 @@ class JobOrderSheet(models.Model):
             order.update({
                 'product_qty': line.in_house_production
             })
+            stock_picking = self.env['stock.picking'].search([('origin', '=', line.mo_order_id.name),
+                                                              ('picking_type_id', '=', 10)])
+            print('stock', stock_picking)
+            for picking in stock_picking:
+                for pick_line in picking.move_ids_without_package:
+                    print('qty', line.in_house_production)
+                    pick_line.update({
+                        'product_uom_qty': line.in_house_production * 2
+                    })
             for qty in order.move_raw_ids:
                 qty.update({
                     'product_uom_qty': line.in_house_production
@@ -128,4 +137,4 @@ class JobOrderSheetLine(models.Model):
     product_quantity = fields.Float(string='Quantity')
     in_house_production = fields.Float(string='InHouse Production')
     outsource_production = fields.Float(string='Outsource Production')
-    vendor_id = fields.Many2one(comodel_name='res.partner', string='Vendor', required=True)
+    vendor_id = fields.Many2one(comodel_name='res.partner', string='Vendor')

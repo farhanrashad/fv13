@@ -1,6 +1,5 @@
 # -*- coding: utf-8 -*-
 # Part of Odoo. See LICENSE file for full copyright and licensing details.
-
 from . import config
 from . import update
 
@@ -51,6 +50,11 @@ class MrpProduction(models.Model):
     _inherit = 'mrp.production'
 
     sale_id = fields.Char(string='Ref Sale')
+
+class PurchaseOrder(models.Model):
+    _inherit = 'purchase.order'
+
+    sale_ref_id = fields.Char(string='Ref Sale')
 
 
 class StockPicking(models.Model):
