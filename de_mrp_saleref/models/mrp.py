@@ -58,7 +58,7 @@ class PurchaseOrder(models.Model):
 
     @api.model
     def create(self, vals):
-        mo_sale_ref = self.env['mrp.production'].search([('name', '=', record.origin)])
+        mo_sale_ref = self.env['mrp.production'].search([('name', '=', self.origin)])
         for ref in mo_sale_ref:
             saleref = ref.sale_id
             self.update({
@@ -75,7 +75,7 @@ class StockPicking(models.Model):
 
     @api.model
     def create(self, vals):
-        mo_sale_ref = self.env['mrp.production'].search([('name', '=', record.origin)])
+        mo_sale_ref = self.env['mrp.production'].search([('name', '=', self.origin)])
         for ref in mo_sale_ref:
             saleref = ref.sale_id
             self.update({
