@@ -45,11 +45,11 @@
 			<field name="inherit_id" ref="mrp.mrp_production_form_view"/>
 			<field name="arch" type="xml">
                 <xpath expr="//button[@name='action_assign']" position="after">
-                    <button name="button_plans" attrs="{'invisible': ['|', ('state', '!=', 'confirmed')]}" type="object" string="Plan Production" class="oe_highlight"/>
+                    <button name="button_plans" attrs="{'invisible': ['|', ('state', '!=', 'confirmed'), ('routing_id', '=', False)]}" type="object" string="Plan Production" class="oe_highlight"/>
 				</xpath>
                 
                	<xpath expr="//notebook" position="inside">
-                    <page string="Routing Selection">
+                    <page string="Routing Selection" attrs="{'invisible': ['|',('routing_id', '=', False)]}">
                        <group> 
                            <group>
                                 <field name="routing_f_id" string="First Routing"/>
