@@ -1,0 +1,88 @@
+<odoo>
+  <data>
+       <record id="work_order_tree_view_inherit" model="ir.ui.view">
+			<field name="name">mrp.workorder.tree.view.inherit</field>
+			<field name="model">mrp.workorder</field>
+			<field name="inherit_id" ref="mrp.mrp_production_workorder_tree_view_inherit"/>
+			<field name="arch" type="xml">
+				<xpath expr="//field[@name='qty_production']" position="before">
+                        <field name="qty_production"/>
+            
+				</xpath>
+			</field>
+	  </record>
+      
+       <record id="work_order_form_view_inherit" model="ir.ui.view">
+			<field name="name">mrp.workorder.form.view.inherit</field>
+			<field name="model">mrp.workorder</field>
+			<field name="inherit_id" ref="mrp.mrp_production_workorder_form_view_inherit"/>
+			<field name="arch" type="xml">
+				<xpath expr="//field[@name='qty_production']" position="before">
+                        
+                        <field name="qty_production"/>
+				</xpath>
+			</field>
+	  </record>
+      
+      <record id="product_form_sale_tab_view_inherit" model="ir.ui.view">
+			<field name="name">product.template.form.view</field>
+			<field name="model">product.template</field>
+			<field name="inherit_id" ref="product.product_template_only_form_view"/>
+			<field name="arch" type="xml">
+				<xpath expr="//field[@name='invoice_policy']" position="after">
+                        <field name="style"/>
+                        <field name="color"/>
+                        <field name="hs_code"/>
+                        <field name="composition"/>
+				</xpath>
+			</field>
+	  </record>
+      
+      
+      <record id="mrp_work_orders_wizard_view_inherit" model="ir.ui.view">
+			<field name="name">mrp.production.form.view</field>
+			<field name="model">mrp.production</field>
+			<field name="inherit_id" ref="mrp.mrp_production_form_view"/>
+			<field name="arch" type="xml">
+                <xpath expr="//button[@name='action_assign']" position="after">
+                    <button name="button_plans" attrs="{'invisible': ['|', ('state', '!=', 'confirmed')]}" type="object" string="Plan Production" class="oe_highlight"/>
+				</xpath>
+                
+               	<xpath expr="//notebook" position="inside">
+                    <page string="Routing Selection">
+                       <group> 
+                           <group>
+                                <field name="routing_f_id" string="First Routing"/>
+                                <field name="product_f_qty"/>
+                                <field name="routing_s_id"/>
+                                <field name="product_s_qty"/>
+                           </group> 
+                           <group>
+                                <field name="routing_t_id"/>
+                                <field name="product_t_qty"/>              
+                                <field name="routing_fo_id"/>
+                                <field name="product_fo_qty"/>
+                           </group>    
+                        </group>    
+                    </page>    
+                </xpath>
+<!-- 				<xpath expr="//field[@name='routing_id']" position="after">
+                        <field name="routing_f_id"/>
+                        <field name="product_f_qty"/>
+                        <field name="routing_s_id"/>
+                        <field name="product_s_qty"/>
+                        
+      
+				</xpath>
+                <xpath expr="//field[@name='origin']" position="after">
+                       <field name="routing_t_id"/>
+                        <field name="product_t_qty"/>              
+                        <field name="routing_fo_id"/>
+                        <field name="product_fo_qty"/>
+                </xpath>     -->
+
+			</field>
+	  </record>
+        
+  </data>
+</odoo>
