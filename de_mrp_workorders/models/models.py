@@ -10,12 +10,7 @@ class MrpWorkorder(models.Model):
     qty_production = fields.Float('Original Production Quantity', readonly=True)
     
     
-#     @api.onchange('qty_production')
-#     def onchange_qty_production(self):
-#         if self.qty_production > self.qty_remaining:
-            
-#         else:
-#             pass
+
     
     def do_finish(self):
         res = super(MrpWorkorder, self).do_finish()
