@@ -9,13 +9,26 @@ class MrpWorkorder(models.Model):
     
     qty_production = fields.Float('Original Production Quantity', readonly=True)
     
-    def open_tablet_view(self):
-        #         vals = {
-        #             'sale_id': self.name,
-        #         }
-        #         test = self.env['mrp.production'].write(vals)
-        res = super(MrpWorkorder, self).open_tablet_view()
-        self.action_skip()
+    
+#     @api.onchange('qty_production')
+#     def onchange_qty_production(self):
+#         if self.qty_production > self.qty_remaining:
+            
+#         else:
+#             pass
+    
+    def do_finish(self):
+        res = super(MrpWorkorder, self).do_finish()
+        self.write({
+            'state': 'done',
+        })     
+        return res
+    
+    def action_open_manufacturing_order(self):
+        res = super(MrpWorkorder, self).action_open_manufacturing_order()
+        self.write({
+            'state': 'done',
+        })     
         return res
 
 
@@ -58,8 +71,11 @@ class MrpProduction(models.Model):
                 'date_planned_start': self.date_planned_start,
                 'date_planned_finished': self.date_planned_start,                             
                 'product_uom_id': self.product_id.uom_id.id,
-                'is_user_working': False,
+                'is_user_working': True,
                 'quality_check_todo': True,
+                'is_last_step': True,
+                'skipped_check_ids': [],
+                'is_last_lot': True,
                 'operation_id': self.routing_f_id.operation_ids.id,
                 'duration_expected': self.routing_f_id.operation_ids.time_cycle,
                 'state':'ready' or 'pending',
@@ -100,8 +116,11 @@ class MrpProduction(models.Model):
                 'date_planned_start': self.date_planned_start,
                 'date_planned_finished': self.date_planned_start,             
                 'product_uom_id': self.product_id.uom_id.id,
-                'is_user_working': False,
+                'is_user_working': True,
                 'quality_check_todo': True,
+                'is_last_step': True,
+                'skipped_check_ids': [],
+                'is_last_lot': True,
                 'operation_id': self.routing_s_id.operation_ids.id,
                 'duration_expected': self.routing_s_id.operation_ids.time_cycle,
                 'state':'ready' or 'pending',
@@ -146,8 +165,11 @@ class MrpProduction(models.Model):
                 'state':'ready' or 'pending',
                 'qty_production': self.product_t_qty,
                 'company_id': self.company_id.id,
-                'is_user_working': False,
+                'is_user_working': True,
                 'quality_check_todo': True,
+                'is_last_step': True,
+                'skipped_check_ids': [],
+                'is_last_lot': True,
                 'qty_remaining': self.product_t_qty,               
                 'qty_producing': quantity,
                 'consumption': self.bom_id.consumption,
@@ -186,8 +208,11 @@ class MrpProduction(models.Model):
 #                 'qty_production': self.product_fo_qty,
                  'qty_production': self.product_fo_qty, 
                  'company_id': self.company_id.id,
-                'is_user_working': False,
+                'is_user_working': True,
                 'quality_check_todo': True,
+                'is_last_step': True,
+                'skipped_check_ids': [],
+                'is_last_lot': True,
                  'qty_remaining': self.product_fo_qty,               
                 'qty_producing': quantity,
                 'consumption': self.bom_id.consumption,

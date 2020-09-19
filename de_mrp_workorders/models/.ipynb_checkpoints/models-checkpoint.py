@@ -8,6 +8,29 @@ class MrpWorkorder(models.Model):
     _inherit = 'mrp.workorder'
     
     qty_production = fields.Float('Original Production Quantity', readonly=True)
+    
+    
+#     @api.onchange('qty_production')
+#     def onchange_qty_production(self):
+#         if self.qty_production > self.qty_remaining:
+            
+#         else:
+#             pass
+    
+    def do_finish(self):
+        res = super(MrpWorkorder, self).do_finish()
+        self.write({
+            'state': 'done',
+        })     
+        return res
+    
+    def action_open_manufacturing_order(self):
+        res = super(MrpWorkorder, self).action_open_manufacturing_order()
+        self.write({
+            'state': 'done',
+        })     
+        return res
+
 
 
 
@@ -49,10 +72,16 @@ class MrpProduction(models.Model):
                 'date_planned_finished': self.date_planned_start,                             
                 'product_uom_id': self.product_id.uom_id.id,
                 'is_user_working': True,
+                'quality_check_todo': True,
+                'is_last_step': True,
+                'skipped_check_ids': [],
+                'is_last_lot': True,
                 'operation_id': self.routing_f_id.operation_ids.id,
                 'duration_expected': self.routing_f_id.operation_ids.time_cycle,
                 'state':'ready' or 'pending',
                 'qty_production': self.product_f_qty,
+                'company_id': self.company_id.id,
+                'company_id': self.company_id.id,
                 'qty_remaining': self.product_f_qty,                            
                 'qty_producing': quantity,
                 'consumption': self.bom_id.consumption,
@@ -65,9 +94,9 @@ class MrpProduction(models.Model):
                     'raw_workorder_id': workorders.id,
                     'product_id': line.product_id.id,
                     'qty_to_consume': self.product_f_qty,
-                    'qty_reserved': self.product_f_qty,
+#                     'qty_reserved': self.product_f_qty,
                     'product_uom_id': line.product_uom.id,
-                    'qty_done': self.product_f_qty,
+#                     'qty_done': self.product_f_qty,
                     
                 }
         
@@ -88,10 +117,16 @@ class MrpProduction(models.Model):
                 'date_planned_finished': self.date_planned_start,             
                 'product_uom_id': self.product_id.uom_id.id,
                 'is_user_working': True,
+                'quality_check_todo': True,
+                'is_last_step': True,
+                'skipped_check_ids': [],
+                'is_last_lot': True,
                 'operation_id': self.routing_s_id.operation_ids.id,
                 'duration_expected': self.routing_s_id.operation_ids.time_cycle,
                 'state':'ready' or 'pending',
                 'qty_production': self.product_s_qty,
+                'company_id': self.company_id.id,
+            
                 'qty_remaining': self.product_s_qty,               
                 'qty_producing': quantity,
                 'consumption': self.bom_id.consumption,
@@ -104,9 +139,9 @@ class MrpProduction(models.Model):
                     'raw_workorder_id': workorders.id,
                     'product_id': line.product_id.id,
                     'qty_to_consume': self.product_s_qty,
-                    'qty_reserved': self.product_s_qty,
+#                     'qty_reserved': self.product_s_qty,
                     'product_uom_id': line.product_uom.id,
-                    'qty_done': self.product_s_qty,
+#                     'qty_done': self.product_s_qty,
                 }
                 workorder_lines = self.env['mrp.workorder.line'].create(slines)
         else:
@@ -122,13 +157,19 @@ class MrpProduction(models.Model):
                 'production_id': self.id,
                 'workcenter_id': self.routing_t_id.id,
                 'date_planned_start': self.date_planned_start,
-                'date_planned_finished': self.date_planned_start,                           
+                'date_planned_finished': self.date_planned_start,
+                'company_id': self.company_id.id,
                 'product_uom_id': self.product_id.uom_id.id,
-                 'is_user_working': True,               
                 'operation_id': self.routing_t_id.operation_ids.id,
                 'duration_expected': self.routing_t_id.operation_ids.time_cycle,
                 'state':'ready' or 'pending',
-                'qty_production': self.product_t_qty, 
+                'qty_production': self.product_t_qty,
+                'company_id': self.company_id.id,
+                'is_user_working': True,
+                'quality_check_todo': True,
+                'is_last_step': True,
+                'skipped_check_ids': [],
+                'is_last_lot': True,
                 'qty_remaining': self.product_t_qty,               
                 'qty_producing': quantity,
                 'consumption': self.bom_id.consumption,
@@ -140,9 +181,9 @@ class MrpProduction(models.Model):
                     'raw_workorder_id': workorders.id,                    
                     'product_id': line.product_id.id,
                     'qty_to_consume': self.product_t_qty,
-                    'qty_reserved': self.product_t_qty,
+#                     'qty_reserved': self.product_t_qty,
                     'product_uom_id': line.product_uom.id,       
-                    'qty_done': self.product_t_qty,
+#                     'qty_done': self.product_t_qty,
                 }
                 workorder_lines = self.env['mrp.workorder.line'].create(tlines)
         else:
@@ -158,14 +199,20 @@ class MrpProduction(models.Model):
                 'production_id': self.id,
                 'workcenter_id': self.routing_fo_id.id,
                 'date_planned_start': self.date_planned_start,
-                'date_planned_finished': self.date_planned_start,             
+                'date_planned_finished': self.date_planned_start,
+                'company_id': self.company_id.id,
                 'product_uom_id': self.product_id.uom_id.id,
-                 'is_user_working': True,               
                 'operation_id': self.routing_fo_id.operation_ids.id,
                 'duration_expected': self.routing_fo_id.operation_ids.time_cycle,
                 'state':'ready' or 'pending',
 #                 'qty_production': self.product_fo_qty,
                  'qty_production': self.product_fo_qty, 
+                 'company_id': self.company_id.id,
+                'is_user_working': True,
+                'quality_check_todo': True,
+                'is_last_step': True,
+                'skipped_check_ids': [],
+                'is_last_lot': True,
                  'qty_remaining': self.product_fo_qty,               
                 'qty_producing': quantity,
                 'consumption': self.bom_id.consumption,
@@ -177,9 +224,9 @@ class MrpProduction(models.Model):
                     'raw_workorder_id': workorders.id,                    
                     'product_id': line.product_id.id,
                     'qty_to_consume': self.product_fo_qty,
-                    'qty_reserved': self.product_fo_qty, 
+#                     'qty_reserved': self.product_fo_qty, 
                     'product_uom_id': line.product_uom.id,                  
-                    'qty_done': self.product_fo_qty,                   
+#                     'qty_done': self.product_fo_qty,                   
                 }
                 workorder_lines = self.env['mrp.workorder.line'].create(folines)
         else:
