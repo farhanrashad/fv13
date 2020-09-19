@@ -24,12 +24,12 @@ class MrpWorkorder(models.Model):
         })     
         return res
     
-    def action_open_manufacturing_order(self):
-        res = super(MrpWorkorder, self).action_open_manufacturing_order()
-        self.write({
-            'state': 'done',
-        })     
-        return res
+#     def action_open_manufacturing_order(self):
+#         res = super(MrpWorkorder, self).action_open_manufacturing_order()
+#         self.write({
+#             'state': 'done',
+#         })     
+#         return res
 
 
 
