@@ -1,0 +1,43 @@
+<odoo>
+  <data>
+      
+      <record id="mo_before_menu_wizard_form" model="ir.ui.view">
+            <field name="name">mrp.mo.beforehand.wizard.form</field>
+            <field name="model">mrp.mo.beforehand.wizard</field>
+            <field name="arch" type="xml">
+                <form>
+<!--                     <field name="account_type" invisible="1"/>
+                    <field name="company_id" invisible="1"/> -->
+                    <group>
+                        <group>
+                            <field name="mrp_id"/>
+<!--                             <field name="expense_accrual_account" string="Accrued Account"
+                                   attrs="{'invisible': [('account_type', '!=', 'expense')], 'required': [('account_type', '=', 'expense')]}"/>
+                            <field name="revenue_accrual_account" string="Accrued Account"
+                                   attrs="{'invisible': [('account_type', '!=', 'income')], 'required': [('account_type', '=', 'income')]}"/> -->
+                        </group>
+                        <group>
+<!--                             <field name="percentage" string="Percent (%)"/>
+                            <field name="total_amount" string="Amount"/>
+                            <field name="journal_id"/> -->
+                        </group>
+                    </group>
+                    <footer>
+                        <button string="Create PO" name="amend_entries" type="object" class="oe_highlight"/>
+                        <button string="Cancel" class="btn btn-secondary" special="cancel"/>
+                    </footer>
+                </form>
+            </field>
+        </record>
+
+        <record id="mo_before_menu_wizard_action" model="ir.actions.act_window">
+            <field name="name">Create Mo beforehand</field>
+            <field name="res_model">mrp.mo.beforehand.wizard</field>
+            <field name="view_mode">form</field>
+            <field name="target">new</field>
+        </record>
+   
+      
+      <menuitem name="MOs Beforehand" id="mos_beforehand_menu" parent="mrp.menu_mrp_manufacturing" action="mo_before_menu_wizard_action" sequence="3"/>
+  </data>
+</odoo>

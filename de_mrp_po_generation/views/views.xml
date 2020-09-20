@@ -1,0 +1,60 @@
+<odoo>
+  <data>
+    <!-- explicit list view definition -->
+<!--
+    <record model="ir.ui.view" id="de_mrp_po_generation.list">
+      <field name="name">de_mrp_po_generation list</field>
+      <field name="model">de_mrp_po_generation.de_mrp_po_generation</field>
+      <field name="arch" type="xml">
+        <tree>
+          <field name="name"/>
+          <field name="value"/>
+          <field name="value2"/>
+        </tree>
+      </field>
+    </record>
+-->
+
+    <!-- actions opening views on models -->
+<!--
+    <record model="ir.actions.act_window" id="de_mrp_po_generation.action_window">
+      <field name="name">de_mrp_po_generation window</field>
+      <field name="res_model">de_mrp_po_generation.de_mrp_po_generation</field>
+      <field name="view_mode">tree,form</field>
+    </record>
+-->
+
+    <!-- server action to the one above -->
+<!--
+    <record model="ir.actions.server" id="de_mrp_po_generation.action_server">
+      <field name="name">de_mrp_po_generation server</field>
+      <field name="model_id" ref="model_de_mrp_po_generation_de_mrp_po_generation"/>
+      <field name="state">code</field>
+      <field name="code">
+        action = {
+          "type": "ir.actions.act_window",
+          "view_mode": "tree,form",
+          "res_model": model._name,
+        }
+      </field>
+    </record>
+-->
+
+    <!-- Top menu item -->
+<!--
+    <menuitem name="de_mrp_po_generation" id="de_mrp_po_generation.menu_root"/>
+-->
+    <!-- menu categories -->
+<!--
+    <menuitem name="Menu 1" id="de_mrp_po_generation.menu_1" parent="de_mrp_po_generation.menu_root"/>
+    <menuitem name="Menu 2" id="de_mrp_po_generation.menu_2" parent="de_mrp_po_generation.menu_root"/>
+-->
+    <!-- actions -->
+<!--
+    <menuitem name="List" id="de_mrp_po_generation.menu_1_list" parent="de_mrp_po_generation.menu_1"
+              action="de_mrp_po_generation.action_window"/>
+    <menuitem name="Server to list" id="de_mrp_po_generation" parent="de_mrp_po_generation.menu_2"
+              action="de_mrp_po_generation.action_server"/>
+-->
+  </data>
+</odoo>
