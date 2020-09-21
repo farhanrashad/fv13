@@ -20,12 +20,12 @@
     'version': '0.1',
 
     # any module necessary for this one to work correctly
-    'depends': ['base','mrp','purchase'],
+    'depends': ['base','mrp','purchase','sale'],
 
     # always loaded
     'data': [
         'security/ir.model.access.csv',
-        'wizard/mo_wizard_views.xml',
+        #'wizard/mo_wizard_views.xml',
         'views/views.xml',
         'views/templates.xml',
     ],

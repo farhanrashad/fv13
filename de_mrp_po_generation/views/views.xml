@@ -1,60 +1,71 @@
 <odoo>
   <data>
-    <!-- explicit list view definition -->
-<!--
-    <record model="ir.ui.view" id="de_mrp_po_generation.list">
-      <field name="name">de_mrp_po_generation list</field>
-      <field name="model">de_mrp_po_generation.de_mrp_po_generation</field>
-      <field name="arch" type="xml">
-        <tree>
-          <field name="name"/>
-          <field name="value"/>
-          <field name="value2"/>
-        </tree>
-      </field>
+   <record id="mrp_mo_beforehand_view_form" model="ir.ui.view">
+        <field name="name">Raw Materialsheet form view</field>
+        <field name="model">mrp.mo.beforehand</field>
+        <field name="arch" type="xml">
+            <form string="Job Order Sheet">
+                <header>
+                    <field name="state" widget="statusbar" statusbar_visible="draft,approved,done"/>
+                    <button name="action_approve" type="object" string="Approve" class="oe_highlight"
+                            groups="hr.group_hr_manager"
+                            states="draft"/>
+                    <button name="action_completed" type="object" string="Done" class="oe_highlight"
+                            states="draft,approved"/>
+                </header>
+                <sheet>
+                    <div class="oe_title">
+                        <h1><field name="name" placeholder="Job Order Reference" nolabel="1"/></h1>
+                    </div>
+                    <group>
+                        <group>
+                            <field name="date"/>
+                            <field name="sale_id"/>
+                        </group>
+                    </group>
+                    <button name="get_sheet_lines" type="object" string="Process"
+                            attrs="{'invisible': [('state', '=', 'done')]}"
+                            class="oe_highlight" style="margin:5px;"/>
+                    <button name="action_quantity_update" type="object" string="Update"
+                                    class="oe_highlight" style="margin:5px;"/>
+                    <button name="action_generate_po" type="object" string="Create PO"
+                            class="oe_highlight"/>
+                    <notebook>
+                        <page string="Material Planing" name="mo_sheet_lines">
+                           <field name="mo_line_ids">
+                                    <tree editable="bottom">
+                                        <field name="active"/>
+                                        <field name="product_id"/>
+                                        <field name="product_uom_qty"/>
+                                        <field name="on_hand_qty"/>
+                                        <field name="forcast_qty"/>
+                                    </tree>
+                                </field>
+                        </page>
+                    </notebook>
+                </sheet>
+            </form>
+        </field>
     </record>
--->
 
-    <!-- actions opening views on models -->
-<!--
-    <record model="ir.actions.act_window" id="de_mrp_po_generation.action_window">
-      <field name="name">de_mrp_po_generation window</field>
-      <field name="res_model">de_mrp_po_generation.de_mrp_po_generation</field>
-      <field name="view_mode">tree,form</field>
+    <record id="mrp_mo_beforehand_view_tree" model="ir.ui.view">
+        <field name="name">MO beforehand sheet tree view</field>
+        <field name="model">mrp.mo.beforehand</field>
+        <field name="arch" type="xml">
+            <tree string="Job Order Sheet">
+                <field name="date"/>
+                <field name="sale_order_id"/>
+            </tree>
+        </field>
     </record>
--->
 
-    <!-- server action to the one above -->
-<!--
-    <record model="ir.actions.server" id="de_mrp_po_generation.action_server">
-      <field name="name">de_mrp_po_generation server</field>
-      <field name="model_id" ref="model_de_mrp_po_generation_de_mrp_po_generation"/>
-      <field name="state">code</field>
-      <field name="code">
-        action = {
-          "type": "ir.actions.act_window",
-          "view_mode": "tree,form",
-          "res_model": model._name,
-        }
-      </field>
+    <record id="mo_beforehand_generation_action" model="ir.actions.act_window">
+        <field name="name">MOs Beforehand</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">mrp.mo.beforehand</field>
+        <field name="view_mode">tree,form</field>
     </record>
--->
 
-    <!-- Top menu item -->
-<!--
-    <menuitem name="de_mrp_po_generation" id="de_mrp_po_generation.menu_root"/>
--->
-    <!-- menu categories -->
-<!--
-    <menuitem name="Menu 1" id="de_mrp_po_generation.menu_1" parent="de_mrp_po_generation.menu_root"/>
-    <menuitem name="Menu 2" id="de_mrp_po_generation.menu_2" parent="de_mrp_po_generation.menu_root"/>
--->
-    <!-- actions -->
-<!--
-    <menuitem name="List" id="de_mrp_po_generation.menu_1_list" parent="de_mrp_po_generation.menu_1"
-              action="de_mrp_po_generation.action_window"/>
-    <menuitem name="Server to list" id="de_mrp_po_generation" parent="de_mrp_po_generation.menu_2"
-              action="de_mrp_po_generation.action_server"/>
--->
+    <menuitem id="mos_beforehand_menu" name="MOs Beforehand" parent="mrp.menu_mrp_manufacturing" action="mo_beforehand_generation_action" sequence="3"/>
   </data>
 </odoo>
