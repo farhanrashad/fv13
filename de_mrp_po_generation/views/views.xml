@@ -54,7 +54,7 @@
         <field name="arch" type="xml">
             <tree string="Job Order Sheet">
                 <field name="date"/>
-                <field name="sale_order_id"/>
+                <field name="sale_id"/>
             </tree>
         </field>
     </record>
