@@ -3,6 +3,7 @@
 # -*- coding: utf-8 -*-
 
 from odoo import models, fields, api, _
+from datetime import datetime
 
 class MrpWorkorder(models.Model):
     _inherit = 'mrp.workorder'
@@ -14,6 +15,7 @@ class MrpWorkorder(models.Model):
     
     def do_finish(self):
         res = super(MrpWorkorder, self).do_finish()
+        self.time_ids.date_end = datetime.today()
         self.write({
             'state': 'done',
         })     
