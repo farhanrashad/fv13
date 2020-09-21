@@ -6,11 +6,12 @@
             <field name="model">mrp.mo.beforehand.wizard</field>
             <field name="arch" type="xml">
                 <form>
-<!--                     <field name="account_type" invisible="1"/>
-                    <field name="company_id" invisible="1"/> -->
+                    <header>
+                        <button name="action_share" type="object" string="Compute" class="oe_highlight"/>
+                    </header>
                     <group>
                         <group>
-                            <field name="mrp_id"/>
+                            <field name="mrp_id" widget="many2many_tags"/>
 <!--                             <field name="expense_accrual_account" string="Accrued Account"
                                    attrs="{'invisible': [('account_type', '!=', 'expense')], 'required': [('account_type', '=', 'expense')]}"/>
                             <field name="revenue_accrual_account" string="Accrued Account"
@@ -22,6 +23,18 @@
                             <field name="journal_id"/> -->
                         </group>
                     </group>
+                    <notebook>
+                        <page string="Components">
+                            <field name="mo_line_ids">
+                                    <tree editable="bottom">
+                                        <field name="product_id"/>
+                                        <field name="product_uom_qty"/>
+                                        <field name="on_hand_qty"/>
+                                        <field name="forcast_qty"/>
+                                    </tree>
+                                </field>
+                        </page>    
+                    </notebook>    
                     <footer>
                         <button string="Create PO" name="amend_entries" type="object" class="oe_highlight"/>
                         <button string="Cancel" class="btn btn-secondary" special="cancel"/>
@@ -31,7 +44,7 @@
         </record>
 
         <record id="mo_before_menu_wizard_action" model="ir.actions.act_window">
-            <field name="name">Create Mo beforehand</field>
+            <field name="name">Create PO from MOs</field>
             <field name="res_model">mrp.mo.beforehand.wizard</field>
             <field name="view_mode">form</field>
             <field name="target">new</field>
