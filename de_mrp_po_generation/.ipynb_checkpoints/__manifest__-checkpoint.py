@@ -24,8 +24,9 @@
 
     # always loaded
     'data': [
+        'data/sequence.xml',
         'security/ir.model.access.csv',
-        'wizard/mo_wizard_views.xml',
+#         'wizard/mo_wizard_views.xml',
         'views/views.xml',
         'views/templates.xml',
     ],
