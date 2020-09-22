@@ -24,7 +24,7 @@ class MoBeforhand(models.Model):
             for order in order_data:
                 data = []
                 for line in order.move_raw_ids:
-                    if not line.product_id.name in '[Cut Material]':
+                    if not '[Cut Material]' in line.product_id.name:
                         data.append((0,0,{
                                     'mo_id': self.id,
                                     'po_process': True, 
@@ -39,22 +39,25 @@ class MoBeforhand(models.Model):
     def action_generate_po(self):
         vendor_list = []
         for line in self.mo_line_ids:
-            vendor_list.append(line.partner_id)
+            if line.partner_id:
+                vendor_list.append(line.partner_id)
+            else:
+                pass
         list = set(vendor_list)
         for te in list:
             product = []
             for re in self.mo_line_ids:
                 if te == re.partner_id:
-                    valss = {
-                        'product_id': re.product_id.id,
-#                         'name': re.product_name,
-                        'product_qty': re.product_uom_qty,
-#                         'analytic_tag_ids': [(6, 0, re.analytic_tag_ids.ids)],
-                        'price_unit': re.product_id.standard_price,
-                        'date_planned': fields.Date.today(),
-#                         'product_uom': re.uom_id.id,
-                    }
-                    product.append(valss)
+                    if re.po_process == True:
+                        valss = {
+                            'product_id': re.product_id.id,
+                            'name': re.product_id.name,
+                            'product_uom_qty': re.product_uom_qty,
+                            'price_unit': re.product_id.standard_price,
+                            'date_planned': fields.Date.today(),
+                            'product_uom': re.product_id.uom_po_id.id,
+                        }
+                        product.append(valss)
             vals = {
                   'partner_id': te.id,
                   'date_order': fields.Date.today(),
@@ -65,12 +68,11 @@ class MoBeforhand(models.Model):
                 order_line = {
                        'order_id': order.id,
                        'product_id': test['product_id'],
-#                        'name': test['name'],
+                       'name': test['name'],
                        'product_qty': test['product_uom_qty'],
-#                        'analytic_tag_ids': test['analytic_tag_ids'],
                        'price_unit': test['price_unit'],
                        'date_planned': fields.Date.today(),
-#                        'product_uom': test['product_uom'],
+                       'product_uom': test['product_uom'],
                         }
                 orders_lines = self.env['purchase.order.line'].create(order_line)
 #                 self.write({
