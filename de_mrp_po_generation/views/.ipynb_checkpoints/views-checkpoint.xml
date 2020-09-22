@@ -21,13 +21,12 @@
                         <group>
                             <field name="date"/>
                             <field name="sale_id"/>
+                            <field name="partner_id"/>
                         </group>
                     </group>
                     <button name="get_sheet_lines" type="object" string="Process"
                             attrs="{'invisible': [('state', '=', 'done')]}"
                             class="oe_highlight" style="margin:5px;"/>
-                    <button name="action_quantity_vendor" type="object" string="Update Vendor"
-                                    class="oe_highlight" style="margin:5px;"/>
                     <button name="action_generate_po" type="object" string="Create PO"
                             class="oe_highlight"/>
                     <notebook>
