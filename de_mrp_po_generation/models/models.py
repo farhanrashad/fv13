@@ -13,6 +13,14 @@ class MoBeforhand(models.Model):
             vals['name'] = self.env['ir.sequence'].next_by_code('mrp.mo.beforehand') or _('New')    
         res = super(MoBeforhand,self).create(vals)
         return res
+    
+    
+    def unlink(self):
+        for leave in self:
+            if leave.state in ('done','process','done'):
+                raise UserError(_('You cannot delete an order form  which is not draft or cancelled. '))
+     
+            return super(MoBeforhand, self).unlink()
 
     
    
@@ -42,7 +50,7 @@ class MoBeforhand(models.Model):
     def action_generate_po(self):
         vendor_list = []
         for line in self.mo_line_ids:
-            if line.partner_id:
+            if line.partner_id and line.po_process == True:
                 vendor_list.append(line.partner_id)
             else:
                 pass
@@ -64,7 +72,7 @@ class MoBeforhand(models.Model):
             vals = {
                   'partner_id': te.id,
                   'date_order': fields.Date.today(),
-                  'sale_ref_id': self.sale_id.id,
+                  'sale_ref_id': self.sale_id.name,
                   'origin': self.name,
                     }
             order = self.env['purchase.order'].create(vals)
