@@ -21,8 +21,8 @@ class MoBeforhand(models.Model):
         for rec in self:
             rec.mo_line_ids.unlink()
             order_data = self.env['mrp.production'].search([('sale_id', '=', rec.sale_id.name),('product_id.name', '=ilike', '[Module]%')])
+            data = []
             for order in order_data:
-                data = []
                 for line in order.move_raw_ids:
                     if not '[Cut Material]' in line.product_id.name:
                         data.append((0,0,{
