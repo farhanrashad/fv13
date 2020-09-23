@@ -1,7 +1,7 @@
 <odoo>
   <data>
    <record id="mrp_mo_beforehand_view_form" model="ir.ui.view">
-        <field name="name">Raw Materialsheet form view</field>
+        <field name="name">Processed Material Planning form view</field>
         <field name="model">mrp.mo.beforehand</field>
         <field name="arch" type="xml">
             <form string="Job Order Sheet">
@@ -30,15 +30,15 @@
                     <button name="action_generate_po" type="object" string="Create PO"
                             class="oe_highlight"/>
                     <notebook>
-                        <page string="Material Planing" name="mo_sheet_lines">
+                        <page string="Material Planning" name="mo_sheet_lines">
                            <field name="mo_line_ids">
                                     <tree editable="bottom"  create="False" delete="False">
-                                        <field name="po_process"/>
-                                        <field name="product_id"/>
-                                        <field name="product_uom_qty"/>
-                                        <field name="on_hand_qty"/>
-                                        <field name="forcast_qty"/>
-                                        <field name="partner_id"/>
+                                        <field name="po_process" attrs="{'readonly': ['partner_id','=',True]}"/>
+                                        <field name="product_id" attrs="{'readonly': [('partner_id','=',True)]}"/>
+                                        <field name="product_uom_qty" attrs="{'readonly': [('partner_id','=',True)]}"/>
+                                        <field name="on_hand_qty" attrs="{'readonly': [('partner_id','=',True)]}"/>
+                                        <field name="forcast_qty" attrs="{'readonly': [('partner_id','=',True)]}"/>
+                                        <field name="partner_id" attrs="{'readonly': [('partner_id','=',True)]}"/>
                                     </tree>
                                 </field>
                         </page>
@@ -61,13 +61,13 @@
     </record>
 
     <record id="mo_beforehand_generation_action" model="ir.actions.act_window">
-        <field name="name">MOs Beforehand</field>
+        <field name="name">Processed Material Planning</field>
         <field name="type">ir.actions.act_window</field>
         <field name="res_model">mrp.mo.beforehand</field>
         <field name="view_mode">tree,form</field>
     </record>
 
-    <menuitem id="mos_beforehand_menu" name="MOs Beforehand" parent="mrp.menu_mrp_manufacturing" action="mo_beforehand_generation_action" sequence="3"/>
-<menuitem id="inventory_mos_beforehand_menu" name="MOs Beforehand" parent="stock.menu_stock_warehouse_mgmt" action="mo_beforehand_generation_action" sequence="3"/>
+    <menuitem id="mos_beforehand_menu" name="Processed Material Planning" parent="mrp.menu_mrp_manufacturing" action="mo_beforehand_generation_action" sequence="3"/>
+<menuitem id="inventory_mos_beforehand_menu" name="Processed Material Planning" parent="stock.menu_stock_warehouse_mgmt" action="mo_beforehand_generation_action" sequence="3"/>
   </data>
 </odoo>

@@ -75,10 +75,12 @@ class MoBeforhand(models.Model):
                        'product_uom': test['product_uom'],
                         }
                 orders_lines = self.env['purchase.order.line'].create(order_line)
-#                 self.write({
-#                     'po_created': True
-#                 })
-
+                for line in self.mo_line_ids:
+            	if line.po_process == True and line.partner_id==True:
+                	line.update ({
+                        'po_process': False,
+                    	})    
+                
                     
             
 #     def action_quantity_vendor(self):        
@@ -129,7 +131,7 @@ class MoBeforhandWizardLine(models.Model):
     
     po_process = fields.Boolean(string='Select')
     product_id = fields.Many2one('product.product',string="Product")
-    product_uom_qty = fields.Float(string='Qty to consume')
+    product_uom_qty = fields.Float(string='Qty to Required')
     on_hand_qty = fields.Float(string="Quantity On Hand")
     forcast_qty = fields.Float(string="Forcast Quantity")
     mo_id = fields.Many2one('mrp.mo.beforehand',string="Product")
