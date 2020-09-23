@@ -76,8 +76,8 @@ class MoBeforhand(models.Model):
                         }
                 orders_lines = self.env['purchase.order.line'].create(order_line)
                 for line in self.mo_line_ids:
-            	if line.po_process == True and line.partner_id==True:
-                	line.update ({
+            	    if line.po_process == True and line.partner_id==True:
+                        line.update ({
                         'po_process': False,
                     	})    
                 
