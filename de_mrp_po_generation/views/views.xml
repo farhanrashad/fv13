@@ -53,6 +53,7 @@
         <field name="model">mrp.mo.beforehand</field>
         <field name="arch" type="xml">
             <tree string="Job Order Sheet">
+                <field name="name"/> 
                 <field name="date"/>
                 <field name="sale_id"/>
             </tree>
