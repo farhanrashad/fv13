@@ -21,8 +21,8 @@ class MoBeforhand(models.Model):
         for rec in self:
             rec.mo_line_ids.unlink()
             order_data = self.env['mrp.production'].search([('sale_id', '=', rec.sale_id.name),('product_id.name', '=ilike', '[Module]%')])
+            data = []
             for order in order_data:
-                data = []
                 for line in order.move_raw_ids:
                     if not '[Cut Material]' in line.product_id.name:
                         data.append((0,0,{
@@ -75,10 +75,12 @@ class MoBeforhand(models.Model):
                        'product_uom': test['product_uom'],
                         }
                 orders_lines = self.env['purchase.order.line'].create(order_line)
-#                 self.write({
-#                     'po_created': True
-#                 })
-
+                for line in self.mo_line_ids:
+            	    if line.po_process == True and line.partner_id==True:
+                        line.update ({
+                        'po_process': False,
+                    	})    
+                
                     
             
 #     def action_quantity_vendor(self):        
@@ -97,7 +99,7 @@ class MoBeforhand(models.Model):
     name = fields.Char(
         'Reference', copy=False, readonly=True, default=lambda x: _('New'))
     date = fields.Date(string='Date', required=True)
-    sale_id = fields.Many2one('sale.order',string="Ref Sale")
+    sale_id = fields.Many2one('sale.order',string="Ref Sale", required=True)
     partner_id = fields.Many2one('res.partner', string="Vendor")
     mo_line_ids = fields.One2many('mrp.mo.beforehand.line','mo_id',string="Manufacturing Order")
     state = fields.Selection([
@@ -129,7 +131,7 @@ class MoBeforhandWizardLine(models.Model):
     
     po_process = fields.Boolean(string='Select')
     product_id = fields.Many2one('product.product',string="Product")
-    product_uom_qty = fields.Float(string='Qty to consume')
+    product_uom_qty = fields.Float(string='Qty to Required')
     on_hand_qty = fields.Float(string="Quantity On Hand")
     forcast_qty = fields.Float(string="Forcast Quantity")
     mo_id = fields.Many2one('mrp.mo.beforehand',string="Product")
