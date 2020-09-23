@@ -16,9 +16,9 @@ class MrpWorkorder(models.Model):
     def do_finish(self):
         res = super(MrpWorkorder, self).do_finish()
         self.time_ids.date_end = datetime.today()
-        #self.write({
-        #    'state': 'done',
-        #})     
+        self.write({
+           'state': 'done',
+        })     
         return res
     
 #     def action_open_manufacturing_order(self):
