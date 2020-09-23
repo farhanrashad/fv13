@@ -1,0 +1,73 @@
+<odoo>
+  <data>
+   <record id="mrp_mo_beforehand_view_form" model="ir.ui.view">
+        <field name="name">Processed Material Planning form view</field>
+        <field name="model">mrp.mo.beforehand</field>
+        <field name="arch" type="xml">
+            <form string="Job Order Sheet">
+                <header>
+                    <field name="state" widget="statusbar" statusbar_visible="draft,approved,done"/>
+                    <button name="action_approve" type="object" string="Approve" class="oe_highlight"
+                            groups="hr.group_hr_manager"
+                            states="draft"/>
+                    <button name="action_completed" type="object" string="Done" class="oe_highlight"
+                            states="draft,approved"/>
+                </header>
+                <sheet>
+                    <div class="oe_title">
+                        <h1><field name="name" placeholder="Job Order Reference" nolabel="1"/></h1>
+                    </div>
+                    <group>
+                        <group>
+                            <field name="date"/>
+                            <field name="sale_id"/>
+                            <field name="partner_id"/>
+                        </group>
+                    </group>
+                    <button name="get_sheet_lines" type="object" string="Process"
+                            attrs="{'invisible': [('state', '=', 'done')]}"
+                            class="oe_highlight" style="margin:5px;"/>
+                    <button name="action_generate_po" type="object" string="Create PO"
+                            class="oe_highlight"/>
+                    <notebook>
+                        <page string="Material Planning" name="mo_sheet_lines">
+                           <field name="mo_line_ids">
+                                    <tree editable="bottom"  create="False" delete="False">
+                                        <field name="po_process" attrs="{'readonly': [('partner_id','=',True)]}"/>
+                                        <field name="product_id" attrs="{'readonly': [('partner_id','=',True)]}"/>
+                                        <field name="product_uom_qty" attrs="{'readonly': [('partner_id','=',True)]}"/>
+                                        <field name="on_hand_qty" attrs="{'readonly': [('partner_id','=',True)]}"/>
+                                        <field name="forcast_qty" attrs="{'readonly': [('partner_id','=',True)]}"/>
+                                        <field name="partner_id" attrs="{'readonly': [('partner_id','=',True)]}"/>
+                                    </tree>
+                                </field>
+                        </page>
+                    </notebook>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="mrp_mo_beforehand_view_tree" model="ir.ui.view">
+        <field name="name">MO beforehand sheet tree view</field>
+        <field name="model">mrp.mo.beforehand</field>
+        <field name="arch" type="xml">
+            <tree string="Job Order Sheet">
+                <field name="name"/> 
+                <field name="date"/>
+                <field name="sale_id"/>
+            </tree>
+        </field>
+    </record>
+
+    <record id="mo_beforehand_generation_action" model="ir.actions.act_window">
+        <field name="name">Processed Material Planning</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">mrp.mo.beforehand</field>
+        <field name="view_mode">tree,form</field>
+    </record>
+
+    <menuitem id="mos_beforehand_menu" name="Processed Material Planning" parent="mrp.menu_mrp_manufacturing" action="mo_beforehand_generation_action" sequence="3"/>
+<menuitem id="inventory_mos_beforehand_menu" name="Processed Material Planning" parent="stock.menu_stock_warehouse_mgmt" action="mo_beforehand_generation_action" sequence="3"/>
+  </data>
+</odoo>

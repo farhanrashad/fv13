@@ -1,0 +1,4 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_mrp_mo_beforehand_wizard,access.mrp.mo.beforehand.wizard,model_mrp_mo_beforehand_wizard,,1,1,1,1
+access_mrp_mo_beforehand,access.mrp.mo.beforehand,model_mrp_mo_beforehand,,1,1,1,1
+access_mrp_mo_beforehand_line,access.mrp.mo.beforehand.line,model_mrp_mo_beforehand_line,,1,1,1,1
