@@ -68,6 +68,6 @@
     </record>
 
     <menuitem id="mos_beforehand_menu" name="MOs Beforehand" parent="mrp.menu_mrp_manufacturing" action="mo_beforehand_generation_action" sequence="3"/>
-<menuitem id="inventory_mos_beforehand_menu" name="MOs Beforehand" parent="stock.menu_stock_wharehouse_mgmt" action="mo_beforehand_generation_action" sequence="3"/>
+<menuitem id="inventory_mos_beforehand_menu" name="MOs Beforehand" parent="stock.menu_stock_warehouse_mgmt" action="mo_beforehand_generation_action" sequence="3"/>
   </data>
 </odoo>
