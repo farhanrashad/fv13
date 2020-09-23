@@ -35,6 +35,9 @@ class MoBeforhand(models.Model):
                              }))
                         
             rec.mo_line_ids = data
+            self.write ({
+                'state': 'process'
+            })
             
     def action_generate_po(self):
         vendor_list = []
@@ -61,6 +64,7 @@ class MoBeforhand(models.Model):
             vals = {
                   'partner_id': te.id,
                   'date_order': fields.Date.today(),
+                  'sale_ref_id': self.sale_id.id,
                   'origin': self.name,
                     }
             order = self.env['purchase.order'].create(vals)
@@ -75,15 +79,16 @@ class MoBeforhand(models.Model):
                        'product_uom': test['product_uom'],
                         }
                 orders_lines = self.env['purchase.order.line'].create(order_line)
-                for line in self.mo_line_ids:
-            	    if line.po_process == True and line.partner_id==True:
-                        line.update ({
-                        'po_process': False,
-                    	})    
+        self.partner_id= False       
+        for line in self.mo_line_ids:
+            if line.po_process == True and not line.partner_id=='':
+                line.update ({
+                   'po_process': False,
+                    'po_created': True,
+                  	})    
                 
                     
             
-#     def action_quantity_vendor(self):        
             
 
 
@@ -104,6 +109,7 @@ class MoBeforhand(models.Model):
     mo_line_ids = fields.One2many('mrp.mo.beforehand.line','mo_id',string="Manufacturing Order")
     state = fields.Selection([
         ('draft', 'Draft'),
+        ('process', 'Process'),
         ('approved', 'Approved'),
         ('done', 'Completed')],
         readonly=True, string='State', default='draft')
@@ -130,6 +136,7 @@ class MoBeforhandWizardLine(models.Model):
     _description = 'Create PO from MO'
     
     po_process = fields.Boolean(string='Select')
+    po_created = fields.Boolean(string='PO Created')
     product_id = fields.Many2one('product.product',string="Product")
     product_uom_qty = fields.Float(string='Qty to Required')
     on_hand_qty = fields.Float(string="Quantity On Hand")
