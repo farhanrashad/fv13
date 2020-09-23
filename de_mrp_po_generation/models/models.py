@@ -97,7 +97,7 @@ class MoBeforhand(models.Model):
     name = fields.Char(
         'Reference', copy=False, readonly=True, default=lambda x: _('New'))
     date = fields.Date(string='Date', required=True)
-    sale_id = fields.Many2one('sale.order',string="Ref Sale")
+    sale_id = fields.Many2one('sale.order',string="Ref Sale", required=True)
     partner_id = fields.Many2one('res.partner', string="Vendor")
     mo_line_ids = fields.One2many('mrp.mo.beforehand.line','mo_id',string="Manufacturing Order")
     state = fields.Selection([
