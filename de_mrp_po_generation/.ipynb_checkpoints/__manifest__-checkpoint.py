@@ -20,10 +20,11 @@
     'version': '0.1',
 
     # any module necessary for this one to work correctly
-    'depends': ['base','mrp','purchase','sale'],
+    'depends': ['base','mrp','purchase','sale','stock'],
 
     # always loaded
     'data': [
+        'data/po_create_server_action.xml',
         'data/sequence.xml',
         'security/ir.model.access.csv',
 #         'wizard/mo_wizard_views.xml',
