@@ -5,8 +5,23 @@
 			<field name="model">mrp.workorder</field>
 			<field name="inherit_id" ref="mrp.mrp_production_workorder_tree_view_inherit"/>
 			<field name="arch" type="xml">
-				<xpath expr="//field[@name='qty_production']" position="before">
+				<xpath expr="//field[@name='product_uom_id']" position="before">
                         <field name="qty_production"/>
+            
+				</xpath>
+			</field>
+	  </record>
+       <record id="mo_form_view_inherit" model="ir.ui.view">
+			<field name="name">mrp.production.tree.view.inherit</field>
+			<field name="model">mrp.production</field>
+			<field name="inherit_id" ref="mrp.mrp_production_form_view"/>
+			<field name="arch" type="xml">
+				<xpath expr="//button[@name='button_plan']" position="attributes">
+                    <attribute name="invisible">1</attribute>
+            
+				</xpath>
+                <xpath expr="//field[@name='routing_id']" position="attributes">
+                    <attribute name="invisible">1</attribute>
             
 				</xpath>
 			</field>
@@ -17,7 +32,7 @@
 			<field name="model">mrp.workorder</field>
 			<field name="inherit_id" ref="mrp.mrp_production_workorder_form_view_inherit"/>
 			<field name="arch" type="xml">
-				<xpath expr="//field[@name='qty_production']" position="before">
+				<xpath expr="//field[@name='product_uom_id']" position="before">
                         
                         <field name="qty_production"/>
 				</xpath>
@@ -45,11 +60,11 @@
 			<field name="inherit_id" ref="mrp.mrp_production_form_view"/>
 			<field name="arch" type="xml">
                 <xpath expr="//button[@name='action_assign']" position="after">
-                    <button name="button_plans" attrs="{'invisible': ['|', ('state', '!=', 'confirmed')]}" type="object" string="Plan Production" class="oe_highlight"/>
+                    <button name="button_plans" attrs="{'invisible': ['|', ('state', '!=', 'confirmed'), ('routing_id', '=', False)]}" type="object" string="Plan Production" class="oe_highlight"/>
 				</xpath>
                 
                	<xpath expr="//notebook" position="inside">
-                    <page string="Routing Selection">
+                    <page string="Routing Selection" attrs="{'invisible': ['|',('routing_id', '=', False)]}">
                        <group> 
                            <group>
                                 <field name="routing_f_id" string="First Routing"/>
