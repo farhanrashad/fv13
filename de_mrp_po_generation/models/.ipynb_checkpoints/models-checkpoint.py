@@ -172,7 +172,7 @@ class MoBeforhandWizardLine(models.Model):
     def action_generate_po(self):
         vendor_list = []
         for line in self:
-            if line.partner_id and line.po_process == True:
+            if line.partner_id and line.po_created == False:
                 vendor_list.append(line.partner_id)
             else:
                 pass
@@ -181,7 +181,7 @@ class MoBeforhandWizardLine(models.Model):
             product = []
             for re in self:
                 if te == re.partner_id:
-                    if re.po_process == True:
+                    if re.po_created == False:
                         valss = {
                             'product_id': re.product_id.id,
                             'name': re.product_id.name,
