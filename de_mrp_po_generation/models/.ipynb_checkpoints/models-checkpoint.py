@@ -32,7 +32,7 @@ class MoBeforhand(models.Model):
     
     def unlink(self):
         for leave in self:
-            if leave.state in ('done','process','done'):
+            if leave.state in ('process','done'):
                 raise UserError(_('You cannot delete an order form  which is not draft or cancelled. '))
      
             return super(MoBeforhand, self).unlink()
@@ -129,7 +129,6 @@ class MoBeforhand(models.Model):
         'Reference', copy=False, readonly=True, default=lambda x: _('New'))
     date = fields.Date(string='Date', required=True)
     sale_id = fields.Many2one('sale.order',string="Ref Sale", required=True)
-    partner_id = fields.Many2one('res.partner', string="Vendor")
     mo_line_ids = fields.One2many('mrp.mo.beforehand.line','mo_id',string="Manufacturing Order")
     state = fields.Selection([
         ('draft', 'Draft'),
@@ -142,12 +141,17 @@ class MoBeforhand(models.Model):
     
 
     
-    @api.onchange('partner_id')
-    def onchange_partner(self):
+    @api.onchange('mo_line_ids')
+    def onchange_mo_line(self):
+        sum = 0
+        cout_sum = 0
         for line in self.mo_line_ids:
-            if line.po_process == True:
-                line.update ({
-                        'partner_id': self.partner_id.id,
+            sum = sum + 1
+            
+            if line.po_created == True:
+                
+                self.write ({
+                        'state': 'done',
                     })  
         
 
@@ -158,6 +162,14 @@ class MoBeforhand(models.Model):
 class MoBeforhandWizardLine(models.Model):
     _name = 'mrp.mo.beforehand.line'
     _description = 'Create PO from MO'
+    
+    
+    def unlink(self):
+        for leave in self:
+            if leave.po_created == True   or leave.po_process == True:
+                raise UserError(_('You cannot delete an order'))
+     
+            return super(MoBeforhandWizardLine, self).unlink()
     
     po_process = fields.Boolean(string='Select')
     po_created = fields.Boolean(string='PO Created')
@@ -192,7 +204,7 @@ class MoBeforhandWizardLine(models.Model):
                         }
                         product.append(valss)
             vals = {
-                  'partner_id': line.partner_id.id,
+                  'partner_id': te.id,
                   'date_order': fields.Date.today(),
                   'sale_ref_id': self.mo_id.sale_id.name,
                   'origin': self.mo_id.name,

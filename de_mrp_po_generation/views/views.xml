@@ -6,12 +6,12 @@
         <field name="arch" type="xml">
             <form string="Job Order Sheet">
                 <header>
-                    <field name="state" widget="statusbar" statusbar_visible="draft,process,approved,done"/>
-                    <button name="action_approve" type="object" string="Approve" class="oe_highlight"
+                    <field name="state" widget="statusbar" statusbar_visible="draft,process,done"/>
+<!--                     <button name="action_approve" type="object" string="Approve" class="oe_highlight"
                             groups="hr.group_hr_manager"
                             states="draft"/>
                     <button name="action_completed" type="object" string="Done" class="oe_highlight"
-                            states="draft,approved"/>
+                            states="draft,approved"/> -->
                 </header>
                 <sheet>
                     <div class="oe_button_box" name="button_box">
@@ -21,12 +21,12 @@
                         </button>
                     </div>
                     <div class="oe_title">
-                        <h1><field name="name" placeholder="Job Order Reference" nolabel="1"/></h1>
+                        <h1><field name="name"  placeholder="Job Order Reference" nolabel="1"/></h1>
                     </div>
                     <group>
                         <group>
-                            <field name="date"/>
-                            <field name="sale_id"/>
+                            <field name="date" attrs="{'readonly': [('state','!=', 'draft')]}"/>
+                            <field name="sale_id" attrs="{'readonly': [('state','!=', 'draft')]}"/>
 <!--                             <field name="partner_id"/> -->
                         </group>
                     </group>
