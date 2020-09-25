@@ -29,7 +29,6 @@
         # 'security/ir.model.access.csv',
         'reports/mrp_finished_product.xml',
         'reports/mrp_finished_product_template.xml',
-         'views/res_partner.xml',
         # 'views/account_move_view.xml',  
        'views/views.xml',
         #'views/templates.xml',
