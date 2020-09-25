@@ -14,6 +14,12 @@
                             states="draft,approved"/>
                 </header>
                 <sheet>
+                    <div class="oe_button_box" name="button_box">
+                            <button type="object" name="material_planning" string='Material Planning' class="oe_stat_button" icon="fa-pencil-square-o" attrs="{'invisible':['|', ('state', '!=', 'process')]}">
+<!--                             <field name="invoice_count" widget="statinfo" string="Vendor Bills"/> -->
+<!--                             <field name="invoice_ids" invisible="1"/> -->
+                        </button>
+                    </div>
                     <div class="oe_title">
                         <h1><field name="name" placeholder="Job Order Reference" nolabel="1"/></h1>
                     </div>
@@ -21,20 +27,20 @@
                         <group>
                             <field name="date"/>
                             <field name="sale_id"/>
-                            <field name="partner_id"/>
+<!--                             <field name="partner_id"/> -->
                         </group>
                     </group>
                     <button name="get_sheet_lines" type="object" string="Process"
                             attrs="{'invisible': [('state', '=', 'process')]}"
                             class="oe_highlight" style="margin:5px;"/>
-                    <button name="action_generate_po" type="object" string="Create PO"
-                            class="oe_highlight"/>
+<!--                     <button name="action_generate_po" type="object" string="Create PO"
+                            class="oe_highlight"/> -->
                     <notebook>
-                        <page string="Material Planning" name="mo_sheet_lines">
+                        <page string="Material Planning" name="mo_sheet_lines" invisible="1">
                            <field name="mo_line_ids">
                                     <tree editable="bottom"  create="false" delete="false">
                                         <field name="po_process" attrs="{'readonly': [('po_created','=', True)]}"/>
-                                        <field name="po_created" invisible="1"/>
+                                        <field name="po_created"/>
                                         <field name="product_id" attrs="{'readonly': [('po_created','=',True)]}"/>
                                         <field name="product_uom_qty" attrs="{'readonly': [('po_created','=',True)]}"/>
                                         <field name="on_hand_qty" attrs="{'readonly': [('po_created','=',True)]}"/>
@@ -48,12 +54,44 @@
             </form>
         </field>
     </record>
-
+      
+    <record id="mrp_mo_beforehand_line_view_tree_search" model="ir.ui.view">
+        <field name="name">line sheet tree search view</field>
+        <field name="model">mrp.mo.beforehand.line</field>
+        <field name="arch" type="xml">
+           <search string="Search Material Planning">
+                    <field name="mo_id" filter_domain="['|', '|', ('product_id', 'ilike', self), ('partner_id', 'ilike', self), ('mo_id', 'ilike', self)]" string="Reference"/>
+                    <field name="mo_id" string='Document'/>
+                    <field name="product_id" string='Product'/>
+                    <group expand="0" string="Group By">
+                        <filter name="product_id" string="Product" domain="[]" context="{'group_by' : 'product_id'}" />
+                        <filter string="Document" name="mo_id" domain="[]" context="{'group_by' : 'mo_id'}" />
+                    </group>
+                </search>
+        </field>
+    </record>    
+   
+    <record id="mrp_mo_beforehand_line_view_tree" model="ir.ui.view">
+        <field name="name">MO beforehand line sheet tree view</field>
+        <field name="model">mrp.mo.beforehand.line</field>
+        <field name="arch" type="xml">
+            <tree string="Material Sheet lines"  editable="bottom" decoration-danger="po_created==True">
+               <field name="mo_id" readonly="1"/>
+                <field name="product_id" readonly="1" />
+                <field name="po_created"  invisible="1"/>
+                <field name="product_uom_qty"  attrs="{'readonly': [('po_created','=', True)]}"/>
+                <field name="on_hand_qty" readonly="1" />
+                <field name="forcast_qty" readonly="1" /> 
+                <field name="partner_id" attrs="{'readonly': [('po_created','=', True)]}"/>
+            </tree>
+        </field>
+    </record>  
+      
     <record id="mrp_mo_beforehand_view_tree" model="ir.ui.view">
         <field name="name">MO beforehand sheet tree view</field>
         <field name="model">mrp.mo.beforehand</field>
         <field name="arch" type="xml">
-            <tree string="Job Order Sheet">
+            <tree string="Material Planning Sheet">
                 <field name="name"/> 
                 <field name="date"/>
                 <field name="sale_id"/>
