@@ -12,7 +12,7 @@
                 </header>
                 <sheet>
                     <div class="oe_button_box" name="button_box">
-                            <button type="object" name="material_planning" string='Material Planning' class="oe_stat_button" icon="fa-pencil-square-o" attrs="{'invisible':['|', ('state', '!=', 'process')]}">
+                            <button type="object" name="material_planning" string='Material Planning' class="oe_stat_button" icon="fa-pencil-square-o" attrs="{'invisible':[ ('state', '=', 'draft')]}">
                         </button>
                     </div>
                     <div class="oe_title">
@@ -72,11 +72,12 @@
             <tree string="Material Sheet lines"  editable="bottom" decoration-danger="po_created==True">
                <field name="mo_id" readonly="1"/>
                 <field name="product_id" readonly="1" />
+                <field name="po_process" invisible="1"/>
                 <field name="po_created"  invisible="1"/>
                 <field name="product_uom_qty"  attrs="{'readonly': [('po_created','=', True)]}"/>
                 <field name="on_hand_qty" readonly="1" />
                 <field name="forcast_qty" readonly="1" /> 
-                <field name="partner_id" attrs="{'readonly': [('po_created','=', True)]}"/>
+                <field name="partner_id" attrs="{'required': [('po_process','=', True)]}"/>
             </tree>
         </field>
     </record>  
