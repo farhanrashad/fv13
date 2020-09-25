@@ -33,7 +33,7 @@ class MoBeforhand(models.Model):
     def unlink(self):
         for leave in self:
             if leave.state in ('process','done'):
-                raise UserError(_('You cannot delete an order form  which is not draft or cancelled. '))
+                raise UserError(_('You cannot delete an Document  which is not draft or cancelled. '))
      
             return super(MoBeforhand, self).unlink()
 
@@ -71,8 +71,18 @@ class MoBeforhand(models.Model):
     def action_approve(self):
         self.state = 'approved'
 
-    def action_completed(self):
-        self.state = 'done'
+    def action_done(self):
+        sum = 0
+        cout_sum = 0
+        for line in self.mo_line_ids:
+            sum = sum + 1            
+            if line.po_created == True and  not line.partner_id==' ':
+                cout_sum = cout_sum + 1                
+        if  sum == cout_sum:        
+            self.state = 'done'
+        else:
+            raise UserError(_('Please Create Purchase Order of all Material Planning Lines.'))
+
 
     
 
@@ -160,19 +170,12 @@ class MoBeforhandWizardLine(models.Model):
                         }
                 orders_lines = self.env['purchase.order.line'].create(order_line)
         for line in self:
-            if line.po_process == True and not line.partner_id=='':
+            if line.po_process == True and not line.partner_id==' ':
                 line.update ({
                    'po_process': False,
                     'po_created': True,
-                  	})                  
-#         sum = 0
-#         cout_sum = 0
-#         for line in self:
-#             sum = sum + 1            
-#             if line.po_created == True and not line.partner_id=='':
-#                 cout_sum = cout_sum + 1                
-#         if  sum == cout_sum:        
-#             self.mo_id.state = 'done'
-#         else:
-#             pass
+                  	})
+                
+
+
 

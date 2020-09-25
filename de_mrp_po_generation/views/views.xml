@@ -7,6 +7,8 @@
             <form string="Job Order Sheet">
                 <header>
                     <field name="state" widget="statusbar" statusbar_visible="draft,process,done"/>
+                    <button name="action_done" type="object" string="Done" class="oe_highlight"
+                            states="process"/>
                 </header>
                 <sheet>
                     <div class="oe_button_box" name="button_box">
