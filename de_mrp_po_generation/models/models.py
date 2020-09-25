@@ -63,55 +63,6 @@ class MoBeforhand(models.Model):
                 'state': 'process'
             })
             
-#     def action_generate_po(self):
-#         vendor_list = []
-#         for line in self.mo_line_ids:
-#             if line.partner_id and line.po_process == True:
-#                 vendor_list.append(line.partner_id)
-#             else:
-#                 pass
-#         list = set(vendor_list)
-#         for te in list:
-#             product = []
-#             for re in self.mo_line_ids:
-#                 if te == re.partner_id:
-#                     if re.po_process == True:
-#                         valss = {
-#                             'product_id': re.product_id.id,
-#                             'name': re.product_id.name,
-#                             'product_uom_qty': re.product_uom_qty,
-#                             'price_unit': re.product_id.standard_price,
-#                             'date_planned': fields.Date.today(),
-#                             'product_uom': re.product_id.uom_po_id.id,
-#                         }
-#                         product.append(valss)
-#             vals = {
-#                   'partner_id': te.id,
-#                   'date_order': fields.Date.today(),
-#                   'sale_ref_id': self.sale_id.name,
-#                   'origin': self.name,
-#                     }
-#             order = self.env['purchase.order'].create(vals)
-#             for test in product:
-#                 order_line = {
-#                        'order_id': order.id,
-#                        'product_id': test['product_id'],
-#                        'name': test['name'],
-#                        'product_qty': test['product_uom_qty'],
-#                        'price_unit': test['price_unit'],
-#                        'date_planned': fields.Date.today(),
-#                        'product_uom': test['product_uom'],
-#                         }
-#                 orders_lines = self.env['purchase.order.line'].create(order_line)
-#         self.partner_id= False       
-#         for line in self.mo_line_ids:
-#             if line.po_process == True and not line.partner_id=='':
-#                 line.update ({
-#                    'po_process': False,
-#                     'po_created': True,
-#                   	})    
-                
-                    
             
             
 
@@ -133,27 +84,14 @@ class MoBeforhand(models.Model):
     state = fields.Selection([
         ('draft', 'Draft'),
         ('process', 'Process'),
-        ('approved', 'Approved'),
-        ('done', 'Completed')],
+        ('done', 'done')],
         readonly=True, string='State', default='draft')
     
     
     
 
     
-    @api.onchange('mo_line_ids')
-    def onchange_mo_line(self):
-        sum = 0
-        cout_sum = 0
-        for line in self.mo_line_ids:
-            sum = sum + 1
-            
-            if line.po_created == True:
-                
-                self.write ({
-                        'state': 'done',
-                    })  
-        
+  
 
 
     
@@ -221,11 +159,20 @@ class MoBeforhandWizardLine(models.Model):
                        'product_uom': test['product_uom'],
                         }
                 orders_lines = self.env['purchase.order.line'].create(order_line)
-#         self.partner_id= False       
         for line in self:
             if line.po_process == True and not line.partner_id=='':
                 line.update ({
                    'po_process': False,
                     'po_created': True,
-                  	})    
+                  	})                  
+#         sum = 0
+#         cout_sum = 0
+#         for line in self:
+#             sum = sum + 1            
+#             if line.po_created == True and not line.partner_id=='':
+#                 cout_sum = cout_sum + 1                
+#         if  sum == cout_sum:        
+#             self.mo_id.state = 'done'
+#         else:
+#             pass
 

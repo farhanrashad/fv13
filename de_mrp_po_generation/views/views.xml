@@ -7,17 +7,10 @@
             <form string="Job Order Sheet">
                 <header>
                     <field name="state" widget="statusbar" statusbar_visible="draft,process,done"/>
-<!--                     <button name="action_approve" type="object" string="Approve" class="oe_highlight"
-                            groups="hr.group_hr_manager"
-                            states="draft"/>
-                    <button name="action_completed" type="object" string="Done" class="oe_highlight"
-                            states="draft,approved"/> -->
                 </header>
                 <sheet>
                     <div class="oe_button_box" name="button_box">
                             <button type="object" name="material_planning" string='Material Planning' class="oe_stat_button" icon="fa-pencil-square-o" attrs="{'invisible':['|', ('state', '!=', 'process')]}">
-<!--                             <field name="invoice_count" widget="statinfo" string="Vendor Bills"/> -->
-<!--                             <field name="invoice_ids" invisible="1"/> -->
                         </button>
                     </div>
                     <div class="oe_title">
@@ -27,14 +20,11 @@
                         <group>
                             <field name="date" attrs="{'readonly': [('state','!=', 'draft')]}"/>
                             <field name="sale_id" attrs="{'readonly': [('state','!=', 'draft')]}"/>
-<!--                             <field name="partner_id"/> -->
                         </group>
                     </group>
                     <button name="get_sheet_lines" type="object" string="Process"
                             attrs="{'invisible': [('state', '=', 'process')]}"
                             class="oe_highlight" style="margin:5px;"/>
-<!--                     <button name="action_generate_po" type="object" string="Create PO"
-                            class="oe_highlight"/> -->
                     <notebook>
                         <page string="Material Planning" name="mo_sheet_lines" invisible="1">
                            <field name="mo_line_ids">
@@ -66,6 +56,8 @@
                     <group expand="0" string="Group By">
                         <filter name="product_id" string="Product" domain="[]" context="{'group_by' : 'product_id'}" />
                         <filter string="Document" name="mo_id" domain="[]" context="{'group_by' : 'mo_id'}" />
+                         <filter string="Vendor" name="partner_id" domain="[]" context="{'group_by' : 'partner_id'}" />
+                       
                     </group>
                 </search>
         </field>
