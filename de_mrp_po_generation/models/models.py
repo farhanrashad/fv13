@@ -130,6 +130,11 @@ class MoBeforhandWizardLine(models.Model):
     
     
     def action_generate_po(self):
+        for line in self:
+            if line.partner_id:
+                pass
+            else:
+                raise UserError(_('Please Select Vendor for all selected lines.'))
         vendor_list = []
         for line in self:
             if line.partner_id and line.po_created == False:

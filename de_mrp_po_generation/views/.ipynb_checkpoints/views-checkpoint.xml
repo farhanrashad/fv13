@@ -77,7 +77,7 @@
                 <field name="product_uom_qty"  attrs="{'readonly': [('po_created','=', True)]}"/>
                 <field name="on_hand_qty" readonly="1" />
                 <field name="forcast_qty" readonly="1" /> 
-                <field name="partner_id" attrs="{'required': [('po_process','=', True)]}"/>
+                <field name="partner_id" attrs="{'required': [('po_process','=', True)],'readonly':[('po_created','=',True)]}"/>
             </tree>
         </field>
     </record>  
