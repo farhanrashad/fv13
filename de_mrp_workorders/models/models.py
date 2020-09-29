@@ -1,7 +1,5 @@
 # -*- coding: utf-8 -*-
 
-# -*- coding: utf-8 -*-
-
 from odoo import models, fields, api, _
 from datetime import datetime
 from odoo import exceptions
@@ -24,12 +22,15 @@ class MrpWorkorder(models.Model):
         })     
         return res
     
-#     def action_open_manufacturing_order(self):
-#         res = super(MrpWorkorder, self).action_open_manufacturing_order()
-#         self.write({
-#             'state': 'done',
-#         })     
-#         return res
+    def action_open_manufacturing_order(self):
+        raw_material =self.env['mrp.production'].search([('name','=',self.production_id.name)])
+        for move_line in raw_material.move_raw_ids:
+            if move_line.product_uom_qty: 
+                move_line.update({
+                    'quantity_done' : move_line.product_uom_qty,
+                })
+        res = super(MrpWorkorder, self).action_open_manufacturing_order()  
+        return res
 
 
 
@@ -40,6 +41,35 @@ class MrpWorkorder(models.Model):
 
 class MrpProduction(models.Model):
     _inherit = 'mrp.production'
+    
+#     def action_assign_test(self):
+#         for move_line in self.move_raw_ids:
+#             if move_line.product_uom_qty: 
+#                 move_line.update({
+#                     'quantity_done' : move_line.product_uom_qty,
+#                 })
+    
+    
+#     def action_assign(self):
+#         res = super(MrpProduction, self).action_assign()
+#         raw_material =self.env['stock.move'].search([('raw_material_production_id','=',self.name)])
+#         for move_line in raw_material:
+# #             if move_line.product_uom_qty: 
+#             move_line.update({
+#                     'reserved_availability' : move_line.product_uom_qty,
+#                 })
+#         return res
+    
+            
+    def button_mark_done(self):
+        for move_line in self.move_raw_ids:
+            if move_line.product_uom_qty: 
+                move_line.update({
+                    'quantity_done' : move_line.product_uom_qty,
+                })
+        ress = super(MrpProduction, self).button_mark_done()
+       
+        return ress  
     
    
     routing_f_id = fields.Many2one(
@@ -56,11 +86,8 @@ class MrpProduction(models.Model):
     product_fo_qty = fields.Float(string='Four Routing Quantity')
     
     
-    def action_assign(self):
-        res = super(MrpProduction, self).action_assign()
-        for move_line in self.move_raw_ids:
-            move_line.reserved_availability = move_line.product_uom_qty
-        return res
+      
+            
     
     
     @api.onchange('routing_f_id')
@@ -206,7 +233,7 @@ class MrpProduction(models.Model):
                                 'raw_workorder_id': workorders.id,
                                 'product_id': line.product_id.id,
                                 'qty_to_consume': self.product_f_qty * quant,
-                                'qty_reserved': self.product_f_qty * quant,
+#                                 'qty_reserved': self.product_f_qty * quant,
                                 'product_uom_id': line.product_uom.id,
             #                     'qty_done': self.product_f_qty,
 
@@ -255,7 +282,7 @@ class MrpProduction(models.Model):
                                 'raw_workorder_id': workorders.id,
                                 'product_id': line.product_id.id,
                                 'qty_to_consume': self.product_s_qty * quant,
-                                'qty_reserved': self.product_s_qty * quant,
+#                                 'qty_reserved': self.product_s_qty * quant,
                                 'product_uom_id': line.product_uom.id,
             #                     'qty_done': self.product_s_qty,
                             }
@@ -301,7 +328,7 @@ class MrpProduction(models.Model):
                                 'raw_workorder_id': workorders.id,                    
                                 'product_id': line.product_id.id,
                                 'qty_to_consume': self.product_t_qty * quant,
-                                'qty_reserved': self.product_t_qty * quant,
+#                                 'qty_reserved': self.product_t_qty * quant,
                                 'product_uom_id': line.product_uom.id,       
             #                     'qty_done': self.product_t_qty,
                             }
@@ -348,7 +375,7 @@ class MrpProduction(models.Model):
                                 'raw_workorder_id': workorders.id,                    
                                 'product_id': line.product_id.id,
                                 'qty_to_consume': self.product_fo_qty * quant,
-                                'qty_reserved': self.product_fo_qty * quant, 
+#                                 'qty_reserved': self.product_fo_qty * quant, 
                                 'product_uom_id': line.product_uom.id,                  
             #                     'qty_done': self.product_fo_qty,                   
                             }
