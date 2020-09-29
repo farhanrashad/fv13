@@ -17,6 +17,13 @@ class MrpWorkorder(models.Model):
     def do_finish(self):
         res = super(MrpWorkorder, self).do_finish()
         self.time_ids.date_end = datetime.today()
+        if self.is_last_unfinished_wo == False:
+            raw_material =self.env['mrp.production'].search([('name','=',self.production_id.name)])
+            for move_line in raw_material.move_raw_ids:
+                if move_line.product_uom_qty: 
+                    move_line.update({
+                        'quantity_done' : move_line.product_uom_qty,
+                    })
         self.write({
            'state': 'done',
         })     
