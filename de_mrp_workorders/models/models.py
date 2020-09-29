@@ -17,7 +17,7 @@ class MrpWorkorder(models.Model):
     def do_finish(self):
         res = super(MrpWorkorder, self).do_finish()
         self.time_ids.date_end = datetime.today()
-        if self.is_last_unfinished_wo == False:
+        if self.is_last_unfinished_wo == True:
             raw_material =self.env['mrp.production'].search([('name','=',self.production_id.name)])
             for move_line in raw_material.move_raw_ids:
                 if move_line.product_uom_qty: 
@@ -239,8 +239,8 @@ class MrpProduction(models.Model):
                             flines = {
                                 'raw_workorder_id': workorders.id,
                                 'product_id': line.product_id.id,
-                                'qty_to_consume': self.product_f_qty * quant,
-#                                 'qty_reserved': self.product_f_qty * quant,
+                                'qty_to_consume': line.product_uom_qty ,
+                                'qty_reserved': line.reserved_availability,
                                 'product_uom_id': line.product_uom.id,
             #                     'qty_done': self.product_f_qty,
 
@@ -288,8 +288,8 @@ class MrpProduction(models.Model):
                             slines = {
                                 'raw_workorder_id': workorders.id,
                                 'product_id': line.product_id.id,
-                                'qty_to_consume': self.product_s_qty * quant,
-#                                 'qty_reserved': self.product_s_qty * quant,
+                                'qty_to_consume': line.product_uom_qty,
+                                'qty_reserved': line.reserved_availability,
                                 'product_uom_id': line.product_uom.id,
             #                     'qty_done': self.product_s_qty,
                             }
@@ -334,8 +334,8 @@ class MrpProduction(models.Model):
                             tlines = {
                                 'raw_workorder_id': workorders.id,                    
                                 'product_id': line.product_id.id,
-                                'qty_to_consume': self.product_t_qty * quant,
-#                                 'qty_reserved': self.product_t_qty * quant,
+                                'qty_to_consume': line.product_uom_qty,
+                                'qty_reserved': line.reserved_availability,
                                 'product_uom_id': line.product_uom.id,       
             #                     'qty_done': self.product_t_qty,
                             }
@@ -381,8 +381,8 @@ class MrpProduction(models.Model):
                             folines = {
                                 'raw_workorder_id': workorders.id,                    
                                 'product_id': line.product_id.id,
-                                'qty_to_consume': self.product_fo_qty * quant,
-#                                 'qty_reserved': self.product_fo_qty * quant, 
+                                'qty_to_consume': line.product_uom_qty ,
+                                'qty_reserved': line.reserved_availability , 
                                 'product_uom_id': line.product_uom.id,                  
             #                     'qty_done': self.product_fo_qty,                   
                             }
