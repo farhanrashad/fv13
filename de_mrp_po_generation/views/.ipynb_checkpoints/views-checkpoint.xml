@@ -8,7 +8,7 @@
                 <header>
                     <field name="state" widget="statusbar" statusbar_visible="draft,process,done"/>
                     <button name="action_done" type="object" string="Done" class="oe_highlight"
-                            states="process"/>
+                            attrs="{'invisible':[('state','in', ('draft','done'))]}"/>
                 </header>
                 <sheet>
                     <div class="oe_button_box" name="button_box">
@@ -25,7 +25,7 @@
                         </group>
                     </group>
                     <button name="get_sheet_lines" type="object" string="Process"
-                            attrs="{'invisible': [('state', '=', 'process')]}"
+                            attrs="{'invisible':[('state','in', ('process','done'))]}"
                             class="oe_highlight" style="margin:5px;"/>
                     <notebook>
                         <page string="Material Planning" name="mo_sheet_lines" invisible="1">
@@ -69,7 +69,7 @@
         <field name="name">MO beforehand line sheet tree view</field>
         <field name="model">mrp.mo.beforehand.line</field>
         <field name="arch" type="xml">
-            <tree string="Material Sheet lines"  editable="bottom" decoration-danger="po_created==True">
+            <tree string="Material Sheet lines"  create="false" editable="bottom" decoration-danger="po_created==True">
                <field name="mo_id" readonly="1"/>
                 <field name="product_id" readonly="1" />
                 <field name="po_process" invisible="1"/>
