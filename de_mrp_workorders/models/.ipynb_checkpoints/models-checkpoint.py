@@ -20,22 +20,37 @@ class MrpWorkorder(models.Model):
         if self.is_last_unfinished_wo == True:
             raw_material =self.env['mrp.production'].search([('name','=',self.production_id.name)])
             for move_line in raw_material.move_raw_ids:
-                if move_line.product_uom_qty: 
+                if move_line.reserved_availability: 
+                    move_line.update({
+                        'quantity_done' : move_line.reserved_availability,
+                    })  
+                elif move_line.product_uom_qty: 
                     move_line.update({
                         'quantity_done' : move_line.product_uom_qty,
                     })
-        self.write({
-           'state': 'done',
-        })     
+                else:
+                    pass
+        if self.state == 'done':
+            pass
+        else:
+            self.write({
+               'state': 'done',
+            })     
         return res
     
     def action_open_manufacturing_order(self):
         raw_material =self.env['mrp.production'].search([('name','=',self.production_id.name)])
         for move_line in raw_material.move_raw_ids:
-            if move_line.product_uom_qty: 
+            if move_line.reserved_availability: 
+                    move_line.update({
+                        'quantity_done' : move_line.reserved_availability,
+                    })  
+            elif move_line.product_uom_qty: 
                 move_line.update({
                     'quantity_done' : move_line.product_uom_qty,
-                })
+                    })
+            else:
+                pass
         res = super(MrpWorkorder, self).action_open_manufacturing_order()  
         return res
 
@@ -57,15 +72,19 @@ class MrpProduction(models.Model):
 #                 })
     
     
-#     def action_assign(self):
-#         res = super(MrpProduction, self).action_assign()
-#         raw_material =self.env['stock.move'].search([('raw_material_production_id','=',self.name)])
-#         for move_line in raw_material:
-# #             if move_line.product_uom_qty: 
-#             move_line.update({
-#                     'reserved_availability' : move_line.product_uom_qty,
-#                 })
-#         return res
+    def action_assign(self):
+        res = super(MrpProduction, self).action_assign()
+        workorders =self.env['mrp.workorder'].search([('production_id','=',self.name)])
+        for workorder in workorders:
+            for move_raw in self.move_raw_ids:
+                for line in workorder.raw_workorder_line_ids:
+                    if line.product_id == move_raw.product_id:
+                        line.update({
+#                                 'qty_reserved' : (move_raw.reserved_availability),
+                            })
+                    else:
+                        pass
+        return res
     
             
     def button_mark_done(self):
@@ -239,8 +258,8 @@ class MrpProduction(models.Model):
                             flines = {
                                 'raw_workorder_id': workorders.id,
                                 'product_id': line.product_id.id,
-                                'qty_to_consume': line.product_uom_qty ,
-                                'qty_reserved': line.reserved_availability,
+                                'qty_to_consume': (line.product_uom_qty / self.product_qty) * self.product_f_qty ,
+                                'qty_reserved': (line.reserved_availability / self.product_qty) * self.product_f_qty,
                                 'product_uom_id': line.product_uom.id,
             #                     'qty_done': self.product_f_qty,
 
@@ -288,8 +307,8 @@ class MrpProduction(models.Model):
                             slines = {
                                 'raw_workorder_id': workorders.id,
                                 'product_id': line.product_id.id,
-                                'qty_to_consume': line.product_uom_qty,
-                                'qty_reserved': line.reserved_availability,
+                                'qty_to_consume': (line.product_uom_qty / self.product_qty) * self.product_s_qty,
+                                'qty_reserved': (line.reserved_availability / self.product_qty) * self.product_s_qty,
                                 'product_uom_id': line.product_uom.id,
             #                     'qty_done': self.product_s_qty,
                             }
@@ -334,8 +353,8 @@ class MrpProduction(models.Model):
                             tlines = {
                                 'raw_workorder_id': workorders.id,                    
                                 'product_id': line.product_id.id,
-                                'qty_to_consume': line.product_uom_qty,
-                                'qty_reserved': line.reserved_availability,
+                                'qty_to_consume': (line.product_uom_qty / self.product_qty) * self.product_t_qty,
+                                'qty_reserved': (line.reserved_availability / self.product_qty) * self.product_t_qty,
                                 'product_uom_id': line.product_uom.id,       
             #                     'qty_done': self.product_t_qty,
                             }
@@ -381,8 +400,8 @@ class MrpProduction(models.Model):
                             folines = {
                                 'raw_workorder_id': workorders.id,                    
                                 'product_id': line.product_id.id,
-                                'qty_to_consume': line.product_uom_qty ,
-                                'qty_reserved': line.reserved_availability , 
+                                'qty_to_consume': (line.product_uom_qty / self.product_qty) * self.product_fo_qty ,
+                                'qty_reserved':  (line.reserved_availability / self.product_qty) * self.product_fo_qty , 
                                 'product_uom_id': line.product_uom.id,                  
             #                     'qty_done': self.product_fo_qty,                   
                             }
