@@ -12,6 +12,7 @@ For Module Support : devintelle@gmail.com  or Skype : devintelle
             report_type="qweb-pdf"
             name="dev_print_cheque.report_print_cheque"
             file="dev_print_cheque.report_print_cheque"
+            header="False"
         />
         
         

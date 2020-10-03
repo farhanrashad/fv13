@@ -10,8 +10,8 @@
 from odoo import models, fields, api
 
 
-class AccountCheckLayout(models.Model):
-    _name = 'account.check.layout'
+class cheque_setting(models.Model):
+    _name = 'cheque.setting'
 
     name = fields.Char('Name', required="1")
     font_size = fields.Float('Font Size', default="13", required="1")
@@ -97,3 +97,4 @@ class AccountCheckLayout(models.Model):
 
 
 
+# vim:expandtab:smartindent:tabstop=4:4softtabstop=4:shiftwidth=4:

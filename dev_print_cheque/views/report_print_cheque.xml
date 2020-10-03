@@ -24,63 +24,63 @@ For Module Support : devintelle@gmail.com  or Skype : devintelle
                         <t t-set="date" t-value="get_date(o.payment_date)" />
                         <t t-if="o.cheque_formate_id.date_formate == 'dd_mm'">
                             <div t-attf-style="margin-left:#{o.cheque_formate_id.f_d_m_left};margin-top:#{o.cheque_formate_id.date_m_top};position: absolute;};">
-                                <span t-esc="date[0]"/>
+                                <span t-esc="date[2][0]"/>
                             </div>
 
                             <div t-attf-style="margin-left:#{o.cheque_formate_id.s_d_m_left};margin-top:#{o.cheque_formate_id.date_m_top};position: absolute;};">
-                                <span t-esc="date[1]"/><span style="margin-left:3px" t-esc="o.cheque_formate_id.date_seprator"/>
+                                <span t-esc="date[2][1]"/><span style="margin-left:3px" t-esc="o.cheque_formate_id.date_seprator"/>
                             </div>
                             <div t-attf-style="margin-left:#{o.cheque_formate_id.t_d_m_left};margin-top:#{o.cheque_formate_id.date_m_top};position: absolute;};">
-                                <span t-esc="date[0]"/>
+                                <span t-esc="date[1][0]"/>
                             </div>
 
                             <div t-attf-style="margin-left:#{o.cheque_formate_id.fo_d_m_left};margin-top:#{o.cheque_formate_id.date_m_top};position: absolute;};">
-                                <span t-esc="date[1]"/><span style="margin-left:3px" t-esc="o.cheque_formate_id.date_seprator"/>
+                                <span t-esc="date[1][1]"/><span style="margin-left:3px" t-esc="o.cheque_formate_id.date_seprator"/>
                             </div>
                         </t>
                         <t t-if="o.cheque_formate_id.date_formate == 'mm_dd'">
                             <div t-attf-style="margin-left:#{o.cheque_formate_id.f_d_m_left};margin-top:#{o.cheque_formate_id.date_m_top};position: absolute;};">
-                                <span t-esc="date[0]"/>
+                                <span t-esc="date[1][0]"/>
                             </div>
 
                             <div t-attf-style="margin-left:#{o.cheque_formate_id.s_d_m_left};margin-top:#{o.cheque_formate_id.date_m_top};position: absolute;};">
-                                <span t-esc="date[1]"/><span style="margin-left:3px" t-esc="o.cheque_formate_id.date_seprator"/>
+                                <span t-esc="date[1][1]"/><span style="margin-left:3px" t-esc="o.cheque_formate_id.date_seprator"/>
                             </div>
                             <div t-attf-style="margin-left:#{o.cheque_formate_id.t_d_m_left};margin-top:#{o.cheque_formate_id.date_m_top};position: absolute;};">
-                                <span t-esc="date[0]"/>
+                                <span t-esc="date[2][0]"/>
                             </div>
 
                             <div t-attf-style="margin-left:#{o.cheque_formate_id.fo_d_m_left};margin-top:#{o.cheque_formate_id.date_m_top};position: absolute;};">
-                                <span t-esc="date[1]"/><span style="margin-left:3px" t-esc="o.cheque_formate_id.date_seprator"/>
+                                <span t-esc="date[2][1]"/><span style="margin-left:3px" t-esc="o.cheque_formate_id.date_seprator"/>
                             </div>
                         </t>
                         <t t-if="o.cheque_formate_id.year_formate == 'yy'">
 
                             <div t-attf-style="margin-left:#{o.cheque_formate_id.fi_d_m_left};margin-top:#{o.cheque_formate_id.date_m_top};position: absolute;};">
-                                <span t-esc="date[2]"/>
+                                <span t-esc="date[0][2]"/>
                             </div>
 
                             <div t-attf-style="margin-left:#{o.cheque_formate_id.si_d_m_left};margin-top:#{o.cheque_formate_id.date_m_top};position: absolute;};">
-                                <span t-esc="date[3]"/>
+                                <span t-esc="date[0][3]"/>
                             </div>
 
                         </t>
                         <t t-if="o.cheque_formate_id.year_formate == 'yyyy'">
 
                             <div t-attf-style="margin-left:#{o.cheque_formate_id.fi_d_m_left};margin-top:#{o.cheque_formate_id.date_m_top};position: absolute;};">
-                                <span t-esc="date[0]"/>
+                                <span t-esc="date[0][0]"/>
                             </div>
 
                             <div t-attf-style="margin-left:#{o.cheque_formate_id.si_d_m_left};margin-top:#{o.cheque_formate_id.date_m_top};position: absolute;};">
-                                <span t-esc="date[1]"/>
+                                <span t-esc="date[0][1]"/>
                             </div>
 
                             <div t-attf-style="margin-left:#{o.cheque_formate_id.se_d_m_left};margin-top:#{o.cheque_formate_id.date_m_top};position: absolute;};">
-                                <span t-esc="date[2]"/>
+                                <span t-esc="date[0][2]"/>
                             </div>
 
                             <div t-attf-style="margin-left:#{o.cheque_formate_id.e_d_m_left};margin-top:#{o.cheque_formate_id.date_m_top};position: absolute;};">
-                                <span t-esc="date[3]"/>
+                                <span t-esc="date[0][3]"/>
                             </div>
 
                         </t>
