@@ -6,6 +6,7 @@
 #
 #    For Module Support : devintelle@gmail.com  or Skype : devintelle 
 #
+
 ##############################################################################
 from odoo import models,fields, api
 from odoo import tools

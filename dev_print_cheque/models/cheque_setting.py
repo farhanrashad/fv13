@@ -7,11 +7,12 @@
 #    For Module Support : devintelle@gmail.com  or Skype : devintelle 
 #
 ##############################################################################
-from odoo import models, fields, api
+from odoo import models, fields, api,_
 
 
 class cheque_setting(models.Model):
     _name = 'cheque.setting'
+    _description = "Cheque Setting Module"
 
     name = fields.Char('Name', required="1")
     font_size = fields.Float('Font Size', default="13", required="1")
