@@ -14,7 +14,7 @@ from odoo import tools
 class account_voucher(models.Model):
     _inherit ='account.payment'
 
-    cheque_formate_id = fields.Many2one('cheque.setting', 'Cheque Formate')
+    cheque_formate_id = fields.Many2one('cheque.setting', 'Cheque Formate', required=True)
     cheque_no = fields.Char('Cheque No')
     text_free = fields.Char('Free Text')
     partner_text = fields.Char('Partner Title')
