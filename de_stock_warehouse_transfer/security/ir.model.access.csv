@@ -1,2 +1,3 @@
 id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
-access_de_stock_warehouse_transfer_de_stock_warehouse_transfer,de_stock_warehouse_transfer.de_stock_warehouse_transfer,model_de_stock_warehouse_transfer_de_stock_warehouse_transfer,base.group_user,1,1,1,1
+access_stock_transit_transfer,access.stock.transit.transfer,model_stock_transit_transfer,,1,1,1,1
+access_stock_transit_transfer_line,access.stock.transit.transfer.line,model_stock_transit_transfer_line,,1,1,1,1
