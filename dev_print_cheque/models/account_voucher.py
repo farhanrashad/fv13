@@ -18,6 +18,9 @@ class account_voucher(models.Model):
     cheque_no = fields.Char('Cheque No')
     text_free = fields.Char('Free Text')
     partner_text = fields.Char('Partner Title')
+    
+    def do_print_checks(self):
+        return self.env.ref('dev_print_cheque.action_report_print_cheque').report_action(self)
 
 
     
