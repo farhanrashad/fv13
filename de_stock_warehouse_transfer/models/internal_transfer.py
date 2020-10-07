@@ -2,6 +2,8 @@
 from datetime import date
 import time
 from odoo import models, fields, api, _
+from odoo import exceptions 
+from odoo.exceptions import UserError, ValidationError
 
 
 class StockwarehouseTransfer(models.Model):
@@ -10,18 +12,84 @@ class StockwarehouseTransfer(models.Model):
     _inherit = ['mail.thread', 'mail.activity.mixin', 'portal.mixin']
     
     
+    def picking_button(self):
+        self.ensure_one()
+        return {
+            'type': 'ir.actions.act_window',
+            'binding_type': 'action',
+#             'multi': False,
+            'name': 'Picking',
+            'target': 'current',
+            'res_model': 'stock.picking',
+            'view_mode': 'tree,form',
+            # 'view_type': 'form',
+            'domain': [('origin', '=', self.id)],
+            # 'context': dict(self._context, create=True, default_opportunity_id=self.id),
+        }
+    
+    
+    
+    def action_transfer(self):
+        picking_internal = self.env['stock.picking.type'].search([('code', '=', 'internal')], limit=1)
+        vals = {
+            'location_id': self.location_id.id,
+            'location_dest_id': self.location_id.id,
+            'origin': self.name,
+            'picking_type_id': picking_internal.id,
+#             'warehouse_trasnfer_id': self.id,
+        }
+        picking = self.env['stock.picking'].create(vals)
+        for line in self.transfer_line_ids:
+            lines = {
+                'picking_id': picking.id,
+                'product_id': line.product_id.id,
+                'name': 'Internal Transfer',
+                'product_uom': line.product_id.uom_id.id,
+                'location_id': line.id,
+                'location_dest_id': line.id,
+                # 'bom_id': line.bom_id.id,
+                # 'product_uom_qty': line.product_uom_id,
+                'product_uom_qty': line.tranfer_quantity,
+            }
+            stock_move = self.env['stock.move'].create(lines)
+
+            moves = {
+                'move_id': stock_move.id,
+                'product_id': line.product_id.id,
+                # 'product_uom': line.product_id.uom_id.id,
+                'location_id': line.id,
+                'location_dest_id': line.id,
+                # 'company_id': mv.id,
+                # 'date': line.date,
+                # 'lot_id':line.batch_id.id,
+                'product_uom_id': line.product_id.uom_id.id,
+                'product_uom_qty': line.tranfer_quantity,
+                # 'bom_id': line.bom_id.id,
+                # 'product_uom_qty': line.product_uom_id,
+                # 'quantity_done': mv.id,
+            }
+            stock_move_line_id = self.env['stock.move.line'].create(moves)
+
+        self.write({'state': 'transfer'})
+        
+        
+    def get_document_count(self):
+        count = self.env['stock.picking'].search_count([])
+        self.document_id = count
+    
     name = fields.Char(string='Reference', readonly=True, copy=False,  index=True, default=lambda self: _('New'))
+    document_id = fields.Integer(compute='get_document_count')
     source_warehouse_id = fields.Many2one(
         'stock.warehouse', 'Source Warehouse', ondelete='cascade',
-        check_company=True, states={'draft': [('readonly', False)]})
+         states={'draft': [('readonly', False)]})
     location_id = fields.Many2one(
         'stock.location', "Transit Location",
-        check_company=True,  required=True,
+          required=True,
         states={'draft': [('readonly', False)]})
 
     dest_warehouse_id = fields.Many2one(
         'stock.warehouse', 'Destination Warehouse', ondelete='cascade',
-        check_company=True, states={'draft': [('readonly', False)]})
+        states={'draft': [('readonly', False)]})
     date = fields.Datetime(
         'Date',
         default=fields.Datetime.now, index=True, tracking=True,
@@ -32,17 +100,23 @@ class StockwarehouseTransfer(models.Model):
         ('draft', 'Draft'),
         ('transfer', 'Transfer'),
         ('validate', 'Validated'),
-    ], string='Status',
-        copy=False, index=True, readonly=True, store=True, tracking=True, 
-       )
+    ], string='Status', readonly=True, copy=False, index=True, tracking=3, default='draft')
+    
     transfer_line_ids = fields.One2many('stock.transit.transfer.line', 'transfer_id' ,string='Transfer Line',  states={'draft': [('readonly', False)]},)
     
     @api.model
     def create(self,vals):
         if vals.get('name',_('New')) == _('New'):
             vals['name'] = self.env['ir.sequence'].next_by_code('hr.employee.advance.salary') or _('New')
-        res = super(EmployeeAdvanceSalary,self).create(vals)
+        res = super(StockwarehouseTransfer,self).create(vals)
         return res
+    
+    def unlink(self):
+        for leave in self:
+            if leave.state in ('transfer','validate'):
+                raise UserError(_('You cannot delete an order form  which is not draft. '))
+     
+            return super(StockwarehouseTransfer, self).unlink()
     
 
 class StockwarehouseTransferLine(models.Model):
@@ -51,8 +125,13 @@ class StockwarehouseTransferLine(models.Model):
     
     
     product_id = fields.Many2one('product.product', 'Product', store=True)
-    inventory_quantity = fields.Float(string="QOH", store=True)
+    inventory_quantity = fields.Float(related='product_id.qty_available')
     tranfer_quantity = fields.Float(string="Transfer QTY", store=True)
-    received_quantity = fields.Float(string="Received Qty", store=True)
+    received_quantity = fields.Float(string="Received Qty", store=True,)
     product_uom = fields.Many2one('uom.uom', 'UOM',)
     transfer_id = fields.Many2one('stock.transit.transfer', 'Internal Transfer', store=True)
+    
+    @api.constrains('tranfer_quantity')
+    def check_quantity(self):
+        if self.tranfer_quantity > self.inventory_quantity:
+            raise ValidationError('Transfer Quantity must be Less than or equal to QOH.')

@@ -22,15 +22,15 @@
             <field name="arch" type="xml">
                 <form>
                     <header>
-                        <button name="action_transfer" states="draft" class="oe_highlight" string="Transfer" type="object"/>
-                        <button name="action_validate" class="oe_highlight" states="request" string="Validate" type="object"/>
                         <field name="state" widget="statusbar" statusbar_visible="draft,transfer,validate"/>
+                        <button name="action_transfer" states="draft" class="oe_highlight" string="Transfer" type="object"/>
+                        <button name="action_validate" states="transfer" class="oe_highlight" string="Validate" type="object"/>
+                        
                     </header>
                     <sheet>
                          <div class="oe_button_box" name="button_box">
-                            <button type="object" name="picking_button" string='Picking' class="oe_stat_button" icon="fa-pencil-square-o" attrs="{'invisible':['|', ('state', '!=', 'draft')]}">
-<!--                             <field name="invoice_count" widget="statinfo" string="Vendor Bills"/> -->
-<!--                             <field name="invoice_ids" invisible="1"/> -->
+                            <button type="object" name="picking_button" class="oe_stat_button" icon="fa-pencil-square-o" attrs="{'invisible':['|', ('state', '!=', 'draft')]}">
+                            <field name="document_id" widget="statinfo" string="Picking"/>
                         </button>
                     </div>
                         <div class="oe_title">
@@ -43,7 +43,6 @@
                                 <field name="source_warehouse_id"/>
                                 <field name="location_id"/>
                                 <field name="dest_warehouse_id"/>
-                                <field name="amount" />                                
                                 
                             </group>
                             <group>
@@ -53,11 +52,11 @@
                         <notebook>
                             <page string='Transfer Product'>
                                 <field name="transfer_line_ids">
-                                    <tree>
+                                    <tree editable="bottom">
                                       <field name="product_id"/>
                                       <field name="inventory_quantity"/>
                                       <field name="tranfer_quantity"/>
-                                      <field name="received_quantity"/>
+                                      <field name="received_quantity" />
                                       <field name="product_uom"/>
                                       <field name="transfer_id" invisible="1"/>
                                      </tree>
