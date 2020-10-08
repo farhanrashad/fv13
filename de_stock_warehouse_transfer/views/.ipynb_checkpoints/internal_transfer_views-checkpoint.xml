@@ -29,7 +29,7 @@
                     </header>
                     <sheet>
                          <div class="oe_button_box" name="button_box">
-                            <button type="object" name="picking_button" class="oe_stat_button" icon="fa-pencil-square-o" attrs="{'invisible':['|', ('state', '!=', 'draft')]}">
+                            <button type="object" name="picking_button" class="oe_stat_button" icon="fa-pencil-square-o" attrs="{'invisible':['|', ('state', '=', 'draft')]}">
                             <field name="document_id" widget="statinfo" string="Picking"/>
                         </button>
                     </div>
