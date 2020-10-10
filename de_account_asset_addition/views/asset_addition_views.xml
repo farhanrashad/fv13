@@ -1,0 +1,25 @@
+<odoo>
+  <data>
+      <record id="account_asset_form_view_inherit" model="ir.ui.view">
+			<field name="name">account.asset.form.view</field>
+			<field name="model">account.asset</field>
+			<field name="inherit_id" ref="account_asset.view_account_asset_form"/>
+			<field name="arch" type="xml">
+				<xpath expr="//field[@name='acquisition_date']" position="after">
+					<field name="picking_id"/>
+				</xpath>
+			</field>
+		</record>
+      
+        <record id="stock_move_line_operations_tree_view_inherit" model="ir.ui.view">
+			<field name="name">stock.move.line.operations.tree</field>
+			<field name="model">stock.move.line</field>
+			<field name="inherit_id" ref="stock.view_stock_move_line_detailed_operation_tree"/>
+			<field name="arch" type="xml">
+				<xpath expr="//field[@name='location_dest_id']" position="after">
+					<field name="asset_id"/>
+				</xpath>
+			</field>
+		</record>
+  </data>
+</odoo>
