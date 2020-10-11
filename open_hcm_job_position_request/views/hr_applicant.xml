@@ -9,14 +9,14 @@
 				<xpath expr="//field[@name='description']" position="after">
 					<notebook>
                         <page string="Skills">
-                          <field name='skill_id'>  
+                         <!-- <field name='skill_id'>  
                           <tree  editable='bottom'>    
                            <field name="pref_name"/>
                            <field name="skill_level"/>   
                            <field name="pref_value"/>
    
                           </tree>                                
-                         </field>    
+                         </field>  -->  
                         </page>
                          
                          <page string="Application Summary">

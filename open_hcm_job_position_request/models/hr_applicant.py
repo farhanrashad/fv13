@@ -11,7 +11,7 @@ class HrApplicant(models.Model):
     _inherit='hr.applicant'
 
 
-    skill_id=fields.One2many('hr.skill',  'applicant_id', string='Skills',)
+#    skill_id=fields.One2many('hr.skill',  'applicant_id', string='Skills',)
     
     def create_employee_from_applicant(self):
         res = super(HrApplicant, self).create_employee_from_applicant()
@@ -20,15 +20,15 @@ class HrApplicant(models.Model):
             
         return res
     
-class HrSkill(models.Model):
-    _name='hr.skill'
-    _description = 'This is skill set'
+#class HrSkill(models.Model):
+ #   _name='hr.skill'
+  #  _description = 'This is skill set'
 
 
-    pref_name=fields.Char('Name',required=True)
-    pref_value=fields.Char('Skill',)
-    skill_level = fields.Char(string='Level')
-    applicant_id=fields.Many2one('hr.applicant', string='')    
+#    pref_name=fields.Char('Name',required=True)
+ #   pref_value=fields.Char('Skill',)
+#    skill_level = fields.Char(string='Level')
+ #   applicant_id=fields.Many2one('hr.applicant', string='')    
 
 
         
