@@ -1,0 +1,354 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <record id="open_job_creation_form" model="ir.ui.view">
+            <field name="name">Job Position Request</field>
+            <field name="model">hr.job.position.request</field>
+            <field name="arch" type="xml">
+                <form string="Job Position Request">
+                 <header>
+                    <button name="draft" string="Send Job Request" type="object" class="btn-primary"
+                        />
+                         />
+                          <button name="submit" string="Line Manager Approval" type="object" class="btn-primary"
+                         groups="open_hcm_job_position_request.l_m"/>
+                         />
+                         
+                          <button name="verify" string="HOD Approval" type="object" class="btn-primary"
+                         groups="open_hcm_job_position_request.h_o_d" />
+                         />
+                         
+                          <button name="co_approve" string="HR Approval" type="object" class="btn-primary"
+                         groups="open_hcm_job_position_request.h_r" />
+                         />
+    
+                        
+                        <field name="stage_id"  widget="statusbar"/>
+                  </header>
+                  <sheet>
+                       <div class="oe_button_box" name="button_box">
+                
+                            <button name="job_position_action" type="object" string="Job Position" class="oe_stat_button"
+                                    icon="fa-tasks">
+<!--                                 <field name="notes_ad" string="Notes" widget="statinfo"/> -->
+                            </button>
+                        </div>
+                         <div class="oe_title">
+                        <h1>
+                            <field name="get_id" readonly="1"/>
+                        </h1>
+                    </div>
+                        
+                         <group col="4">
+                        <field name="name"/>
+                        
+                        <field name="no_of_person_request" />
+                        <field name="requested_by"  />
+                        <field name="date"  />
+                        <field name="department" />
+<!--                         <field name="gender_preference" attrs="{'readonly': [('state', 'in','done')]}" /> -->
+                        <field name="budget" invisible="1"/>
+<!--                         <field name="team" attrs="{'readonly': [('state', 'in','done')]}" /> -->
+<!--                         <field name="reported_to" attrs="{'readonly': [('state', 'in','done')]}"/> -->
+<!--                          <field name="job_position" attrs="{'readonly': [('state', 'in','done')]}" />
+                         -->
+<!--                         <field name="age_preference" attrs="{'readonly': [('state', 'in','done')]}" />
+ -->
+                         </group>
+                    
+                    <notebook>
+                        <page string="Skills">
+                            
+                                        <field name="qualification" widget="html"/>
+                           
+                        </page>
+                         <page string="Pereferences">
+                             <field name="preferences_ids">
+                             <tree>
+                            
+                               <field name="pref_name"/>
+                               <field name="pref_value"/>
+
+                             </tree> 
+                            </field>  
+                           
+                        </page>
+                        <page string="Job Description">
+                            
+                                        <field name="education" widget="html"/>
+                           
+                        </page>
+                         <page string="Software Proficiency Requirements">
+                            
+                                        <field name="software" widget="html"/>
+                           
+                        </page>
+                         <page string="Communications">
+                            
+                                        <field name="communication" widget="html"/>
+                           
+                        </page>
+                       
+                    </notebook>
+                    
+                    
+                </sheet>
+            
+                <div class="oe_chatter">
+                    <field name="message_follower_ids" widget="mail_followers" groups="base.group_user"/>
+                    <field name="message_ids" widget="mail_thread"/>
+                </div>
+               </form>
+            </field>
+            </record>
+        
+        <record id="view_job_request_kanban" model="ir.ui.view">
+            <field name="name">hr.job.position.request.kanban</field>
+            <field name="model">hr.job.position.request</field>
+            <field name="arch" type="xml">
+                <kanban  default_group_by='stage_id'>
+                    <field name="name"/>
+                    <field name="get_id"/>
+                    <field name="date"/>
+                    <field name="requested_by"/>
+                    <templates>
+                        <t t-name="kanban-box">
+                            <div t-attf-class="oe_kanban_global_click">
+                                <div class="row mb4">
+                                    <div class="col-6 o_kanban_record_headings">
+                                        <strong><span><field name="name"/></span></strong>
+                                    </div>
+                                    <div class="col-6 text-right">
+                                        <strong><i class="fa fa-clock-o" aria-label="Date" role="img" title="Date"/> <t t-esc="record.date.value"/></strong>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-12">
+                                        <span><field name="get_id"/></span>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-6">
+                                        <span><field name="requested_by"/></span>
+                                    </div>
+                                    <div class="col-6">
+                                        <span class="float-right">
+<!--                                             <field name="user_id" widget="label_selection" options="{'classes': {'draft': 'default', 'close': 'success'}}"/> -->
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+                        </t>
+                    </templates>
+                </kanban>
+            </field>
+        </record>
+        
+            
+            <record id="open_job_creation_form_tree" model="ir.ui.view">
+                <field name="name">Job Position Request</field>
+                <field name="model">hr.job.position.request</field>
+                <field name="arch" type="xml">
+                    <tree string="Job Position Request Tree">
+                        <field name="name" />
+                        <field name="no_of_person_request" />
+                         <field name="requested_by"  />
+                         <field name="department"  />
+<!--                         <field name="team" /> -->
+<!--                         <field name="reported_to" /> -->
+<!--                          <field name="job_position" /> -->
+                        <field name="date"  />
+                        <field name="age_preference" />
+                        <field name="state"/>
+                    </tree>
+                </field>
+            </record>
+            
+            
+        
+         
+   
+               
+            <record id="open_job_request_creation_form" model="ir.actions.act_window">
+                <field name="name">Job Position Request</field>
+                <field name="res_model">hr.job.position.request</field>
+                <field name="binding_view_types">form</field>
+                <field name="view_mode">kanban,tree,form</field>
+                <field name="view_id" ref="open_job_creation_form_tree"/>
+            </record>
+            <menuitem action="open_job_request_creation_form" id="job_position request_menue"  parent="hr_recruitment.menu_crm_case_categ0_act_job" />
+            
+            
+            <record id="open_team_form_order" model="ir.ui.view">
+            <field name="name">Team Form</field>
+            <field name="model">hr.team</field>
+            <field name="arch" type="xml">
+                <form string="Team Form">
+                  <sheet>
+                    <group col="4">
+                        <field name="name" />
+                      
+                    </group>
+                    
+                </sheet>
+            
+             
+               </form>
+            </field>
+            </record>
+            
+            <record id="open_team_tree" model="ir.ui.view">
+                <field name="name">Team Tree</field>
+                <field name="model">hr.team</field>
+                <field name="arch" type="xml">
+                    <tree string="Team Tree">
+                        <field name="name"/>
+                      
+                    </tree>
+                </field>
+            </record>
+            
+          
+   
+            
+               
+            <record id="open_team_form_order_tree_form" model="ir.actions.act_window">
+                <field name="name">Team Form</field>
+                <field name="res_model">hr.team</field>
+                <field name="binding_view_types">form</field>
+                <field name="view_mode">tree,form</field>
+                <field name="view_id" ref="open_team_tree"/>
+            </record>
+            
+
+
+            <menuitem id="menu_view_team"
+            action="open_team_form_order_tree_form"
+            parent="hr_recruitment.menu_hr_recruitment_configuration"
+            />
+        
+        
+        <record id="task_type_search" model="ir.ui.view">
+            <field name="name">job.position.stages.search</field>
+            <field name="model">job.position.stages</field>
+            <field name="arch" type="xml">
+                <search string="Tasks Stages">
+                   <field name="name" string="Tasks Stages"/>
+                </search>
+            </field>
+        </record>
+
+        <record id="task_type_edit" model="ir.ui.view">
+            <field name="name">job.position.stages.form</field>
+            <field name="model">job.position.stages</field>
+            <field name="arch" type="xml">
+                <form string="Task Stage">
+                    <sheet>
+                        <group>
+                            <group>
+                                <field name="name"/>
+<!--                                <field name="user_id"/> -->
+                            </group>
+                            <group>
+                                <field name="is_quality"/>
+                               
+                            </group>
+                        </group>
+<!--                         <group string="Stage Description and Tooltips">
+                            <p class="text-muted" colspan="2">
+                                At each stage employees can block or make task/issue ready for next stage.
+                                You can define here labels that will be displayed for the state instead
+                                of the default labels.
+                            </p>
+                            <label for="legend_normal" string=" " class="o_status oe_project_kanban_legend"
+                                title="Task in progress. Click to block or set as done."
+                                aria-label="Task in progress. Click to block or set as done." role="img"/>
+                            <field name="legend_normal" nolabel="1"/>
+                            <label for="legend_blocked" string=" " class="o_status o_status_red oe_project_kanban_legend"
+                                title="Task is blocked. Click to unblock or set as done."
+                                aria-label="Task is blocked. Click to unblock or set as done." role="img"/>
+                            <field name="legend_blocked" nolabel="1"/>
+                            <label for="legend_done" string=" " class="o_status o_status_green oe_project_kanban_legend"
+                                title="This step is done. Click to block or set in progress."
+                                aria-label="This step is done. Click to block or set in progress." role="img"/>
+                            <field name="legend_done" nolabel="1"/>
+
+                            <p class="text-muted" colspan="2">
+                                You can also add a description to help your coworkers understand the meaning and purpose of the stage.
+                            </p>
+                            <field name="description" placeholder="Add a description..." nolabel="1" colspan="2"/>
+                        </group> -->
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+        <record id="task_type_tree" model="ir.ui.view">
+            <field name="name">job.position.stages.tree</field>
+            <field name="model">job.position.stages</field>
+            <field name="arch" type="xml">
+                <tree string="Task Stage">
+                    <field name="name"/>
+<!--                     <field name="user_id"/> -->
+                    <field name="is_quality"/>
+                </tree>
+            </field>
+        </record>
+
+        <record id="view_project_task_type_kanban" model="ir.ui.view">
+            <field name="name">job.position.stages.kanban</field>
+            <field name="model">job.position.stages</field>
+            <field name="arch" type="xml">
+                <kanban class="o_kanban_mobile">
+                    <field name="name"/>
+/                    <field name="is_quality"/>
+                    <templates>
+                        <t t-name="kanban-box">
+                            <div t-attf-class="oe_kanban_global_click">
+                                <div class="row">
+                                    <div class="col-12">
+                                        <strong><t t-esc="record.name.value"/></strong>
+                                    </div>
+                                </div>
+                                <t t-if="record.is_quality.value">
+                                    <hr class="mt8 mb8"/>
+                                    <t t-esc="record.is_quality.value"/>
+                                </t>
+                            </div>
+                        </t>
+                    </templates>
+                </kanban>
+            </field>
+        </record>
+
+        <record id="res_partner_action" model="ir.actions.act_window">
+            <field name="name">Stages</field>
+            <field name="res_model">job.position.stages</field>
+            <field name="view_mode">tree,kanban,form</field>
+            <field name="view_id" ref="task_type_tree"/>
+            <field name="help" type="html">
+              <p class="o_view_nocontent_smiling_face">
+                Create a new stage in the task pipeline
+              </p><p>
+                Define the steps that will be used in the project from the
+                creation of the task, up to the closing of the task or issue.
+                You will use these stages in order to track the progress in
+                solving a task or an issue.
+              </p>
+            </field>
+        </record>
+      
+   <menuitem id="re_partner_menu" name="Job Position Stages"
+            parent="hr_recruitment.menu_hr_recruitment_configuration" action="res_partner_action" sequence="5"/>
+            
+            
+            
+            
+            
+            
+            
+            
+            </data>
+            </odoo>
+            
+            

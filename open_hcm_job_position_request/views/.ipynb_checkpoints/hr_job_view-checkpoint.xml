@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+	<data>
+		<record id="hr_job_form_view_inherit" model="ir.ui.view">
+			<field name="name">hr.job.form.view</field>
+			<field name="model">hr.job</field>
+			<field name="inherit_id" ref="hr.view_hr_job_form"/>
+			<field name="arch" type="xml">
+				<xpath expr="//field[@name='no_of_recruitment']" position="after">
+					<field name='hired_id'/>
+					<field name='remaining_id'/>
+                    
+				</xpath>
+<!--                 <xpath expr="//field[@name='description']" position="attributes">
+                    <attribute name='invisible'>1</attribute>
+				</xpath> -->
+
+			</field>
+		</record>
+	</data>
+</odoo>
