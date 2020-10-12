@@ -10,7 +10,7 @@
 
 {
     'name': 'Dynamic Print Cheque - Check writing',
-    'version': '11.0.1.1',
+    'version': '13.0.1.1',
     'sequence':1,
     'category': 'Generic Modules/Accounting',
     'description': """
@@ -51,7 +51,7 @@ Cheque print, check print, check writing, bank check print, check dynamic, bank 
     'author': 'DevIntelle Consulting Service Pvt.Ltd',
     'summary':'App will  configure and print cheque/check Dynamically for any bank with different Cheque format',
     'website': 'http://www.devintellecs.com/',
-    'depends': ['account','account_payment','de_account_check_printing'],
+    'depends': ['account','account_payment','account_check_printing'],
     'data': [
         'security/ir.model.access.csv',
         'views/report_print_cheque.xml',
