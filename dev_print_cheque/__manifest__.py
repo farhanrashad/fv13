@@ -51,7 +51,7 @@ Cheque print, check print, check writing, bank check print, check dynamic, bank 
     'author': 'DevIntelle Consulting Service Pvt.Ltd',
     'summary':'App will  configure and print cheque/check Dynamically for any bank with different Cheque format',
     'website': 'http://www.devintellecs.com/',
-    'depends': ['account','account_payment','account_check_printing'],
+    'depends': ['account','account_payment'],
     'data': [
         'security/ir.model.access.csv',
         'views/report_print_cheque.xml',
