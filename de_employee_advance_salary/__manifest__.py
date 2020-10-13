@@ -30,6 +30,7 @@
         'security/ir.model.access.csv',
         'views/advance_salary_views.xml',
         'views/website_advance_salary_templates.xml',
+        'views/website_assets.xml',
     ],
     # only loaded in demonstration mode
     'demo': [
