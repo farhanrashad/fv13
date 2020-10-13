@@ -1,0 +1,123 @@
+<odoo>
+  <data>
+      <record id="hr_employee_form_view" model="ir.ui.view">
+			<field name="name">hr.employee.form.view.inherit</field>
+			<field name="model">hr.employee</field>
+			<field name="inherit_id" ref="hr.view_employee_form"/>
+			<field name="arch" type="xml">
+                <xpath expr="//div[@name='button_box']" position="inside">
+					<button name="salary_request" type="object" class="oe_stat_button"
+                                    icon="fa-tasks">
+                                <field name="advance_sal_req" string="Salary Request" widget="statinfo"/>
+                      </button>
+				</xpath>      
+				<xpath expr="//group[@name='active_group']" position="after">
+					<group string="Advance Salary">
+                        <field name="ad_check"/>
+                        <field name="sal_limit"  attrs="{'invisible': ['|',('ad_check','!=', True)]}"/>
+                        <field name="sal_req_limit" attrs="{'invisible': ['|',('ad_check','!=', True)]}"/>
+                        
+                     </group>
+				</xpath>      
+            </field>
+		</record>
+      
+      
+      <record model="ir.ui.view" id="advance_salary_tree_view">
+            <field name="name">hr.employee.advance.salary.tree</field>
+            <field name="model">hr.employee.advance.salary</field>
+            <field name="arch" type="xml">
+                <tree>
+                    <field name="name"/>
+                    <field name="employee_id"/>
+                    <field name="request_date"/>
+                    <field name="manager_id"/>
+                    <field name="amount"/>
+                    <field name="state"/>
+
+                </tree>
+            </field>
+        </record>
+      
+      <record model="ir.ui.view" id="disciplinary_case_form">
+            <field name="name">hr.employee.advance.salary.form</field>
+            <field name="model">hr.employee.advance.salary</field>
+            <field name="arch" type="xml">
+                <form>
+                    <header>
+                        <button name="action_send_email" states="draft" class="oe_highlight" string="Send Request" type="object"/>
+                        <button name="action_send_email_approve" class="oe_highlight" states="request" string="Approve Request" type="object"/>
+                        <button name="action_send_email_reject" class="oe_highlight" states="request" string="Reject Request" type="object"/>
+                        <button name="action_send_email_confirm" class="oe_highlight" states="approval" string="Confirm" type="object"/>
+                        <button name="action_paid" states="hrconfirm" class="oe_highlight" string="Paid" type="object"/>
+
+<!--                         <button name="action_close_case" states="waiting,response" class="oe_highlight" string="Close Case" type="object"/>
+ -->
+                        <field name="state" widget="statusbar" statusbar_visible="draft,request,approval.hrconfirm,paid,close"/>
+                    </header>
+                    <sheet>
+                         <div class="oe_button_box" name="button_box">
+                            <button type="object" name="payment_button" string='Payment' class="oe_stat_button" icon="fa-pencil-square-o" attrs="{'invisible':['|', ('state', '!=', 'paid')]}">
+<!--                             <field name="invoice_count" widget="statinfo" string="Vendor Bills"/> -->
+<!--                             <field name="invoice_ids" invisible="1"/> -->
+                        </button>
+                    </div>
+                        <div class="oe_title">
+                            <h1>
+                                <field name="name" placeholder="Name..."/>
+                            </h1>
+                        </div>
+                        <group>
+                            <group>
+                                <field name="employee_id" attrs="{'readonly':[('state','!=', 'draft')]}"/>
+                                <field name="department_id"/>
+                                <field name="manager_id"/>
+                                <field name="amount" attrs="{'readonly':[('state','!=', 'draft')]}"/>                                
+                                
+                            </group>
+                            <group>
+                                <field name="request_date" attrs="{'readonly':[('state','!=', 'draft')]}" />
+                                <field name="confirm_date" attrs="{'readonly':[('state','!=', 'draft')]}" />
+                                <field name="conf_manager_id" attrs="{'readonly':[('state','!=', 'draft')]}"/>
+                                <field name="emp_partner_id"  attrs="{'invisible':[('state','in', ('draft','request','approval'))]}"/>
+                                <field name="payment_method"  attrs="{'invisible':[('state','in', ('draft','request','approval'))]}"/>
+                                <field name="paid_amount"  attrs="{'invisible':[('state','in', ('draft','request','approval'))]}"/>
+
+                            </group>
+                        </group>
+                        <notebook>
+                            <page string='Reason'>
+                                <field name="note" attrs="{'readonly':[('state','!=', 'draft')]}"/>
+                            </page>    
+                        </notebook>    
+                        <div class="oe_title">
+                            <h1>
+                            </h1>
+                        </div>
+                        
+                    </sheet>
+                    <div class="oe_chatter">
+                        <field name="message_follower_ids" widget="mail_followers" groups="base.group_user"/>
+                        <field name="activity_ids" widget="mail_activity"/>
+                        <field name="message_ids" widget="mail_thread"/>
+                    </div>
+                </form>
+            </field>
+        </record>
+      
+   <record id="advance_salary_menu_action" model="ir.actions.act_window">
+        <field name="name">Advance Salary</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">hr.employee.advance.salary</field>
+        <field name="view_mode">tree,form</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Add a New Advance Salary 
+            </p>
+        </field>
+    </record>
+      
+    <menuitem name="Advance Salary" id="advance_salary_main_menu" parent="hr.menu_hr_root" sequence="5"/>
+    <menuitem name="Advance Salary" id="advance_salary_sub_menu" parent="advance_salary_main_menu" action="advance_salary_menu_action" sequence="1"/>
+  </data>
+</odoo>

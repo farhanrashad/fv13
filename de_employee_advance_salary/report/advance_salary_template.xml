@@ -1,0 +1,137 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <template id="report_advance_salary_template">
+        <t t-call="web.html_container">
+            <t t-foreach="docs" t-as="o">
+                <t t-call="web.external_layout">
+                    <div class="page">
+                        <div class="row justify-content-end">
+                            <div class="col-12">
+                                 <table class="table table-bordered" style="table-layout: fixed">
+                                    <thead>
+                                        <tr>
+                                            <th><span t-field="o.name"/></th>
+                                            <td> </td>
+                                            <th> </th>
+                                            <th> </th>
+                                            
+                                        </tr>
+                                    </thead>
+                                    
+                                    <tbody>
+                                        <tr>
+                                            <th>
+                                                Employee
+                                            </th>
+                                            <td>
+                                                <span t-field="o.employee_id.name"/>
+                                            </td>
+                                            <th>
+                                                Department
+                                            </th>
+                                            <td>
+                                                <span t-field="o.department_id.name"/>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <th>
+                                                Job Title
+                                            </th>
+                                            <td>
+<!--                                                 <span t-field="o.employee_id.name"/> -->
+                                            </td>
+                                            <th>
+                                                Manager
+                                            </th>
+                                            <td>
+                                                <span t-field="o.manager_id.name"/>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <th>
+                                                Request Date
+                                            </th>
+                                            <td>
+                                                <span t-field="o.request_date"/>
+                                            </td>
+                                            <th>
+                                                Confirm Date
+                                            </th>
+                                            <td>
+                                                <span t-field="o.confirm_date"/>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <th>
+                                                Request Amount
+                                            </th>
+                                            <td>
+                                                <span t-field="o.amount"/>
+                                            </td>
+                                            <th>
+                                                Confirm Manager
+                                            </th>
+                                            <td>
+                                                <span t-field="o.conf_manager_id.name"/>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <th>
+                                                Reason
+                                            </th>
+                                            <td>
+                                                <span t-field="o.note"/>
+                                            </td>
+                                            <th>
+<!--                                                 Department -->
+                                            </th>
+                                            <td>
+<!--                                                 <span t-field="o.department_id.name"/> -->
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                                <table class="table table-bordered" style="table-layout: fixed">
+                                    <thead>
+                                        <tr>
+                                            <th>Employee</th>
+                                            <th>Manager</th>
+<!--                                             <th>Analytic Tags</th> -->
+                                            <th>HR Manager</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+<!--                                       <t t-foreach="o.sheet_ids" t-as="line"> -->
+                                        <tr>
+                                            <td>
+<!--                                                 <span t-field="line.product_id"/> -->
+                                            </td>
+                                            <td>
+<!--                                                 <span t-field="line.product_quantity"/> -->
+                                            </td>
+<!--                                              <td>
+                                                 <span t-field="line.analytic_tag_ids"/> 
+                                            </td> -->
+                                            <td>
+<!--                                                 <span t-field="line.vendor_id"/> -->
+                                            </td>
+                                        </tr>
+<!--                                       </t> -->
+                                    </tbody>
+                                </table>
+
+                            </div>
+                        </div>
+                    </div>
+                </t>
+            </t>
+        </t>
+    </template>
+<!--     <template id="advance_salary_report">
+        <t t-call="web.html_container">
+            <t t-foreach="docs" t-as="o">
+                <t t-call="de_employee_advance_salary.report_advance_salary_template"/>
+            </t>
+        </t>
+    </template> -->
+</odoo>

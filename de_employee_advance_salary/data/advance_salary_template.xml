@@ -1,0 +1,193 @@
+<odoo>
+<data>
+    <record id="email_template" model="mail.template">
+        <field name="name">Advance Salary Request</field>
+        <field name="model_id" ref="de_employee_advance_salary.model_hr_employee_advance_salary"/>
+        <field name="auto_delete" eval="False"/>
+        <field name="email_from">${ctx['email_from']}</field>
+        <field name="email_to">${ctx['partner_manager_email']}</field>
+            <field name="subject"> Advance salary</field>
+        <field name="lang">${ctx['lang']}</field>
+        <field name="body_html">
+            <![CDATA[
+                <div>
+                    Hello,${ctx['partner_name']}
+                    <p> New <strong></strong> by name of <strong>${ctx['customer_name']}</strong> has been created.
+					</br>
+                    <p>Thank You,</p>
+                    <p>${ctx['partner_name']}</p>
+                </div>
+            ]]>
+    </field>
+    </record>
+
+       <!--Email template -->
+     <record id="email_template_test" model="mail.template">
+            <field name="name">Advance Salary: Send RFQ</field>
+            <field name="model_id" ref="de_employee_advance_salary.model_hr_employee_advance_salary"/>
+            <field name="subject">${object.company_id.name} Request (Ref ${object.name or 'n/a' })</field>
+            <field name="partner_to">${object.employee_id.id}</field>
+            <field name="body_html" type="html">
+<div style="margin: 0px; padding: 0px;">
+    <p style="margin: 0px; padding: 0px; font-size: 13px;">
+        Dear ${object.employee_id.name}
+<!--         % if object.partner_id.parent_id:
+            (${object.partner_id.parent_id.name})
+        % endif -->
+        <br/><br/>
+        Here is in attachment a advance salary <strong>${object.name}</strong>
+<!--         % if object.partner_ref:
+            with reference: ${object.partner_ref}
+        % endif
+        from ${object.company_id.name}. -->
+        <br/><br/>
+        If you have any questions, please do not hesitate to contact us.
+        <br/><br/>
+        Best regards,
+    </p>
+</div></field>
+<!--             <field name="report_template" ref="report_purchase_quotation"/> -->
+            <field name="report_name">RFQ_${(object.name or '').replace('/','_')}</field>
+            <field name="lang">${object.employee_id.lang}</field>
+            <field name="user_signature" eval="False"/>
+            <field name="auto_delete" eval="True"/>
+        </record>
+    
+
+       <record id="email_template_t" model="mail.template">
+
+           <field name="name">Email Template</field>
+
+           <field name="model_id" ref="de_employee_advance_salary.model_hr_employee_advance_salary"/>
+
+           <field name="email_from">${(object.user_id.email_formatted or user.email_formatted) | safe}</field>
+            <field name="partner_to">${object.manager_id.id}</field>
+            <field name="subject">Advance Salary (Ref ${object.name or 'n/a'})</field>
+
+           <field name="auto_delete" eval="True"/>
+
+           <field name="lang">${object.manager_id.lang}</field>
+
+           <field name="body_html" type="html">
+             <div style="margin: 0px; padding: 0px;">
+               <p style="margin: 0px; padding: 0px; font-size: 13px;">
+
+                <p>Dear ${object.manager_id.name}</p>
+
+                <br/>
+
+                <p>Employee ${object.employee_id.name} require your Approval for Advance Salary</p>
+
+                <br/> 
+               <p><strong>Reason:</strong>${object.note}</p>
+               <br/>
+                Regards,<br/>
+                ${object.employee_id.name}
+               </p>
+              </div>
+           </field>
+
+       </record>
+    
+    <record id="email_template_approve" model="mail.template">
+
+           <field name="name">Email Template</field>
+
+           <field name="model_id" ref="de_employee_advance_salary.model_hr_employee_advance_salary"/>
+
+           <field name="email_from">${(object.company_id.email |safe}</field>
+
+           <field name="email_to" >${object.partner_id.email}</field>
+
+           <field name="subject">Ref ${object.name or 'n/a' }</field>
+
+           <field name="auto_delete" eval="True"/>
+
+           <field name="lang">${object.partner_id.lang}</field>
+
+           <field name="body_html">
+
+                <p>Dear HR Manager</p>
+
+                <br/>
+
+                <p>Employee ${object.employee_id.name} require your Approval for Advance Salary.</p>
+
+                <br/> 
+               <p><strong>Reason:</strong>${object.note}</p>
+               <br/>
+               Regards,<br/>
+               ${object.manager_id.name}
+           </field>
+
+       </record>
+    
+    <record id="email_template_reject" model="mail.template">
+
+           <field name="name">Email Template</field>
+
+           <field name="model_id" ref="de_employee_advance_salary.model_hr_employee_advance_salary"/>
+
+           <field name="email_from">${(object.company_id.email |safe}</field>
+
+           <field name="email_to" >${object.partner_id.email}</field>
+
+           <field name="subject">Ref ${object.name or 'n/a' }</field>
+
+           <field name="auto_delete" eval="True"/>
+
+           <field name="lang">${object.partner_id.lang}</field>
+
+           <field name="body_html">
+
+                <p>Dear ${object.employee_id.name}</p>
+
+                <br/>
+
+                <p>Your Advance Salary Request ${object.name} is Reject.</p>
+
+                <br/> 
+<!--                <p><strong>Reason:</strong>${object.note}</p> -->
+               <br/>
+               Regards,<br/>
+               ${object.manager_id.name}
+           </field>
+
+       </record>
+    
+     <record id="email_template_confirm" model="mail.template">
+
+           <field name="name">Email Template</field>
+
+           <field name="model_id" ref="de_employee_advance_salary.model_hr_employee_advance_salary"/>
+
+           <field name="email_from">${(object.company_id.email |safe}</field>
+
+           <field name="email_to" >${object.partner_id.email}</field>
+
+           <field name="subject">Ref ${object.name or 'n/a' }</field>
+
+           <field name="auto_delete" eval="True"/>
+
+           <field name="lang">${object.partner_id.lang}</field>
+
+           <field name="body_html">
+
+                <p>Dear ${object.employee_id.name}</p>
+
+                <br/>
+
+                <p>Your Advance Salary Request ${object.name} is Confirm.</p>
+
+                <br/> 
+<!--                <p><strong>Reason:</strong>${object.note}</p> -->
+               <br/>
+               Regards,<br/>
+               HR Manager
+           </field>
+
+       </record>
+
+   </data>
+
+</odoo>
