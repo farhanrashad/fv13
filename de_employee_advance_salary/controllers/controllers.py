@@ -33,15 +33,11 @@ class MyAdvanceSalary(http.Controller):
     def create_leave(self, **kw):
         fmt = '%Y-%m-%d'
         date_from = kw.get('request_date_from')
-#         date_to = kw.get('request_date_to')
-#         d1 = datetime.strptime(date_from, fmt)
-#         d2 = datetime.strptime(date_to, fmt)
-#         days_diff = float((d2 - d1).days)
         adv_sal_val = {
             'name': kw.get('name'),
             'employee_id': int(kw.get('employee_id')),
             'request_date': kw.get('request_date_from'),
-            'amount': kw.get('request_date_to'),
+            'amount': kw.get('amount'),
             'emp_partner_id': kw.get('emp_partner_id'),
             'payment_method':kw.get('payment_method'),
             'note':kw.get('note'),
