@@ -212,7 +212,7 @@ class EmployeeAdvanceSalary(models.Model):
     def action_send_email_confirm(self):
         self.ensure_one()
         self.confirm_date = datetime.today()
-        self.conf_manager_id = self._uid
+#         self.conf_manager_id = self._uid
         ir_model_data = self.env['ir.model.data']
         try:
             template_id = \
