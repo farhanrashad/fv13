@@ -1,0 +1,126 @@
+<odoo>
+  <data>  
+            <record model="ir.ui.view" id="hr_employee_overtime_type_tree_view">
+            <field name="name">hr.employee.overtime.type.tree</field>
+            <field name="model">hr.employee.overtime.type</field>
+            <field name="arch" type="xml">
+                <tree>
+                    <field name="name"/>
+                </tree>
+            </field>
+        </record>
+      
+      <record model="ir.ui.view" id="hr_employee_overtime_type_form_view">
+            <field name="name">hr.employee.overtime.type.form</field>
+            <field name="model">hr.employee.overtime.type</field>
+            <field name="arch" type="xml">
+                <form>
+
+                    <sheet>
+                        <div class="oe_title">
+                            <h1>
+                                <field name="name" placeholder="Name..."/>
+                            </h1>
+                        </div>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+      
+
+      <record model="ir.ui.view" id="hr_employee_overtime_rule_tree_view">
+            <field name="name">hr.employee.overtime.rule.tree</field>
+            <field name="model">hr.employee.overtime.rule</field>
+            <field name="arch" type="xml">
+                <tree>
+                    <field name="overtime_type_id"/>
+                    <field name="date_from"/>
+                    <field name="date_to"/>
+                    <field name="department_id"/>
+                    <field name="overtime_hours"/>
+                    <field name="type"/>
+
+                </tree>
+            </field>
+        </record>
+      
+      <record model="ir.ui.view" id="hr_employee_overtime_rule_form_view">
+            <field name="name">hr.employee.overtime.rule.form</field>
+            <field name="model">hr.employee.overtime.rule</field>
+            <field name="arch" type="xml">
+                <form>
+<!--                     <header>
+                        <button name="action_send_email" states="draft" class="oe_highlight" string="Send Request" type="object"/>
+                        <button name="action_send_email_approve" class="oe_highlight" states="request" string="Approve Request" type="object"/>
+                        <button name="action_send_email_reject" class="oe_highlight" states="request" string="Reject Request" type="object"/>
+                        <button name="action_send_email_confirm" class="oe_highlight" states="approval" string="Confirm" type="object"/>
+                        <button name="action_paid" states="hrconfirm" class="oe_highlight" string="Paid" type="object"/>
+
+
+                        <field name="state" widget="statusbar" statusbar_visible="draft,to_approve,refused,approved,paid,close"/>
+                    </header> -->
+                    <sheet>
+<!--                          <div class="oe_button_box" name="button_box">
+                            <button type="object" name="payment_button" string='Payment' class="oe_stat_button" icon="fa-pencil-square-o" attrs="{'invisible':['|', ('state', '!=', 'paid')]}"> -->
+<!--                             <field name="invoice_count" widget="statinfo" string="Vendor Bills"/> -->
+<!--                             <field name="invoice_ids" invisible="1"/> -->
+<!--                         </button>
+                    </div> -->
+                        <div class="oe_title">
+                            <h1>
+                                <field name="overtime_type_id" placeholder="Overtime Type..."/>
+                            </h1>
+                        </div>
+                        <group>
+                            <group>
+                                <field name="department_id"/>
+                                <field name="employee_ids" />
+                                <field name="date_from" />
+                                <field name="type" />
+                            </group>
+                            <group>
+                                <field name="date_to"/>
+                                <field name="overtime_hours" />
+                                <field name="overtime_type" />
+
+                            </group>
+                        </group>    
+                    </sheet>
+<!--                     <div class="oe_chatter">
+                        <field name="message_follower_ids" widget="mail_followers" groups="base.group_user"/>
+                        <field name="activity_ids" widget="mail_activity"/>
+                        <field name="message_ids" widget="mail_thread"/>
+                    </div> -->
+                </form>
+            </field>
+        </record>
+      
+   <record id="overtime_rule_menu_action" model="ir.actions.act_window">
+        <field name="name">Overtime</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">hr.employee.overtime.rule</field>
+        <field name="view_mode">tree,form</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Add a New Overtime Rule 
+            </p>
+        </field>
+    </record>
+      
+       <record id="overtime_type_menu_action" model="ir.actions.act_window">
+        <field name="name">Overtime</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">hr.employee.overtime.type</field>
+        <field name="view_mode">tree,form</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Add a New Overtime Type 
+            </p>
+        </field>
+    </record>  
+      
+    <menuitem name="Overtime" id="overtime_main_menu" parent="hr_attendance.menu_hr_attendance_settings" sequence="3"/>
+    <menuitem name="Overtime Rule" id="overtime_rule_sub_menu" parent="overtime_main_menu" action="overtime_rule_menu_action" sequence="1"/>
+    <menuitem name="Overtime Type" id="overtime__type_sub_menu" parent="overtime_main_menu" action="overtime_type_menu_action" sequence="2"/>
+  </data>
+</odoo>

@@ -1,13 +1,25 @@
 # -*- coding: utf-8 -*-
 
-from odoo import models, fields, api
+from odoo import models, fields, api, _
 
+class HrEmployee(models.Model):
+    _inherit = 'hr.department'
+    
+    allow_overtime = fields.Boolean(string="Allow Overtime", store=True)
 
+class HrEmployee(models.Model):
+    _inherit = 'hr.employee'
+    
+    allow_overtime = fields.Boolean(related='department_id.allow_overtime', store=True)
+    
+    
+    
+    
 class EmployeeOvertime(models.Model):
     _name = 'hr.employee.overtime'
     _description = 'Employee Overtime'
 
-    employee_id = fields.Many2one('hr.employee', string="Employee", store=True)
+    name = fields.Many2one('hr.employee', string="Employee", store=True)
     date = fields.Date(string='Date', required=True)
     check_in = fields.Date(string="Check In", readonly=True)
     check_out = fields.Date(string="Check Out", readonly=True)
@@ -19,6 +31,7 @@ class EmployeeOvertime(models.Model):
         ('refused', 'Refused'),
         ('approved', 'Approved'),        
         ('paid', 'Paid'),
+        ('close', 'Cancelled'),
     ], string='Status', readonly=True, copy=False, index=True, tracking=3, default='draft')
     
 
@@ -26,6 +39,7 @@ class EmployeeOvertime(models.Model):
 class EmployeeOvertimeRule(models.Model):
     _name = 'hr.employee.overtime.rule'
     _description = 'Employee Overtime Rule'
+    _rec_name = 'overtime_type_id'
 
     department_id = fields.Many2one('hr.department', string="Department", store=True)
     overtime_type_id = fields.Many2one('hr.employee.overtime.type', string="Overtime Type", store=True)
