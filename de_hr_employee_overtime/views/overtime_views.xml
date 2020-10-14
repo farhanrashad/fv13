@@ -47,15 +47,15 @@
             <field name="arch" type="xml">
                 <form>
                     <header>
-<!--                         <button name="action_send_email" states="draft" class="oe_highlight" string="Send Request" type="object"/>
-                        <button name="action_send_email_approve" class="oe_highlight" states="to_approve" string="Approve Request" type="object"/>
-                        <button name="action_send_email_reject" class="oe_highlight" states="approved" string="Reject Request" type="object"/>
-                        <button name="action_send_email_confirm" class="oe_highlight" states="approved" string="Confirm" type="object"/>
-                        <button name="action_paid" states="hrconfirm" class="oe_highlight" string="Paid" type="object"/>
+                        <button name="action_confirm" states="draft" class="oe_highlight" string="Confirm" type="object"/>
+                        <button name="action_approve" class="oe_highlight" states="to_approve" string="Approve" type="object"/>
+                        <button name="action_refuse"  states="to_approve,approved" string="Refuse" type="object"/>
+                        <button name="action_draft"  states="to_approve,refused" string="Reset to Draft" type="object"/>
+<!--                         <button name="action_paid" states="hrconfirm" class="oe_highlight" string="Paid" type="object"/>
  -->
 <!--                         <button name="action_close_case" states="waiting,response" class="oe_highlight" string="Close Case" type="object"/>
  -->
-                        <field name="state" widget="statusbar" statusbar_visible="draft,to_approve,refused,approved,paid,close"/>
+                        <field name="state" widget="statusbar" statusbar_visible="draft,to_approve,refused,approved,paid.close"/>
                     </header>
                     <sheet>
                         <div class="oe_title">
@@ -99,7 +99,7 @@
         </field>
     </record>
       
-    <menuitem name="Overtime" id="overtime_main_menu" parent="hr_attendance.menu_hr_attendance_root" sequence="3"/>
+    <menuitem name="Overtime" id="overtime_main_menu" parent="hr_attendance.menu_hr_attendance_root" sequence="5"/>
     <menuitem name="Overtime" id="overtime_sub_menu" parent="overtime_main_menu" action="overtime_menu_action" sequence="1"/>
   </data>
 </odoo>

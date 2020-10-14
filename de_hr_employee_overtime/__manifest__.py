@@ -20,10 +20,11 @@
     'version': '0.1',
 
     # any module necessary for this one to work correctly
-    'depends': ['base','hr','hr_attendance'],
+    'depends': ['base','hr','hr_attendance','hr_payroll'],
 
     # always loaded
     'data': [
+        'data/schedular_action.xml',
         'security/ir.model.access.csv',
         'views/overtime_views.xml',
         'views/overtime_rule_views.xml',

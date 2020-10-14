@@ -1,15 +1,34 @@
 # -*- coding: utf-8 -*-
 
 from odoo import models, fields, api, _
+from datetime import datetime
+from odoo import exceptions 
+from odoo.exceptions import UserError, ValidationError 
 
 class HrEmployee(models.Model):
     _inherit = 'hr.department'
     
     allow_overtime = fields.Boolean(string="Allow Overtime", store=True)
 
+class HrAttendance(models.Model):
+    _inherit = 'hr.attendance'
+    
+    @api.model
+    def cron_create_overtime(self):
+        if record.employee_id.allow_overtime == True:
+            vals = {
+                'name': record.employee_id.id,
+                'date':  record.check_in,
+                'check_in': record.check_in,
+                'check_out': record.check_in,
+                'total_hours': record.worked_hours,
+                'overtime_hours': record.worked_hours - record.employee_id.resource_calendar_id.hours_per_day,
+                      }
+            overtime_lines = env['hr.employee.overtime'].create(vals) 
+    
 class HrEmployee(models.Model):
     _inherit = 'hr.employee'
-    
+     
     allow_overtime = fields.Boolean(related='department_id.allow_overtime', store=True)
     
     
@@ -27,11 +46,35 @@ class EmployeeOvertime(models.Model):
      
             return super(EmployeeAdvanceSalary, self).unlink()
         
-
+    def action_approve(self):
+        overtime_rule = self.env['hr.employee.overtime.rule'].search([('employee_ids','=', self.name.id)])
+        for rule in overtime_rule:
+            if rule.overtime_hours < self.overtime_hours:
+                raise UserError(_('Overtime exceeded for the internal.'))
+            else:                
+                self.write ({
+                        'state': 'approved'
+                    })
+        
+    def action_confirm(self):
+        self.write ({
+                'state': 'to_approve'
+            })    
+        
+    def action_refuse(self):
+        self.write ({
+                'state': 'refused'
+            })
+        
+    def action_draft(self):
+        self.write ({
+                'state': 'draft'
+            })    
+    
     name = fields.Many2one('hr.employee', string="Employee", store=True)
     date = fields.Date(string='Date', required=True)
-    check_in = fields.Date(string="Check In", readonly=True)
-    check_out = fields.Date(string="Check Out", readonly=True)
+    check_in = fields.Datetime(string="Check In", readonly=True)
+    check_out = fields.Datetime(string="Check Out", readonly=True)
     total_hours = fields.Integer(string="Total Hours", readonly=True)
     overtime_hours = fields.Integer(string="Overtime Hours", readonly=True)
     state = fields.Selection([
@@ -67,8 +110,9 @@ class EmployeeOvertimeRule(models.Model):
     overtime_type = fields.Selection(selection=[
             ('fixed', 'Fixed'),
             ('percent', 'Percentage'),
-        ], string='Type', required=True, store=True, index=True,  tracking=True,
+        ], string='Overtime Type', required=True, store=True, index=True,  tracking=True,
         default="fixed")
+    overtime_amount = fields.Float(string="Overtime Amount")
     
     
 class EmployeeOvertimeRule(models.Model):

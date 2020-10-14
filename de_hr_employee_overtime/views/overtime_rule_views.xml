@@ -79,8 +79,9 @@
                                 <field name="type" />
                             </group>
                             <group>
-                                <field name="date_to"/>
                                 <field name="overtime_hours" />
+                                <field name="overtime_amount"/>
+                                <field name="date_to"/>
                                 <field name="overtime_type" />
 
                             </group>
