@@ -74,7 +74,7 @@
                         <group>
                             <group>
                                 <field name="department_id"/>
-                                <field name="employee_ids" />
+                                <field name="employee_ids" widget="many2many_tags"/>
                                 <field name="date_from" />
                                 <field name="type" />
                             </group>
@@ -119,8 +119,8 @@
         </field>
     </record>  
       
-    <menuitem name="Overtime" id="overtime_main_menu" parent="hr_attendance.menu_hr_attendance_settings" sequence="3"/>
-    <menuitem name="Overtime Rule" id="overtime_rule_sub_menu" parent="overtime_main_menu" action="overtime_rule_menu_action" sequence="1"/>
-    <menuitem name="Overtime Type" id="overtime__type_sub_menu" parent="overtime_main_menu" action="overtime_type_menu_action" sequence="2"/>
+    <menuitem name="Overtime" id="overtime_config_main_menu" parent="hr_attendance.menu_hr_attendance_settings" sequence="3"/>
+    <menuitem name="Overtime Rule" id="overtime_rule_sub_menu" parent="overtime_config_main_menu" action="overtime_rule_menu_action" sequence="1"/>
+    <menuitem name="Overtime Type" id="overtime__type_sub_menu" parent="overtime_config_main_menu" action="overtime_type_menu_action" sequence="2"/>
   </data>
 </odoo>

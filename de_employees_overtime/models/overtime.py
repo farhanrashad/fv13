@@ -18,6 +18,14 @@ class HrEmployee(models.Model):
 class EmployeeOvertime(models.Model):
     _name = 'hr.employee.overtime'
     _description = 'Employee Overtime'
+    
+    def unlink(self):
+        for leave in self:
+            if leave.state in ('to_approve','approved','paid'):
+                raise UserError(_('You cannot delete an order form  which is not draft or close. '))
+     
+            return super(EmployeeAdvanceSalary, self).unlink()
+        
 
     name = fields.Many2one('hr.employee', string="Employee", store=True)
     date = fields.Date(string='Date', required=True)
@@ -51,12 +59,12 @@ class EmployeeOvertimeRule(models.Model):
             ('weekly', 'Weekly'),
             ('monthly', 'Monthly'),
             ('yearly', 'Yearly'),
-        ], string='Type', required=True, store=True, index=True, readonly=True, tracking=True,
+        ], string='Type', required=True, store=True, index=True,tracking=True,
         default="yearly")
     overtime_type = fields.Selection(selection=[
             ('fixed', 'Fixed'),
             ('percent', 'Percentage'),
-        ], string='Type', required=True, store=True, index=True, readonly=True, tracking=True,
+        ], string='Type', required=True, store=True, index=True,  tracking=True,
         default="fixed")
     
     
