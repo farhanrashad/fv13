@@ -18,6 +18,7 @@ class HrEmployee(models.Model):
 class EmployeeOvertime(models.Model):
     _name = 'hr.employee.overtime'
     _description = 'Employee Overtime'
+    _inherit = ['mail.thread', 'mail.activity.mixin', 'portal.mixin']
     
     def unlink(self):
         for leave in self:
@@ -48,6 +49,8 @@ class EmployeeOvertimeRule(models.Model):
     _name = 'hr.employee.overtime.rule'
     _description = 'Employee Overtime Rule'
     _rec_name = 'overtime_type_id'
+    _inherit = ['mail.thread', 'mail.activity.mixin', 'portal.mixin']
+    
 
     department_id = fields.Many2one('hr.department', string="Department", store=True)
     overtime_type_id = fields.Many2one('hr.employee.overtime.type', string="Overtime Type", store=True)
