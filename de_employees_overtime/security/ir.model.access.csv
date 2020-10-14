@@ -1,2 +1,4 @@
 id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
-access_de_employees_overtime_de_employees_overtime,de_employees_overtime.de_employees_overtime,model_de_employees_overtime_de_employees_overtime,base.group_user,1,1,1,1
+access_hr_employee_overtime,access.hr.employee.overtime,model_hr_employee_overtime,,1,1,1,1
+access_hr_employee_overtime_rule,access.hr.employee.overtime.rule,model_hr_employee_overtime_rule,,1,1,1,1
+access_hr_employee_overtime_type,access.hr.employee.overtime.type,model_hr_employee_overtime_type,,1,1,1,1
