@@ -6,6 +6,8 @@ from odoo import exceptions
 from odoo.exceptions import UserError, ValidationError
 
 
+
+
 class StockwarehouseTransfer(models.Model):
     _name = 'stock.transit.transfer'
     _description = 'This model is use in Stock Tansfer'
