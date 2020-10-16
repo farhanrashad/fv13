@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="helpdesk_excel_report_wizard" model="ir.ui.view">
+        <field name="name">helpdesk.wizard</field>
+        <field name="model">helpdesk.wizard</field>
+        <field name="arch" type="xml">
+            <form string="Helpdesk Ticket Details Report">
+            <group>
+                    <field name="date_from" />
+                    <field name="date_to" />
+                    <field name="stage"/>
+                </group>
+                <p class="oe_grey">
+                    You want to Print Helpdesk Ticket Details Report?
+                </p>
+                <footer>
+                    <button string="Print Excel Report" class="btn-primary"
+                        name="action_report_gen" type="object" />
+                    <button string="Cancel" class="btn-primary" special="cancel" />
+                </footer>
+            </form>
+        </field>
+    </record>
+
+
+    <record id="action_ticket_report" model="ir.actions.act_window">
+        <field name="name">Helpdesk Ticket Details Report</field>
+        <field name="res_model">helpdesk.wizard</field>
+        <field name="binding_view_types">form</field>
+        <field name="view_mode">tree,form</field>
+        <field name="view_id" ref="helpdesk_excel_report_wizard"/>
+        <field name="target">new</field>
+    </record>
+
+    <menuitem id="menu_ticket_report_helpdesk" name="Helpdesk Ticket Details Report" action="action_ticket_report" parent="de_helpdesk.helpdesk_ticket_config_main_menu" /> 
+   
+</odoo>
