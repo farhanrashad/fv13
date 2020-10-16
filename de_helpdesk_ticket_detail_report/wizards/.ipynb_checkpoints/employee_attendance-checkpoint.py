@@ -15,9 +15,9 @@ from odoo.exceptions import UserError
 from datetime import datetime
 
 
-class EmployeeAttandanceWizard(models.Model):
-    _name = "employee.attendance.wizard"
-    _description = "Employee Wizard"
+class HelpdeskWizard(models.Model):
+    _name = "helpdesk.wizard"
+    _description = "Helpdesk Wizard"
     
     
     date_from = fields.Date('Date From:',default=time.strftime('%Y-%m-01'))
@@ -27,9 +27,11 @@ class EmployeeAttandanceWizard(models.Model):
 
 
     def action_report_gen(self):
+        tickets = self.env['helpdesk.ticket'].search([])
         datas = {
             'date_from': self.date_from,
             'date_to': self.date_to,
             'stage': self.stage,
+            'tickets': tickets,
         }
         return self.env.ref('de_helpdesk_ticket_detail_report.emp_att_xlsx').report_action(self,data=datas)
