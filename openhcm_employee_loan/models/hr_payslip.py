@@ -12,10 +12,10 @@ class hr_loan_Form(models.Model):
     _inherit ='hr.payslip'
     
     
-    installment_ids = fields.Many2many('employee.loan.installment', string='Installment Lines')
+    installment_ids = fields.Many2many('employee.loan.installment', string='Installment Lines', domain="[('state', '=', 'draft'),('order_line.state','=', 'done'),('order_line.employee_id','=', employee_id)]")
     
     def compute_sheet(self):
-         for other_input in self.input_line_ids:
+        for other_input in self.input_line_ids:
              other_input.unlink()
         loan_inputs = self.env['hr.payslip.input.type'].search([('code','=', 'LOANINS')])
         inrest_inputs = self.env['hr.payslip.input.type'].search([('code','=', 'LOANINT')])
@@ -24,8 +24,8 @@ class hr_loan_Form(models.Model):
         interset = 0
         for input in loan_inputs:
             if input.code == 'LOANINS':
-            for sal_amount in self.installment_ids:            
-                amount = amount + sal_amount.installment_amount
+                for sal_amount in self.installment_ids:            
+                    amount = amount + sal_amount.installment_amount
             data.append((0,0,{
                                 'payslip_id': self.id,
                                 'sequence': 1,
@@ -34,19 +34,19 @@ class hr_loan_Form(models.Model):
                                 'input_type_id': input.id,
                                 'amount': amount,
                                 }))
-             self.input_line_ids = data
-             if input.code == 'LOANINT':
-        for input in inrest_inputs:
-            for sal_amount in self.installment_ids:            
-                interset = interset + sal_amount.interest
-            data.append((0,0,{
-                                'payslip_id': self.id,
-                                'sequence': 1,
-                                'code': input.code,
-                                'contract_id': self.contract_id.id,
-                                'input_type_id': input.id,
-                                'amount': interset,
-                                }))
+            self.input_line_ids = data
+        if input.code == 'LOANINT':
+            for input in inrest_inputs:
+                for sal_amount in self.installment_ids:            
+                    interset = interset + sal_amount.interest
+                data.append((0,0,{
+                                    'payslip_id': self.id,
+                                    'sequence': 1,
+                                    'code': input.code,
+                                    'contract_id': self.contract_id.id,
+                                    'input_type_id': input.id,
+                                    'amount': interset,
+                                    }))
         self.input_line_ids = data
         level = super(hr_loan_Form, self).compute_sheet()
         return level
