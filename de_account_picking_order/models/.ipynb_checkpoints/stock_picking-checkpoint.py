@@ -3,6 +3,11 @@
 from odoo import models, fields, api, _
 
 
+class StockPickingType(models.Model):
+    _inherit = 'stock.picking.type'
+    
+    record_expense = fields.Boolean(string='Record Expense')
+
 class StockMove(models.Model):
     _inherit = 'stock.move'
     
@@ -13,16 +18,11 @@ class StockMove(models.Model):
             limit=1).id
     
     account_id = fields.Many2one('account.account', string='Account',
-        index=True, ondelete="restrict", check_company=True,
-        domain=[('deprecated', '=', False)],  default = _get_default_account )
+          default = _get_default_account )
     price_unit = fields.Float(related='product_id.standard_price')
     price_subtotal = fields.Monetary(compute='_compute_amount_t', string='Subtotal')
-    company_id = fields.Many2one('res.company', string='Company')
-#     state = fields.Selection([('draft', 'Draft'),
-#                               ('confirm', 'Confirm'),
-#                               ('inprocess', 'Under Maintenance'),
-#                               ('done', 'Done'),
-#                               ('cancel', 'Cancel')], string="Status", default='draft', track_visibility='onchange')
+    record_expenses = fields.Boolean(related='picking_type_id.record_expense')
+#     company_id = fields.Many2one('res.company', string='Company')
     analytic_account_id = fields.Many2one(
         'account.analytic.account', 'Analytic Account',
         readonly=False, copy=False, check_company=True, 
@@ -35,10 +35,10 @@ class StockMove(models.Model):
    
 
     
-    @api.depends('price_subtotal','price_unit', 'quantity_done')    
+    @api.depends('price_subtotal','price_unit', 'product_uom_qty')    
     def _compute_amount_t(self):
         for line in self:
-            line.price_subtotal = line.price_unit * line.quantity_done
+            line.price_subtotal = line.price_unit * line.product_uom_qty
 
     
                 
@@ -89,7 +89,7 @@ class StockPicking(models.Model):
         self.bill_count = count
         
     bill_count = fields.Integer(string='Sub Task', compute='get_bill_count')
-    debit_account_id = fields.Many2one('account.account', related='move_ids_without_package.account_id' )
+#     debit_account_id = fields.Many2one('account.account', related='move_ids_without_package.account_id' )
     account_id = fields.Many2one('account.account', string='Credit Account')
     credit_account_id = fields.Many2one('account.account', string='Credit Account', default = _get_default_credit_account)
     journal_id = fields.Many2one('account.journal', string='Journal', default = _get_default_journal)
@@ -97,8 +97,8 @@ class StockPicking(models.Model):
     amount_tax = fields.Monetary(string='Taxes', store=True, readonly=True, compute='_amount_all')
     amount_total = fields.Monetary(string='Total', store=True, readonly=True, compute='_amount_all')
     currency_id = fields.Many2one('res.currency', 'Currency')
-    move_id = fields.Many2one('account.move',string='Journal Entry',  domain="['|', ('company_id', '=', False), ('name', '=', name)]")
-
+    move_id = fields.Many2one('account.move',string='Journal Entry', )
+    record_expense = fields.Boolean(related='picking_type_id.record_expense')
         
         
 
@@ -107,9 +107,10 @@ class StockPicking(models.Model):
         for order in self:
             amount_untaxed = amount_tax = 0.0
             for line in order.move_ids_without_package:
-                amount_untaxed += line.price_subtotal
+                amount_untaxed += line.price_subtotal 
+ #                 line.price_subtotal
         order.update({
-            'amount_untaxed': order.currency_id.round(amount_untaxed),
+#             'amount_untaxed': round(amount_untaxed, 2),
             'amount_total': amount_untaxed
             })
             
@@ -121,7 +122,7 @@ class StockPicking(models.Model):
         move_dict = {
               'name': self.name,
               'journal_id': self.journal_id.id,
-              'date': self.scheduled_order,
+              'date': self.scheduled_date,
               'state': 'draft',
                    }
                         #step2:debit side entry
