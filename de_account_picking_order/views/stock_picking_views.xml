@@ -18,12 +18,13 @@
 			<field name="inherit_id" ref="stock.view_picking_form"/>
 			<field name="arch" type="xml">
                 <xpath expr="//button[@name='action_picking_move_tree']" position="before">
-                        <button name="action_view_test" type="object" class="oe_stat_button" state='done' icon="fa-pencil-square-o"  attrs="{'invisible': [('bill_count', '=', 0),('record_expense', '!=', True)]}">
+                        <button name="action_view_test" type="object" class="oe_stat_button" state='done' icon="fa-pencil-square-o"  attrs="{'invisible': [('record_expense', '!=', True)],'invisible': [('state', '!=', 'done')]}">
                             <field name="bill_count" widget="statinfo" string="Expense Bills"/>
                         </button>
                 </xpath>
                  <xpath expr="//button[@name='action_confirm']" position="after">
-				   <button string="Record Expense" name="action_record_expense" type="object" attrs="{'invisible': [('record_expense', '!=', True),('state', '!=', 'done')]}" class="oe_highlight" />
+				   <button string="Record Expense" name="action_record_expense" type="object" attrs="{'invisible': [('record_expense', '!=', True)],'invisible': [('state', '!=', 'done')]}" class="oe_highlight" />
+<!--                      ,('state', '!=', 'done') -->
 				</xpath>
                  <xpath expr="//field[@name='picking_type_id']" position="after">
                     <field name="record_expense" invisible="1"/>
@@ -37,6 +38,7 @@
                                <field name='product_id'/> 
                                <field name='account_id'/> 
                                <field name='picking_id' invisible="1"/> 
+                               <field name='company_id' invisible="1"/> 
                                <field name='price_unit'/> 
                                <field name='analytic_account_id'/> 
                                <field name='analytic_tag_ids'/> 
@@ -45,6 +47,9 @@
                                <field name='price_subtotal'/> 
                             </tree>
                         </field>
+                     <group class="oe_subtotal_footer" attrs="{'invisible': [('record_expense', '!=', True)]}">
+                        <field name="amount_total" class="oe_subtotal_footer_separator"/>
+                     </group>
                     </page>
                     <page string="Accounting" attrs="{'invisible': [('record_expense', '!=', True)]}">
                         <group>
@@ -58,11 +63,9 @@
                         </group>    
                     </page>
 				</xpath>
-                 <xpath expr="//field[@name='move_ids_without_package']" position="after">
-                  <group class="oe_subtotal_footer" attrs="{'invisible': [('record_expense', '!=', True)]}">
-                        <field name="amount_total" class="oe_subtotal_footer_separator"/>
-                   </group>
-                </xpath> 
+<!--                  <xpath expr="//field[@name='move_ids_without_package']" position="after">
+                 
+                </xpath>  -->
 
 <!-- 				<xpath expr="//field[@name='move_ids_without_package']//tree//field[@name='product_id']" position="after">
 					<field name="account_id" attrs="{'column_invisible': [('record_expenses', '!=', True)]}" />

@@ -70,6 +70,7 @@ class StockPicking(models.Model):
     amount_total = fields.Monetary(string='Total', store=True, readonly=True, compute='_amount_all')
     currency_id = fields.Many2one('res.currency', 'Currency')
     move_id = fields.Many2one('account.move',string='Journal Entry', )
+#     picking_type_id = fields.Many2one('stock.picking.type',string='Picking Type', )
     record_expense = fields.Boolean(related='picking_type_id.record_expense')
         
         
@@ -98,7 +99,7 @@ class StockPicking(models.Model):
               'state': 'draft',
                    }
                         #step2:debit side entry
-        for oline in self.move_ids_without_package:
+        for oline in self.picking_lines_ids:
             debit_line = (0, 0, {
     #                  	'move_id': move.id,
                     'name': self.name +":"+ oline.product_id.name,
@@ -142,7 +143,7 @@ class StockPickingLines(models.Model):
     picking_id = fields.Many2one('stock.picking', string='Picking')
     product_uom_qty = fields.Float(string='Quantity')
     price_subtotal = fields.Monetary(compute='_compute_amount_t', string='Subtotal')
-    record_expenses = fields.Boolean(related='picking_type_id.record_expense')
+    record_expenses = fields.Boolean(string='Expense')
 #     company_id = fields.Many2one('res.company', string='Company')
     analytic_account_id = fields.Many2one(
         'account.analytic.account', 'Analytic Account',
@@ -150,7 +151,7 @@ class StockPickingLines(models.Model):
         help="The analytic account related to a sales order.")
     analytic_tag_ids = fields.Many2many('account.analytic.tag', string='Analytic Tags')
     currency_id = fields.Many2one('res.currency', 'Currency')
-
+    company_id = fields.Many2one('res.company', store=True, string='Company', readonly=False)
     
 
    
