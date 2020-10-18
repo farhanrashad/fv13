@@ -117,7 +117,59 @@ class JobOrderSheet(models.Model):
                     'product_uom_qty': line.in_house_production
                 })
 
-#     def action_generate_po(self):
+    def action_generate_po(self):
+        vendor_list = []
+        for line in self.sheet_ids:
+            if line.vendor_id and line.created_po == False and line.outsource_production > 0:
+                vendor_list.append(line.vendor_id)
+            else:
+                pass
+        list = set(vendor_list)
+        for te in list:
+            product = []
+            for re in self.sheet_ids:
+                if te == re.vendor_id:
+                    if line.created_po == False:
+                        valss = {
+                            'product_id': re.product_id.id,
+                            'name': re.product_id.name,
+                            'product_qty': re.outsource_production,
+                            'price_unit': re.product_id.list_price,
+#                             'order_id': re.sheet_id.id,
+                            'date_planned': fields.Date.today(),
+                            'product_uom': re.product_id.uom_id.id,
+                        }
+                        product.append(valss)
+            vals = {
+                  'partner_id': te.id,
+                  'jo_sheet_reference': self.name,
+                  'date_order': fields.Date.today(),
+                  'sale_ref_id': self.sale_order_id.name,
+                  'origin': self.name,
+                    }
+            order = self.env['purchase.order'].create(vals)
+            for test in product:
+                order_line = {
+                       'order_id': order.id,
+                       'product_id': test['product_id'],
+                       'name': test['name'],
+                       'product_qty': test['product_qty'],
+                       'price_unit': test['price_unit'],
+                       'date_planned': fields.Date.today(),
+                       'product_uom': test['product_uom'],
+                        }
+                orders_lines = self.env['purchase.order.line'].create(order_line)
+                
+            self.write({
+                    'po_created': True
+                })
+        for line in self.sheet_ids:
+            if line.created_po == False and line.outsource_production > 0 and not line.vendor_id==' ':
+                line.update ({
+                   'po_process': False,
+                    'created_po': True,
+                  	})
+            
 #         for line in self.sheet_ids:
 #             if line.outsource_production > 0:
 #                 supplier_line = {
@@ -232,7 +284,7 @@ class JobOrderSheetLine(models.Model):
                 raise UserError(_('Please Select Vendor for all selected lines.'))
         vendor_list = []
         for line in self:
-            if line.vendor_id and line.created_po == False:
+            if line.vendor_id and line.created_po == False and line.outsource_production > 0:
                 vendor_list.append(line.vendor_id)
             else:
                 pass
@@ -272,7 +324,7 @@ class JobOrderSheetLine(models.Model):
                         }
                 orders_lines = self.env['purchase.order.line'].create(order_line)
         for line in self:
-            if not line.vendor_id==' ':
+            if line.created_po == False and line.outsource_production > 0 and not line.vendor_id==' ':
                 line.update ({
                    'po_process': False,
                     'created_po': True,
