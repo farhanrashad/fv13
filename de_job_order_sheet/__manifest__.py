@@ -13,7 +13,7 @@
     'website': "http://www.dynexcel.co",
 
     'category': 'Job Order',
-    'version': '0.1',
+    'version': '0.2',
 
     # any module necessary for this one to work correctly
     'depends': ['base', 'mrp', 'sale'],

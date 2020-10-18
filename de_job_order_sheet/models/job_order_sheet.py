@@ -11,6 +11,13 @@ class PurchaseOrderExt(models.Model):
     jo_sheet_reference = fields.Char(string='Reference')
 
 
+class MrpProductionSale(models.Model):
+    _inherit = 'mrp.production'
+
+    sale_order = fields.Many2one(comodel_name='sale.order', string='Sale Order')
+    # sale_id = fields.Char(string='Ref Sale')
+
+
 class JobOrderSheet(models.Model):
     _name = 'job.order.sheet'
     _description = 'Job Order Sheet'
@@ -25,14 +32,12 @@ class JobOrderSheet(models.Model):
     def get_sheet_lines(self):
         for rec in self:
             rec.sheet_ids.unlink()
+            picking_type = self.env['stock.picking.type'].search([('name', '=', 'Floor - Receiving')], limit=1)
+            print('picking', picking_type)
             order_data = self.env['mrp.production'].search([('sale_id', '=', rec.sale_order_id.name),
-                                                            '|',
-                                                            '|',
-                                                            ('product_id.name', '=ilike', ' %'),
-                                                            ('product_id.name', '=ilike', 'Module%'),
-                                                            '|',
-                                                            ('product_id.name', '=ilike', '[Un-Finished]%'),
-                                                            ('product_id.name', '=ilike', '[Module]%')])
+                                                            ('product_id.name', 'ilike', '[Un-Finished]%'),
+                                                            ('picking_type_id', '=', picking_type.id)])
+            print('dtaa', order_data)
             for order in order_data:
                 rec.sheet_ids |= rec.sheet_ids.new({
                     'mo_order_id': order.id,
@@ -50,6 +55,13 @@ class JobOrderSheet(models.Model):
         self.state = 'done'
 
     def action_quantity_update(self):
+        pickings = []
+        picking_doc = self.env['stock.picking.type'].search([('name', 'in',
+                                                              ['Pick Components from Supply',
+                                                               'Supply Finished Product'])])
+        print('doc', picking_doc)
+        for pick in picking_doc:
+            pickings.append(pick.id)
         for line in self.sheet_ids:
             print(line.product_name)
             update_qty = line.in_house_production + line.outsource_production
@@ -58,13 +70,13 @@ class JobOrderSheet(models.Model):
                 'product_qty': line.in_house_production
             })
             stock_picking = self.env['stock.picking'].search([('origin', '=', line.mo_order_id.name),
-                                                              ('picking_type_id', '=', 10)])
+                                                              ('picking_type_id', 'in', pickings)])
             print('stock', stock_picking)
             for picking in stock_picking:
                 for pick_line in picking.move_ids_without_package:
                     print('qty', line.in_house_production)
                     pick_line.update({
-                        'product_uom_qty': line.in_house_production * 2
+                        'product_uom_qty': line.in_house_production
                     })
             for qty in order.move_raw_ids:
                 qty.update({
@@ -96,7 +108,6 @@ class JobOrderSheet(models.Model):
                 self.write({
                     'po_created': True
                 })
-
 
     name = fields.Char(
         'Reference', copy=False, readonly=True, default=lambda x: _('New'))
