@@ -8,37 +8,7 @@ class StockPickingType(models.Model):
     
     record_expense = fields.Boolean(string='Record Expense')
 
-class StockMove(models.Model):
-    _inherit = 'stock.move'
-    
-    @api.model
-    def _get_default_account(self):
-        return self.env['account.account'].search([
-            ('name', '=', 'Cost of Goods Sold'),],
-            limit=1).id
-    
-    account_id = fields.Many2one('account.account', string='Account',
-          default = _get_default_account )
-    price_unit = fields.Float(related='product_id.standard_price')
-    price_subtotal = fields.Monetary(compute='_compute_amount_t', string='Subtotal')
-    record_expenses = fields.Boolean(related='picking_type_id.record_expense')
-#     company_id = fields.Many2one('res.company', string='Company')
-    analytic_account_id = fields.Many2one(
-        'account.analytic.account', 'Analytic Account',
-        readonly=False, copy=False, check_company=True, 
-        help="The analytic account related to a sales order.")
-    analytic_tag_ids = fields.Many2many('account.analytic.tag', string='Analytic Tags')
-    currency_id = fields.Many2one('res.currency', 'Currency')
 
-    
-
-   
-
-    
-    @api.depends('price_subtotal','price_unit', 'product_uom_qty')    
-    def _compute_amount_t(self):
-        for line in self:
-            line.price_subtotal = line.price_unit * line.product_uom_qty
 
     
                 
@@ -88,6 +58,8 @@ class StockPicking(models.Model):
         count = self.env['account.move'].search_count([('name', '=', self.name)])
         self.bill_count = count
         
+    picking_lines_ids = fields.One2many('stock.picking.lines', 'picking_id' ,string='Picking Lines')    
+        
     bill_count = fields.Integer(string='Sub Task', compute='get_bill_count')
 #     debit_account_id = fields.Many2one('account.account', related='move_ids_without_package.account_id' )
     account_id = fields.Many2one('account.account', string='Credit Account')
@@ -102,11 +74,11 @@ class StockPicking(models.Model):
         
         
 
-    @api.depends('move_ids_without_package.price_subtotal')
+    @api.depends('picking_lines_ids.price_subtotal')
     def _amount_all(self):
         for order in self:
             amount_untaxed = amount_tax = 0.0
-            for line in order.move_ids_without_package:
+            for line in order.picking_lines_ids:
                 amount_untaxed += line.price_subtotal 
  #                 line.price_subtotal
         order.update({
@@ -153,6 +125,41 @@ class StockPicking(models.Model):
         move = self.env['account.move'].create(move_dict)
 
 
+class StockPickingLines(models.Model):
+    _name = 'stock.picking.lines'
+    _description = 'This is Picking Lines'
+    
+    @api.model
+    def _get_default_account(self):
+        return self.env['account.account'].search([
+            ('name', '=', 'Cost of Goods Sold'),],
+            limit=1).id
+    
+    product_id = fields.Many2one('product.product', string='Product')
+    account_id = fields.Many2one('account.account', string='Account',
+          default = _get_default_account )
+    price_unit = fields.Float(related='product_id.standard_price')
+    picking_id = fields.Many2one('stock.picking', string='Picking')
+    product_uom_qty = fields.Float(string='Quantity')
+    price_subtotal = fields.Monetary(compute='_compute_amount_t', string='Subtotal')
+    record_expenses = fields.Boolean(related='picking_type_id.record_expense')
+#     company_id = fields.Many2one('res.company', string='Company')
+    analytic_account_id = fields.Many2one(
+        'account.analytic.account', 'Analytic Account',
+        readonly=False, copy=False, check_company=True, 
+        help="The analytic account related to a sales order.")
+    analytic_tag_ids = fields.Many2many('account.analytic.tag', string='Analytic Tags')
+    currency_id = fields.Many2one('res.currency', 'Currency')
+
+    
+
+   
+
+    
+    @api.depends('price_subtotal','price_unit', 'product_uom_qty')    
+    def _compute_amount_t(self):
+        for line in self:
+            line.price_subtotal = line.price_unit * line.product_uom_qty        
                 
                                     
 
