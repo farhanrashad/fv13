@@ -76,8 +76,17 @@ class JobOrderSheet(models.Model):
     def action_approve(self):
         self.state = 'approved'
 
-    def action_completed(self):
-        self.state = 'done'
+    def action_done(self):
+        sum = 0
+        cout_sum = 0
+        for line in self.sheet_ids:
+            sum = sum + 1            
+            if line.created_po == True and  not line.vendor_id==' ':
+                cout_sum = cout_sum + 1                
+        if  sum == cout_sum:        
+            self.state = 'done'
+        else:
+            raise UserError(_('Please Create Purchase Order of all Material Planning Lines.'))
 
     def action_quantity_update(self):
         pickings = []
@@ -185,7 +194,37 @@ class JobOrderSheetLine(models.Model):
     vendor_id = fields.Many2one(comodel_name='res.partner', string='Vendor')
     
     
-    def action_generate_po(self):
+    def action_stock_quantity_update(self):
+        pickings = []
+        picking_doc = self.env['stock.picking.type'].search([('name', 'in',
+                                                              ['Pick Components from Supply',
+                                                               'Supply Finished Product'])])
+        print('doc', picking_doc)
+        for pick in picking_doc:
+            pickings.append(pick.id)
+        for line in self:
+            print(line.product_name)
+            update_qty = line.in_house_production + line.outsource_production
+            order = self.env['mrp.production'].search([('id', '=', line.mo_order_id.id)])
+            order.update({
+                'product_qty': line.in_house_production
+            })
+            stock_picking = self.env['stock.picking'].search([('origin', '=', line.mo_order_id.name),
+                                                              ('picking_type_id', 'in', pickings)])
+            print('stock', stock_picking)
+            for picking in stock_picking:
+                for pick_line in picking.move_ids_without_package:
+                    print('qty', line.in_house_production)
+                    pick_line.update({
+                        'product_uom_qty': line.in_house_production
+                    })
+            for qty in order.move_raw_ids:
+                qty.update({
+                    'product_uom_qty': line.in_house_production
+                })
+    
+    
+    def action_generate_purchase_order(self):
         for record in self:
             if record.vendor_id:
                 pass
@@ -201,7 +240,7 @@ class JobOrderSheetLine(models.Model):
         for te in list:
             product = []
             for re in self:
-                if te == line.vendor_id:
+                if te == re.vendor_id:
                     if line.created_po == False:
                         valss = {
                             'product_id': re.product_id.id,
@@ -233,7 +272,7 @@ class JobOrderSheetLine(models.Model):
                         }
                 orders_lines = self.env['purchase.order.line'].create(order_line)
         for line in self:
-            if line.po_process == True and not line.partner_id==' ':
+            if not line.vendor_id==' ':
                 line.update ({
                    'po_process': False,
                     'created_po': True,
