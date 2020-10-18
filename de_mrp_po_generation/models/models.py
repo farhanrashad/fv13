@@ -3,6 +3,8 @@ from odoo.exceptions import UserError
 from odoo.tools.misc import format_date
 
 
+
+
 class MoBeforhand(models.Model):
     _name = 'mrp.mo.beforehand'
     _description = 'Create PO from MO'
@@ -43,7 +45,7 @@ class MoBeforhand(models.Model):
     def get_sheet_lines(self):
         for rec in self:
             rec.mo_line_ids.unlink()
-            order_data = self.env['mrp.production'].search([('sale_id', '=', rec.sale_id.name),('product_id.name', '=ilike', '[Module]%')])
+            order_data = self.env['mrp.production'].search([('sale_id', '=', rec.sale_id.name),('product_id.name', '=ilike', '[Un-Finished]%')])
             data = []
             for order in order_data:
                 for line in order.move_raw_ids:

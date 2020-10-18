@@ -55,7 +55,8 @@
 			<field name="arch" type="xml">
 				<xpath expr="//field[@name='origin']" position="after">
 					<field name="sale_ref" invisible="1"/>
-                    <field name="mo_product_id"/>
+                                        <field name="mo_product_id"/>
+
 				</xpath>      
             </field>
 		</record>
@@ -67,7 +68,8 @@
 			<field name="arch" type="xml">
 				<xpath expr="//field[@name='origin']" position="after">
 					<field name="sale_ref" optional="hide"/>
-                    <field name="mo_product_id" optional="hide"/>
+                                        <field name="mo_product_id" optional="hide"/>
+
 				</xpath>      
             </field>
 		</record>   

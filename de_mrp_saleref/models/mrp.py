@@ -49,42 +49,41 @@ class StockRule(models.Model):
 class MrpProduction(models.Model):
     _inherit = 'mrp.production'
 
-    sale_id = fields.Char(string='Ref Sale', store=True)
+    sale_id = fields.Char(string='Ref Sale')
 
 class PurchaseOrder(models.Model):
     _inherit = 'purchase.order'
 
-    sale_ref_id = fields.Char(string='Ref Sale', store=True)
+    sale_ref_id = fields.Char(string='Ref Sale')
 
-    @api.model
-    def create(self, vals):
-        mo_sale_ref = self.env['mrp.production'].search([('name', '=', vals['origin'])])
-        for ref in mo_sale_ref:
-#             saleref = ref.sale_id
-            self.update({
-                'sale_ref_id': ref.sale_id,
-            })
-        res = super(PurchaseOrder, self).create(vals)
-        return res
+    #@api.model
+    #def create(self, vals):
+    #    mo_sale_ref = self.env['mrp.production'].search([('name', '=', self.origin)])
+    #    for ref in mo_sale_ref:
+    #        saleref = ref.sale_id
+    #        self.update({
+    #            'sale_ref_id': saleref,
+    #        })
+    #    res = super(PurchaseOrder, self).create(vals)
+    #    return res
 
 
 class StockPicking(models.Model):
     _inherit = 'stock.picking'
 
-    sale_ref = fields.Char(string='Ref Sale', store=True)
+    sale_ref = fields.Char(string='Ref Sale')
     mo_product_id = fields.Many2one('product.product', string="Product")
-    
-    @api.model
-    def create(self, vals):
-        mo_sale_ref = self.env['mrp.production'].search([('name', '=', vals['origin'])])
-        for ref in mo_sale_ref:
-#             saleref = ref.sale_id
-            self.update({
-             'sale_ref': ref.sale_id,
-             'product_id': ref.product_id.id,  
-                })
-        res = super(StockPicking, self).create(vals)
-        return res
+
+  #  @api.model
+  #  def create(self, vals):
+   #     mo_sale_ref = self.env['mrp.production'].search([('name', '=', self.origin)])
+   #     for ref in mo_sale_ref:
+    #        saleref = ref.sale_id
+     #       self.update({
+      #       'sale_ref': saleref,
+       #         })
+        #res = super(StockPicking, self).create(vals)
+        #return res
 
 
 class SaleOrder(models.Model):
@@ -95,21 +94,7 @@ class SaleOrder(models.Model):
         #             'sale_id': self.name,
         #         }
         #         test = self.env['mrp.production'].write(vals)
-        res = super(SaleOrder, self).action_confirm()
         config.list12 = []
+        res = super(SaleOrder, self).action_confirm()
+      
         return res
-
-    
-    
-    
-
-    
-
-#     def action_confirm(self):
-#         #         vals = {
-#         #             'sale_id': self.name,
-#         #         }
-#         #         test = self.env['mrp.production'].write(vals)
-#         res = super(SaleOrder, self).action_confirm()
-#         config.list12 = []
-#         return res    
