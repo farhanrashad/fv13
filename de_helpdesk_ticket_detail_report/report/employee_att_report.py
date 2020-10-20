@@ -14,31 +14,31 @@ class PartnerXlsx(models.AbstractModel):
             sheet1 = workbook.add_worksheet('Comp Feedback Report')
             sheet2 = workbook.add_worksheet('Material Consumption')
             sheet1.set_column(0,0,20)
-            sheet1.set_column(0,1,20)
+            sheet1.set_column(0,1,50)
             sheet1.set_column(0,2,20)
-            sheet1.set_column(0,3,20)
+            sheet1.set_column(0,3,50)
             sheet1.set_column(0,4,20)
-            sheet1.set_column(0,5,20)
-            sheet1.set_column(0,6,20)
+            sheet1.set_column(0,5,50)
+            sheet1.set_column(0,6,50)
             sheet1.set_column(0,7,20)
 
             sheet1.write(0,0,'Sr No', format1)
             sheet1.write(0,1,'Contact Person', format1)
             sheet1.write(0,2,'Telephone1', format1)
-            sheet1.write(0,3,'Notification Date', format1)
+            sheet1.write(0,3,'Street', format1)
             sheet1.write(0,4,'Description', format1)
-            sheet1.write(0,5,'Street', format1)
-            sheet1.write(0,6,'Return Equipment', format1)
-            sheet1.write(0,7,'Distributer', format1)
+            sheet1.write(0,5,'Return Equipment', format1)
+            sheet1.write(0,6,'Distributer', format1)
+            sheet1.write(0,7,'Notification Date', format1)
             row = 1
             col = 0
             for ticket in tickets:
                 sheet1.write(row,col,ticket.number, format1)
-           #     sheet1.write(row,col + 1,ticket.name, format1)
                 sheet1.write(row,col + 1,ticket.user_id.name, format1)
                 sheet1.write(row,col + 2,ticket.user_id.phone, format1)
-                sheet1.write(row,col + 3,str(ticket.notify_date), format1)
+                sheet1.write(row,col + 3,ticket.user_id.address, format1)
                 sheet1.write(row,col + 4,str(ticket.description), format1)
+                sheet1.write(row,col + 5,str(ticket.description), format1)
                 row = row + 1
             
             

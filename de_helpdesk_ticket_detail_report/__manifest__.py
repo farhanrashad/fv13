@@ -20,12 +20,12 @@
     'version': '0.2',
 
     # any module necessary for this one to work correctly
-    'depends': ['report_xlsx','de_helpdesk'],
+    'depends': ['base','report_xlsx','de_helpdesk'],
 
     # always loaded
     'data': [
         'security/ir.model.access.csv',
-        # 'views/views.xml',
+        'views/views.xml',
         # 'views/templates.xml',
         'wizards/employee_attendance.xml',
         'report/employee_att_report.xml'
