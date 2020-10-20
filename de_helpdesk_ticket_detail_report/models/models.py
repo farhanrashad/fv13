@@ -3,6 +3,9 @@
 # from odoo import models, fields, api
 
 
+
+
+
 # class openhcm_employee_attendance(models.Model):
 #     _name = 'openhcm_employee_attendance.openhcm_employee_attendance'
 #     _description = 'openhcm_employee_attendance.openhcm_employee_attendance'
