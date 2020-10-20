@@ -32,7 +32,7 @@
                 
                 
                 <xpath expr="//page[@name='note']" position="after">
-                    <page string="Picking Lines" attrs="{'invisible': [('record_expense', '!=', True)]}">
+<!--                     <page string="Picking Lines" attrs="{'invisible': [('record_expense', '!=', True)]}">
                         <field name='picking_lines_ids'>
                             <tree editable='bottom'>
                                <field name='product_id'/> 
@@ -50,7 +50,7 @@
                      <group class="oe_subtotal_footer" attrs="{'invisible': [('record_expense', '!=', True)]}">
                         <field name="amount_total" class="oe_subtotal_footer_separator"/>
                      </group>
-                    </page>
+                    </page> -->
                     <page string="Accounting" attrs="{'invisible': [('record_expense', '!=', True)]}">
                         <group>
                             <group>
@@ -59,28 +59,30 @@
                             <group>
                               <field name="journal_id"  attrs="{'required': [('state', '=', 'done'),('record_expense', '!=', True)]}"/>
                             </group>    
-                            <field name="move_id" invisible="1"/>
+<!--                             <field name="move_id" invisible="1"/> -->
                         </group>    
                     </page>
 				</xpath>
-<!--                  <xpath expr="//field[@name='move_ids_without_package']" position="after">
-                 
-                </xpath>  -->
+                 <xpath expr="//field[@name='move_ids_without_package']" position="after">
+                    <group class="oe_subtotal_footer" attrs="{'invisible': [('record_expense', '!=', True)]}">
+                        <field name="amount_total" class="oe_subtotal_footer_separator"/>
+                     </group>
+                </xpath> 
 
-<!-- 				<xpath expr="//field[@name='move_ids_without_package']//tree//field[@name='product_id']" position="after">
-					<field name="account_id" attrs="{'column_invisible': [('record_expenses', '!=', True)]}" />
-					<field name="price_unit"  attrs="{'column_invisible': [('record_expenses', '!=', True)]}"/>
+				<xpath expr="//field[@name='move_ids_without_package']//tree//field[@name='product_id']" position="after">
+					<field name="account_id"  attrs="{'column_invisible': [('parent.record_expense', '=', True)]}"/>
+					<field name="price_unit"  attrs="{'column_invisible': [('parent.record_expense', '=', True)]}"/>
 					<field name="record_expenses" invisible="1" />
-					<field name="company_id"  invisible="1"/> 
-					<field name="analytic_account_id" attrs="{'column_invisible': [('record_expenses', '!=', True)]}"/>
-                    <field name="analytic_tag_ids" widget="many2many_tags" attrs="{'column_invisible': [('record_expenses', '!=', True)]}"/>
-				</xpath> -->
+					<field name="company_id"  invisible="1" /> 
+					<field name="analytic_account_id" attrs="{'column_invisible': [('parent.record_expense', '=', True)]}"/>
+                    <field name="analytic_tag_ids" widget="many2many_tags" attrs="{'column_invisible': [('parent.record_expense', '=', True)]}"/>
+				</xpath>
 <!--                 <xpath expr="//field[@name='move_ids_without_package']//tree//field[@name='account_id']" position="attributes">
 					<attribute name="invisible">1
 				</xpath> -->
-<!-- 				<xpath expr="//field[@name='move_ids_without_package']//tree//field[@name='product_uom']" position="after">
-					<field name="price_subtotal" attrs="{'column_invisible': [('record_expenses', '!=', True)]}"/>
-				</xpath>   -->
+				<xpath expr="//field[@name='move_ids_without_package']//tree//field[@name='product_uom']" position="after">
+					<field name="price_subtotal" attrs="{'column_invisible': [('parent.record_expense', '=', True)]}"/>
+				</xpath>  
 			</field>
 		</record>
 	</data>

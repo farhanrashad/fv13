@@ -10,6 +10,37 @@ class StockPickingType(models.Model):
 
 
 
+class StockMove(models.Model):
+    _inherit = 'stock.move'
+    
+    @api.model
+    def _get_default_account(self):
+        return self.env['account.account'].search([
+            ('name', '=', 'Cost of Goods Sold'),],
+            limit=1).id
+    
+    account_id = fields.Many2one('account.account', string='Account',
+          default = _get_default_account )
+    price_unit = fields.Float(related='product_id.standard_price')
+    price_subtotal = fields.Monetary(compute='_compute_amount_t', string='Subtotal')
+    record_expenses = fields.Boolean(related='picking_type_id.record_expense')
+#     company_id = fields.Many2one('res.company', string='Company')
+    analytic_account_id = fields.Many2one(
+        'account.analytic.account', 'Analytic Account',
+        readonly=False, copy=False, check_company=True, 
+        help="The analytic account related to a sales order.")
+    analytic_tag_ids = fields.Many2many('account.analytic.tag', string='Analytic Tags')
+    currency_id = fields.Many2one('res.currency', 'Currency')
+    company_id = fields.Many2one('res.company', store=True, string='Company', readonly=False)
+    
+
+   
+
+    
+    @api.depends('price_subtotal','price_unit', 'product_uom_qty')    
+    def _compute_amount_t(self):
+        for line in self:
+            line.price_subtotal = line.price_unit * line.product_uom_qty     
     
                 
 
@@ -69,7 +100,7 @@ class StockPicking(models.Model):
     amount_tax = fields.Monetary(string='Taxes', store=True, readonly=True, compute='_amount_all')
     amount_total = fields.Monetary(string='Total', store=True, readonly=True, compute='_amount_all')
     currency_id = fields.Many2one('res.currency', 'Currency')
-    move_id = fields.Many2one('account.move',string='Journal Entry', )
+#     move_id = fields.Many2one('account.move',string='Journal Entry', )
 #     picking_type_id = fields.Many2one('stock.picking.type',string='Picking Type', )
     record_expense = fields.Boolean(related='picking_type_id.record_expense')
         
