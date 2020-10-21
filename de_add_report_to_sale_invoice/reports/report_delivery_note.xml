@@ -9,7 +9,6 @@
             name="accounting_pdf_reports.delivery_note"
             file="accounting_pdf_reports.delivery_note"
             />
-    </data>
      <template id="delivery_note">
         <t t-call="web.html_container">
            <t t-call="web.external_layout">
@@ -83,4 +82,5 @@
            </t>
         </t>
     </template>
+   </data>
 </odoo>

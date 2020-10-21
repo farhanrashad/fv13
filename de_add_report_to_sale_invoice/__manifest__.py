@@ -16,6 +16,7 @@
     'demo': [],
     'data': [
         'reports/report_delivery_note.xml',
+        'views/res_partner_view.xml', 
     ],
     'installable': True,
     'application': False,
