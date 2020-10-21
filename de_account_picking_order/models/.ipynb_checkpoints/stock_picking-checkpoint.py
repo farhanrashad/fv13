@@ -114,10 +114,8 @@ class StockPicking(models.Model):
               'date': self.scheduled_date,
               'state': 'draft',
                    }
-                        #step2:debit side entry
         for oline in self.move_ids_without_package:
             debit_line = (0, 0, {
-    #                  	'move_id': move.id,
                     'name': self.name +":"+ oline.product_id.name,
                     'debit': abs(oline.price_subtotal),
                     'credit': 0.0,
@@ -126,17 +124,15 @@ class StockPicking(models.Model):
                     'account_id': oline.account_id.id,
                          })
             line_ids.append(debit_line)
-            debit_sum += debit_line[2]['debit'] - debit_line[2]['credit']
-
-                #step3:credit side entry
-        credit_line = (0, 0, {
-                  'name': self.name,
+            debit_sum += debit_line[2]['debit'] - debit_line[2]['credit']            
+            credit_line = (0, 0, {
+                  'name': self.name +":"+ oline.product_id.name,
                   'debit': 0.0,
-                  'credit': abs(self.amount_total),
-                  'account_id': self.credit_account_id.id,
+                  'credit': abs(oline.price_subtotal),
+                  'account_id': oline.product_id.categ_id.property_stock_valuation_account_id.id,
                           })
-        line_ids.append(credit_line)
-        credit_sum += credit_line[2]['credit'] - credit_line[2]['debit']
+            line_ids.append(credit_line)
+            credit_sum += credit_line[2]['credit'] - credit_line[2]['debit']
 
         move_dict['line_ids'] = line_ids
         move = self.env['account.move'].create(move_dict)
