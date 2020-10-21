@@ -1,89 +1,54 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
 	<data>
-        <record id="stock_picking_form_type" model="ir.ui.view">
-			<field name="name">stock.picking.type.form.view</field>
-			<field name="model">stock.picking.type</field>
-			<field name="inherit_id" ref="stock.view_picking_type_form"/>
-			<field name="arch" type="xml">
-                <xpath expr="//field[@name='sequence_code']" position="after">
-                    <field name="record_expense" />
-                </xpath>    
-             </field>
-        </record>
-        
  		<record id="stock_picking_form_view" model="ir.ui.view">  
 			<field name="name">stock.picking.form.view</field>
 			<field name="model">stock.picking</field>
 			<field name="inherit_id" ref="stock.view_picking_form"/>
 			<field name="arch" type="xml">
                 <xpath expr="//button[@name='action_picking_move_tree']" position="before">
-                        <button name="action_view_test" type="object" class="oe_stat_button" state='done' icon="fa-pencil-square-o"  attrs="{'invisible': [('record_expense', '!=', True)],'invisible': [('state', '!=', 'done')]}">
+                        <button name="action_view_test" type="object" class="oe_stat_button" state='done' icon="fa-pencil-square-o"   attrs="{'invisible': [('bill_count', '=', 0)]}">
                             <field name="bill_count" widget="statinfo" string="Expense Bills"/>
                         </button>
                 </xpath>
                  <xpath expr="//button[@name='action_confirm']" position="after">
-				   <button string="Record Expense" name="action_record_expense" type="object" attrs="{'invisible': [('record_expense', '!=', True)],'invisible': [('state', '!=', 'done')]}" class="oe_highlight" />
-<!--                      ,('state', '!=', 'done') -->
+				   <button string="Record Expense" name="action_record_expense" type="object" states='done' invisible="context.get('default_picking_type_id') != 16" class="oe_highlight" />
 				</xpath>
-                 <xpath expr="//field[@name='picking_type_id']" position="after">
-                    <field name="record_expense" invisible="1"/>
-                </xpath>
                 
                 
                 <xpath expr="//page[@name='note']" position="after">
-<!--                     <page string="Picking Lines" attrs="{'invisible': [('record_expense', '!=', True)]}">
-                        <field name='picking_lines_ids'>
-                            <tree editable='bottom'>
-                               <field name='product_id'/> 
-                               <field name='account_id'/> 
-                               <field name='picking_id' invisible="1"/> 
-                               <field name='company_id' invisible="1"/> 
-                               <field name='price_unit'/> 
-                               <field name='analytic_account_id'/> 
-                               <field name='analytic_tag_ids'/> 
-                               <field name='currency_id' invisible="1"/> 
-                               <field name='product_uom_qty'/> 
-                               <field name='price_subtotal'/> 
-                            </tree>
-                        </field>
-                     <group class="oe_subtotal_footer" attrs="{'invisible': [('record_expense', '!=', True)]}">
-                        <field name="amount_total" class="oe_subtotal_footer_separator"/>
-                     </group>
-                    </page> -->
-                    <page string="Accounting" attrs="{'invisible': [('record_expense', '!=', True)]}">
+
+                    <page string="Accounting" invisible="context.get('default_picking_type_id') != 16">
                         <group>
                             <group>
-                              <field name="credit_account_id" attrs="{'required': [('state', '=', 'done'),('record_expense', '!=', True)]}"/>
+                              <field name="credit_account_id" attrs="{'required': [('state', '=', 'done')]}"/>
                             </group>
                             <group>
-                              <field name="journal_id"  attrs="{'required': [('state', '=', 'done'),('record_expense', '!=', True)]}"/>
+                              <field name="journal_id"  attrs="{'required': [('state', '=', 'done')]}"/>
+                              <field name="record_expense" invisible="1"/>  
                             </group>    
-<!--                             <field name="move_id" invisible="1"/> -->
                         </group>    
                     </page>
 				</xpath>
                  <xpath expr="//field[@name='move_ids_without_package']" position="after">
-                    <group class="oe_subtotal_footer" attrs="{'invisible': [('record_expense', '!=', True)]}">
+                    <group class="oe_subtotal_footer" invisible="context.get('default_picking_type_id') != 16">
                         <field name="amount_total" class="oe_subtotal_footer_separator"/>
                      </group>
                 </xpath> 
 
 				<xpath expr="//field[@name='move_ids_without_package']//tree//field[@name='product_id']" position="after">
-					<field name="account_id"  attrs="{'column_invisible': [('parent.record_expense', '=', True)]}"/>
-					<field name="price_unit"  attrs="{'column_invisible': [('parent.record_expense', '=', True)]}"/>
-					<field name="record_expenses" invisible="1" />
+					<field name="account_id"  invisible="context.get('default_picking_type_id') != 16"/>
+					<field name="price_unit"  invisible="context.get('default_picking_type_id') != 16"/>
 					<field name="company_id"  invisible="1" /> 
-					<field name="analytic_account_id" attrs="{'column_invisible': [('parent.record_expense', '=', True)]}"/>
-                    <field name="analytic_tag_ids" widget="many2many_tags" attrs="{'column_invisible': [('parent.record_expense', '=', True)]}"/>
+					<field name="analytic_account_id" invisible="context.get('default_picking_type_id') != 16"/>
+                    <field name="analytic_tag_ids" widget="many2many_tags" invisible="context.get('default_picking_type_id') != 16"/>
 				</xpath>
-<!--                 <xpath expr="//field[@name='move_ids_without_package']//tree//field[@name='account_id']" position="attributes">
-					<attribute name="invisible">1
-				</xpath> -->
 				<xpath expr="//field[@name='move_ids_without_package']//tree//field[@name='product_uom']" position="after">
-					<field name="price_subtotal" attrs="{'column_invisible': [('parent.record_expense', '=', True)]}"/>
+					<field name="price_subtotal" invisible="context.get('default_picking_type_id') != 16"/>
 				</xpath>  
 			</field>
 		</record>
 	</data>
 </odoo>
+<!-- attrs="{'column_invisible': [('parent.record_expense', '=', False)]}" -->
+<!-- invisible="context.get('default_picking_type_id') != 16" -->
