@@ -79,10 +79,11 @@ class account_payment(models.Model):
     def just_create_payment(self):
         return True
 
-    @api.model
+#     @api.model
     def post(self):
-        self.write({'state': 'draft'})
         res = super(account_payment, self).post()
-        self.message_post(body=_('Dear %s, payment has posted') % (self.env.user.name,),
-                          partner_ids=[self.env.user.partner_id.id])
+        for order in self:
+            order.write({'state': 'draft'})
+            order.message_post(body=_('Dear %s, payment has posted') % (order.env.user.name,),
+                              partner_ids=[order.env.user.partner_id.id])
         return res
