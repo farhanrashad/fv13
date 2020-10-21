@@ -29,9 +29,10 @@
                              'account',
                             ],
   "data"                 :  [
+                            'security/ir.model.access.csv',
+                            'views/payment_group_view.xml',
                             'views/payment_state_view.xml',
-                            'views/payment_view.xml',
-                            'views/payment_group_view.xml'
+                            'views/payment_view.xml'
                             ],
   "images"               :  ['static/description/Banner.png'],
   "application"          :  True,
