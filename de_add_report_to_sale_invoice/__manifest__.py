@@ -12,7 +12,7 @@
     'company': 'Dynexcel',
     'maintainer': 'Dynexcel',
     'website': 'http://www.dynexcel.co',
-    'depends': ['account'],
+    'depends': ['base' ,'account'],
     'demo': [],
     'data': [
         'reports/report_delivery_note.xml',
