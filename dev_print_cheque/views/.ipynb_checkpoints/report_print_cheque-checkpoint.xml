@@ -19,7 +19,7 @@ For Module Support : devintelle@gmail.com  or Skype : devintelle
                     }
                 </style>
 
-                <div class="row" t-attf-style="font-size:#{o.cheque_formate_id.font_size}px;color:#{o.cheque_formate_id.color}px;">
+                <div class="row" t-attf-style="font-size:#{o.cheque_formate_id.font_size}px;color:#{o.cheque_formate_id.color};">
                     <t t-if="o.cheque_formate_id.is_date">
                         <t t-set="date" t-value="get_date(o.payment_date)" />
                         <t t-if="o.cheque_formate_id.date_formate == 'dd_mm'">
@@ -170,13 +170,13 @@ For Module Support : devintelle@gmail.com  or Skype : devintelle
 
 
                     <t t-if="o.cheque_formate_id.is_free_two and o.text_free">
-                        <div t-attf-style="margin-left:#{o.cheque_formate_id.f_two_margin_left};margin-top:#{o.cheque_formate_id.f_two_margin_top};position: absolute;};">
+                        <div t-attf-style="margin-left:#{o.cheque_formate_id.f_two_margin_left}px;margin-top:#{o.cheque_formate_id.f_two_margin_top}px;position: absolute;};">
                             <span t-esc="o.text_free"/>
                         </div>
                     </t>
 
                     <t t-if="o.cheque_formate_id.is_stub">
-                        <div t-attf-style="margin-left:#{o.cheque_formate_id.stub_margin_left};margin-top:#{o.cheque_formate_id.stub_margin_top};position: absolute;};">
+                        <div t-attf-style="margin-left:#{o.cheque_formate_id.stub_margin_left}px;margin-top:#{o.cheque_formate_id.stub_margin_top}px;position: absolute;};">
                             <table class="table table-condensed" style="width:95%">
                                 <t t-if="o.cheque_no">
                                 <tr>
@@ -187,7 +187,7 @@ For Module Support : devintelle@gmail.com  or Skype : devintelle
                                 </t>
                                 <tr>
                                     <td colspan="2" class="text-center" style="border:1px solid #FFF">
-                                        <span t-field="o.partner_id.name"/>
+                                        <span t-field="o.pay_by"/>
                                     </td>
                                     <td colspan="2" class="text-center" style="border:1px solid #FFF">
                                         Date: <span t-esc="context_timestamp(datetime.datetime.now()).strftime('%m-%d-%Y')"/>
@@ -226,13 +226,13 @@ For Module Support : devintelle@gmail.com  or Skype : devintelle
                     </t>
                     
                     <t t-if="o.cheque_formate_id.is_f_line_sig">
-                        <div t-attf-style="margin-left:#{o.cheque_formate_id.f_sig_m_left};margin-top:#{o.cheque_formate_id.f_sig_m_top};position: absolute;};">
+                        <div t-attf-style="margin-left:#{o.cheque_formate_id.f_sig_m_left}px;margin-top:#{o.cheque_formate_id.f_sig_m_top}px;position: absolute;};">
                             _______________________________
                         </div>
                     </t>
                     
                     <t t-if="o.cheque_formate_id.is_s_line_sig">
-                        <div t-attf-style="margin-left:#{o.cheque_formate_id.s_sig_m_left};margin-top:#{o.cheque_formate_id.s_sig_m_top};position: absolute;};">
+                        <div t-attf-style="margin-left:#{o.cheque_formate_id.s_sig_m_left}px;margin-top:#{o.cheque_formate_id.s_sig_m_top}px;position: absolute;};">
                             _______________________________
                         </div>
                     </t>
@@ -240,7 +240,7 @@ For Module Support : devintelle@gmail.com  or Skype : devintelle
                     
 
                     <t t-if="o.cheque_formate_id.print_journal">
-                        <div t-attf-style="margin-left:#{o.cheque_formate_id.journal_margin_left};margin-top:#{o.cheque_formate_id.journal_margin_top};position: absolute;};">
+                        <div t-attf-style="margin-left:#{o.cheque_formate_id.journal_margin_left}px;margin-top:#{o.cheque_formate_id.journal_margin_top}px;position: absolute;};">
                             <table class="table table-condensed" style="width:95%">
                                 <thead>
                                     <tr>
@@ -263,7 +263,7 @@ For Module Support : devintelle@gmail.com  or Skype : devintelle
                                         </td>
 
                                         <td>
-                                           <span t-field="l.partner_id.name"/>
+                                           <span t-field="l.pay_by"/>
                                         </td>
 
                                         <td>
