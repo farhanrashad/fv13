@@ -21,12 +21,12 @@ class print_check(models.AbstractModel):
         return date
 
     def get_partner_name(self,obj,p_text):
-        if p_text and obj.partner_text:
+        if p_text and obj.partner_text and obj.pay_by:
             if p_text == 'prefix' :
                 return obj.partner_text + ' ' + obj.pay_by
             else:
                 return obj.pay_by + ' ' + obj.partner_text
-        if obj.pay_by:
+        elif obj.pay_by:
             return obj.pay_by
         else:
             return obj.partner_id.name

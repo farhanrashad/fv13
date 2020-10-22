@@ -8,21 +8,27 @@
 #
 
 ##############################################################################
-from odoo import models,fields, api
+from odoo import models,fields, api, _
+
+
 from odoo import tools
 
 class account_voucher(models.Model):
     _inherit ='account.payment'
     
-    @api.onchange('partner_id')
-    def onchange_partner(self):
-        self.pay_by = self.partner_id.name
-
+    
     cheque_formate_id = fields.Many2one('cheque.setting', 'Cheque Formate', required=True)
     cheque_no = fields.Char('Cheque No')
     text_free = fields.Char('Free Text')
     partner_text = fields.Char('Partner Title')
-    pay_by = fields.Char(string='Payee', store=True)
+    pay_by = fields.Char(string='Payee')
+
+   
+    @api.onchange('partner_id')
+    def onchange_partner(self):
+        self.update ({
+              'pay_by' : self.partner_id.name
+                })
     
     
         
