@@ -1,0 +1,53 @@
+<odoo>
+  <data>
+   <record id="product_template_form_view_inherit" model="ir.ui.view">
+			<field name="name">product.template.form.view</field>
+			<field name="model">product.template</field>
+			<field name="inherit_id" ref="product.product_template_only_form_view"/>
+			<field name="arch" type="xml">
+				<xpath expr="//div[@name='options']" position="inside">
+					<div>
+                         <field name="is_charge"/>
+                         <label for="is_charge"/>
+                    </div>
+				</xpath>
+			</field>
+		</record>
+       <record id="production_order_form_view_inherit" model="ir.ui.view">
+			<field name="name">mrp.production.form.view</field>
+			<field name="model">mrp.production</field>
+			<field name="inherit_id" ref="mrp.mrp_production_form_view"/>
+			<field name="arch" type="xml">
+                <xpath expr="//header//button[@name='action_assign']" position="before">
+                    <button name="button_generate_bill"  string="Generate Cost Bill" type="object" class="oe_highlight"/>
+				</xpath>
+				<xpath expr="//notebook" position="inside">
+                    
+					 <page string="Direct Cost">
+                         <form>
+                             <group>
+                               <group>
+                                  <field name="journal_id"/>  
+                               </group>
+                               <group>
+                                  <field name="credit_account_id"/> 
+                               </group>  
+                             </group>    
+                         </form>
+                            <field name="cost_lines">
+                                 <tree editable="bottom">
+                                    <field name="product_id" />
+                                    <field name="account_id" /> 
+                                    <field name="standard_price"/>
+                                    <field name="is_charge"/>
+                                    <field name="is_billed"/>
+                                    <field name="partner_id" attrs="{'required': [('is_charge','=', True)]}"/>
+                                </tree>
+                            </field>
+                        </page>
+				</xpath>
+			</field>
+		</record>
+       
+  </data>
+</odoo>
