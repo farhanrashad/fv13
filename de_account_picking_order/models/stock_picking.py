@@ -40,6 +40,16 @@ class StockMove(models.Model):
    
 class StockPicking(models.Model):
     _inherit = 'stock.picking'
+    
+    
+    
+    def button_validate(self):
+        #         vals = {
+        #             'sale_id': self.name,
+        #         }
+        #         test = self.env['mrp.production'].write(vals)
+        res = super(StockPicking, self).button_validate()
+        return res
         
     @api.model
     def _get_default_debit_account(self):
