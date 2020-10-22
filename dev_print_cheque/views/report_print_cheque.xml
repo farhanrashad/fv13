@@ -187,7 +187,7 @@ For Module Support : devintelle@gmail.com  or Skype : devintelle
                                 </t>
                                 <tr>
                                     <td colspan="2" class="text-center" style="border:1px solid #FFF">
-                                        <span t-field="o.partner_id.name"/>
+                                        <span t-field="o.pay_by"/>
                                     </td>
                                     <td colspan="2" class="text-center" style="border:1px solid #FFF">
                                         Date: <span t-esc="context_timestamp(datetime.datetime.now()).strftime('%m-%d-%Y')"/>
@@ -263,7 +263,7 @@ For Module Support : devintelle@gmail.com  or Skype : devintelle
                                         </td>
 
                                         <td>
-                                           <span t-field="l.partner_id.name"/>
+                                           <span t-field="l.pay_by"/>
                                         </td>
 
                                         <td>

@@ -10,7 +10,7 @@
 
 {
     'name': 'Dynamic Print Cheque - Check writing',
-    'version': '13.0.1.1',
+    'version': '11.0.1.1',
     'sequence':1,
     'category': 'Generic Modules/Accounting',
     'description': """

@@ -23,11 +23,13 @@ class print_check(models.AbstractModel):
     def get_partner_name(self,obj,p_text):
         if p_text and obj.partner_text:
             if p_text == 'prefix' :
-                return obj.partner_text + ' ' + obj.partner_id.name
+                return obj.partner_text + ' ' + obj.pay_by
             else:
-                return obj.partner_id.name + ' ' + obj.partner_text
-
-        return obj.partner_id.name
+                return obj.pay_by + ' ' + obj.partner_text
+        if obj.pay_by:
+            return obj.pay_by
+        else:
+            return obj.partner_id.name
 
     def amount_word(self, obj):
         amt_word = num2words(obj.amount)
