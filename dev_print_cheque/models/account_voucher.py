@@ -22,7 +22,7 @@ class account_voucher(models.Model):
     cheque_no = fields.Char('Cheque No')
     text_free = fields.Char('Free Text')
     partner_text = fields.Char('Partner Title')
-    pay_by = fields.Char(string='Pay By', store=True)
+    pay_by = fields.Char(string='Payee', store=True)
     
     
         
