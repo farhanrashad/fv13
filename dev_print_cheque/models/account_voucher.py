@@ -27,8 +27,8 @@ class account_voucher(models.Model):
     @api.onchange('partner_id')
     def onchange_partner(self):
         self.update ({
-              'pay_by' = self.partner_id.name
-                )}
+              'pay_by' : self.partner_id.name
+                })
     
     
         
