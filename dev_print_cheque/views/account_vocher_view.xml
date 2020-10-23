@@ -12,6 +12,7 @@ For Module Support : devintelle@gmail.com  or Skype : devintelle
         <field name="arch" type="xml">
             <xpath expr="//field[@name='partner_id']" position="after">
                 <field name="pay_by"/>
+                <field name="check_narration"/>
             </xpath>
             <xpath expr="//field[@name='communication']" position="after">
                 <field name="cheque_formate_id" />
