@@ -103,6 +103,8 @@ class StockPicking(models.Model):
         
         
 
+
+
     @api.depends('move_ids_without_package.price_subtotal')
     def _amount_all(self):
         for order in self:
