@@ -19,14 +19,18 @@ class MrpWorkorder(models.Model):
         self.time_ids.date_end = datetime.today()
         if self.is_last_unfinished_wo == True:
             raw_material =self.env['mrp.production'].search([('name','=',self.production_id.name)])
+            qty_produced = 0.0
+            workorders = self.env['mrp.workorder'].search([('production_id.name','=',raw_material.name)])
+            for workorder in workorders:
+                qty_produced = qty_produced + workorder.qty_produced
             for move_line in raw_material.move_raw_ids:
                 if move_line.reserved_availability: 
                     move_line.update({
-                        'quantity_done' : move_line.reserved_availability,
+                        'quantity_done' : (move_line.reserved_availability/raw_material.product_qty)*qty_produced,
                     })  
                 elif move_line.product_uom_qty: 
                     move_line.update({
-                        'quantity_done' : move_line.product_uom_qty,
+                        'quantity_done' : (move_line.product_uom_qty/raw_material.product_qty)*qty_produced,
                     })
                 else:
                     pass
@@ -39,19 +43,23 @@ class MrpWorkorder(models.Model):
         return res
     
     def action_open_manufacturing_order(self):
+        res = super(MrpWorkorder, self).action_open_manufacturing_order()  
         raw_material =self.env['mrp.production'].search([('name','=',self.production_id.name)])
+        qty_produced = 0.0
+        workorders = self.env['mrp.workorder'].search([('production_id.name','=',raw_material.name)])
+        for workorder in workorders:
+            qty_produced = qty_produced + workorder.qty_produced
         for move_line in raw_material.move_raw_ids:
             if move_line.reserved_availability: 
                     move_line.update({
-                        'quantity_done' : move_line.reserved_availability,
+                        'quantity_done' : (move_line.reserved_availability/raw_material.product_qty)*qty_produced,
                     })  
             elif move_line.product_uom_qty: 
                 move_line.update({
-                    'quantity_done' : move_line.product_uom_qty,
+                    'quantity_done' : (move_line.product_uom_qty/raw_material.product_qty)*qty_produced,
                     })
             else:
                 pass
-        res = super(MrpWorkorder, self).action_open_manufacturing_order()  
         return res
 
 
