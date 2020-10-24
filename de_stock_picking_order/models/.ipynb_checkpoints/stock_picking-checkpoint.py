@@ -3,8 +3,9 @@
 from odoo import models, fields, api, _
 from odoo.exceptions import UserError, ValidationError
 
-class StockMove(models.Model):
-    _inherit = 'stock.move'
+
+class ProductCategory(models.Model):
+    _inherit = 'product.category'
     
     @api.model
     def _get_default_account(self):
@@ -12,17 +13,29 @@ class StockMove(models.Model):
             ('name', '=', 'Cost of Goods Sold'),],
             limit=1).id
     
-    account_id = fields.Many2one('account.account', string='Account',
-          default = _get_default_account )
+    debit_account_id = fields.Many2one('account.account', string='Issuance Account', default = _get_default_account)
+
+
+class StockMove(models.Model):
+    _inherit = 'stock.move'
+    
+#     @api.model
+#     def _get_default_account(self):
+#         return self.env['account.account'].search([
+#             ('name', '=', 'Cost of Goods Sold'),],
+#             limit=1).id
+    
+#     account_id = fields.Many2one('account.account', string='Account',
+#           default = _get_default_account )
     price_unit = fields.Float(related='product_id.standard_price')
     price_subtotal = fields.Monetary(compute='_compute_amount_t', string='Subtotal')
-    analytic_account_id = fields.Many2one(
-        'account.analytic.account', 'Analytic Account',
-        readonly=False, copy=False, check_company=True, 
-        help="The analytic account related to a sales order.")
-    analytic_tag_ids = fields.Many2many('account.analytic.tag', string='Analytic Tags')
+#     analytic_account_id = fields.Many2one(
+#         'account.analytic.account', 'Analytic Account',
+#         readonly=False, copy=False, check_company=True, 
+#         help="The analytic account related to a sales order.")
+#     analytic_tag_ids = fields.Many2many('account.analytic.tag', string='Analytic Tags')
     currency_id = fields.Many2one('res.currency', 'Currency')
-    company_id = fields.Many2one('res.company', store=True, string='Company', readonly=False)
+#     company_id = fields.Many2one('res.company', store=True, string='Company', readonly=False)
     
 
    
@@ -45,60 +58,59 @@ class StockPicking(models.Model):
     
     def button_validate(self):
         for line in self.move_ids_without_package:
-            stock_quant = self.env['stock.quant'].search([('product_id','=',line.product_id.id),('location_id','=',line.location_id.id)])
-            for stock in stock_quant:                
-                if line.quantity_done <= stock.quantity:
-                    pass
-                else:
-                    raise UserError(_('Stock Quantity less than Demand Quantity for Product: ' + ' ' + line.product_id.name + ' ' + 'At Location' + ' '+ self.location_id.name ))
+#             stock_quant = self.env['stock.quant'].search([('product_id','=',line.product_id.id),('location_id','=',line.location_id.id)])
+#             for stock in stock_quant:                
+            if line.product_id.qty_available >= line.quantity_done:
+                pass
+            else:
+                raise UserError(_('Stock Quantity less than Demand Quantity for Product: ' + ' ' + line.product_id.name + ' ' + 'At Location' + ' '+ self.location_id.name ))
         
         res = super(StockPicking, self).button_validate()
         return res
         
-    @api.model
-    def _get_default_debit_account(self):
-        return self.env['account.account'].search([
-            ('name', '=', 'Cost of Goods Sold'),],
-            limit=1).id
+#     @api.model
+#     def _get_default_debit_account(self):
+#         return self.env['account.account'].search([
+#             ('name', '=', 'Cost of Goods Sold'),],
+#             limit=1).id
         
-    @api.model
-    def _get_default_credit_account(self):
-        return self.env['account.account'].search([
-            ('name', '=', 'Stock Valuation Account'),],
-            limit=1).id
+#     @api.model
+#     def _get_default_credit_account(self):
+#         return self.env['account.account'].search([
+#             ('name', '=', 'Stock Valuation Account'),],
+#             limit=1).id
         
-    @api.model
-    def _get_default_journal(self):
-        return self.env['account.journal'].search([
-            ('name', '=', 'Miscellaneous Operations'),],
-            limit=1).id
-        
-
-        
-    def action_view_test(self):
-        self.ensure_one()
-        return {
-         'type': 'ir.actions.act_window',
-         'binding_type': 'object',
-         'domain': [('name', '=', self.name)],
-         'multi': False,
-         'name': 'Tasks',
-         'target': 'current',
-         'res_model': 'account.move',
-         'view_mode': 'tree,form',
-        }
+#     @api.model
+#     def _get_default_journal(self):
+#         return self.env['account.journal'].search([
+#             ('name', '=', 'Miscellaneous Operations'),],
+#             limit=1).id
         
 
         
-    def get_bill_count(self):
-        count = self.env['account.move'].search_count([('name', '=', self.name)])
-        self.bill_count = count
+#     def action_view_test(self):
+#         self.ensure_one()
+#         return {
+#          'type': 'ir.actions.act_window',
+#          'binding_type': 'object',
+#          'domain': [('name', '=', self.name)],
+#          'multi': False,
+#          'name': 'Tasks',
+#          'target': 'current',
+#          'res_model': 'account.move',
+#          'view_mode': 'tree,form',
+#         }
+        
+
+        
+#     def get_bill_count(self):
+#         count = self.env['account.move'].search_count([('name', '=', self.name)])
+#         self.bill_count = count
         
         
-    bill_count = fields.Integer(string='Sub Task', compute='get_bill_count')
-    account_id = fields.Many2one('account.account', string='Credit Account')
-    credit_account_id = fields.Many2one('account.account', string='Credit Account', default = _get_default_credit_account)
-    journal_id = fields.Many2one('account.journal', string='Journal', default = _get_default_journal)
+#     bill_count = fields.Integer(string='Sub Task', compute='get_bill_count')
+#     credit_account_id = fields.Many2one('account.account', string='Credit Account', default = _get_default_credit_account)
+#     journal_id = fields.Many2one('account.journal', string='Journal', default = _get_default_journal)
     amount_untaxed = fields.Monetary(string='Untaxed Amount', store=True, readonly=True, compute='_amount_all')
     amount_tax = fields.Monetary(string='Taxes', store=True, readonly=True, compute='_amount_all')
     amount_total = fields.Monetary(string='Total', store=True, readonly=True, compute='_amount_all')
@@ -126,7 +138,7 @@ class StockPicking(models.Model):
         credit_sum = 0.0
         move_dict = {
               'name': self.name,
-              'journal_id': self.journal_id.id,
+              'journal_id': 59,
               'date': self.scheduled_date,
               'state': 'draft',
                    }
@@ -135,9 +147,9 @@ class StockPicking(models.Model):
                     'name': self.name +":"+ oline.product_id.name,
                     'debit': abs(oline.price_subtotal),
                     'credit': 0.0,
-                    'analytic_account_id': oline.analytic_account_id.id,
-                    'analytic_tag_ids': [(6, 0, oline.analytic_tag_ids.ids)],
-                    'account_id': oline.account_id.id,
+#                     'analytic_account_id': oline.analytic_account_id.id,
+#                     'analytic_tag_ids': [(6, 0, oline.analytic_tag_ids.ids)],
+                    'account_id': oline.product_id.categ_id.debit_account_id.id,
                          })
             line_ids.append(debit_line)
             debit_sum += debit_line[2]['debit'] - debit_line[2]['credit']            
