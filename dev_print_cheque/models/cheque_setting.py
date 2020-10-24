@@ -17,7 +17,8 @@ class cheque_setting(models.Model):
     name = fields.Char('Name', required="1")
     font_size = fields.Float('Font Size', default="13", required="1")
     color = fields.Char('Color', default="#000", required="1")
-
+    alignment = fields.Selection([('vertical', 'Vertical'), ('horizontal', 'Horizontal')], default='horizontal',string='Alignment')
+    
     is_partner = fields.Boolean('Print Partner', default=True)
     is_partner_bold = fields.Boolean('Font Bold')
     partner_text = fields.Selection([('prefix', 'Prefix'), ('suffix', 'Suffix')], string='Partner Title')

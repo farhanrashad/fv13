@@ -7,16 +7,18 @@
 #    For Module Support : devintelle@gmail.com  or Skype : devintelle 
 #
 ##############################################################################
-from odoo import models, fields, api
+from odoo import models, fields, api,_
 
 
-class AccountCheckLayout(models.Model):
-    _name = 'account.check.layout'
+class cheque_setting(models.Model):
+    _name = 'cheque.setting'
+    _description = "Cheque Setting Module"
 
     name = fields.Char('Name', required="1")
     font_size = fields.Float('Font Size', default="13", required="1")
     color = fields.Char('Color', default="#000", required="1")
-
+    alignment = fields.Selection([('vertical', 'Vertical'), ('horizontal', 'Horizontal')], default='horizontal',string='Alignment')
+    
     is_partner = fields.Boolean('Print Partner', default=True)
     is_partner_bold = fields.Boolean('Font Bold')
     partner_text = fields.Selection([('prefix', 'Prefix'), ('suffix', 'Suffix')], string='Partner Title')
@@ -97,3 +99,4 @@ class AccountCheckLayout(models.Model):
 
 
 
+# vim:expandtab:smartindent:tabstop=4:4softtabstop=4:shiftwidth=4:
