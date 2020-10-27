@@ -31,18 +31,18 @@ class PurchaseOrder(models.Model):
             for mergepo in self.merge_id:
                 data = []
                 for merge_line in mergepo.order_line:
-#                     if merge_line.merge == True:
-                    data.append((0,0,{
-                        'order_id': record.name,
-                        'date_planned': record.date_order,
-                        'product_id': merge_line.product_id.id,
-                        'name': merge_line.product_id.name,
-                        'product_qty': merge_line.product_qty,
-                        'product_uom': merge_line.product_uom.id,
-                        'price_unit': merge_line.price_unit,
-#                         'taxes_id': merge_line.taxes_id.id,
-                        'price_subtotal': merge_line.price_subtotal,
-                            }))
+                    if merge_line.merge == True:
+                        data.append((0,0,{
+                            'order_id': record.name,
+                            'date_planned': record.date_order,
+                            'product_id': merge_line.product_id.id,
+                            'name': merge_line.product_id.name,
+                            'product_qty': merge_line.product_qty,
+                            'product_uom': merge_line.product_uom.id,
+                            'price_unit': merge_line.price_unit,
+    #                         'taxes_id': merge_line.taxes_id.id,
+                            'price_subtotal': merge_line.price_subtotal,
+                                }))
                 record.order_line = data
             record.update ({
                 'po_merged': True,
