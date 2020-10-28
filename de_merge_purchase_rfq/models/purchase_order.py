@@ -42,10 +42,15 @@ class PurchaseOrder(models.Model):
                             'price_unit': merge_line.price_unit,
     #                         'taxes_id': merge_line.taxes_id.id,
                             'price_subtotal': merge_line.price_subtotal,
-                                }))
+                                }))                        
+                        record.update ({
+                        'po_merged': True,
+                            })    
                 record.order_line = data
-            record.update ({
-                'po_merged': True,
-            })    
+                for merge_line in mergepo.order_line:
+                        if merge_line.merge == True:
+                            self.env['purchase.order.line'].browse(merge_line.id).unlink() 
+                
+            
                 
 
