@@ -24,13 +24,26 @@ class PurchaseOrder(models.Model):
     _inherit ='purchase.order'
     
     merge_id = fields.Many2one('purchase.order', string='Merged PO')
-    po_merged = fields.Boolean(string='PO Merged')
+#     po_merged = fields.Boolean(string='PO Merged')
+    po_merge = fields.Boolean(string='Ready Merge', compute='_compute_merge')
+    
+    @api.depends('po_merge')
+    def _compute_merge(self):
+        for line in self.order_line:
+            if line.merge == True:
+                self.po_merge = True
+            else:
+                self.po_merge = False
+
+    
+    
+    
     # Define function to split purchase ordeline when we click on button
     def btn_merge_rfq(self):
         for record in self: 
             for mergepo in self.merge_id:
                 data = []
-                for merge_line in mergepo.order_line:
+                for merge_line in record.order_line:
                     if merge_line.merge == True:
                         data.append((0,0,{
                             'order_id': record.name,
@@ -43,11 +56,12 @@ class PurchaseOrder(models.Model):
     #                         'taxes_id': merge_line.taxes_id.id,
                             'price_subtotal': merge_line.price_subtotal,
                                 }))                        
-                        record.update ({
-                        'po_merged': True,
-                            })    
-                record.order_line = data
-                for merge_line in mergepo.order_line:
+#                         record.update ({
+#                         'po_merged': True,
+#                             })    
+                mergepo.order_line = data
+                
+                for merge_line in record.order_line:
                         if merge_line.merge == True:
                             self.env['purchase.order.line'].browse(merge_line.id).unlink() 
                 
