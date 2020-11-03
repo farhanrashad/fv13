@@ -6,9 +6,8 @@
 	<field name="inherit_id" ref="purchase.purchase_order_form"/> 
 	<field name="arch" type="xml">
          <xpath expr ="//field[@name='date_order']" position="after"> 
-                <field name="merge_id" attrs="{'invisible':[('po_merge', '!=', True)]}"/> 
-<!--                 <field name="po_merged" invisible="1"/>  -->
-                <field name="po_merge" invisible="1"/> 
+                <field name="merge_id" attrs="{'invisible':[('state', 'in', ['purchase','done','cancel'])]}"/> 
+                <field name="po_merged" invisible="1"/> 
 
 	    </xpath>
 	    <xpath expr ="//field[@name='order_line']//tree/field[@name='price_subtotal']" position="after"> 

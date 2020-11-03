@@ -24,16 +24,8 @@ class PurchaseOrder(models.Model):
     _inherit ='purchase.order'
     
     merge_id = fields.Many2one('purchase.order', string='Merged PO')
-#     po_merged = fields.Boolean(string='PO Merged')
-    po_merge = fields.Boolean(string='Ready Merge', compute='_compute_merge')
-    
-    @api.depends('po_merge')
-    def _compute_merge(self):
-        for line in self.order_line:
-            if line.merge == True:
-                self.po_merge = True
-            else:
-                self.po_merge = False
+    po_merged = fields.Boolean(string='PO Merged')
+
 
     
     
@@ -56,15 +48,17 @@ class PurchaseOrder(models.Model):
     #                         'taxes_id': merge_line.taxes_id.id,
                             'price_subtotal': merge_line.price_subtotal,
                                 }))                        
-#                         record.update ({
-#                         'po_merged': True,
-#                             })    
+                        record.update ({
+                        'po_merged': True,
+                            })    
                 mergepo.order_line = data
                 
                 for merge_line in record.order_line:
                         if merge_line.merge == True:
                             self.env['purchase.order.line'].browse(merge_line.id).unlink() 
-                
+                            record.update ({
+                             'merge_id': False,
+                              })                  
             
                 
 
