@@ -1,0 +1,4 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_purchase_property_type,access.purchase.property.type,model_purchase_property_type,,1,1,1,1
+access_purchase_lease_type,access.purchase.lease.type,model_purchase_lease_type,,1,1,1,1
+access_purchase_lease_payment_schedule,access.purchase.lease.payment.schedule,model_purchase_lease_payment_schedule,,1,1,1,1

@@ -1,0 +1,271 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+  <data>
+<!--      <record model="ir.ui.view" id="view_product_filter">-->
+<!--            <field name="name">account.move.form.inherit</field>-->
+<!--            <field name="model">account.move</field>-->
+<!--            <field name="inherit_id" ref="account.view_move_form"/>-->
+<!--            <field name="arch" type="xml">-->
+
+<!--                <xpath expr="//page/field[@name='invoice_line_ids']//tree/field[@name='price_unit']" position="attributes">-->
+<!--                    <attribute name="invisible">[('price_unit', '>', 0)]</attribute>-->
+
+<!--                </xpath>-->
+
+<!--            </field>-->
+<!--      </record>-->
+
+
+      <record model="ir.ui.view" id="view_partner_form_purchase_lease_contract">
+            <field name="name">purchase.order.form.inherit</field>
+            <field name="model">purchase.order</field>
+            <field name="inherit_id" ref="purchase.purchase_order_form"/>
+            <field name="arch" type="xml">
+<!--                attrs="{'invisible' : [('is_lease_contract', '=', False)]}"-->
+                <xpath expr="//form[@class='o_purchase_order']//sheet/notebook" position="before">
+                    <group string="Lease" col="4" style="width:100%" >
+                        <field name="lease_type" attrs="{'required' : [('is_lease_contract', '=', True)]}"/>
+                        <field name="recurring_period" attrs="{'required' : [('is_lease_contract', '=', True)]}"/>
+                        <field name="start_date" attrs="{'required' : [('is_lease_contract', '=', True)]}"/>
+                        <field name="end_date" attrs="{'required' : [('is_lease_contract', '=', True)]}"/>
+                        <field name="credit_account_id" attrs="{'required' : [('is_lease_contract', '=', True)]}"/>
+                        <field name="is_lease_contract"/>
+                    </group>
+                </xpath>
+                <xpath expr="//form[@class='o_purchase_order']/sheet" position="inside">
+                    <div>
+                        <h3 attrs="{'invisible' : [('is_lease_contract', '=', False)]}">Summary</h3>
+                        <field name="summary" attrs="{'invisible' : [('is_lease_contract', '=', False)]}"/>
+                    </div>
+                </xpath>
+
+                <xpath expr="//notebook/page[@name='purchase_delivery_invoice']" position="after">
+                    <page string="Payment Schedule" group ="group_lease_user">
+                        <!-- <field name="order_line" />-->
+                    </page>
+                </xpath>
+
+                <xpath expr="//group/field[@name='amount_total']" position="after">
+                    <field name="invoiced_amount" attrs="{'invisible' : [('is_lease_contract', '=', False)]}"/>
+                    <field name="remaining_amount" attrs="{'invisible' : [('is_lease_contract', '=', False)]}"/>
+                </xpath>
+
+                <xpath expr="//page/field[@name='order_line']" position="after">
+                    <br/>
+                    <field name="schedule_lines" readonly="True" attrs="{'invisible' : [('is_lease_contract', '=', False)]}">
+                        <tree>
+                            <field name="date" />
+                            <field name="invoice_id"/>
+                            <field name="is_invoiced"/>
+                            <field name="installment_amount" />
+                        </tree>
+                    </field>
+                </xpath>
+                 <xpath expr="//button[@name='action_view_invoice']" position="after">
+                    <button name="action_view_test" type="object" class="oe_stat_button" attrs="{'invisible' : [('state', '=', 'draft')]}" state='purchase' icon="fa-pencil-square-o">
+                        <field name="bill_count" widget="statinfo"/>
+                    </button>
+                </xpath>
+
+            </field>
+      </record>
+
+      <record id="action_purchase_lease_batch_bills" model="ir.actions.server">
+        <field name="name">Create Lease Bills</field>
+        <field name="model_id" ref="purchase.model_purchase_order"/>
+        <field name="binding_model_id" ref="purchase.model_purchase_order"/>
+        <field name='groups_id' eval="[(4, ref('account.group_account_invoice'))]"/>
+        <field name="state">code</field>
+        <field name="code">
+            if records:
+                action = records.action_create_lease_bills()
+        </field>
+    </record>
+
+
+      <record id="action_purchase_lease_contract" model="ir.actions.act_window">
+            <field name="name">Requests for Lease Contract</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">purchase.order</field>
+            <field name="view_mode">tree,kanban,form,pivot,graph,calendar,activity</field>
+            <field name="view_id" ref="purchase.purchase_order_kpis_tree"/>
+            <field name="domain">[('is_lease_contract', '=', True)]</field>
+            <field name="search_view_id" ref="purchase.view_purchase_order_filter"/>
+            <field name="context">{'quotation_only': True, 'default_is_lease_contract': True}</field>
+            <field name="help" type="html">
+              <p class="o_view_nocontent_smiling_face">
+                No request for quotation found. Let's create one!
+              </p><p>
+                Requests for quotation are documents that will be sent to your suppliers to request prices for different products you consider buying.
+                Once an agreement has been found with the supplier, they will be confirmed and turned into purchase orders.
+              </p>
+            </field>
+        </record>
+
+      <record model="ir.ui.view" id="view_partner_form_land_property">
+            <field name="name">project.project.form.inherit</field>
+            <field name="model">project.project</field>
+            <field name="inherit_id" ref="project.edit_project"/>
+            <field name="arch" type="xml">
+                <xpath expr="//group/field[@name='partner_email']" position="after">
+                     <field name="is_property"/>
+                     <field name="property_type_id" attrs="{'invisible' : [('is_property', '=', False)]}"/>
+                </xpath>
+                <xpath expr="//notebook/page[@name='settings']" position="after">
+                    <page string="Property Detail" attrs="{'invisible' : [('is_property', '=', False)]}">
+                        <group col="4">
+                            <field name="landlord_id" attrs="{'invisible' : [('is_property', '=', False)]}"/>
+                            <field name="address_id" attrs="{'invisible' : [('is_property', '=', False)]}"/>
+                            <field name="google_longitude" attrs="{'invisible' : [('is_property', '=', False)]}"/>
+                            <field name="google_latitude" attrs="{'invisible' : [('is_property', '=', False)]}"/>
+                        </group>
+                    </page>
+                </xpath>
+            </field>
+      </record>
+
+    <record id="action_view_land_property_all" model="ir.actions.act_window">
+            <field name="name">Projects</field>
+            <field name="res_model">project.project</field>
+            <field name="domain">[('is_property', '=', True)]</field>
+            <field name="context">{'default_is_property': True}</field>
+            <field name="view_mode">kanban,form</field>
+            <field name="view_id" ref="project.view_project_kanban"/>
+            <field name="search_view_id" ref="project.view_project_project_filter"/>
+            <field name="target">main</field>
+            <field name="help" type="html">
+                <p class="o_view_nocontent_smiling_face">
+                    No projects found. Let's create one!
+                </p><p>
+                    Projects regroup tasks on the same topic and each have their own dashboard.
+                </p>
+            </field>
+    </record>
+
+      <record id="view_property_type_tree" model="ir.ui.view">
+			<field name="name">purchase.property.type.tree</field>
+			<field name="model">purchase.property.type</field>
+			<field name="arch" type="xml">
+				<tree>
+                    <field name="property_type" />
+				</tree>
+			</field>
+      </record>
+
+      <record id="view_lease_type_tree" model="ir.ui.view">
+			<field name="name">Purchase Lease Type</field>
+			<field name="model">purchase.lease.type</field>
+			<field name="arch" type="xml">
+				<tree>
+                    <field name="name"/>
+				</tree>
+			</field>
+      </record>
+
+      <record model="ir.ui.view" id="view_partner_form_lease_purchase">
+            <field name="name">res.partner.lease.form.inherit</field>
+            <field name="model">res.partner</field>
+            <field name="inherit_id" ref="base.view_partner_form"/>
+            <field name="arch" type="xml">
+                <xpath expr="//group/field[@name='category_id']" position="after">
+                    <field name="is_landlord" invisible="True"/>
+                </xpath>
+            </field>
+      </record>
+
+
+        <record id="action_view_lease_purchase_form" model="ir.actions.act_window">
+            <field name="name">Landlords</field>
+            <field name="res_model">res.partner</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="view_mode">kanban,form</field>
+            <field name="domain">[('is_landlord', '=', True)]</field>
+            <field name="context">{'default_is_landlord': True}</field>
+            <field name="view_id" ref="base.res_partner_kanban_view"/>
+            <field name="help" type="html">
+                <p class="o_view_nocontent_smiling_face">
+                   Purchase Lease
+                </p>
+            </field>
+        </record>
+
+      <record id="action_view_purchase_property" model="ir.actions.act_window">
+            <field name="name">Purchase Property Type</field>
+            <field name="res_model">purchase.property.type</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="view_mode">tree,form</field>
+            <field name="domain">[('is_landlord', '=', True)]</field>
+            <field name="context">{}</field>
+            <field name="view_id" ref="de_purchase_lease.view_property_type_tree"/>
+            <field name="help" type="html">
+                <p class="o_view_nocontent_smiling_face">
+                   Purchase Property Type
+                </p>
+            </field>
+        </record>
+
+      <record id="action_view_purchase_lease" model="ir.actions.act_window">
+            <field name="name">Purchase Lease Type</field>
+            <field name="res_model">purchase.lease.type</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="view_mode">tree,form</field>
+            <field name="domain">[]</field>
+            <field name="context">{}</field>
+            <field name="view_id" ref="de_purchase_lease.view_lease_type_tree"/>
+            <field name="help" type="html">
+                <p class="o_view_nocontent_smiling_face">
+                   Purchase Lease Type
+                </p>
+            </field>
+        </record>
+
+      <record id="purchase.purchase_rfq" model="ir.actions.act_window">
+            <field name="name">Requests for Quotation</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">purchase.order</field>
+            <field name="view_mode">tree,kanban,form,pivot,graph,calendar,activity</field>
+            <field name="view_id" ref="purchase.purchase_order_kpis_tree"/>
+            <field name="domain">[('is_lease_contract', '=', False)]</field>
+            <field name="search_view_id" ref="purchase.view_purchase_order_filter"/>
+            <field name="context">{'quotation_only': True}</field>
+            <field name="help" type="html">
+              <p class="o_view_nocontent_smiling_face">
+                No request for quotation found. Let's create one!
+              </p><p>
+                Requests for quotation are documents that will be sent to your suppliers to request prices for different products you consider buying.
+                Once an agreement has been found with the supplier, they will be confirmed and turned into purchase orders.
+              </p>
+            </field>
+      </record>
+
+<!--      <record id="view_purchase_lease_order_filter" model="ir.ui.view">-->
+<!--            <field name="name">request.quotation.select</field>-->
+<!--            <field name="model">purchase.order</field>-->
+<!--            <field name="inherit_id" ref="purchase.view_purchase_order_filter"/>-->
+<!--            <field name="arch" type="xml">-->
+<!--                <xpath expr="//field[@name='product_id']" position="after">-->
+<!--                    <filter name="purchase_order" string="Purchase Orders" domain="[('is_lease_contract', '!=', 'True')]"/>-->
+<!--                </xpath>-->
+<!--            </field>-->
+<!--      </record>-->
+
+
+      <menuitem id="purchase_lease_root_menu" name="Leases" active="True" sequence="105"/>
+      <menuitem name="Lease" id="purchase_lease_menu" sequence="10" parent="purchase_lease_root_menu" />
+      <menuitem name="Lease Contract" id="lease_contract_submenu" sequence="11" groups="group_lease_user,group_lease_manager" parent="purchase_lease_menu" action="action_purchase_lease_contract"/>
+
+      <menuitem name="Landlord" id="lease_landlord_submenu" parent="purchase_lease_menu" sequence="12" action="action_view_lease_purchase_form"/>
+      <menuitem name="Tenant" id="tenant_submenu" parent="purchase_lease_menu" sequence="13" action="action_view_lease_purchase_form"/>
+      <menuitem name="Checklist" id="checklist_submenu" parent="purchase_lease_menu" sequence="14" action="action_view_lease_purchase_form"/>
+
+      <menuitem name="Property" id="lease_property_menu" sequence="20" parent="purchase_lease_root_menu" />
+      <menuitem name="Land Property" id="land_property_submenu" sequence="21" parent="lease_property_menu" action="action_view_land_property_all"/>
+
+      <menuitem name="Reporting" id="lease_reporting_menu" sequence="22" parent="purchase_lease_root_menu" action="action_view_lease_purchase_form"/>
+
+      <menuitem name="Configuration" id="lease_configuration_menu" groups="group_lease_manager" sequence="25" parent="purchase_lease_root_menu" />
+      <menuitem name="Property Type" id="property_type_submenu" sequence="27" parent="lease_configuration_menu" action="action_view_purchase_property"/>
+      <menuitem name="Lease Type" id="lease_type_submenu" sequence="28" parent="lease_configuration_menu" action="action_view_purchase_lease"/>
+
+  </data>
+</odoo>
