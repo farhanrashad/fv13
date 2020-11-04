@@ -9,31 +9,24 @@
             <field name="arch" type="xml">
 
                 <xpath expr="//header" position="inside">
-                    <button name="send_approval" class="oe_highlight"  string="Send For Approval" type="object" attrs="{'invisible': ['|',('state', '!=', 'draft'), ('purchase_id','!=', False)]}"/>
+                    <button name="send_approval" class="oe_highlight"  string="Send For Approval" type="object" attrs="{'invisible': ['|','|',('state', '!=', 'draft'), ('type', '!=', 'in_invoice'),('purchase_id','!=', False)]}"/>
                     <button name="approve_bill" class="oe_highlight" states="waiting" groups="de_vendor_bill.group_waiting_for_approval" string="Approve" type="object"
                     />
                 </xpath>
                 <xpath expr="//header/button[@name='action_post']" position="replace">
                            
-                                                <button name="action_post" string="Post" class="oe_highlight" type="object" groups="account.group_account_invoice" attrs="{'invisible': ['|',('state', '!=', 'draft'),('purchase_id','=', False)]}"/>
+                                                <button name="action_post" string="Post" class="oe_highlight" type="object" groups="account.group_account_invoice" attrs="{'invisible': ['|','|',('state', '!=', 'draft'),('type', 'not in', ['in_invoice','out_invoice']),('purchase_id','=', False)]}"/>
+                     
 
-                </xpath>          
+                </xpath>   
+                <xpath expr="//header/button[@name='action_post']" position="after">
+                <button name="action_post" string="Post" class="oe_highlight" type="object" groups="account.group_account_invoice" attrs="{'invisible': ['|','|',('state', '!=', 'draft'),('type', 'not in', ['out_invoice','entry','out_refund','in_refund','out_receipt','in_receipt'])]}"/>
+                </xpath>
+                
                 <xpath expr="//header/button[@name='action_post']" position="after">
                     <button name="action_post" class="oe_highlight" states="approved" string="Post" type="object"
                      />
                 </xpath>
-
-
-<!--                 <xpath expr="//header/field[@name='state']" position="replace"> -->
-<!--                         <field name="state" widget="statusbar" statusbar_visible="draft,waiting,approved,posted" attrs="{'invisible': [('type', '!=', 'in_invoice')]}"/>
-                    <field name="state" widget="statusbar" statusbar_visible="draft,posted" attrs="{'invisible': [('type', '=', 'in_invoice')]}"/> -->
-<!--                 </xpath>
- -->
-<!--                <form string="Register Bill">-->
-<!--                      <field name="message_follower_ids" widget="mail_followers" groups="base.group_user"/>-->
-<!--                      <field name="message_ids" widget="mail_thread"/>-->
-<!--                </form>-->
-
             </field>
         </record>
 
