@@ -98,18 +98,18 @@ class StockPicking(models.Model):
         
 
         
-#     def action_view_test(self):
-#         self.ensure_one()
-#         return {
-#          'type': 'ir.actions.act_window',
-#          'binding_type': 'object',
-#          'domain': [('name', '=', self.name)],
-#          'multi': False,
-#          'name': 'Tasks',
-#          'target': 'current',
-#          'res_model': 'account.move',
-#          'view_mode': 'tree,form',
-#         }
+    def action_view_test(self):
+        self.ensure_one()
+        return {
+         'type': 'ir.actions.act_window',
+         'binding_type': 'object',
+         'domain': [('name', '=', self.name)],
+         'multi': False,
+         'name': 'Tasks',
+         'target': 'current',
+         'res_model': 'account.move',
+         'view_mode': 'tree,form',
+        }
         
 
         
