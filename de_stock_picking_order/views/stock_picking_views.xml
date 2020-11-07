@@ -18,9 +18,9 @@
 			<field name="inherit_id" ref="stock.view_picking_form"/>
 			<field name="arch" type="xml">
                 <xpath expr="//button[@name='action_picking_move_tree']" position="before">
-                        <button name="action_view_test" type="object"  class="oe_stat_button" state='done' icon="fa-pencil-square-o"   attrs="{'invisible': [('bill_count', '=', 0)]}">
+<!--                         <button name="action_view_test" type="object"  class="oe_stat_button" state='done' icon="fa-pencil-square-o"   attrs="{'invisible': [('bill_count', '=', 0)]}">
                             <field name="bill_count" widget="statinfo" string="Expense Bills"/>
-                        </button>
+                        </button> -->
                 </xpath>
                  <xpath expr="//button[@name='action_confirm']" position="after">
 				   <button string="Record Expense" name="action_record_expense" type="object"   attrs="{'invisible': ['|','|',('picking_type_id', '!=', 16), ('bill_count','=',1),('state','!=','done')]}"    class="oe_highlight" />
@@ -39,7 +39,7 @@
                 </xpath> 
 
 				<xpath expr="//field[@name='move_ids_without_package']//tree//field[@name='product_id']" position="after">
-					<field name="account_id"  invisible="context.get('default_picking_type_id') != 16"/>
+<!-- 					<field name="account_id"  invisible="context.get('default_picking_type_id') != 16"/> -->
 					<field name="price_unit"  invisible="context.get('default_picking_type_id') != 16"/>
 					<field name="company_id"  invisible="1" /> 
 					<field name="analytic_account_id" invisible="context.get('default_picking_type_id') != 16"/>

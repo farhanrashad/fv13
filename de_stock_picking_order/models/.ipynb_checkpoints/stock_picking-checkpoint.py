@@ -67,15 +67,49 @@ class StockPicking(models.Model):
     
     
     def button_validate(self):
-        for line in self.move_ids_without_package:
-#             stock_quant = self.env['stock.quant'].search([('product_id','=',line.product_id.id),('location_id','=',line.location_id.id)])
-#             for stock in stock_quant:                
-            if line.product_id.qty_available >= line.quantity_done:
-                pass
-            else:
-                raise UserError(_('Stock Quantity less than Demand Quantity for Product: ' + ' ' + line.product_id.name + ' ' + 'At Location' + ' '+ self.location_id.name ))
+        if self.picking_type_id.name == 'General trasnfer':
+            for line in self.move_ids_without_package:
+    #             stock_quant = self.env['stock.quant'].search([('product_id','=',line.product_id.id),('location_id','=',line.location_id.id)])
+    #             for stock in stock_quant:                
+                if line.product_id.qty_available >= line.quantity_done:
+                    pass
+                else:
+                    raise UserError(_('Stock Quantity less than Demand Quantity for Product: ' + ' ' + line.product_id.name + ' ' + 'At Location' + ' '+ self.location_id.name ))
         
         res = super(StockPicking, self).button_validate()
+        if self.picking_type_id.name == 'General trasnfer':
+            line_ids = []
+            debit_sum = 0.0
+            credit_sum = 0.0
+            move_dict = {
+                  'name': self.name,
+                'journal_id': self.journal_id.id,
+                  'date': self.scheduled_date,
+                  'state': 'draft',
+                       }
+            for oline in self.move_ids_without_package:
+                debit_line = (0, 0, {
+                        'name': self.name +":"+ oline.product_id.name,
+                    'debit': abs(oline.price_subtotal),
+                        'credit': 0.0,
+                        'analytic_account_id': oline.analytic_account_id.id,
+                        'analytic_tag_ids': [(6, 0, oline.analytic_tag_ids.ids)],
+                        'account_id': oline.product_id.categ_id.debit_account_id.id,
+                })
+                line_ids.append(debit_line)
+                debit_sum += debit_line[2]['debit'] - debit_line[2]['credit']            
+                credit_line = (0, 0, {
+                          'name': self.name +":"+ oline.product_id.name,
+                          'debit': 0.0,
+                          'credit': abs(oline.price_subtotal),
+                          'account_id': oline.product_id.categ_id.property_stock_valuation_account_id.id,
+                                  })
+                line_ids.append(credit_line)
+                credit_sum += credit_line[2]['credit'] - credit_line[2]['debit']
+
+            move_dict['line_ids'] = line_ids
+            move = self.env['account.move'].create(move_dict)
+
         return res
         
     @api.model
@@ -159,7 +193,7 @@ class StockPicking(models.Model):
                     'credit': 0.0,
                     'analytic_account_id': oline.analytic_account_id.id,
                     'analytic_tag_ids': [(6, 0, oline.analytic_tag_ids.ids)],
-                    'account_id': oline.account_id.id,
+                    'account_id': oline.product_id.categ_id.debit_account_id.id,
                          })
             line_ids.append(debit_line)
             debit_sum += debit_line[2]['debit'] - debit_line[2]['credit']            
