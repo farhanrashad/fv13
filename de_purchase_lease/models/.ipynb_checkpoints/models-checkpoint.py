@@ -50,6 +50,7 @@ class ContractLease(models.Model):
     start_date = fields.Date('Start Date', required=True)
     end_date = fields.Date('End Date', required=True)
     credit_account_id = fields.Many2one('account.account', string='Credit Account')
+    journal_id = fields.Many2one('account.journal', string='Journal')
 
     recurring_period = fields.Selection([
         ('days', 'Day(s)'),
@@ -64,105 +65,106 @@ class ContractLease(models.Model):
                                      copy=True, auto_join=True)
 
     def action_create_lease_bills(self):
-        print("Invoice Generation Called")
-#         for record in self:
-#         record = self.env['purchase.order'].search([('is_lease_contract', '=', True), ('state', '=', 'purchase')])
-        current_date = datetime.today().date()
+#         print("Invoice Generation Called")
+# #         for record in self:
+# #         record = self.env['purchase.order'].search([('is_lease_contract', '=', True), ('state', '=', 'purchase')])
+#         current_date = datetime.today().date()
 
-        for rec in self:
-            for line in self.schedule_lines:
-                if line.date == current_date:
-                    val = {
-                        'partner_id': rec.partner_id.id,
-                        'journal_id': 58,
-                        'invoice_origin': rec.name,
-                        'invoice_date': line.date,
-                        'purchase_id': rec.name,
-#                         'date': line.date,
-#                         'state': 'draft',
-#                         'invoice_date_due': line.date,
-                        'type': 'in_invoice',
-                    }
-                    account_move = self.env['account.move'].create(val)
-                    for order in rec.order_line:
-                        vals = {
-                            'move_id': account_move.id,
-#                             'display_type': order.display_type,
-#                             'sequence': order.sequence,
-                            'product_id': order.product_id.id,
-                            'name': order.name,
-                            'account_id': rec.credit_account_id.id,
-#                             'date': order.date_planned,
-#                             'quantity': order.product_qty,
-                            'price_unit': 100,
-#                             'tax_ids': order.taxes_id.id,
-#                             'currency_id': rec.currency_id.id,
-#                             'tax_line_id': order.taxes_id,
-#                             'price_subtotal': order.price_subtotal,
-#                             'parent_state': account_move.state,
-                            'product_uom_id': order.product_id.uom_id.id,
-#                             'company_id': rec.company_id.id,
-                            'partner_id': rec.partner_id.id,
-#                             'ref': rec.partner_ref,
-#                             'purchase_line_id': order.id,
-                        }
-                        account_move_line = self.env['account.move.line'].create(vals)
-                        print("Invoice generated")
+#         for rec in self:
+#             for line in self.schedule_lines:
+#                 if line.date == current_date:
+#                     val = {
+#                         'partner_id': rec.partner_id.id,
+#                         'journal_id': 58,
+#                         'invoice_origin': rec.name,
+#                         'invoice_date': line.date,
+#                         'purchase_id': rec.name,
+# #                         'date': line.date,
+# #                         'state': 'draft',
+# #                         'invoice_date_due': line.date,
+#                         'type': 'in_invoice',
+#                     }
+#                     account_move = self.env['account.move'].create(val)
+#                     for order in rec.order_line:
+#                         vals = {
+#                             'move_id': account_move.id,
+# #                             'display_type': order.display_type,
+# #                             'sequence': order.sequence,
+#                             'product_id': order.product_id.id,
+#                             'name': order.name,
+#                             'account_id': rec.credit_account_id.id,
+# #                             'date': order.date_planned,
+# #                             'quantity': order.product_qty,
+#                             'price_unit': 100,
+# #                             'tax_ids': order.taxes_id.id,
+# #                             'currency_id': rec.currency_id.id,
+# #                             'tax_line_id': order.taxes_id,
+# #                             'price_subtotal': order.price_subtotal,
+# #                             'parent_state': account_move.state,
+#                             'product_uom_id': order.product_id.uom_id.id,
+# #                             'company_id': rec.company_id.id,
+#                             'partner_id': rec.partner_id.id,
+# #                             'ref': rec.partner_ref,
+# #                             'purchase_line_id': order.id,
+#                         }
+#                         account_move_line = self.env['account.move.line'].create(vals)
+#                         print("Invoice generated")
 
                         
 #                         order.product_id.property_account_expense_id.id
 
 
-#         for rec in record:
-#             for line in rec.schedule_lines:
-#                 # print(line.is_invoiced, current_date, line.date)
-#                 if line.date == current_date and line.is_invoiced == False:
-#                     line_ids = []
-#                     debit_sum = 0.0
-#                     credit_sum = 0.0
-#                     move_dict = {
-#                         # 'name': self.name,
-#                         'journal_id': 2,
-#                         'date': line.date,
-#                         'state': 'draft',
+        for rec in self:
+            current_date = datetime.today().date()
+            for line in rec.schedule_lines:
+                # print(line.is_invoiced, current_date, line.date)
+                if line.date == current_date and line.is_invoiced == False:
+                    line_ids = []
+                    debit_sum = 0.0
+                    credit_sum = 0.0
+                    move_dict = {
+                        'name': self.name,
+                        'journal_id': rec.journal_id.id,
+                        'date': line.date,
+                        'state': 'draft',
 #                         'move_type': 'in_invoice',
-#                         'invoice_origin': self.name,
-#                     }
-#                     for oline in rec.order_line:
-#                         debit_line = (0, 0, {
-#                             # 'move_id': move_dict.id,
-#                             'name': oline.name,
-#                             'debit': float(abs(line.installment_amount)),
-#                             'credit': 0.0,
-#                             'account_id': rec.credit_account_id.id,
-#                             'product_id': oline.product_id.id,
+                        'invoice_origin': self.name,
+                    }
+                    for oline in rec.order_line:
+                        debit_line = (0, 0, {
+                            # 'move_id': move_dict.id,
+                            'name': oline.name,
+                            'debit': float(abs(line.installment_amount)),
+                            'credit': 0.0,
+                            'account_id': rec.credit_account_id.id,
+                            'product_id': oline.product_id.id,
 
-#                         })
-#                         line_ids.append(debit_line)
-#                         debit_sum += debit_line[2]['debit'] - debit_line[2]['credit']
-#                         # step3:credit side entry
-#                         credit_line = (0, 0, {
-#                             'name': oline.name,
-#                             'debit': 0.0,
-#                             'credit': abs(line.installment_amount),
-#                             'account_id': rec.credit_account_id.id,
-#                             'product_id': oline.product_id.id,
-#                         })
-#                         # print(line_ids)
-#                         line_ids.append(credit_line)
-#                         credit_sum += credit_line[2]['credit'] - credit_line[2]['debit']
+                        })
+                        line_ids.append(debit_line)
+                        debit_sum += debit_line[2]['debit'] - debit_line[2]['credit']
+                        # step3:credit side entry
+                        credit_line = (0, 0, {
+                            'name': oline.name,
+                            'debit': 0.0,
+                            'credit': abs(line.installment_amount),
+                            'account_id': rec.credit_account_id.id,
+                            'product_id': oline.product_id.id,
+                        })
+                        # print(line_ids)
+                        line_ids.append(credit_line)
+                        credit_sum += credit_line[2]['credit'] - credit_line[2]['debit']
 
-#                     move_dict['line_ids'] = line_ids
-#                     move = self.env['account.move'].create(move_dict)
-#                     # invoiced_dict = {
-#                     #     'schedule_id': rec.id,
-#                     #     'is_invoiced': 'True',
-#                     # }
-#                     # invoiced_move = self.env['purchase.lease.payment.schedule'].create(invoiced_dict)
-#                     print('General entry created')
+                    move_dict['line_ids'] = line_ids
+                    move = self.env['account.move'].create(move_dict)
+                    # invoiced_dict = {
+                    #     'schedule_id': rec.id,
+                    #     'is_invoiced': 'True',
+                    # }
+                    # invoiced_move = self.env['purchase.lease.payment.schedule'].create(invoiced_dict)
+                    print('General entry created')
 
-#                 else:
-#                     print('Not found or Invoice Already Generated!!!!')
+                else:
+                    print('Not found or Invoice Already Generated!!!!')
 
     def button_cancel(self):
         print('Scheduler Stopped!!!!!!!!')
