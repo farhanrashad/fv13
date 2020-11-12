@@ -15,10 +15,7 @@ class AccountMoveLine(models.Model):
 class AccountReportLedger(models.AbstractModel):
     _inherit = 'account.partner.ledger'
     
-    
-    ####################################################
-    # COLUMNS/LINES
-    ####################################################
+ 
 
     @api.model
     def _get_report_line_partner(self, options, partner, initial_balance, debit, credit, balance):
@@ -91,18 +88,10 @@ class AccountReportLedger(models.AbstractModel):
     
     @api.model
     def _get_query_amls(self, options, expanded_partner=None, offset=None, limit=None):
-        ''' Construct a query retrieving the account.move.lines when expanding a report line with or without the load
-        more.
-        :param options:             The report options.
-        :param expanded_partner:    The res.partner record corresponding to the expanded line.
-        :param offset:              The offset of the query (used by the load more).
-        :param limit:               The limit of the query (used by the load more).
-        :return:                    (query, params)
-        '''
+
         unfold_all = options.get('unfold_all') or (self._context.get('print_mode') and not options['unfolded_lines'])
 
-        # Get sums for the account move lines.
-        # period: [('date' <= options['date_to']), ('date', '>=', options['date_from'])]
+
         if expanded_partner is not None:
             domain = [('partner_id', '=', expanded_partner.id)]
         elif unfold_all:
