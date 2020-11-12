@@ -33,10 +33,10 @@
                         <field name="is_lease_contract"/>
                     </group>
                 </xpath>
-<!--                 <xpath expr="//header" position="inside">
-                   <button name="action_create_lease_bills" type="object" states="purchase" string="Bill" class="oe_highlight" id="bid_confirm"/>
+                <xpath expr="//header" position="inside">
+                   <button name="action_create_lease_bills" type="object" states="draft" string="Bill" class="oe_highlight" id="bid_confirm"/>
 
-                </xpath>  -->   
+                </xpath>    
 
                 <xpath expr="//form[@class='o_purchase_order']/sheet" position="inside">
                     <div>
