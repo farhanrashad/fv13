@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <template id="mo_barcode_digit" inherit_id="mrp.report_mrporder">
+        <xpath expr="//div[@class='page']" position="after">
+            <field name="name_barcode" string="Barcode"/>
+        </xpath>
+    </template>
+
+</odoo>
