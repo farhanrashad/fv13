@@ -42,8 +42,8 @@
 <!-- 					<field name="account_id"  invisible="context.get('default_picking_type_id') != 16"/> -->
 					<field name="price_unit"  invisible="context.get('default_picking_type_id') != 16"/>
 					<field name="company_id"  invisible="1" /> 
-					<field name="analytic_account_id" invisible="context.get('default_picking_type_id') != 16"/>
-                    <field name="analytic_tag_ids" widget="many2many_tags" invisible="context.get('default_picking_type_id') != 16"/>
+				<!--	<field name="analytic_account_id" invisible="context.get('default_picking_type_id') != 16"/>
+                    <field name="analytic_tag_ids" widget="many2many_tags" invisible="context.get('default_picking_type_id') != 16"/>  -->
 				</xpath>
 				<xpath expr="//field[@name='move_ids_without_package']//tree//field[@name='product_uom']" position="after">
 					<field name="price_subtotal" invisible="context.get('default_picking_type_id') != 16"/>

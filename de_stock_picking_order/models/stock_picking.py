@@ -92,8 +92,8 @@ class StockPicking(models.Model):
                         'name': self.name +":"+ oline.product_id.name,
                     'debit': abs(oline.price_subtotal),
                         'credit': 0.0,
-                        'analytic_account_id': oline.analytic_account_id.id,
-                        'analytic_tag_ids': [(6, 0, oline.analytic_tag_ids.ids)],
+                        #'analytic_account_id': oline.analytic_account_id.id,
+                        #'analytic_tag_ids': [(6, 0, oline.analytic_tag_ids.ids)],
                         'account_id': oline.product_id.categ_id.debit_account_id.id,
                 })
                 line_ids.append(debit_line)
