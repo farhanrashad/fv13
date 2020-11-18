@@ -34,7 +34,7 @@ class ProjectTaskTypeExt(models.Model):
     @api.model
     def _get_default_progress_restriction(self):
         # for rec in self:
-        default_progress_restriction = self.env['ir.config_parameter'].sudo().get_param('de_task_subtask_checklist.task_progress_restriction','False')
+        default_progress_restriction = self.env['ir.config_parameter'].sudo().get_param('de_task_subtask_checklist.task_progress_restriction')
         return default_progress_restriction
 
     checklist_task_restrict = fields.Boolean(string='Checklist Task Progress Restriction')
