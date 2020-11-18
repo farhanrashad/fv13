@@ -1,0 +1,11 @@
+<odoo>
+  <data>
+  <report
+            id="sale_order_report"
+            string="Gain Report (PDF)"
+            model="sale.order"
+            report_type="qweb-pdf"
+            file="de_sale_production_gain_report.report_production_gain_template"
+            name="de_sale_production_gain_report.report_production_gain_template" />
+  </data>
+</odoo>

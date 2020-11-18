@@ -1,0 +1,171 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <template id="report_production_gain_template">
+        <t t-call="web.html_container">
+            <t t-foreach="docs" t-as="o">
+                <t t-call="web.internal_layout">
+                    <div class="page">
+
+                    <div id="informations" class="row mt32 mb32">
+                        <div class="col-auto mw-100 mb-2" name="partner_id">
+                            <strong>Customer Name:</strong>
+                            <p class="m-0" t-field="o.partner_id"/>
+                        </div>
+                        <div class="col-auto mw-100 mb-2" name="name">
+                            <strong>SO#:</strong>
+                            <p class="m-0" t-field="o.name"/>
+                        </div>
+                        <div class="col-auto mw-100 mb-2" name="confirmation_date">
+                            <strong>DATE:</strong>
+                            <p class="m-0" t-field="o.confirmation_date"/>
+                        </div>
+                    </div>  
+                        <div class="row justify-content-end">
+                            <div class="col-12">
+                                <table class="table table-bordered" style="table-layout: fixed">
+                                    <thead>
+                                        <tr>
+                                            <th>Product</th>
+                                            <th>Analytic Tags</th>
+                                            <th>Greige Stitched Consumed</th>
+                                            <th>Fresh</th>                            
+                                            <th>C.P</th>                                            
+                                            <th>B.G</th>
+                                            <th>Gain</th>
+                                            <th>Ratio</th>
+                                        </tr>
+                                    </thead>
+                                     <t t-set="tot_sum_stiched_qty" t-value="0"/>
+                                     <t t-set="tot_sum_fresh_qty" t-value="0"/>
+                                     <t t-set="tot_sum_cutpiece_qty" t-value="0"/>
+                                     <t t-set="tot_sum_bgrade_qty" t-value="0"/>
+                                     <t t-set="tot_sum_gain_qty" t-value="0"/>
+                                     <t t-set="tot_sum_ratio_qty" t-value="0"/>
+
+                                    <tbody>
+                                      <t t-foreach="o.order_line" t-as="line">
+                                          
+                                     
+                                          
+                                          
+                                        <tr>
+
+
+                                       <t t-set="sum_qty" t-value="0"/>
+                                       <t t-set="sum_fresh_qty" t-value="0"/>
+                                       <t t-set="sum_bgrade_qty" t-value="0"/>
+                                       <t t-set="sum_cutpiece_qty" t-value="0"/>
+                                       <t t-foreach="request.env['mrp.production'].search([('product_id.name','=', line.product_id.name+'-Stitched'),('sale_id','=', o.name)])" t-as="production_order">
+                                      <t t-foreach="production_order.finished_move_line_ids" t-as="production_lines">                                              
+                                            <t t-set="sum_qty" t-value="sum_qty + production_lines.qty_done"/>
+                                               </t>      
+                                          </t>
+                                          
+                                     <t t-foreach="request.env['account.invoice'].search([('origin','=', o.name)])" t-as="invoice_order">
+                                      <t t-foreach="invoice_order.invoice_line_ids" t-as="invoice_lines">
+                                          
+                                          <t t-if="invoice_lines.package_id.shipping_grade == 'fresh'">
+                                           <t t-if="invoice_lines.product_id.name == line.product_id.name">  
+                                            <t t-set="sum_fresh_qty" t-value="sum_fresh_qty + invoice_lines.quantity"/>
+                                          </t>   
+                                          </t>
+                                          
+                                           <t t-if="invoice_lines.package_id.shipping_grade == 'b'">
+                                           <t t-if="invoice_lines.product_id.name == line.product_id.name">     
+                                            <t t-set="sum_bgrade_qty" t-value="sum_bgrade_qty + invoice_lines.quantity"/>
+                                               </t>   
+                                          </t>
+                                          
+                                           <t t-if="invoice_lines.package_id.shipping_grade == 'c'">
+                                           <t t-if="invoice_lines.product_id.name == line.product_id.name">      
+                                             <t t-set="sum_cutpiece_qty" t-value="sum_cutpiece_qty + invoice_lines.quantity"/>
+                                               </t>  
+                                           </t>   
+                                          
+                                          </t>
+                                        </t>  
+
+
+
+                                            <td>
+                                                <span t-field="line.product_id"/>
+                                            </td>
+                                            <td>
+                                              <t t-foreach="line.analytic_tag_ids" t-as="tags">     
+                                                <span t-esc="tags.name"/>,
+                                              </t>
+                                            </td>
+                                            <td >
+                                                <span t-esc="sum_qty"/>
+                                            </td>
+                                             <t t-set="tot_sum_stiched_qty" t-value="tot_sum_stiched_qty + sum_qty"/> 
+                                             <td>
+                                                <span t-esc="sum_fresh_qty"/>
+                                            </td>
+                                             <t t-set="tot_sum_fresh_qty" t-value="tot_sum_fresh_qty + sum_fresh_qty"/> 
+                                             <td>
+                                                <span t-esc="sum_cutpiece_qty"/>
+                                            </td>
+                                             <t t-set="tot_sum_cutpiece_qty" t-value="tot_sum_cutpiece_qty + sum_cutpiece_qty"/> 
+                                            <td>
+                                                <span t-esc="sum_bgrade_qty"/>
+                                            </td>
+                                             <t t-set="tot_sum_bgrade_qty" t-value="tot_sum_bgrade_qty + sum_bgrade_qty"/> 
+                                            <td>
+                                                <span t-esc="sum_qty - line.qty_invoiced"/>
+                                            </td>
+                                            <t t-set="tot_sum_gain_qty" t-value="tot_sum_gain_qty + (sum_qty - line.qty_invoiced)"/>
+                                            <td>
+                                              <t t-if="line.qty_invoiced > 0">   
+                                                <span t-esc="sum_qty/line.qty_invoiced"/>
+                                              </t>
+                                            </td>
+                                           <t t-if="line.qty_invoiced > 0"> 
+                                            <t t-set="tot_sum_ratio_qty" t-value="tot_sum_ratio_qty + (sum_qty/line.qty_invoiced)"/>
+                                           </t>
+                                        </tr>
+                                      </t>
+                                        <tr>
+                                            <td>
+<!--                                                <span t-field="line.product_id"/>-->
+                                            </td>
+                                           
+                                            <td>
+<!--                                                 <span t-esc="debit"/> -->
+                                            </td>
+                                            <td>
+                                                <span t-esc="tot_sum_stiched_qty"/>
+                                            </td>
+                                            <td>
+                                                <span t-esc="tot_sum_fresh_qty"/>
+                                            </td>
+                                            <td>
+                                                <span t-esc="tot_sum_cutpiece_qty"/>
+                                            </td>
+                                             <td>
+                                                <span t-esc="tot_sum_bgrade_qty"/>
+                                            </td>
+                                             <td>
+                                                <span t-esc="tot_sum_gain_qty"/>
+                                            </td>
+                                             <td>
+                                                <span t-esc="tot_sum_ratio_qty"/>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                                
+                            
+                                <br/>
+                                <br/>   
+                           
+                                
+                                
+                            </div>
+                        </div>
+                    </div>
+                </t>
+            </t>
+        </t>
+    </template>
+</odoo>
