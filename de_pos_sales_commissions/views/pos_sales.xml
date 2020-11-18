@@ -1,0 +1,465 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="res_config_settings_view_form" model="ir.ui.view">
+        <field name="name">res.config.settings.view.form.inherit.account.analytic.default</field>
+        <field name="model">res.config.settings</field>
+        <field name="inherit_id" ref="account.res_config_settings_view_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//div[hasclass('settings')]" position="inside">
+                <h2 class="mt32">Sales Commission</h2>
+                <div class="row mt16 o_settings_container">
+                    <div class="col-12 col-lg-6 o_setting_box">
+                        <div class="o_setting_right_pane">
+                            <label for="sale_commission_account"/>
+                            <div class="text-muted">
+                                Commission Account
+                            </div>
+                            <div class="content-group">
+                                <div class="mt16">
+                                    <field name="sale_commission_account" class="o_light_label"/>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-12 col-lg-6 o_setting_box">
+                        <div class="o_setting_right_pane">
+                            <label for="commission_pay_by"/>
+                            <div class="text-muted">
+                                Commission Pay By
+                            </div>
+                            <div class="content-group">
+                                <div class="mt16">
+                                    <field name="commission_pay_by" class="o_light_label" />
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </xpath>
+
+        </field>
+    </record>
+    <record id="open_commission_order" model="ir.ui.view">
+        <field name="name">commission.rule.group</field>
+        <field name="model">commission.rule</field>
+        <field name="arch" type="xml">
+            <form string="Commission Rule Group">
+
+                <sheet>
+                    <group col="4">
+                        <field name="name" />
+                        <field name="logged_user" />
+                    </group>
+
+                    <notebook>
+                        <page string="Rules">
+                            <field name="commission_order_line">
+                                <tree string="Rules" editable="bottom" >
+                                    <field name="priority"/>
+                                    <field name="apply_on"/>
+                                    <field name="date_to"/>
+                                    <field name="date_from"/>
+                                </tree>
+                            </field>
+                        </page>
+                    </notebook>
+
+                    <notebook>
+                        <page>
+                            <field name="notes" class="oe_inline" placeholder="An administrator can set up default Terms and conditions in your Company settings."/>
+                        </page>
+                    </notebook>
+                </sheet>
+
+                <div class="oe_chatter">
+                    <field name="message_follower_ids" widget="mail_followers" groups="base.group_user"/>
+                    <field name="message_ids" widget="mail_thread"/>
+                </div>
+            </form>
+        </field>
+    </record>
+
+    <record id="open_internalprocessing_tree" model="ir.ui.view">
+        <field name="name">commission.rule.group</field>
+        <field name="model">commission.rule</field>
+        <field name="arch" type="xml">
+            <tree string="Commission Rule Group Tree">
+                <field name="name"/>
+            </tree>
+        </field>
+    </record>
+
+
+    <record id="open_internalprocessing_order" model="ir.actions.act_window">
+        <field name="name">commission.rule.group</field>
+        <field name="res_model">commission.rule</field>
+        <field name="binding_view_types">form</field>
+        <field name="view_mode">tree,form</field>
+        <field name="view_id" ref="open_internalprocessing_tree"/>
+    </record>
+
+    <menuitem action="open_internalprocessing_order" id="commission_form_rule_group" parent="point_of_sale.menu_point_config_product" />
+
+
+    <record id="pos_config_view_form" model="ir.ui.view">
+        <field name="name">pos_config_view_form.default</field>
+        <field name="model">pos.config</field>
+        <field name="inherit_id" ref="point_of_sale.pos_config_view_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//form/sheet" position="inside">
+                <h2> Commission</h2>
+                <div class="row mt16 o_settings_container">
+                    <div id="company" class="col-12 col-lg-6 o_setting_box">
+                        <div>
+                            Set Commission rule group which will apply while Calculate Commission
+                        </div>
+                        <div class="o_setting_right_pane">
+                            <label for="commission_rule_group"/>
+                            <field name="commission_rule_group"/>
+
+                        </div>
+                    </div>
+                </div>
+
+            </xpath>
+        </field>
+    </record>
+    <record id="view_pos_line_inherit" model="ir.ui.view">
+        <field name="name">pos.order.form12</field>
+        <field name="model">pos.order</field>
+        <field name="type">form</field>
+        <field name="inherit_id" ref="point_of_sale.view_pos_pos_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//notebook" position="inside">
+                <page string="POS Sales Commission">
+
+                    <field name="pos_sale_line">
+                        <tree string="POS Sales Commission" editable="bottom" >
+                            <field name="User"/>
+                            <field name="job_position"/>
+                            <field name="commission_amount"/>
+                        </tree>
+                    </field>
+                </page>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="open_create_rule_order_form" model="ir.ui.view">
+        <field name="name">Rule Form</field>
+        <field name="model">create.rule.form</field>
+        <field name="arch" type="xml">
+            <form string="Create Rule">
+                <header>
+                    <button name="action_reset" states="lock" string="Reset" groups='de_pos_sales_commissions.group_sales_commssion' type="object" class="oe_highlight"/>
+                    <button name="action_lock" states="draft" string="Done" type="object" class="oe_highlight"/>
+                    <field name="state" widget="statusbar"/>
+                </header>
+                <sheet>
+                    <div>
+                        <group col="4">
+                            <field name="apply_on" widget="radio"/>
+                            <field name="priority" attrs="{'readonly':[('state','=','lock')]}"/>
+                        </group>
+                    </div>
+                    <group>
+                    </group>
+                    <group col="4">
+                        <field name="start_date" attrs="{'readonly':[('state','=','lock')]}"/>
+                        <field name="minimum_order" attrs="{'readonly':[('state','=','lock')]}"/>
+                        <field name="end_date" attrs="{'readonly':[('state','=','lock')]}"/>
+                        <field name="all_employees" attrs="{'readonly':[('state','=','lock')]}"/>
+                    </group>
+
+                    <notebook>
+                        <page string="Beneficial(s)">
+                            <field name="rule_line" attrs="{'readonly':[('state','=','lock')]}">
+                                <tree string="Beneficial(s)" editable="bottom" >
+                                    <field name="users"/>
+                                    <field name="job_title"/>
+                                    <field name="users"/>
+                                    <field name="compute_price"/>
+                                    <field name="commission_price"/>
+                                </tree>
+                            </field>
+                        </page>
+                    </notebook>
+
+                </sheet>
+
+                <div class="oe_chatter">
+                    <field name="message_follower_ids" widget="mail_followers" groups="base.group_user"/>
+                    <field name="message_ids" widget="mail_thread"/>
+                </div>
+            </form>
+        </field>
+    </record>
+    
+    	<record id="open_create_rule_search" model="ir.ui.view">
+		<field name="name">create.rule.form.search</field>
+		<field name="model">create.rule.form</field>
+		<field name="arch" type="xml">
+			<search string="Rule">
+				<field name="start_date" />
+			</search>
+		</field>
+	</record>
+
+    <record id="open_create_rule_tree" model="ir.ui.view">
+        <field name="name">create.rule.form.tree</field>
+        <field name="model">create.rule.form</field>
+        <field name="arch" type="xml">
+            <tree string="Create Rule">
+                <field name="apply_on"/>
+                <field name="start_date"/>
+                <field name="end_date"/>
+            </tree>
+        </field>
+    </record>
+
+
+    <record id="action_open_create_commission_rule" model="ir.actions.act_window">
+        <field name="name">Create Rule</field>
+        <field name="res_model">create.rule.form</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="view_mode">tree,form</field>
+        <field name="view_id" ref="open_create_rule_tree"/>
+        <field name="search_view_id" ref="open_create_rule_search" />
+		<field name="domain">[]</field>
+		<field name="context">{}</field>
+    </record>
+    
+
+
+    <menuitem id="menu_sale_commission"
+              name="Sales Commission"
+              parent="point_of_sale.menu_point_root"/>
+
+    <menuitem id="menu_point_of_sale_customer_rule"
+              name="Create Rules"
+              parent="de_pos_sales_commissions.menu_sale_commission"
+              action="de_pos_sales_commissions.action_open_create_commission_rule"
+              sequence="0" />
+
+
+    <record id="open_commission_order_form" model="ir.ui.view">
+        <field name="name">Commission</field>
+        <field name="model">commission.form</field>
+        <field name="arch" type="xml">
+            <form string="Commission">
+                <header>
+                    <button name="action_cancelled" states="draft" string="Cancel" type="object" class="oe_highlight"/>
+                    <button name="action_done" states="draft" string="Done" type="object" class="oe_highlight"/>
+                    <field name="state" widget="statusbar"/>
+                </header>
+                <sheet>
+                    <group col="4">
+                        <field name="source_document"/>
+                        <field name="active_employee" readonly="1"/>
+                        <field name="User" invisible="1"/>
+                        <field name="invoice" invisible="1"/>
+                        <field name="order_date" readonly="1"/>
+                    </group>
+                    <group col="4">
+                        <field name="sales_amount" readonly="1"/>
+                        <field name="commission_amount" readonly="1"/>
+                        <field name="pay_by" invisible="1"/>
+                    </group>
+                    <group col="4">
+                        <field name="pos_order" invisible="1"/>
+                        <field name="payment_id" invisible="1"/>
+                    </group>
+                </sheet>
+                <div class="oe_chatter">
+                    <field name="message_follower_ids" widget="mail_followers" groups="base.group_user"/>
+                    <field name="message_ids" widget="mail_thread"/>
+                </div>
+            </form>
+        </field>
+    </record>
+
+    <record id="open_commission_tree" model="ir.ui.view">
+        <field name="name">Commission</field>
+        <field name="model">commission.form</field>
+        <field name="arch" type="xml">
+            <tree string="Commission">
+                <field name="source_document"/>
+<!--                 <field name="User"/> -->
+                <field name="active_employee"/>
+                <field name="invoice" invisible="1"/>
+                <field name="order_date"/>
+                <field name="sales_amount"/>
+                <field name="commission_amount"/>
+                <field name="state"/>
+                <field name="pay_by" invisible="1"/>
+            </tree>
+        </field>
+    </record>
+
+    <record id="open_commission_order" model="ir.actions.act_window">
+        <field name="name">Commission</field>
+        <field name="res_model">commission.form</field>
+        <field name="binding_view_types">form</field>
+        <field name="view_mode">tree,form</field>
+        <field name="view_id" ref="open_commission_tree"/>
+    </record>
+
+    <!-- <menuitem id="menu_sale_commission"
+    name="Sales Commission"
+    parent="point_of_sale.menu_point_root"
+    />
+
+    <menuitem id="sales_form_rule_group" action="open_create_rule_order" name="Create Rule"  parent="de_pos_sales_commissions.menu_sale_commission" />
+-->
+
+
+
+    <menuitem id="menu_commission"
+              name="Commission"
+              parent="de_pos_sales_commissions.menu_sale_commission"
+              action="de_pos_sales_commissions.open_commission_order"/>
+
+
+    <record id="open_sale_target_order_menue" model="ir.ui.view">
+        <field name="name">Sales Target</field>
+        <field name="model">sales.target.form</field>
+        <field name="arch" type="xml">
+            <form string="sales_target">
+                <header>
+                    <button name="draft" string="Done" type="object" class="btn-primary"
+                            attrs="{'invisible': [('state', 'not in', 'draft')]}" />
+
+                    <field name="state"  widget="statusbar" statusbar_visible="draft,confirm"/>
+                </header>
+                <sheet>
+                    <group col="4">
+                        <field name="sales_person"/>
+                        <field name="target_period" />
+                        <field name="start_date"/>
+                        <field name="end_date"/>
+                        <button name="generate_target_period" string="Generate Target Period" type="object" class="btn-primary"/>
+                    </group>
+                    <notebook>
+                        <page string="Target Lines">
+                            <field name="sales_target_line">
+                                <tree string="Target Lines" editable="bottom" >
+                                    <field name="start_target"/>
+                                    <field name="end_target"/>
+                                    <field name="target_amount"/>
+                                    <field name="sale_amount"/>
+                                    <field name="commission_amount"/>
+                                </tree>
+                            </field>
+                        </page>
+                    </notebook>
+
+                </sheet>
+
+                <div class="oe_chatter">
+                    <field name="message_follower_ids" widget="mail_followers" groups="base.group_user"/>
+                    <field name="message_ids" widget="mail_thread"/>
+                </div>
+            </form>
+        </field>
+    </record>
+
+    <record id="open_sales_target_tree" model="ir.ui.view">
+        <field name="name">Sales Target</field>
+        <field name="model">sales.target.form</field>
+        <field name="arch" type="xml">
+            <tree string="Create Rule">
+                <field name="sales_person"/>
+                <field name="target_period" />
+                <field name="start_date"/>
+                <field name="end_date"/>
+
+            </tree>
+        </field>
+    </record>
+
+
+    <record id="open_sales_target_order" model="ir.actions.act_window">
+        <field name="name">Sales Target</field>
+        <field name="res_model">sales.target.form</field>
+        <field name="binding_view_types">form</field>
+        <field name="view_mode">tree,form</field>
+        <field name="view_id" ref="open_sales_target_tree"/>
+    </record>
+
+
+    <menuitem id="menu_sales_target"
+              name="Sales Target"
+              parent="de_pos_sales_commissions.menu_sale_commission"
+              action="de_pos_sales_commissions.open_sales_target_order"/>
+
+
+    <record id="create_commission_summary_form" model="ir.ui.view">
+        <field name="name">commission.summary.wizard</field>
+        <field name="model">commission.summary</field>
+        <field name="arch" type="xml">
+            <form string="Commission Payment">
+                <group col="4">
+                    <field name="start_date"/>
+                    <field name="end_date"/>
+                    <field name="all_user" />
+                    <field name="user" widget="many2many_tags" attrs="{'readonly':[('all_user','=',True)]}"/>
+                </group>
+                <footer>
+                    <button name="create_invoice" string="Generate Vendor Bills" type="object" class="btn-primary" />
+                    <button string="Cancel" class="btn-secondary" special="cancel"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+
+    <record id="create_commission_summary_wizard" model="ir.actions.act_window">
+        <field name="name">Commission Payment</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">commission.summary</field>
+        <field name="view_mode">form</field>
+        <field name="view_id" ref="create_commission_summary_form"/>
+        <field name="target">new</field>
+    </record>
+
+
+    <menuitem id="menu_commission_summary"
+              name="Commission Payment"
+              parent="de_pos_sales_commissions.menu_sale_commission"
+              action="de_pos_sales_commissions.create_commission_summary_wizard"/>
+
+
+    <record id="create_commission_report" model="ir.ui.view">
+        <field name="name">commission.summary.report</field>
+        <field name="model">commission.report</field>
+        <field name="arch" type="xml">
+            <form string="Print Commission Report">
+                <group col="4">
+                    <field name="start_date"/>
+                    <field name="end_date"/>
+                    <field name="user" />
+                    <field name="status"/>
+                </group>
+                <footer>
+                    <button name="generate_report" string="Generate Report" type="object" class="btn-primary"/>
+                    <button string="Cancel" class="btn-secondary" special="cancel"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+
+    <record id="create_commission_summary_report" model="ir.actions.act_window">
+        <field name="name">Commission Report</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">commission.report</field>
+        <field name="view_mode">form</field>
+        <field name="view_id" ref="create_commission_report"/>
+        <field name="target">new</field>
+    </record>
+
+
+    <menuitem id="menu_commission_print_report"
+              name="Print Commission Summary"
+              parent="de_pos_sales_commissions.menu_sale_commission"
+              action="de_pos_sales_commissions.create_commission_summary_report"/>
+
+</odoo>

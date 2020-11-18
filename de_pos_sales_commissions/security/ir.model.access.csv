@@ -1,0 +1,11 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_commission_rule,commission.rule,model_commission_rule,,1,1,1,1
+access_commission_orderline,commission.orderline,model_commission_orderline,,1,1,1,1
+access_pos_sale_commission,pos.sale.commission,model_pos_sale_commission,,1,1,1,1
+access_beneficial_form,beneficial.form,model_beneficial_form,,1,1,1,1
+access_create_rule_form,create.rule.form,model_create_rule_form,,1,1,1,1
+access_commission_form,commission.form,model_commission_form,,1,1,1,1
+access_sales_target_form,sales.target.form,model_sales_target_form,,1,1,1,1
+access_sale_target_line,sale.target.line,model_sale_target_line,,1,1,1,1
+access_commission_summary,commission.summary,model_commission_summary,,1,1,1,1
+access_commission_report,commission.report,model_commission_report,,1,1,1,1
