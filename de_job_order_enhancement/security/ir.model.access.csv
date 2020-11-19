@@ -1,0 +1,2 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_de_job_order_enhancement_de_job_order_enhancement,de_job_order_enhancement.de_job_order_enhancement,model_de_job_order_enhancement_de_job_order_enhancement,base.group_user,1,1,1,1
