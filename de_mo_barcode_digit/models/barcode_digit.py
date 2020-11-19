@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-# from custom_addons import de_training_batch
+from custom_addons import de_training_batch
 from odoo import api, fields, models, _
 from odoo.exceptions import UserError
 
