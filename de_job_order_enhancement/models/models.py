@@ -11,32 +11,51 @@ class JobOrder(models.Model):
     
     
     job_order_material_ids = fields.One2many('job.order.bom.component', 'job_order_id', string='Job Order MRP Lines', states={'cancel': [('readonly', True)], 'done': [('readonly', True)]}, copy=True, auto_join=True)
-    
+
     
     def action_process(self):
         res = super(JobOrder, self).action_process()
-        bom_ids = []
-        all_boms = []
-        for job in self:
+            bom_product = []
             for sale in job.job_order_sale_lines:
-                if not (sale.bom_id in bom_ids):
-                    bom_ids.append(sale.bom_id)
-        for boms in bom_ids:
-            all_boms += boms._recursive_boms()
-        
-        bom_line = self.env['job.order.bom.component']
-        #bom_line = self.env['job.order.mrp'].search([('bom_id', 'not in', [bom_ids])])
-        for bom in all_boms:
-            val = {
-                'job_order_id':self.id,
-                'bom_id':bom,
-            }
-            bom_line.create(val)
-         
-        for b in bom_ids:
-            bom_line.search([('bom_id', '=', b.id)]).unlink()
-        
+                product_bom = self.env['mrp.bom'].search([('product_tmpl_id','=',sale.product_tmpl_id.id)])
+                for component in product_bom.bom_line_ids:
+                    bom_product.append(component.product_id.id)
+                    for product in bom_product:
+                        component_bom = self.env['mrp.bom'].search([('product_tmpl_id','=',product.id)])
+                        if component_bom:
+                            for nested_component in component_bom.bom_line_ids:
+                                bom_product.append(nested_component.product_id.id)  
+                                
+                                
         return res
+
+    
+#     def action_process(self):
+#         res = super(JobOrder, self).action_process()
+#             for sale in job.job_order_sale_lines:
+                
+#         bom_ids = []
+#         all_boms = []
+#         for job in self:
+#             for sale in job.job_order_sale_lines:
+#                 if not (sale.bom_id in bom_ids):
+#                     bom_ids.append(sale.bom_id)
+#         for boms in bom_ids:
+#             all_boms += boms._recursive_boms()
+        
+#         bom_line = self.env['job.order.bom.component']
+#         #bom_line = self.env['job.order.mrp'].search([('bom_id', 'not in', [bom_ids])])
+#         for bom in all_boms:
+#             val = {
+#                 'job_order_id':self.id,
+#                 'bom_id':bom,
+#             }
+#             bom_line.create(val)
+         
+#         for b in bom_ids:
+#             bom_line.search([('bom_id', '=', b.id)]).unlink()
+        
+#         return res
       
     
     
