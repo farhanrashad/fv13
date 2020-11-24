@@ -1,24 +1,41 @@
 <odoo>
   <data>
+  <record id="job_order_bom_component_view_tree" model="ir.ui.view">
+        <field name="name">Job Order Component sheet tree view</field>
+        <field name="model">job.order.bom.component</field>
+        <field name="arch" type="xml">
+            <tree string="Material Sheet lines"  create="false" editable="bottom" decoration-danger="po_created==True">
+                  <field name="product_id"/>
+                  <field name="type"/>
+                  <field name="quantity"/>
+                  <field name="production_quantity"/>
+                  <field name="vendor_id" attrs="{'readonly': [('type','=','normal')]}"/>
+                  <field name="po_created" invisible="1"/>
+            </tree>
+        </field>
+    </record>  
+      
+      
   <record id="job_order_form_view_inherit" model="ir.ui.view">
 			<field name="name">job.order.form.view</field>
 			<field name="model">job.order</field>
 			<field name="inherit_id" ref="de_job_order.job_order_sheet_form_view"/>
 			<field name="arch" type="xml">
-				<xpath expr="//header//button[@name='action_process']" position="after">
-                    
+			   <xpath expr="//form//sheet//div[@name='button_box']" position="inside">
+                    <button type="object" name="action_material_planning" string='Material Planning' class="oe_stat_button" icon="fa-pencil-square-o" attrs="{'invisible':[ ('state', 'in', ['draft','confirmed'])]}"> 
+                    </button>
                 </xpath>    
                 
 				<xpath expr="//notebook//page[3]" position="after">
-					<page string="Material Planning">
+					<page string="Material Planning" invisible="1">
                             <field name="job_order_material_ids" >
-                                <tree string="Job Order BOM lines" editable="bottom">
+                                <tree string="Job Order BOM lines" editable="bottom" create="false" delete="false">
                                     <field name="product_id"/>
-<!--                                     <field name="product_tmpl_id"/> -->
-<!--                                     <field name="name"/> -->
                                     <field name="type"/>
                                     <field name="quantity"/>
                                     <field name="production_quantity"/>
+                                    <field name="vendor_id"/>
+                                    <field name="po_created"/>
                                 </tree>
                             </field>
                         </page>
