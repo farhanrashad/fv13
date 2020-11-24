@@ -53,6 +53,12 @@ class JobOrder(models.Model):
 #                 for product in product_list:
                 component_bom_level2 = self.env['mrp.bom'].search([('product_tmpl_id.name','=',component_level1.product_id.name)])
                 if component_bom_level2:
+#                     bom_vals =   {
+#                      'job_order_id':  self.name,
+#                      'product_id': product_bom.product_id.id,
+#                      'type': product_bom.type,
+#                        }  
+#                     bom_product.append(bom_vals) 
                     for component_level2 in component_bom_level2.bom_line_ids:
                         product_list.append(component_level2.product_id.name)
                         component_bom_level3 = self.env['mrp.bom'].search([('product_tmpl_id.name','=',component_level2.product_id.name)])
@@ -77,7 +83,7 @@ class JobOrder(models.Model):
                                                                 product_list.append(component_level7.product_id.name)
 
         bom_products = set(product_list)
-        for product in bom_products:
+        for product in product_list:
 #             component_boms = self.env['mrp.bom'].search([('product_tmpl_id.name','=',product)])
 
             component_boms = self.env['product.product'].search([('name','=',product)])
