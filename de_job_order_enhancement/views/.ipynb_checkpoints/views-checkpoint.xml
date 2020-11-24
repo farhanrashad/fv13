@@ -5,12 +5,18 @@
 			<field name="model">job.order</field>
 			<field name="inherit_id" ref="de_job_order.job_order_sheet_form_view"/>
 			<field name="arch" type="xml">
+				<xpath expr="//header//button[@name='action_process']" position="after">
+                    
+                </xpath>    
+                
 				<xpath expr="//notebook//page[3]" position="after">
 					<page string="Material Planning">
                             <field name="job_order_material_ids" >
                                 <tree string="Job Order BOM lines" editable="bottom">
-                                    <field name="bom_id"/>
-                                    <field name="bom_type"/>
+                                    <field name="product_id"/>
+<!--                                     <field name="product_tmpl_id"/> -->
+<!--                                     <field name="name"/> -->
+                                    <field name="type"/>
                                     <field name="quantity"/>
                                     <field name="production_quantity"/>
                                 </tree>
