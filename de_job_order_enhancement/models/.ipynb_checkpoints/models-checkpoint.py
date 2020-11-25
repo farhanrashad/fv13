@@ -225,6 +225,26 @@ class JobOrderBOMCompoent(models.Model):
     _name = 'job.order.bom.component'
     _description = 'Jor Order Production'
     
+    def _default_picking_type(self):
+        return self.env['stock.picking.type'].search([
+            ('code', '=', 'mrp_operation'),],
+            limit=1).id
+    
+    def _default_src_location(self):
+        return self.env['stock.location'].search([
+            ('name', '=', 'Stock'),],
+            limit=1).id
+    
+    def _default_dest_location(self):
+        return self.env['stock.location'].search([
+            ('name', '=', 'Stock'),],
+            limit=1).id
+    
+    def _default_company(self):
+        return self.env['res.company'].search([
+            ('name', '=', 'Al-Ghani International'),],
+            limit=1).id
+    
     def unlink(self):
         for leave in self:
             if leave.po_created == True   or leave.po_created == False:
@@ -234,9 +254,10 @@ class JobOrderBOMCompoent(models.Model):
     
     
     job_order_id = fields.Many2one('job.order', string='Order Reference', index=True, required=True, ondelete='cascade')
-    vendor_id = fields.Many2one('res.partner', string='Vendor')
+    vendor_id = fields.Many2one('res.partner', string='Vendor', index=True)
     po_created = fields.Boolean(string="PO Created")
-    product_id = fields.Many2one('product.product', string='Produt',readonly=True)
+    production_created = fields.Boolean(string="MO Created")
+    product_id = fields.Many2one('product.product', string='Product',readonly=True)
     type = fields.Selection([
         ('normal', 'Manufacture this product'),
         ('phantom', 'Kit'),
@@ -245,12 +266,62 @@ class JobOrderBOMCompoent(models.Model):
         default='normal')
     quantity = fields.Float(string='Quantity',digits=dp.get_precision('Product Unit of Measure'),default=1.0)
     production_quantity = fields.Float(string='Production Quantity', store=False)
+    company_id = fields.Many2one('res.company', store=True, string='Company', readonly=False, default=_default_company,)
+    location_src_id = fields.Many2one('stock.location', 'From', check_company=True, required=True, default=_default_src_location,)
+    location_dest_id = fields.Many2one('stock.location', 'To', check_company=True, required=True, default=_default_dest_location,)
+    picking_type_id = fields.Many2one(
+        'stock.picking.type', 'Operation Type',
+        required=True, readonly=True, default=_default_picking_type,)
+    
+
+
     
     
 #      compute='_calcualte_production_quantity',
     
     def _calcualte_production_quantity(self):
-        self.production_quantity = 0    
+        self.production_quantity = 0  
+        
+        
+    def action_generate_production_order(self):
+        for line in self:
+            if line.production_created == False and line.type == 'normal':
+                line_bom = self.env['mrp.bom'].search([('product_tmpl_id.name','=',line.product_id.name)])
+                for bom in line_bom:
+                    line__bom_vals = []
+                    for component in bom.bom_line_ids:
+                        line__bom_vals.append((0,0, {
+                                'product_id': component.product_id.id,
+                                'name': component.product_id.name,
+                                'product_uom': component.product_id.uom_po_id.id,
+                                'product_uom_qty': component.product_qty,
+                                'date': fields.Date.today(),
+                                'date_expected': fields.Date.today(),
+                                'location_id': line.location_src_id.id,
+                                'location_dest_id': line.location_dest_id.id,
+                        }))
+                production_vals ={
+                        'product_id': line.product_id.id,
+                        'product_uom_id': line.product_id.uom_id.id,
+                        'product_qty': line.quantity,
+                        'origin': self.job_order_id.name, 
+                        'job_order_id': self.job_order_id.id, 
+                        'bom_id': line_bom[0].id,
+                        'date_planned_start': fields.Date.today(),
+                        'picking_type_id': line.picking_type_id.id,
+                        'location_src_id': line.location_src_id.id,
+                        'location_dest_id': line.location_dest_id.id,
+                        'move_raw_ids': line__bom_vals ,
+                }
+                production_order = self.env['mrp.production'].create(production_vals)
+                if line.production_created == False and line.type == 'normal':
+                    line.update ({
+#                    'po_process': False,
+                        'production_created': True,
+                        })
+                
+          
+    
     
     
     def action_generate_po(self):
@@ -261,47 +332,47 @@ class JobOrderBOMCompoent(models.Model):
 #                 raise UserError(_('Please Select Vendor for all selected lines.'))
         vendor_list = []
         for line in self:
-            if line.partner_id and line.po_created == False:
-                vendor_list.append(line.partner_id)
+            if line.vendor_id and line.po_created == False:
+                vendor_list.append(line.vendor_id)
             else:
                 pass
         list = set(vendor_list)
-        for te in list:
+        for vendor in list:
             product = []
-            for re in self:
-                if te == re.partner_id:
-                    if re.po_created == False:
-                        valss = {
-                            'product_id': re.product_id.id,
-                            'name': re.product_id.name,
-                            'product_uom_qty': re.product_uom_qty_order,
-                            'price_unit': re.product_id.standard_price,
+            for seller_line in self:
+                if vendor == seller_line.vendor_id:
+                    if seller_line.po_created == False:
+                        line_vals = {
+                            'product_id': seller_line.product_id.id,
+                            'name': seller_line.product_id.name,
+                            'product_uom_qty': seller_line.quantity,
+                            'price_unit': seller_line.product_id.standard_price,
                             'date_planned': fields.Date.today(),
-                            'product_uom': re.product_id.uom_po_id.id,
+                            'product_uom': seller_line.product_id.uom_po_id.id,
                         }
-                        product.append(valss)
+                        product.append(line_vals)
             vals = {
-                  'partner_id': te.id,
+                  'partner_id': vendor.id,
                   'date_order': fields.Date.today(),
-                  'sale_ref_id': self.mo_id.sale_id.name,
-                  'origin': self.mo_id.name,
+                  'job_order_id': self.job_order_id.id,
+                  'origin': self.job_order_id.name,
                     }
             order = self.env['purchase.order'].create(vals)
-            for test in product:
+            for prod in product:
                 order_line = {
                        'order_id': order.id,
-                       'product_id': test['product_id'],
-                       'name': test['name'],
-                       'product_qty': test['product_uom_qty'],
-                       'price_unit': test['price_unit'],
+                       'product_id': prod['product_id'],
+                       'name': prod['name'],
+                       'product_qty': prod['product_uom_qty'],
+                       'price_unit': prod['price_unit'],
                        'date_planned': fields.Date.today(),
-                       'product_uom': test['product_uom'],
+                       'product_uom': prod['product_uom'],
                         }
-                orders_lines = self.env['purchase.order.line'].create(order_line)
+                purchase_orders_line = self.env['purchase.order.line'].create(order_line)
         for line in self:
-            if line.po_process == True and not line.partner_id==' ':
+            if line.po_created == False and line.type != 'normal' and line.vendor_id:
                 line.update ({
-                   'po_process': False,
+#                    'po_process': False,
                     'po_created': True,
                   	})
                 

@@ -4,13 +4,18 @@
         <field name="name">Job Order Component sheet tree view</field>
         <field name="model">job.order.bom.component</field>
         <field name="arch" type="xml">
-            <tree string="Material Sheet lines"  create="false" editable="bottom" decoration-danger="po_created==True">
-                  <field name="product_id"/>
-                  <field name="type"/>
-                  <field name="quantity"/>
-                  <field name="production_quantity"/>
-                  <field name="vendor_id" attrs="{'readonly': [('type','=','normal')]}"/>
+            <tree string="Material Sheet lines"  create="false" editable="bottom" decoration-danger="po_created==True" decoration-success="production_created==True"  >
+                  <field name="product_id"  attrs="{'readonly': [('po_created','=',True)]}"/>
+                  <field name="picking_type_id"  attrs="{'invisible': [('type','!=','normal')]}"/>
+                  <field name="location_src_id"  attrs="{'invisible': [('type','!=','normal')]}"/>
+                  <field name="location_dest_id"  attrs="{'invisible': [('type','!=','normal')]}"/>
+                  <field name="type"   attrs="{'readonly': [('po_created','=',True)]}"/>
+                  <field name="quantity"   attrs="{'readonly': [('po_created','=',True)]}"/>
+                  <field name="production_quantity"   attrs="{'readonly': [('po_created','=',True)]}"/>
+                  <field name="vendor_id"   attrs="{'readonly': [('type','=','normal')]}"/>
                   <field name="po_created" invisible="1"/>
+                  <field name="production_created" invisible="1"/>
+                  <field name="company_id" invisible="1"/>
             </tree>
         </field>
     </record>  
@@ -35,7 +40,12 @@
                                     <field name="quantity"/>
                                     <field name="production_quantity"/>
                                     <field name="vendor_id"/>
-                                    <field name="po_created"/>
+                                    <field name="po_created" invisible="1"/>
+                                    <field name="production_created" invisible="1"/>
+                                    <field name="picking_type_id"/>
+                                    <field name="location_src_id"/>
+                                    <field name="location_dest_id"/>
+                                    <field name="company_id" invisible="1"/>
                                 </tree>
                             </field>
                         </page>
