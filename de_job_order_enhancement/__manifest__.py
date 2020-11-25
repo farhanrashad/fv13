@@ -25,7 +25,7 @@
     'version': '0.1',
 
     # any module necessary for this one to work correctly
-    'depends': ['base','de_job_order','stock'],
+    'depends': ['base','de_job_order','stock','purchase','mrp','sale'],
 
     # always loaded
     'data': [

@@ -56,35 +56,36 @@ class JobOrder(models.Model):
                      'product_id': product_bom.product_id.id,
                      'type': product_bom.type,
                      'quantity':  product_bom.product_qty,
-#                      'vendor_id': for vendor in component_bom_level1_type.subcontractor_ids.id: return vendor 
                        }  
             bom_product.append(bom_vals)
             for component_level1 in product_bom.bom_line_ids:   
         # Level 1         
                 product_list.append(component_level1.product_id.name)
-                component_bom_level1_type = self.env['mrp.bom'].search([('product_tmpl_id.name','=',component_level1.product_id.name)])
+                component_bom_level1_type = self.env['mrp.bom'].search([('product_tmpl_id.name','=',component_level1.product_id.name)])  
                 bom_vals =   {
-                     'job_order_id':  self.name,
-                     'product_id': component_level1.product_id.id,
-                     'type': component_bom_level1_type.type,
-                     'quantity':  component_level1.product_qty,
-                     'vendor_id': [vendor for vendor in component_bom_level1_type.subcontractor_ids] 
-                           }  
-                bom_product.append(bom_vals) 
+                         'job_order_id':  self.name,
+                         'product_id': component_level1.product_id.id,
+                         'type': component_bom_level1_type.type,
+                         'quantity':  component_level1.product_qty,
+                               }  
+                bom_product.append(bom_vals)
+               
                 component_bom_level2 = self.env['mrp.bom'].search([('product_tmpl_id.name','=',component_level1.product_id.name)])
          # Level 2       
                 if component_bom_level2:
                     for component_level2 in component_bom_level2.bom_line_ids:
                         product_list.append(component_level2.product_id.name)
                         component_bom_level2_type = self.env['mrp.bom'].search([('product_tmpl_id.name','=',component_level2.product_id.name)])
+                    
                         bom_vals =   {
-                         'job_order_id':  self.name,
-                         'product_id': component_level2.product_id.id,
-                         'type': component_bom_level2_type.type,
-                         'quantity':  component_level2.product_qty,
-                         'vendor_id': [vendor for vendor in  component_bom_level2_type.subcontractor_ids] 
-                           }  
-                        bom_product.append(bom_vals) 
+                             'job_order_id':  self.name,
+                             'product_id': component_level2.product_id.id,
+                             'type': component_bom_level2_type.type,
+                             'quantity':  component_level2.product_qty,
+                               }  
+                        bom_product.append(bom_vals)
+                      
+                            
                         component_bom_level3 = self.env['mrp.bom'].search([('product_tmpl_id.name','=',component_level2.product_id.name)])
          # Level 3       
                         if component_bom_level3:
@@ -92,13 +93,13 @@ class JobOrder(models.Model):
                                 product_list.append(component_level3.product_id.name)
                                 component_bom_level3_type = self.env['mrp.bom'].search([('product_tmpl_id.name','=',component_level3.product_id.name)])
                                 bom_vals =   {
-                                 'job_order_id':  self.name,
-                                 'product_id': component_level3.product_id.id,
-                                 'type': component_bom_level3_type.type,
-                                 'quantity':  component_level3.product_qty,
-                                 'vendor_id': [vendor for vendor in  component_bom_level3_type.subcontractor_ids] 
-                                   }  
-                                bom_product.append(bom_vals) 
+                                     'job_order_id':  self.name,
+                                     'product_id': component_level3.product_id.id,
+                                     'type': component_bom_level3_type.type,
+                                     'quantity':  component_level3.product_qty,
+                                       }  
+                                bom_product.append(bom_vals)
+                                
                                 
                                 component_bom_level4 = self.env['mrp.bom'].search([('product_tmpl_id.name','=',component_level3.product_id.name)])
                          # Level 4       
@@ -108,29 +109,32 @@ class JobOrder(models.Model):
                                         product_list.append(component_level4.product_id.name)
                                         
                                         component_bom_level4_type = self.env['mrp.bom'].search([('product_tmpl_id.name','=',component_level4.product_id.name)])
+                                        
+                                       
                                         bom_vals =   {
-                                         'job_order_id':  self.name,
-                                         'product_id': component_level4.product_id.id,
-                                         'type': component_bom_level4_type.type,
-                                         'quantity':  component_level4.product_qty,
-                                         'vendor_id': [vendor for vendor in  component_bom_level4_type.subcontractor_ids] 
+                                             'job_order_id':  self.name,
+                                             'product_id': component_level4.product_id.id,
+                                             'type': component_bom_level4_type.type,
+                                             'quantity':  component_level4.product_qty,
                                            }  
                                         bom_product.append(bom_vals) 
+                                       
                          # Level 5       
                                         component_bom_level5 = self.env['mrp.bom'].search([('product_tmpl_id.name','=',component_level4.product_id.name)])
                                         if component_bom_level5:
                                             for component_level5 in component_bom_level5.bom_line_ids:
                                                 product_list.append(component_level5.product_id.name)
                                                 component_bom_level5_type = self.env['mrp.bom'].search([('product_tmpl_id.name','=',component_level5.product_id.name)])
+                                               
+                                                    
                                                 bom_vals =   {
-                                                 'job_order_id':  self.name,
-                                                 'product_id': component_level5.product_id.id,
-                                                 'type': component_bom_level5_type.type,
-                                                 'quantity':  component_level5.product_qty,
-                                                 'vendor_id': [vendor for vendor in  component_bom_level5_type.subcontractor_ids] 
-                                                   }  
+                                                     'job_order_id':  self.name,
+                                                     'product_id': component_level5.product_id.id,
+                                                     'type': component_bom_level5_type.type,
+                                                     'quantity':  component_level5.product_qty,
+                                                       }  
                                                 bom_product.append(bom_vals) 
-                                                
+
                            # Level 6       
                                                 component_bom_level6 = self.env['mrp.bom'].search([('product_tmpl_id.name','=',component_level5.product_id.name)])
                                                 if component_bom_level6:
@@ -138,14 +142,13 @@ class JobOrder(models.Model):
                                                         product_list.append(component_level6.product_id.name)
                                                         component_bom_level6_type = self.env['mrp.bom'].search([('product_tmpl_id.name','=',component_level6.product_id.name)])
                                                         bom_vals =   {
-                                                         'job_order_id':  self.name,
-                                                         'product_id': component_level6.product_id.id,
-                                                         'type': component_bom_level6_type.type,
-                                                         'quantity':  component_level6.product_qty,
-                                                         'vendor_id': [vendor for vendor in  component_bom_level6_type.subcontractor_ids] 
+                                                             'job_order_id':  self.name,
+                                                             'product_id': component_level6.product_id.id,
+                                                             'type': component_bom_level6_type.type,
+                                                             'quantity':  component_level6.product_qty,
                                                          }  
                                                         bom_product.append(bom_vals)
-                                                
+                                                        
                                 # Level 7       
                                                         component_bom_level7 = self.env['mrp.bom'].search([('product_tmpl_id.name','=',component_level6.product_id.name)])
                                                         if component_bom_level7:
@@ -153,27 +156,17 @@ class JobOrder(models.Model):
                                                                 product_list.append(component_level7.product_id.name)
                                                                 component_bom_level7_type = self.env['mrp.bom'].search([('product_tmpl_id.name','=',component_level7.product_id.name)])
                                                                 bom_vals =   {
-                                                                'job_order_id':  self.name,
-                                                                'product_id': component_level7.product_id.id,
-                                                                'type': component_bom_level7_type.type,
-                                                               'quantity':  component_level7.product_qty,
-                                                               'vendor_id': [vendor for vendor in   component_bom_level7_type.subcontractor_ids] 
-                                                                   }  
+                                                                    'job_order_id':  self.name,
+                                                                    'product_id': component_level7.product_id.id,
+                                                                    'type': component_bom_level7_type.type,
+                                                                    'quantity':  component_level7.product_qty,
+                                                                       }  
                                                                 bom_product.append(bom_vals)
+                                                            
+                                                                    
+                                                                
                                                                 
 
-#         bom_products = set(product_list)
-#         for product in product_list:
-# #             component_boms = self.env['mrp.bom'].search([('product_tmpl_id.name','=',product)])
-
-#             component_boms = self.env['product.product'].search([('name','=',product)])
-#             for component in component_boms:
-#                 bom_vals =   {
-#                                  'job_order_id':  self.name,
-#                                  'product_id': component.id,
-# #                                  'type': component.bom_id.type,
-#                                    }  
-#                 bom_product.append(bom_vals)
             
         for product in bom_product:
             all_boms.append((0,0,{
@@ -181,41 +174,23 @@ class JobOrder(models.Model):
                             'product_id': product['product_id'],
                             'type': product['type'],
                             'quantity': product['quantity'], 
-#                             'vendor_id': product['vendor_id'],    
                             })) 
             
         self.job_order_material_ids = all_boms             
-           
+        for product in self.job_order_material_ids:
+            line_product = []
+            product_values = self.env['product.product'].search([('id','=',product.product_id.id)])
+            for vendor in product_values.seller_ids:
+                line_product.append(vendor.name.id)
+            if product.type != 'normal':
+               product.update({
+                   'vendor_id': line_product[0]
+               }) 
+                
         return res
 
     
-#     def action_process(self):
-#         res = super(JobOrder, self).action_process()
-#         bom_ids = []
-#         all_boms = []
-#         for job in self:
-#             for sale in job.job_order_sale_lines:
-#                 if not (sale.bom_id in bom_ids):
-#                     bom_ids.append(sale.bom_id)
-#         for boms in bom_ids:
-#             all_boms += boms._recursive_boms()
-        
-#         bom_line = self.env['job.order.bom.component']
-#         #bom_line = self.env['job.order.mrp'].search([('bom_id', 'not in', [bom_ids])])
-#         for bom_prod in bom_ids:
-#             product_bom = self.env['product.product'].search([('id','=',bom_prod.id)])
-        
-        
-#             for bom in product_bom:
-#                 val = {
-#                     'job_order_id':self.id,
-#                     'name':bom.name,
-# #                     'type': bom.type,
-#                 }
-#                 bom_line.create(val)
-   
-        
-#         return res
+
       
     
     
@@ -267,11 +242,11 @@ class JobOrderBOMCompoent(models.Model):
     quantity = fields.Float(string='Quantity',digits=dp.get_precision('Product Unit of Measure'),default=1.0)
     production_quantity = fields.Float(string='Production Quantity', store=False)
     company_id = fields.Many2one('res.company', store=True, string='Company', readonly=False, default=_default_company,)
-    location_src_id = fields.Many2one('stock.location', 'From', check_company=True, required=True, default=_default_src_location,)
-    location_dest_id = fields.Many2one('stock.location', 'To', check_company=True, required=True, default=_default_dest_location,)
+    location_src_id = fields.Many2one('stock.location', 'From', check_company=True, default=_default_src_location,)
+    location_dest_id = fields.Many2one('stock.location', 'To', check_company=True, default=_default_dest_location,)
     picking_type_id = fields.Many2one(
         'stock.picking.type', 'Operation Type',
-        required=True, readonly=True, default=_default_picking_type,)
+         readonly=True, default=_default_picking_type,)
     
 
 
@@ -325,11 +300,6 @@ class JobOrderBOMCompoent(models.Model):
     
     
     def action_generate_po(self):
-#         for line in self:
-#             if line.partner_id:
-#                 pass
-#             else:
-#                 raise UserError(_('Please Select Vendor for all selected lines.'))
         vendor_list = []
         for line in self:
             if line.vendor_id and line.po_created == False:
@@ -372,7 +342,6 @@ class JobOrderBOMCompoent(models.Model):
         for line in self:
             if line.po_created == False and line.type != 'normal' and line.vendor_id:
                 line.update ({
-#                    'po_process': False,
                     'po_created': True,
                   	})
                 
