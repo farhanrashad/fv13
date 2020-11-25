@@ -1,18 +1,40 @@
 <odoo>
   <data>
+   
+     <record id="job_order_bom_component_view_tree_search" model="ir.ui.view">
+        <field name="name">Job Order Component sheet tree view</field>
+        <field name="model">job.order.bom.component</field>
+        <field name="arch" type="xml">
+           <search string="Search Material Planning">
+                    <field name="job_order_id" filter_domain="['|', '|', ('product_id', 'ilike', self), ('type', 'ilike', self), ('picking_type_id', 'ilike', self)]" string="Reference"/>
+                    <field name="type" string='Type'/>
+                    <field name="product_id" string='Product'/>
+                    <field name="picking_type_id" string='Picking'/>   
+                    <separator/>
+                   <filter string="Subcontracting" name="subcontract" domain="[('type','=','subcontract')]"/>
+                   <filter string="Manufacture this Product" name="normal" domain="[('type','=','normal')]"/>
+                    <group expand="0" string="Group By">
+                        <filter name="type" string="BOM Type" domain="[]" context="{'group_by' : 'type'}" />
+                        <filter string="Vendor" name="vendor_id" domain="[]" context="{'group_by' : 'vendor_id'}" />
+                       
+                    </group>
+                </search>
+        </field>
+    </record>       
+      
   <record id="job_order_bom_component_view_tree" model="ir.ui.view">
         <field name="name">Job Order Component sheet tree view</field>
         <field name="model">job.order.bom.component</field>
         <field name="arch" type="xml">
             <tree string="Material Sheet lines"  create="false" editable="bottom" decoration-danger="po_created==True" decoration-success="production_created==True"  >
-                  <field name="product_id"  attrs="{'readonly': [('po_created','=',True)]}"/>
-                  <field name="picking_type_id"  attrs="{'invisible': [('type','!=','normal')]}"/>
-                  <field name="location_src_id"  attrs="{'invisible': [('type','!=','normal')]}"/>
-                  <field name="location_dest_id"  attrs="{'invisible': [('type','!=','normal')]}"/>
-                  <field name="type"   attrs="{'readonly': [('po_created','=',True)]}"/>
-                  <field name="quantity"   attrs="{'readonly': [('po_created','=',True)]}"/>
-                  <field name="production_quantity"   attrs="{'readonly': [('po_created','=',True)]}"/>
-                  <field name="vendor_id"   attrs="{'readonly': [('type','=','normal')]}"/>
+                  <field name="product_id"  readonly="1"/>
+                  <field name="picking_type_id"  attrs="{'invisible': [('type','!=','normal')],'readonly': ['|',('po_created','=',True),('production_created','=',True)]}"/>
+                  <field name="location_src_id"  attrs="{'invisible': [('type','!=','normal')],'readonly': ['|',('po_created','=',True),('production_created','=',True)]}"/>
+                  <field name="location_dest_id"  attrs="{'invisible': [('type','!=','normal')],'readonly': ['|',('po_created','=',True),('production_created','=',True)]}"/>
+                  <field name="type"   readonly="1"/>
+                  <field name="quantity"   attrs="{'readonly': ['|',('po_created','=',True),('production_created','=',True)]}"/>
+                  <field name="production_quantity"   attrs="{'readonly': ['|',('po_created','=',True),('production_created','=',True)]}"/>
+                  <field name="vendor_id"   attrs="{'readonly': ['|',('type','=','normal'),('po_created','=',True)]}"/>
                   <field name="po_created" invisible="1"/>
                   <field name="production_created" invisible="1"/>
                   <field name="company_id" invisible="1"/>
