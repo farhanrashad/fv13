@@ -49,6 +49,8 @@ class JobOrder(models.Model):
         bom_product = []
         all_boms = []
         for sale in self.job_order_sale_lines:
+#             sale_product = []
+            sale_product = sale.product_id.id
             product_bom = self.env['mrp.bom'].search([('product_id','=',sale.product_id.id)])
        # SO  product bom     
             bom_vals =   {
@@ -56,7 +58,7 @@ class JobOrder(models.Model):
                      'product_id': product_bom.product_id.id,
                      'type': product_bom.type,
                      'quantity':  product_bom.product_qty,
-                     'source_product_id': sale.product_id.id,
+                     'source_product_id': sale_product,
                        }  
             bom_product.append(bom_vals)
             for component_level1 in product_bom.bom_line_ids:   
@@ -68,7 +70,7 @@ class JobOrder(models.Model):
                          'product_id': component_level1.product_id.id,
                          'type': component_bom_level1_type.type,
                          'quantity':  component_level1.product_qty,
-                         'source_product_id': sale.product_id.id,
+                         'source_product_id': sale_product,
                                }  
                 bom_product.append(bom_vals)
                
@@ -84,7 +86,7 @@ class JobOrder(models.Model):
                              'product_id': component_level2.product_id.id,
                              'type': component_bom_level2_type.type,
                              'quantity':  component_level2.product_qty,
-                             'source_product_id': sale.product_id.id,
+                             'source_product_id': sale_product,
                                }  
                         bom_product.append(bom_vals)
                       
@@ -100,7 +102,7 @@ class JobOrder(models.Model):
                                      'product_id': component_level3.product_id.id,
                                      'type': component_bom_level3_type.type,
                                      'quantity':  component_level3.product_qty,
-                                     'source_product_id': sale.product_id.id,
+                                     'source_product_id': sale_product,
                                        }  
                                 bom_product.append(bom_vals)
                                 
@@ -120,7 +122,7 @@ class JobOrder(models.Model):
                                              'product_id': component_level4.product_id.id,
                                              'type': component_bom_level4_type.type,
                                              'quantity':  component_level4.product_qty,
-                                             'source_product_id': sale.product_id.id,
+                                             'source_product_id': sale_product,
                                            }  
                                         bom_product.append(bom_vals) 
                                        
@@ -137,7 +139,7 @@ class JobOrder(models.Model):
                                                      'product_id': component_level5.product_id.id,
                                                      'type': component_bom_level5_type.type,
                                                      'quantity':  component_level5.product_qty,
-                                                     'source_product_id': sale.product_id.id,
+                                                     'source_product_id': sale_product,
 
                                                        }  
                                                 bom_product.append(bom_vals) 
@@ -153,7 +155,7 @@ class JobOrder(models.Model):
                                                              'product_id': component_level6.product_id.id,
                                                              'type': component_bom_level6_type.type,
                                                              'quantity':  component_level6.product_qty,
-                                                             'source_product_id': sale.product_id.id,
+                                                             'source_product_id': sale_product,
                                                          }  
                                                         bom_product.append(bom_vals)
                                                         
@@ -168,7 +170,7 @@ class JobOrder(models.Model):
                                                                     'product_id': component_level7.product_id.id,
                                                                     'type': component_bom_level7_type.type,
                                                                     'quantity':  component_level7.product_qty,
-                                                                    'source_product_id': sale.product_id.id,
+                                                                    'source_product_id': sale_product,
                                                                        }  
                                                                 bom_product.append(bom_vals)
                                                             
@@ -182,7 +184,8 @@ class JobOrder(models.Model):
                             'job_order_id':  product['job_order_id'],
                             'product_id': product['product_id'],
                             'type': product['type'],
-                            'quantity': product['quantity'], 
+                            'quantity': product['quantity'],
+                            'source_product_id': product['source_product_id']
                             })) 
             
         self.job_order_material_ids = all_boms             
