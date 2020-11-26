@@ -25,13 +25,13 @@
     'version': '0.1',
 
     # any module necessary for this one to work correctly
-    'depends': ['base','de_job_order','stock','purchase','mrp','sale'],
+    'depends': ['base','de_job_order','stock','purchase','mrp','sale','account_reports','account','product'],
 
     # always loaded
     'data': [
         'data/server_action.xml',
         'security/ir.model.access.csv',
-        'views/views.xml',
+        'views/job_order.xml',
         'views/templates.xml',
     ],
     # only loaded in demonstration mode

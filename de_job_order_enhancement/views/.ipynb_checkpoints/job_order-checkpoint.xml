@@ -28,11 +28,14 @@
         <field name="arch" type="xml">
             <tree string="Material Sheet lines"  create="false" editable="bottom" decoration-danger="po_created==True" decoration-success="production_created==True"  >
                   <field name="product_id"  readonly="1"/>
-                  <field name="picking_type_id"  attrs="{'invisible': [('type','!=','normal')],'readonly': ['|',('po_created','=',True),('production_created','=',True)]}"/>
-                  <field name="location_src_id"  attrs="{'invisible': [('type','!=','normal')],'readonly': ['|',('po_created','=',True),('production_created','=',True)]}"/>
-                  <field name="location_dest_id"  attrs="{'invisible': [('type','!=','normal')],'readonly': ['|',('po_created','=',True),('production_created','=',True)]}"/>
+                 <field name="category_id"  readonly="1" optional="show"/>
+                  <field name="source_product_id"  readonly="1"/>
+                  <field name="picking_type_id"  attrs="{'invisible': [('type','!=','normal')],'readonly': ['|',('po_created','=',True),('production_created','=',True)]}"  optional="show"/>
+                  <field name="location_src_id"  attrs="{'invisible': [('type','!=','normal')],'readonly': ['|',('po_created','=',True),('production_created','=',True)]}"  optional="show"/>
+                  <field name="location_dest_id"  attrs="{'invisible': [('type','!=','normal')],'readonly': ['|',('po_created','=',True),('production_created','=',True)]}"  optional="show"/>
                   <field name="type"   readonly="1"/>
                   <field name="quantity"   attrs="{'readonly': ['|',('po_created','=',True),('production_created','=',True)]}"/>
+                  <field name="weight"   attrs="{'readonly': ['|',('po_created','=',True),('production_created','=',True)]}"/>
                   <field name="production_quantity"   attrs="{'readonly': ['|',('po_created','=',True),('production_created','=',True)]}"/>
                   <field name="vendor_id"   attrs="{'readonly': ['|',('type','=','normal'),('po_created','=',True)]}"/>
                   <field name="po_created" invisible="1"/>
@@ -58,8 +61,11 @@
                             <field name="job_order_material_ids" >
                                 <tree string="Job Order BOM lines" editable="bottom" create="false" delete="false">
                                     <field name="product_id"/>
+                                    <field name="category_id"  readonly="1"/>
+                                    <field name="source_product_id"  readonly="1"/>
                                     <field name="type"/>
                                     <field name="quantity"/>
+                                    <field name="weight" />
                                     <field name="production_quantity"/>
                                     <field name="vendor_id"/>
                                     <field name="po_created" invisible="1"/>
