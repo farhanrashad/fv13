@@ -22,6 +22,21 @@ class JobOrder(models.Model):
             'view_mode': 'tree,form',
         }
     
+    def action_confirm(self):
+        res = super(JobOrder, self).action_confirm()
+        for line in self.sale_id.order_line:
+            for order_line in self.job_order_sale_lines:
+                if order_line.product_id.id == line.product_id.id:
+                    order_line.update({
+                        'unit_weight': line.weight
+                    })
+        return res
+    
+    
+    
+    
+    
+    
     
 #     def campaign_thread(self, from_date=None, to_date=None):
 #         try:
@@ -49,15 +64,35 @@ class JobOrder(models.Model):
         bom_product = []
         all_boms = []
         for sale in self.job_order_sale_lines:
-#             sale_product = []
             sale_product = sale.product_id.id
+            order_qty = sale.product_uom_qty
+            unit_weight = sale.unit_weight
+            yarn_qty = 0.0
+                
+            for rule in self.struct_id.rule_ids:
+                if rule.code=='HWP':
+                    yarn_qty = 1 + (rule.quantity_percentage/100)
+                
+            greige_qty = 0.0
+                
+            for rule in self.struct_id.rule_ids:
+                if rule.code=='DWP':
+                    greige_qty = 1 + (rule.quantity_percentage/100)
             product_bom = self.env['mrp.bom'].search([('product_id','=',sale.product_id.id)])
-       # SO  product bom     
+       # SO  product bom
+            variant_qty = 0.0
+                
+            for rule in self.struct_id.rule_ids:
+                if rule.code=='BGP':
+                    variant_qty = 1 + (rule.quantity_percentage/100)
+                
             bom_vals =   {
                      'job_order_id':  self.name,
                      'product_id': product_bom.product_id.id,
                      'type': product_bom.type,
                      'quantity':  product_bom.product_qty,
+                     'production_quantity': order_qty * variant_qty,
+                     'weight':  unit_weight * order_qty * variant_qty,
                      'source_product_id': sale_product,
                        }  
             bom_product.append(bom_vals)
@@ -70,6 +105,8 @@ class JobOrder(models.Model):
                          'product_id': component_level1.product_id.id,
                          'type': component_bom_level1_type.type,
                          'quantity':  component_level1.product_qty,
+                         'production_quantity': order_qty * variant_qty,
+                         'weight':  unit_weight * order_qty * variant_qty,
                          'source_product_id': sale_product,
                                }  
                 bom_product.append(bom_vals)
@@ -80,12 +117,14 @@ class JobOrder(models.Model):
                     for component_level2 in component_bom_level2.bom_line_ids:
                         product_list.append(component_level2.product_id.name)
                         component_bom_level2_type = self.env['mrp.bom'].search([('product_tmpl_id.name','=',component_level2.product_id.name)])
-                    
+                       
                         bom_vals =   {
                              'job_order_id':  self.name,
                              'product_id': component_level2.product_id.id,
                              'type': component_bom_level2_type.type,
                              'quantity':  component_level2.product_qty,
+                             'production_quantity': order_qty * variant_qty,
+                             'weight':   unit_weight * order_qty * variant_qty * greige_qty,
                              'source_product_id': sale_product,
                                }  
                         bom_product.append(bom_vals)
@@ -102,6 +141,8 @@ class JobOrder(models.Model):
                                      'product_id': component_level3.product_id.id,
                                      'type': component_bom_level3_type.type,
                                      'quantity':  component_level3.product_qty,
+                                     'production_quantity':  component_level3.product_qty * yarn_qty * unit_weight * order_qty * greige_qty,
+                                     'weight': unit_weight * order_qty * variant_qty * greige_qty,
                                      'source_product_id': sale_product,
                                        }  
                                 bom_product.append(bom_vals)
@@ -122,6 +163,8 @@ class JobOrder(models.Model):
                                              'product_id': component_level4.product_id.id,
                                              'type': component_bom_level4_type.type,
                                              'quantity':  component_level4.product_qty,
+                                             'production_quantity':  component_level4.product_qty * yarn_qty * unit_weight * order_qty * greige_qty,
+                                            'weight': unit_weight * order_qty * variant_qty * greige_qty,
                                              'source_product_id': sale_product,
                                            }  
                                         bom_product.append(bom_vals) 
@@ -139,6 +182,8 @@ class JobOrder(models.Model):
                                                      'product_id': component_level5.product_id.id,
                                                      'type': component_bom_level5_type.type,
                                                      'quantity':  component_level5.product_qty,
+                                                     'production_quantity':  component_level5.product_qty * yarn_qty * unit_weight * order_qty * greige_qty,
+                                                      'weight': unit_weight * order_qty * variant_qty * greige_qty,
                                                      'source_product_id': sale_product,
 
                                                        }  
@@ -155,6 +200,8 @@ class JobOrder(models.Model):
                                                              'product_id': component_level6.product_id.id,
                                                              'type': component_bom_level6_type.type,
                                                              'quantity':  component_level6.product_qty,
+                                                              'production_quantity':  component_level6.product_qty * yarn_qty * unit_weight * order_qty * greige_qty,
+                                                              'weight':  unit_weight * order_qty * greige_qty,
                                                              'source_product_id': sale_product,
                                                          }  
                                                         bom_product.append(bom_vals)
@@ -185,6 +232,8 @@ class JobOrder(models.Model):
                             'product_id': product['product_id'],
                             'type': product['type'],
                             'quantity': product['quantity'],
+                            'weight': product['weight'],
+                            'production_quantity': product['production_quantity'],  
                             'source_product_id': product['source_product_id']
                             })) 
             
@@ -261,8 +310,8 @@ class JobOrderBOMCompoent(models.Model):
         ('subcontract', 'Subcontracting')
           ], 'BoM Type',
         default='normal')
-    quantity = fields.Float(string='Quantity',digits=dp.get_precision('Product Unit of Measure'),default=1.0)
-    production_quantity = fields.Float(string='Production Quantity', store=False)
+    quantity = fields.Float(string='BOM Quantity',digits=dp.get_precision('Product Unit of Measure'),default=1.0)
+    production_quantity = fields.Float(string='Production Quantity')
     company_id = fields.Many2one('res.company', store=True, string='Company', readonly=False, default=_default_company,)
     location_src_id = fields.Many2one('stock.location', 'From', check_company=True, default=_default_src_location,)
     location_dest_id = fields.Many2one('stock.location', 'To', check_company=True, default=_default_dest_location,)

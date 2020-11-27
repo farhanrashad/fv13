@@ -34,7 +34,7 @@
                   <field name="location_src_id"  attrs="{'invisible': [('type','!=','normal')],'readonly': ['|',('po_created','=',True),('production_created','=',True)]}"  optional="hide"/>
                   <field name="location_dest_id"  attrs="{'invisible': [('type','!=','normal')],'readonly': ['|',('po_created','=',True),('production_created','=',True)]}"  optional="hide"/>
                   <field name="type"   readonly="1"/>
-                  <field name="quantity"   attrs="{'readonly': ['|',('po_created','=',True),('production_created','=',True)]}"/>
+                  <field name="quantity"   attrs="{'readonly': ['|',('po_created','=',True),('production_created','=',True)]}" optional="hide"/>
                   <field name="weight"   attrs="{'readonly': ['|',('po_created','=',True),('production_created','=',True)]}"/>
                   <field name="production_quantity"   attrs="{'readonly': ['|',('po_created','=',True),('production_created','=',True)]}"/>
                   <field name="vendor_id"   attrs="{'readonly': ['|',('type','=','normal'),('po_created','=',True)]}"/>
