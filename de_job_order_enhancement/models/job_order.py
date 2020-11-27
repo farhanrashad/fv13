@@ -204,6 +204,12 @@ class JobOrder(models.Model):
 
     
 
+    
+class JobOrderLine(models.Model):
+    _inherit = 'job.order.sale.line'
+    
+    
+    unit_weight = fields.Float(string='Unit Weight')
       
     
     
