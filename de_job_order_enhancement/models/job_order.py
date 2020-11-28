@@ -71,7 +71,7 @@ class JobOrder(models.Model):
                 
             for rule in self.struct_id.rule_ids:
                 if rule.code=='HWP':
-                    yarn_qty = 1 + (rule.quantity_percentage/100)
+                    yarn_qty = (1 + (rule.quantity_percentage/100))
                 
             greige_qty = 0.0
                 
@@ -141,8 +141,8 @@ class JobOrder(models.Model):
                                      'product_id': component_level3.product_id.id,
                                      'type': component_bom_level3_type.type,
                                      'quantity':  component_level3.product_qty,
-                                     'production_quantity':  component_level3.product_qty * yarn_qty * unit_weight * order_qty * greige_qty,
-                                     'weight': unit_weight * order_qty * variant_qty * greige_qty,
+                                     'production_quantity':  (component_level3.product_qty * yarn_qty * unit_weight * order_qty * variant_qty * greige_qty)/component_level3.product_id.uom_po_id.factor_inv,
+                                     'weight': component_level3.product_qty * yarn_qty * unit_weight * order_qty * variant_qty * greige_qty,
                                      'source_product_id': sale_product,
                                        }  
                                 bom_product.append(bom_vals)
@@ -163,8 +163,8 @@ class JobOrder(models.Model):
                                              'product_id': component_level4.product_id.id,
                                              'type': component_bom_level4_type.type,
                                              'quantity':  component_level4.product_qty,
-                                             'production_quantity':  component_level4.product_qty * yarn_qty * unit_weight * order_qty * greige_qty,
-                                            'weight': unit_weight * order_qty * variant_qty * greige_qty,
+                                             'production_quantity':  (component_level4.product_qty * yarn_qty *unit_weight * order_qty * variant_qty * greige_qty)/component_level4.product_id.uom_po_id.factor_inv,
+                                            'weight':component_level4.product_qty * yarn_qty * unit_weight * order_qty * variant_qty * greige_qty,
                                              'source_product_id': sale_product,
                                            }  
                                         bom_product.append(bom_vals) 
@@ -182,8 +182,8 @@ class JobOrder(models.Model):
                                                      'product_id': component_level5.product_id.id,
                                                      'type': component_bom_level5_type.type,
                                                      'quantity':  component_level5.product_qty,
-                                                     'production_quantity':  component_level5.product_qty * yarn_qty * unit_weight * order_qty * greige_qty,
-                                                      'weight': unit_weight * order_qty * variant_qty * greige_qty,
+                                                     'production_quantity':  (component_level4.product_qty * yarn_qty * unit_weight * order_qty * variant_qty * greige_qty)/component_level4.product_id.uom_po_id.factor_inv,
+                                            'weight':component_level4.product_qty * yarn_qty * unit_weight * order_qty * variant_qty * greige_qty,
                                                      'source_product_id': sale_product,
 
                                                        }  
@@ -200,8 +200,8 @@ class JobOrder(models.Model):
                                                              'product_id': component_level6.product_id.id,
                                                              'type': component_bom_level6_type.type,
                                                              'quantity':  component_level6.product_qty,
-                                                              'production_quantity':  component_level6.product_qty * yarn_qty * unit_weight * order_qty * greige_qty,
-                                                              'weight':  unit_weight * order_qty * greige_qty,
+                                                             'production_quantity':  (component_level4.product_qty * yarn_qty * unit_weight * order_qty * variant_qty * greige_qty)/component_level4.product_id.uom_po_id.factor_inv,
+                                                             'weight':component_level4.product_qty * yarn_qty * unit_weight * order_qty * variant_qty * greige_qty,
                                                              'source_product_id': sale_product,
                                                          }  
                                                         bom_product.append(bom_vals)
@@ -349,7 +349,7 @@ class JobOrderBOMCompoent(models.Model):
                 production_vals ={
                         'product_id': line.product_id.id,
                         'product_uom_id': line.product_id.uom_id.id,
-                        'product_qty': line.quantity,
+                        'product_qty': line.production_quantity,
                         'origin': self.job_order_id.name, 
                         'job_order_id': self.job_order_id.id, 
                         'bom_id': line_bom[0].id,
@@ -386,7 +386,7 @@ class JobOrderBOMCompoent(models.Model):
                         line_vals = {
                             'product_id': seller_line.product_id.id,
                             'name': seller_line.product_id.name,
-                            'product_uom_qty': seller_line.quantity,
+                            'product_uom_qty': seller_line.production_quantity,
                             'price_unit': seller_line.product_id.standard_price,
                             'date_planned': fields.Date.today(),
                             'product_uom': seller_line.product_id.uom_po_id.id,
