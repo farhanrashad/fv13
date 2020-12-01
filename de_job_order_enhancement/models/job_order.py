@@ -26,9 +26,31 @@ class JobOrder(models.Model):
         res = super(JobOrder, self).action_confirm()
         for line in self.sale_id.order_line:
             for order_line in self.job_order_sale_lines:
+                greige_bom = []
+                product_variant_bom = self.env['mrp.bom'].search([('product_id','=',order_line.product_id.id)])
+                product_tmpl_bom = self.env['mrp.bom'].search([('product_tmpl_id.name','=',order_line.product_id.name)])
+                
+       # SO  product bom
+                if product_variant_bom:
+                
+                    for component_level1 in product_variant_bom.bom_line_ids:   
+                # Level 1         
+                       
+                        component_bom_level2 = self.env['mrp.bom'].search([('product_tmpl_id.name','=',component_level1.product_id.name)])
+                 # Level 2       
+                        if component_bom_level2:
+                            for component_level2 in component_bom_level2.bom_line_ids:
+                                component_bom_level3 = self.env['mrp.bom'].search([('product_tmpl_id.name','=',component_level2.product_id.name)])
+                 # Level 2       
+                                if component_bom_level3:
+                                    for component_level3 in component_bom_level3.bom_line_ids:
+                                        greige_bom.append(component_level3.product_id.id)
+                               
+
                 if order_line.product_id.id == line.product_id.id:
                     order_line.update({
-                        'unit_weight': line.weight
+                        'unit_weight': line.weight,
+                        'greige_bom_ids': greige_bom
                     })
         return res
     
@@ -78,155 +100,301 @@ class JobOrder(models.Model):
             for rule in self.struct_id.rule_ids:
                 if rule.code=='DWP':
                     greige_qty = 1 + (rule.quantity_percentage/100)
-            product_bom = self.env['mrp.bom'].search([('product_id','=',sale.product_id.id)])
+            product_variant_bom = self.env['mrp.bom'].search([('product_id','=',sale.product_id.id)])
+            product_tmpl_bom = self.env['mrp.bom'].search([('product_tmpl_id.name','=',sale.product_id.name)])
+                
        # SO  product bom
             variant_qty = 0.0
                 
             for rule in self.struct_id.rule_ids:
                 if rule.code=='BGP':
                     variant_qty = 1 + (rule.quantity_percentage/100)
-                
-            bom_vals =   {
-                     'job_order_id':  self.name,
-                     'product_id': product_bom.product_id.id,
-                     'type': product_bom.type,
-                     'quantity':  product_bom.product_qty,
-                     'production_quantity': order_qty * variant_qty,
-                     'weight':  unit_weight * order_qty * variant_qty,
-                     'source_product_id': sale_product,
-                       }  
-            bom_product.append(bom_vals)
-            for component_level1 in product_bom.bom_line_ids:   
-        # Level 1         
-                product_list.append(component_level1.product_id.name)
-                component_bom_level1_type = self.env['mrp.bom'].search([('product_tmpl_id.name','=',component_level1.product_id.name)])  
+            if product_variant_bom:
                 bom_vals =   {
                          'job_order_id':  self.name,
-                         'product_id': component_level1.product_id.id,
-                         'type': component_bom_level1_type.type,
-                         'quantity':  component_level1.product_qty,
+                         'product_id': product_variant_bom.product_id.id,
+                         'type': product_variant_bom.type,
+                         'quantity':  product_variant_bom.product_qty,
                          'production_quantity': order_qty * variant_qty,
                          'weight':  unit_weight * order_qty * variant_qty,
                          'source_product_id': sale_product,
-                               }  
+                           }  
                 bom_product.append(bom_vals)
-               
-                component_bom_level2 = self.env['mrp.bom'].search([('product_tmpl_id.name','=',component_level1.product_id.name)])
-         # Level 2       
-                if component_bom_level2:
-                    for component_level2 in component_bom_level2.bom_line_ids:
-                        product_list.append(component_level2.product_id.name)
-                        component_bom_level2_type = self.env['mrp.bom'].search([('product_tmpl_id.name','=',component_level2.product_id.name)])
-                       
-                        bom_vals =   {
+                for component_level1 in product_variant_bom.bom_line_ids:   
+            # Level 1         
+                    product_list.append(component_level1.product_id.name)
+                    component_bom_level1_type = self.env['mrp.bom'].search([('product_tmpl_id.name','=',component_level1.product_id.name)]) 
+                    component_bom_level1_type[0]
+                    if component_bom_level1_type.categ_id.id == 10:
+                       component_production_quantity =  order_qty * variant_qty
+                       component_weight = unit_weight * order_qty * variant_qty
+                    bom_vals =   {
                              'job_order_id':  self.name,
-                             'product_id': component_level2.product_id.id,
-                             'type': component_bom_level2_type.type,
-                             'quantity':  component_level2.product_qty,
-                             'production_quantity': order_qty * variant_qty,
-                             'weight':   unit_weight * order_qty * variant_qty * greige_qty,
+                             'product_id': component_level1.product_id.id,
+                             'type': component_bom_level1_type[0].type,
+                             'quantity':  component_level1.product_qty,
+                             'production_quantity': component_production_quantity,
+                             'weight':  component_weight,
                              'source_product_id': sale_product,
-                               }  
-                        bom_product.append(bom_vals)
-                      
-                            
-                        component_bom_level3 = self.env['mrp.bom'].search([('product_tmpl_id.name','=',component_level2.product_id.name)])
-         # Level 3       
-                        if component_bom_level3:
-                            for component_level3 in component_bom_level3.bom_line_ids:
-                                product_list.append(component_level3.product_id.name)
-                                component_bom_level3_type = self.env['mrp.bom'].search([('product_tmpl_id.name','=',component_level3.product_id.name)])
-                                bom_vals =   {
-                                     'job_order_id':  self.name,
-                                     'product_id': component_level3.product_id.id,
-                                     'type': component_bom_level3_type.type,
-                                     'quantity':  component_level3.product_qty,
-                                     'production_quantity':  (component_level3.product_qty * yarn_qty * unit_weight * order_qty * variant_qty * greige_qty)/component_level3.product_id.uom_po_id.factor_inv,
-                                     'weight': component_level3.product_qty * yarn_qty * unit_weight * order_qty * variant_qty * greige_qty,
-                                     'source_product_id': sale_product,
-                                       }  
-                                bom_product.append(bom_vals)
-                                
-                                
-                                component_bom_level4 = self.env['mrp.bom'].search([('product_tmpl_id.name','=',component_level3.product_id.name)])
-                         # Level 4       
-                                
-                                if component_bom_level4:
-                                    for component_level4 in component_bom_level4.bom_line_ids:
-                                        product_list.append(component_level4.product_id.name)
-                                        
-                                        component_bom_level4_type = self.env['mrp.bom'].search([('product_tmpl_id.name','=',component_level4.product_id.name)])
-                                        
-                                       
-                                        bom_vals =   {
-                                             'job_order_id':  self.name,
-                                             'product_id': component_level4.product_id.id,
-                                             'type': component_bom_level4_type.type,
-                                             'quantity':  component_level4.product_qty,
-                                             'production_quantity':  (component_level4.product_qty * yarn_qty *unit_weight * order_qty * variant_qty * greige_qty)/component_level4.product_id.uom_po_id.factor_inv,
-                                            'weight':component_level4.product_qty * yarn_qty * unit_weight * order_qty * variant_qty * greige_qty,
-                                             'source_product_id': sale_product,
+                                   }  
+                    bom_product.append(bom_vals)
+
+                    component_bom_level2 = self.env['mrp.bom'].search([('product_tmpl_id.name','=',component_level1.product_id.name)])
+             # Level 2       
+                    if component_bom_level2:
+                        for component_level2 in component_bom_level2.bom_line_ids:
+                            product_list.append(component_level2.product_id.name)
+                            component_bom_level2_type = self.env['mrp.bom'].search([('product_tmpl_id.name','=',component_level2.product_id.name)])
+
+                            bom_vals =   {
+                                 'job_order_id':  self.name,
+                                 'product_id': component_level2.product_id.id,
+                                 'type': component_bom_level2_type[0].type,
+                                 'quantity':  component_level2.product_qty,
+                                 'production_quantity': order_qty * variant_qty,
+                                 'weight':   unit_weight * order_qty * variant_qty * greige_qty,
+                                 'source_product_id': sale_product,
+                                   }  
+                            bom_product.append(bom_vals)
+
+
+                            component_bom_level3 = self.env['mrp.bom'].search([('product_tmpl_id.name','=',component_level2.product_id.name)])
+             # Level 3 
+#======================================           ============================================
+             # Greige BOM
+                            if component_bom_level3:
+                                for component_level3 in component_bom_level3[0].bom_line_ids:
+                                    product_list.append(component_level3.product_id.name)
+                                    component_bom_level3_type = self.env['mrp.bom'].search([('product_tmpl_id.name','=',component_level3.product_id.name)])
+                                    bom_vals =   {
+                                         'job_order_id':  self.name,
+                                         'product_id': component_level3.product_id.id,
+                                         'type': component_bom_level3_type.type,
+                                         'quantity':  component_level3.product_qty,
+                                         'production_quantity':  (component_level3.product_qty * yarn_qty * unit_weight * order_qty * variant_qty * greige_qty)/component_level3.product_id.uom_po_id.factor_inv,
+                                         'weight': component_level3.product_qty * yarn_qty * unit_weight * order_qty * variant_qty * greige_qty,
+                                         'source_product_id': sale_product,
                                            }  
-                                        bom_product.append(bom_vals) 
-                                       
-                         # Level 5       
-                                        component_bom_level5 = self.env['mrp.bom'].search([('product_tmpl_id.name','=',component_level4.product_id.name)])
-                                        if component_bom_level5:
-                                            for component_level5 in component_bom_level5.bom_line_ids:
-                                                product_list.append(component_level5.product_id.name)
-                                                component_bom_level5_type = self.env['mrp.bom'].search([('product_tmpl_id.name','=',component_level5.product_id.name)])
-                                               
-                                                    
-                                                bom_vals =   {
-                                                     'job_order_id':  self.name,
-                                                     'product_id': component_level5.product_id.id,
-                                                     'type': component_bom_level5_type.type,
-                                                     'quantity':  component_level5.product_qty,
-                                                     'production_quantity':  (component_level4.product_qty * yarn_qty * unit_weight * order_qty * variant_qty * greige_qty)/component_level4.product_id.uom_po_id.factor_inv,
-                                            'weight':component_level4.product_qty * yarn_qty * unit_weight * order_qty * variant_qty * greige_qty,
-                                                     'source_product_id': sale_product,
+                                    bom_product.append(bom_vals)
 
-                                                       }  
-                                                bom_product.append(bom_vals) 
 
-                           # Level 6       
-                                                component_bom_level6 = self.env['mrp.bom'].search([('product_tmpl_id.name','=',component_level5.product_id.name)])
-                                                if component_bom_level6:
-                                                    for component_level6 in component_bom_level6.bom_line_ids:
-                                                        product_list.append(component_level6.product_id.name)
-                                                        component_bom_level6_type = self.env['mrp.bom'].search([('product_tmpl_id.name','=',component_level6.product_id.name)])
-                                                        bom_vals =   {
-                                                             'job_order_id':  self.name,
-                                                             'product_id': component_level6.product_id.id,
-                                                             'type': component_bom_level6_type.type,
-                                                             'quantity':  component_level6.product_qty,
-                                                             'production_quantity':  (component_level4.product_qty * yarn_qty * unit_weight * order_qty * variant_qty * greige_qty)/component_level4.product_id.uom_po_id.factor_inv,
-                                                             'weight':component_level4.product_qty * yarn_qty * unit_weight * order_qty * variant_qty * greige_qty,
-                                                             'source_product_id': sale_product,
-                                                         }  
-                                                        bom_product.append(bom_vals)
-                                                        
-                                # Level 7       
-                                                        component_bom_level7 = self.env['mrp.bom'].search([('product_tmpl_id.name','=',component_level6.product_id.name)])
-                                                        if component_bom_level7:
-                                                            for component_level7 in component_bom_level7.bom_line_ids:
-                                                                product_list.append(component_level7.product_id.name)
-                                                                component_bom_level7_type = self.env['mrp.bom'].search([('product_tmpl_id.name','=',component_level7.product_id.name)])
-                                                                bom_vals =   {
-                                                                    'job_order_id':  self.name,
-                                                                    'product_id': component_level7.product_id.id,
-                                                                    'type': component_bom_level7_type.type,
-                                                                    'quantity':  component_level7.product_qty,
-                                                                    'source_product_id': sale_product,
-                                                                       }  
-                                                                bom_product.append(bom_vals)
-                                                            
+                                    component_bom_level4 = self.env['mrp.bom'].search([('product_tmpl_id.name','=',component_level3.product_id.name)])
+                             # Level 4       
+
+                                    if component_bom_level4:
+                                        for component_level4 in component_bom_level4.bom_line_ids:
+                                            product_list.append(component_level4.product_id.name)
+
+                                            component_bom_level4_type = self.env['mrp.bom'].search([('product_tmpl_id.name','=',component_level4.product_id.name)])
+
+
+                                            bom_vals =   {
+                                                 'job_order_id':  self.name,
+                                                 'product_id': component_level4.product_id.id,
+                                                 'type': component_bom_level4_type.type,
+                                                 'quantity':  component_level4.product_qty,
+                                                 'production_quantity':  (component_level4.product_qty * yarn_qty *unit_weight * order_qty * variant_qty * greige_qty)/component_level4.product_id.uom_po_id.factor_inv,
+                                                'weight':component_level4.product_qty * yarn_qty * unit_weight * order_qty * variant_qty * greige_qty,
+                                                 'source_product_id': sale_product,
+                                               }  
+                                            bom_product.append(bom_vals) 
+
+                             # Level 5       
+                                            component_bom_level5 = self.env['mrp.bom'].search([('product_tmpl_id.name','=',component_level4.product_id.name)])
+                                            if component_bom_level5:
+                                                for component_level5 in component_bom_level5.bom_line_ids:
+                                                    product_list.append(component_level5.product_id.name)
+                                                    component_bom_level5_type = self.env['mrp.bom'].search([('product_tmpl_id.name','=',component_level5.product_id.name)])
+
+
+                                                    bom_vals =   {
+                                                         'job_order_id':  self.name,
+                                                         'product_id': component_level5.product_id.id,
+                                                         'type': component_bom_level5_type.type,
+                                                         'quantity':  component_level5.product_qty,
+                                                         'production_quantity':  (component_level4.product_qty * yarn_qty * unit_weight * order_qty * variant_qty * greige_qty)/component_level4.product_id.uom_po_id.factor_inv,
+                                                'weight':component_level4.product_qty * yarn_qty * unit_weight * order_qty * variant_qty * greige_qty,
+                                                         'source_product_id': sale_product,
+
+                                                           }  
+                                                    bom_product.append(bom_vals) 
+
+                               # Level 6       
+                                                    component_bom_level6 = self.env['mrp.bom'].search([('product_tmpl_id.name','=',component_level5.product_id.name)])
+                                                    if component_bom_level6:
+                                                        for component_level6 in component_bom_level6.bom_line_ids:
+                                                            product_list.append(component_level6.product_id.name)
+                                                            component_bom_level6_type = self.env['mrp.bom'].search([('product_tmpl_id.name','=',component_level6.product_id.name)])
+                                                            bom_vals =   {
+                                                                 'job_order_id':  self.name,
+                                                                 'product_id': component_level6.product_id.id,
+                                                                 'type': component_bom_level6_type.type,
+                                                                 'quantity':  component_level6.product_qty,
+                                                                 'production_quantity':  (component_level4.product_qty * yarn_qty * unit_weight * order_qty * variant_qty * greige_qty)/component_level4.product_id.uom_po_id.factor_inv,
+                                                                 'weight':component_level4.product_qty * yarn_qty * unit_weight * order_qty * variant_qty * greige_qty,
+                                                                 'source_product_id': sale_product,
+                                                             }  
+                                                            bom_product.append(bom_vals)
+
+                                    # Level 7       
+                                                            component_bom_level7 = self.env['mrp.bom'].search([('product_tmpl_id.name','=',component_level6.product_id.name)])
+                                                            if component_bom_level7:
+                                                                for component_level7 in component_bom_level7.bom_line_ids:
+                                                                    product_list.append(component_level7.product_id.name)
+                                                                    component_bom_level7_type = self.env['mrp.bom'].search([('product_tmpl_id.name','=',component_level7.product_id.name)])
+                                                                    bom_vals =   {
+                                                                        'job_order_id':  self.name,
+                                                                        'product_id': component_level7.product_id.id,
+                                                                        'type': component_bom_level7_type.type,
+                                                                        'quantity':  component_level7.product_qty,
+                                                                        'source_product_id': sale_product,
+                                                                           }  
+                                                                    bom_product.append(bom_vals)
+
                                                                     
                                                                 
-                                                                
+            else:
+                bom_vals =   {
+                         'job_order_id':  self.name,
+                         'product_id': sale_product,
+                         'type': product_tmpl_bom.type,
+                         'quantity':  product_tmpl_bom.product_qty,
+                         'production_quantity': order_qty * variant_qty,
+                         'weight':  unit_weight * order_qty * variant_qty,
+                         'source_product_id': sale_product,
+                           }  
+                bom_product.append(bom_vals)
+                for component_level1 in product_tmpl_bom.bom_line_ids:   
+            # Level 1         
+                    product_list.append(component_level1.product_id.name)
+                    component_bom_level1_type = self.env['mrp.bom'].search([('product_tmpl_id.name','=',component_level1.product_id.name)])  
+                    bom_vals =   {
+                             'job_order_id':  self.name,
+                             'product_id': component_level1.product_id.id,
+                             'type': component_bom_level1_type[0].type,
+                             'quantity':  component_level1.product_qty,
+                             'production_quantity': order_qty * variant_qty,
+                             'weight':  unit_weight * order_qty * variant_qty,
+                             'source_product_id': sale_product,
+                                   }  
+                    bom_product.append(bom_vals)
+
+                    component_bom_level2 = self.env['mrp.bom'].search([('product_tmpl_id.name','=',component_level1.product_id.name)])
+             # Level 2       
+                    if component_bom_level2:
+                        for component_level2 in component_bom_level2[0].bom_line_ids:
+                            product_list.append(component_level2.product_id.name)
+                            component_bom_level2_type = self.env['mrp.bom'].search([('product_tmpl_id.name','=',component_level2.product_id.name)])
+
+                            bom_vals =   {
+                                 'job_order_id':  self.name,
+                                 'product_id': component_level2.product_id.id,
+                                 'type': component_bom_level2_type.type,
+                                 'quantity':  component_level2.product_qty,
+                                 'production_quantity':  (component_level2.product_qty * unit_weight * order_qty * variant_qty)/component_level2.product_id.uom_po_id.factor_inv,
+                                 'weight': component_level2.product_qty * unit_weight * order_qty * variant_qty,
+                                 'source_product_id': sale_product,
+                                   }  
+                            bom_product.append(bom_vals)
+
+
+                            component_bom_level3 = self.env['mrp.bom'].search([('product_tmpl_id.name','=',component_level2.product_id.name)])
+             # Level 3       
+                            if component_bom_level3:
+                                for component_level3 in component_bom_level3[0].bom_line_ids:
+                                    product_list.append(component_level3.product_id.name)
+                                    component_bom_level3_type = self.env['mrp.bom'].search([('product_tmpl_id.name','=',component_level3.product_id.name)])
+                                    bom_vals =   {
+                                         'job_order_id':  self.name,
+                                         'product_id': component_level3.product_id.id,
+                                         'type': component_bom_level3_type.type,
+                                         'quantity':  component_level3.product_qty,
+                                         'production_quantity':  (component_level3.product_qty * yarn_qty * unit_weight * order_qty * variant_qty * greige_qty)/component_level3.product_id.uom_po_id.factor_inv,
+                                         'weight': component_level3.product_qty * yarn_qty * unit_weight * order_qty * variant_qty * greige_qty,
+                                         'source_product_id': sale_product,
+                                           }  
+                                    bom_product.append(bom_vals)
+
+
+                                    component_bom_level4 = self.env['mrp.bom'].search([('product_tmpl_id.name','=',component_level3.product_id.name)])
+                             # Level 4       
+
+                                    if component_bom_level4:
+                                        for component_level4 in component_bom_level4.bom_line_ids:
+                                            product_list.append(component_level4.product_id.name)
+
+                                            component_bom_level4_type = self.env['mrp.bom'].search([('product_tmpl_id.name','=',component_level4.product_id.name)])
+
+
+                                            bom_vals =   {
+                                                 'job_order_id':  self.name,
+                                                 'product_id': component_level4.product_id.id,
+                                                 'type': component_bom_level4_type.type,
+                                                 'quantity':  component_level4.product_qty,
+                                                 'production_quantity':  (component_level4.product_qty * yarn_qty *unit_weight * order_qty * variant_qty * greige_qty)/component_level4.product_id.uom_po_id.factor_inv,
+                                                'weight':component_level4.product_qty * yarn_qty * unit_weight * order_qty * variant_qty * greige_qty,
+                                                 'source_product_id': sale_product,
+                                               }  
+                                            bom_product.append(bom_vals) 
+
+                             # Level 5       
+                                            component_bom_level5 = self.env['mrp.bom'].search([('product_tmpl_id.name','=',component_level4.product_id.name)])
+                                            if component_bom_level5:
+                                                for component_level5 in component_bom_level5.bom_line_ids:
+                                                    product_list.append(component_level5.product_id.name)
+                                                    component_bom_level5_type = self.env['mrp.bom'].search([('product_tmpl_id.name','=',component_level5.product_id.name)])
+
+
+                                                    bom_vals =   {
+                                                         'job_order_id':  self.name,
+                                                         'product_id': component_level5.product_id.id,
+                                                         'type': component_bom_level5_type.type,
+                                                         'quantity':  component_level5.product_qty,
+                                                         'production_quantity':  (component_level4.product_qty * yarn_qty * unit_weight * order_qty * variant_qty * greige_qty)/component_level4.product_id.uom_po_id.factor_inv,
+                                                'weight':component_level4.product_qty * yarn_qty * unit_weight * order_qty * variant_qty * greige_qty,
+                                                         'source_product_id': sale_product,
+
+                                                           }  
+                                                    bom_product.append(bom_vals) 
+
+                               # Level 6       
+                                                    component_bom_level6 = self.env['mrp.bom'].search([('product_tmpl_id.name','=',component_level5.product_id.name)])
+                                                    if component_bom_level6:
+                                                        for component_level6 in component_bom_level6.bom_line_ids:
+                                                            product_list.append(component_level6.product_id.name)
+                                                            component_bom_level6_type = self.env['mrp.bom'].search([('product_tmpl_id.name','=',component_level6.product_id.name)])
+                                                            bom_vals =   {
+                                                                 'job_order_id':  self.name,
+                                                                 'product_id': component_level6.product_id.id,
+                                                                 'type': component_bom_level6_type.type,
+                                                                 'quantity':  component_level6.product_qty,
+                                                                 'production_quantity':  (component_level4.product_qty * yarn_qty * unit_weight * order_qty * variant_qty * greige_qty)/component_level4.product_id.uom_po_id.factor_inv,
+                                                                 'weight':component_level4.product_qty * yarn_qty * unit_weight * order_qty * variant_qty * greige_qty,
+                                                                 'source_product_id': sale_product,
+                                                             }  
+                                                            bom_product.append(bom_vals)
+
+                                    # Level 7       
+                                                            component_bom_level7 = self.env['mrp.bom'].search([('product_tmpl_id.name','=',component_level6.product_id.name)])
+                                                            if component_bom_level7:
+                                                                for component_level7 in component_bom_level7.bom_line_ids:
+                                                                    product_list.append(component_level7.product_id.name)
+                                                                    component_bom_level7_type = self.env['mrp.bom'].search([('product_tmpl_id.name','=',component_level7.product_id.name)])
+                                                                    bom_vals =   {
+                                                                        'job_order_id':  self.name,
+                                                                        'product_id': component_level7.product_id.id,
+                                                                        'type': component_bom_level7_type.type,
+                                                                        'quantity':  component_level7.product_qty,
+                                                                        'source_product_id': sale_product,
+                                                                           }  
+                                                                    bom_product.append(bom_vals)
+                
 
             
         for product in bom_product:
+#             for prod in  bom_product:  
+#                 if product['product_id'] == prod['product_id']:
+                    
             all_boms.append((0,0,{
                             'job_order_id':  product['job_order_id'],
                             'product_id': product['product_id'],
@@ -244,10 +412,12 @@ class JobOrder(models.Model):
             for vendor in product_values.seller_ids:
                 line_product.append(vendor.name.id)
             if product.type != 'normal':
-               product.update({
-                   'vendor_id': line_product[0],
-#                    'source_product_id': product.product_id.id
-               }) 
+                if line_product == []:
+                    raise UserError(_('Please Select Vendor on Product Form:' + ' ' + str(product.product_id.name)))
+                product.update({
+                       'vendor_id': line_product[0],
+    #                    'source_product_id': product.product_id.id
+                   }) 
                 
         return res
 
@@ -259,7 +429,8 @@ class JobOrderLine(models.Model):
     
     
     unit_weight = fields.Float(string='Unit Weight')
-      
+    bom_ids = fields.Many2one('mrp.bom', string="Greige BOM")
+    greige_bom_ids = fields.Many2many('mrp.bom', string="Greige BOM")
     
     
     
@@ -299,6 +470,7 @@ class JobOrderBOMCompoent(models.Model):
     job_order_id = fields.Many2one('job.order', string='Order Reference', index=True, required=True, ondelete='cascade')
     vendor_id = fields.Many2one('res.partner', string='Vendor', index=True)
     po_created = fields.Boolean(string="PO Created")
+    is_duplicate = fields.Boolean(string="Is Duplicate")
     production_created = fields.Boolean(string="MO Created")
     product_id = fields.Many2one('product.product', string='Product',readonly=True)
     category_id = fields.Many2one(related='product_id.categ_id')
@@ -330,26 +502,66 @@ class JobOrderBOMCompoent(models.Model):
         
         
     def action_generate_production_order(self):
+        product_uniq_list = []
         for line in self:
+            production_qty = 0.0
+            production_weight = 0.0
+            product_count = 0
             if line.production_created == False and line.type == 'normal':
+                for production_line in self:
+                    if production_line.product_id.id == line.product_id.id:
+                        production_qty = production_qty + line.production_quantity
+                        production_weight = production_weight + line.weight
+                        product_count = product_count + 1
+                if  product_count >= 2:           
+                    line.update({
+                            'is_duplicate': True
+                            })
+                if line.is_duplicate == True:   
+                    product_uniq_list.append(line.product_id.id)        
+                        
+                bom_qty = 0.0
                 line_bom = self.env['mrp.bom'].search([('product_tmpl_id.name','=',line.product_id.name)])
-                for bom in line_bom:
-                    line__bom_vals = []
-                    for component in bom.bom_line_ids:
-                        line__bom_vals.append((0,0, {
-                                'product_id': component.product_id.id,
-                                'name': component.product_id.name,
-                                'product_uom': component.product_id.uom_po_id.id,
-                                'product_uom_qty': component.product_qty,
-                                'date': fields.Date.today(),
-                                'date_expected': fields.Date.today(),
-                                'location_id': line.location_src_id.id,
-                                'location_dest_id': line.location_dest_id.id,
-                        }))
+                variant_line_bom = self.env['mrp.bom'].search([('product_id.name','=',line.product_id.name)])
+                if line_bom:
+                    for bom in line_bom:
+                        line__bom_vals = []
+                        for component in bom.bom_line_ids:
+
+                            line__bom_vals.append((0,0, {
+                                    'product_id': component.product_id.id,
+                                    'name': component.product_id.name,
+                                    'product_uom': component.product_id.uom_po_id.id,
+                                    'product_uom_qty': component.product_qty * production_qty,
+                                    'total_weight': component.product_qty * production_weight, 
+                                    'date': fields.Date.today(),
+                                    'date_expected': fields.Date.today(),
+                                    'location_id': line.location_src_id.id,
+                                    'location_dest_id': line.location_dest_id.id,
+                            }))
+                else:
+                    for bom in line_bom:
+                        line__bom_vals = []
+                        for component in bom.bom_line_ids:
+
+                            line__bom_vals.append((0,0, {
+                                    'product_id': component.product_id.id,
+                                    'name': component.product_id.name,
+                                    'product_uom': component.product_id.uom_po_id.id,
+                                    'product_uom_qty': component.product_qty * production_qty,
+                                    'total_weight': component.product_qty * production_weight, 
+                                    'date': fields.Date.today(),
+                                    'date_expected': fields.Date.today(),
+                                    'location_id': line.location_src_id.id,
+                                    'location_dest_id': line.location_dest_id.id,
+                            }))
+                    
+                            
                 production_vals ={
                         'product_id': line.product_id.id,
                         'product_uom_id': line.product_id.uom_id.id,
-                        'product_qty': line.production_quantity,
+                        'product_qty': production_qty,
+                        'production_weight': production_weight, 
                         'origin': self.job_order_id.name, 
                         'job_order_id': self.job_order_id.id, 
                         'bom_id': line_bom[0].id,
@@ -379,19 +591,60 @@ class JobOrderBOMCompoent(models.Model):
                 pass
         list = set(vendor_list)
         for vendor in list:
-            product = []
+            product_list = []
+            product_uniq_list = []
             for seller_line in self:
+                product_quantity = 0.0
+                weight_total = 0.0
+                product_count = 0
+                product_uom = 0
+                product_id = 0
+                price = 0
+                seller_product = seller_line.product_id.id
                 if vendor == seller_line.vendor_id:
-                    if seller_line.po_created == False:
-                        line_vals = {
-                            'product_id': seller_line.product_id.id,
-                            'name': seller_line.product_id.name,
-                            'product_uom_qty': seller_line.production_quantity,
-                            'price_unit': seller_line.product_id.standard_price,
-                            'date_planned': fields.Date.today(),
-                            'product_uom': seller_line.product_id.uom_po_id.id,
-                        }
-                        product.append(line_vals)
+                    if seller_line.po_created == False:                       
+                        for product_line in self:
+                            if product_line.po_created == False:
+                                if product_line.product_id.id == seller_product:
+                                    product_quantity = product_quantity + product_line.production_quantity
+                                    weight_total = weight_total + product_line.weight
+                                    product_count = product_count + 1
+
+                        if  product_count >= 2:           
+                            seller_line.update({
+                                'is_duplicate': True
+                            })
+                        if seller_line.is_duplicate == True:   
+                            product_uniq_list.append(seller_line.product_id.id)
+            
+                                    
+                        if seller_line.is_duplicate == False:
+                            line_vals = {
+                                'product_id': seller_line.product_id.id,
+                                'name': seller_line.product_id.name,
+                                'product_uom_qty': product_quantity,
+                                'price_unit': seller_line.product_id.standard_price,
+                                'total_weight': weight_total, 
+                                'date_planned': fields.Date.today(),
+                                'product_uom': seller_line.product_id.uom_po_id.id,
+                            }
+                            product_list.append(line_vals)
+
+            uniq_product = set(product_uniq_list)
+            for uniq_product in uniq_product:
+                produt_uniq = self.env['product.product'].search([('id','=',uniq_product)])
+                line_vals = {
+                             'product_id': produt_uniq.id,
+                             'name': produt_uniq.name,
+                             'product_uom_qty': product_quantity,
+                             'price_unit': produt_uniq.standard_price,
+                             'total_weight': weight_total, 
+                             'date_planned': fields.Date.today(),
+                             'product_uom': produt_uniq.uom_po_id.id,
+                                }
+                product_list.append(line_vals)  
+            
+    
             vals = {
                   'partner_id': vendor.id,
                   'date_order': fields.Date.today(),
@@ -399,13 +652,14 @@ class JobOrderBOMCompoent(models.Model):
                   'origin': self.job_order_id.name,
                     }
             order = self.env['purchase.order'].create(vals)
-            for prod in product:
+            for prod in product_list:
                 order_line = {
                        'order_id': order.id,
                        'product_id': prod['product_id'],
                        'name': prod['name'],
                        'product_qty': prod['product_uom_qty'],
                        'price_unit': prod['price_unit'],
+                       'total_weight': prod['total_weight'],
                        'date_planned': fields.Date.today(),
                        'product_uom': prod['product_uom'],
                         }
