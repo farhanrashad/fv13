@@ -339,9 +339,9 @@ class JobOrder(models.Model):
                                     if component_level3.product_id.categ_id.id == 14:
                                         component_production_quantityt3 =  (component_level3.product_qty * yarn_qty * unit_weight * order_qty * variant_qty * greige_qty)/component_level3.product_id.uom_po_id.factor_inv
                                         component_weightt3 = component_level3.product_qty * yarn_qty * unit_weight * order_qty * variant_qty * greige_qty
-                                    elif component_level3.product_id.categ_id.id == 12:
-                                        component_production_quantityt3 =   (component_level3.product_qty * yarn_qty * unit_weight * order_qty * variant_qty * greige_qty)/component_level3.product_id.uom_po_id.factor_inv
-                                        component_weightt3 = component_level3.product_qty * yarn_qty * unit_weight * order_qty * variant_qty * greige_qty  
+                                    elif component_level3.product_id.categ_id.id == 13:
+                                        component_production_quantityt3 =   (component_level3.product_qty * unit_weight * order_qty * variant_qty * greige_qty * sized_yarn_qty)/component_level3.product_id.uom_po_id.factor_inv
+                                        component_weightt3 = component_level3.product_qty *  unit_weight * order_qty * variant_qty * greige_qty * sized_yarn_qty   
                                     bom_vals =   {
                                          'job_order_id':  self.name,
                                          'product_id': component_level3.product_id.id,
@@ -369,8 +369,8 @@ class JobOrder(models.Model):
                                                  'product_id': component_level4.product_id.id,
                                                  'type': component_bom_level4_type.type,
                                                  'quantity':  component_level4.product_qty,
-                                                 'production_quantity':  (component_level4.product_qty * yarn_qty *unit_weight * order_qty * variant_qty * greige_qty)/component_level4.product_id.uom_po_id.factor_inv,
-                                                'weight':component_level4.product_qty * yarn_qty * unit_weight * order_qty * variant_qty * greige_qty,
+                                                 'production_quantity':  (component_level4.product_qty * component_level3.product_qty * yarn_qty *  unit_weight * order_qty * variant_qty * greige_qty * sized_yarn_qty)/component_level4.product_id.uom_po_id.factor_inv,
+                                                'weight':component_level4.product_qty * component_level3.product_qty * yarn_qty *  unit_weight * order_qty * variant_qty * greige_qty * sized_yarn_qty,
                                                  'source_product_id': sale_product,
                                                }  
                                             bom_product.append(bom_vals) 
@@ -547,10 +547,10 @@ class JobOrderBOMCompoent(models.Model):
             production_weight = 0.0
             product_count = 0
             if line.production_created == False and line.type == 'normal':
-                for production_line in self:
-                    if production_line.product_id.id == line.product_id.id:
-                        production_qty = production_qty + line.production_quantity
-                        production_weight = production_weight + line.weight
+#                 for production_line in self:
+#                     if production_line.product_id.id == line.product_id.id:
+#                         production_qty = production_qty + line.production_quantity
+#                         production_weight = production_weight + line.weight
                         product_count = product_count + 1
                 if  product_count >= 2:           
                     line.update({
@@ -558,37 +558,37 @@ class JobOrderBOMCompoent(models.Model):
                             })
                 if line.is_duplicate == True:   
                     product_uniq_list.append(line.product_id.id)        
-                        
+                line__bom_vals = []        
                 bom_qty = 0.0
                 line_bom = self.env['mrp.bom'].search([('product_tmpl_id.name','=',line.product_id.name)])
                 variant_line_bom = self.env['mrp.bom'].search([('product_id.name','=',line.product_id.name)])
                 if line_bom:
                     for bom in line_bom:
-                        line__bom_vals = []
+#                         line__bom_vals = []
                         for component in bom.bom_line_ids:
 
                             line__bom_vals.append((0,0, {
                                     'product_id': component.product_id.id,
                                     'name': component.product_id.name,
                                     'product_uom': component.product_id.uom_po_id.id,
-                                    'product_uom_qty': component.product_qty * production_qty,
-                                    'total_weight': component.product_qty * production_weight, 
+                                    'product_uom_qty': production_qty,
+                                    'total_weight': production_weight, 
                                     'date': fields.Date.today(),
                                     'date_expected': fields.Date.today(),
                                     'location_id': line.location_src_id.id,
                                     'location_dest_id': line.location_dest_id.id,
                             }))
                 else:
-                    for bom in line_bom:
-                        line__bom_vals = []
+                    for bom in variant_line_bom:
+#                         line__bom_vals = []
                         for component in bom.bom_line_ids:
 
                             line__bom_vals.append((0,0, {
                                     'product_id': component.product_id.id,
                                     'name': component.product_id.name,
                                     'product_uom': component.product_id.uom_po_id.id,
-                                    'product_uom_qty': component.product_qty * production_qty,
-                                    'total_weight': component.product_qty * production_weight, 
+                                    'product_uom_qty': production_qty,
+                                    'total_weight': production_weight, 
                                     'date': fields.Date.today(),
                                     'date_expected': fields.Date.today(),
                                     'location_id': line.location_src_id.id,
@@ -599,8 +599,8 @@ class JobOrderBOMCompoent(models.Model):
                 production_vals ={
                         'product_id': line.product_id.id,
                         'product_uom_id': line.product_id.uom_id.id,
-                        'product_qty': production_qty,
-                        'production_weight': production_weight, 
+                        'product_qty': line.production_quantity,
+                        'production_weight':line.weight, 
                         'origin': self.job_order_id.name, 
                         'job_order_id': self.job_order_id.id, 
                         'bom_id': line_bom[0].id,
