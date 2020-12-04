@@ -551,11 +551,11 @@ class JobOrderBOMCompoent(models.Model):
 #                     if production_line.product_id.id == line.product_id.id:
 #                         production_qty = production_qty + line.production_quantity
 #                         production_weight = production_weight + line.weight
-                        product_count = product_count + 1
-                if  product_count >= 2:           
-                    line.update({
-                            'is_duplicate': True
-                            })
+#                         product_count = product_count + 1
+#                 if  product_count >= 2:           
+#                     line.update({
+#                             'is_duplicate': True
+#                             })
                 if line.is_duplicate == True:   
                     product_uniq_list.append(line.product_id.id)        
                 line__bom_vals = []        
@@ -563,7 +563,7 @@ class JobOrderBOMCompoent(models.Model):
                 line_bom = self.env['mrp.bom'].search([('product_tmpl_id.name','=',line.product_id.name)])
                 variant_line_bom = self.env['mrp.bom'].search([('product_id.name','=',line.product_id.name)])
                 if line_bom:
-                    for bom in line_bom:
+                    for bom in line_bom[0]:
 #                         line__bom_vals = []
                         for component in bom.bom_line_ids:
 
@@ -571,15 +571,15 @@ class JobOrderBOMCompoent(models.Model):
                                     'product_id': component.product_id.id,
                                     'name': component.product_id.name,
                                     'product_uom': component.product_id.uom_po_id.id,
-                                    'product_uom_qty': production_qty,
-                                    'total_weight': production_weight, 
+                                    'product_uom_qty':line.production_quantity,
+                                    'total_weight': line.weight, 
                                     'date': fields.Date.today(),
                                     'date_expected': fields.Date.today(),
                                     'location_id': line.location_src_id.id,
                                     'location_dest_id': line.location_dest_id.id,
                             }))
                 else:
-                    for bom in variant_line_bom:
+                    for bom in variant_line_bom[0]:
 #                         line__bom_vals = []
                         for component in bom.bom_line_ids:
 
@@ -587,8 +587,8 @@ class JobOrderBOMCompoent(models.Model):
                                     'product_id': component.product_id.id,
                                     'name': component.product_id.name,
                                     'product_uom': component.product_id.uom_po_id.id,
-                                    'product_uom_qty': production_qty,
-                                    'total_weight': production_weight, 
+                                    'product_uom_qty': line.production_quantity,
+                                    'total_weight': line.weight, 
                                     'date': fields.Date.today(),
                                     'date_expected': fields.Date.today(),
                                     'location_id': line.location_src_id.id,
