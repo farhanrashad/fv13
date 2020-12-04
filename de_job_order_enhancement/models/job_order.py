@@ -6,6 +6,8 @@ from odoo.addons import decimal_precision as dp
 import threading
 
 
+
+
 class JobOrder(models.Model):
     _inherit = 'job.order'
     
