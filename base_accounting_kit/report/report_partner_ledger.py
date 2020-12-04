@@ -21,9 +21,11 @@
 #############################################################################
 
 import time
-
+from datetime import date, timedelta
+from dateutil.relativedelta import relativedelta
 from odoo import api, models, _
 from odoo.exceptions import UserError
+from datetime import datetime
 
 
 class ReportPartnerLedger(models.AbstractModel):
@@ -96,17 +98,19 @@ class ReportPartnerLedger(models.AbstractModel):
         if contemp is not None:
             result = contemp[0] or 0.0
         return result
-    
-#=============================  
+#=====================================    
+
+#=====================================  
 
     def _sum_partner_tot_opening(self, partner_id, start_date):
 #         if field not in ['debit', 'credit', 'debit - credit']:
 #             return
         balance_list = []
+#         previous_date =  date(start_date) - timedelta(days=2000)
         sum_balance = 0
         sum_debit = 0
         sum_credit = 0
-        result = self.env['account.move.line'].search([('partner_id', '=', partner_id), ('date', '<', start_date)])
+        result = self.env['account.move.line'].search([('partner_id', '=', partner_id),('account_id.code','in',	[211000,121000]),('move_id.state','=','posted'),('date', '<', start_date)])
         for p in result:
             sum_balance = sum_balance + p.balance
             sum_debit = sum_debit + p.debit        
