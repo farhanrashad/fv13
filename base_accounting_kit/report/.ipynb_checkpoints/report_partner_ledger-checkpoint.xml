@@ -53,13 +53,13 @@
                                         </strong>
                                     </td>
                                     <td class="text-right" style="border:1px solid black;">
-                                        <strong t-esc="sum_partner_open(o.id ,data['form']['date_from'])[1]" t-options="{'widget': 'monetary', 'display_currency': res_company.currency_id}"/>
+                                        <strong t-esc="round(sum_partner_open(o.id ,data['form']['date_from'])[1])" />
                                     </td>
                                     <td class="text-right" style="border:1px solid black;">
-                                        <strong t-esc="sum_partner_open(o.id ,data['form']['date_from'])[2]" t-options="{'widget': 'monetary', 'display_currency': res_company.currency_id}"/>
+                                        <strong t-esc="round(sum_partner_open(o.id ,data['form']['date_from'])[2])"/>
                                     </td>
                                     <td class="text-right" style="border:1px solid black;">
-                                        <strong t-esc="sum_partner_open(o.id ,data['form']['date_from'])[0]" t-options="{'widget': 'monetary', 'display_currency': res_company.currency_id}"/>
+                                        <strong t-esc="round(sum_partner_open(o.id ,data['form']['date_from'])[0])"/>
                                     </td>
                                 </tr>
 
@@ -71,19 +71,19 @@
                                         <strong t-esc="o.name"/>
                                     </td>
                                     <td class="text-right" style="border:1px solid black;">
-                                        <strong t-esc="sum_partner(data, o, 'debit')" t-options="{'widget': 'monetary', 'display_currency': res_company.currency_id}"/>
+                                        <strong t-esc="round(sum_partner(data, o, 'debit'))"/>
                                     </td>
                                     <td class="text-right" style="border:1px solid black;">
-                                        <strong t-esc="sum_partner(data, o, 'credit')" t-options="{'widget': 'monetary', 'display_currency': res_company.currency_id}"/>
+                                        <strong t-esc="round(sum_partner(data, o, 'credit'))" />
                                     </td>
                                     <td class="text-right" style="border:1px solid black;">
-                                        <strong t-esc="sum_partner(data, o, 'debit - credit')" t-options="{'widget': 'monetary', 'display_currency': res_company.currency_id}"/>
+                                        <strong t-esc="round(sum_partner(data, o, 'debit - credit'))" />
                                     </td>
                                 </tr>
                                 
                                
                                 
-                                
+                               <t t-set="sum_balance" t-value="0"/>
                                <tr t-foreach="lines(data, o)" t-as="line">
                                     <td style="border:1px solid black;">
                                         <span t-esc="line['date']" t-options="{&quot;widget&quot;: &quot;date&quot;}" style="font-size: 12pt;font-family:Helvetica,Verdana,Arial,sans,Lucida Grande,Calibri;"/>
@@ -98,19 +98,21 @@
                                         <span t-esc="line['displayed_name']" style="font-size: 11pt;font-family:Helvetica,Verdana,Arial,sans,Lucida Grande,Calibri;"/>
                                     </td>
                                     <td style="border:1px solid black;" class="text-right">
-                                        <span t-esc="line['debit']" t-options="{'widget': 'monetary', 'display_currency': res_company.currency_id}" style="font-size: 11pt;font-family:Helvetica,Verdana,Arial,sans,Lucida Grande,Calibri;"/>
+                                        <span t-esc="round(line['debit'])"  style="font-size: 11pt;font-family:Helvetica,Verdana,Arial,sans,Lucida Grande,Calibri;"/>
                                     </td>
                                     <td style="border:1px solid black;" class="text-right">
-                                        <span t-esc="line['credit']" t-options="{'widget': 'monetary', 'display_currency': res_company.currency_id}" style="font-size: 11pt;font-family:Helvetica,Verdana,Arial,sans,Lucida Grande,Calibri;"/>
+                                        <span t-esc="round(line['credit'])"  style="font-size: 11pt;font-family:Helvetica,Verdana,Arial,sans,Lucida Grande,Calibri;"/>
                                     </td>
                                     <td style="border:1px solid black;" class="text-right">
-                                        <span t-esc="line['progress']" t-options="{'widget': 'monetary', 'display_currency': res_company.currency_id}" style="font-size: 11pt;font-family:Helvetica,Verdana,Arial,sans,Lucida Grande,Calibri;"/>
+                                        <span t-esc="sum_balance + round(line['debit']) - round(line['credit'])"  style="font-size: 11pt;font-family:Helvetica,Verdana,Arial,sans,Lucida Grande,Calibri;"/>
                                     </td>
                                     <td style="border:1px solid black;" class="text-right" t-if="data['form']['amount_currency']">
                                         <t t-if="line['currency_id']">
-                                            <span t-esc="line['amount_currency']" t-options="{'widget': 'monetary', 'display_currency': line['currency_id']}" style="font-size: 11pt;font-family:Helvetica,Verdana,Arial,sans,Lucida Grande,Calibri;"/>
+                                            <span t-esc="line['amount_currency']" style="font-size: 11pt;font-family:Helvetica,Verdana,Arial,sans,Lucida Grande,Calibri;"/>
                                         </t>
                                     </td>
+                                   
+                                   <t t-set="sum_balance" t-value="sum_balance + round(line['debit']) - round(line['credit'])"/>
                                 </tr>
                             </tbody>
                         </t>
