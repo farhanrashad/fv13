@@ -98,15 +98,11 @@ class ReportPartnerLedger(models.AbstractModel):
         if contemp is not None:
             result = contemp[0] or 0.0
         return result
-#=====================================    
 
 #=====================================  
 
     def _sum_partner_tot_opening(self, partner_id, start_date):
-#         if field not in ['debit', 'credit', 'debit - credit']:
-#             return
         balance_list = []
-#         previous_date =  date(start_date) - timedelta(days=2000)
         sum_balance = 0
         sum_debit = 0
         sum_credit = 0

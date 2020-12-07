@@ -84,6 +84,9 @@
                                
                                 
                                <t t-set="sum_balance" t-value="0"/>
+                               <t t-set="entry_count" t-value="0"/>
+                               <t t-set="init_balance" t-value="0"/>
+                                <t t-set="sum_balance" t-value="round(sum_partner_open(o.id ,data['form']['date_from'])[0])"/> 
                                <tr t-foreach="lines(data, o)" t-as="line">
                                     <td style="border:1px solid black;">
                                         <span t-esc="line['date']" t-options="{&quot;widget&quot;: &quot;date&quot;}" style="font-size: 12pt;font-family:Helvetica,Verdana,Arial,sans,Lucida Grande,Calibri;"/>
@@ -104,7 +107,20 @@
                                         <span t-esc="round(line['credit'])"  style="font-size: 11pt;font-family:Helvetica,Verdana,Arial,sans,Lucida Grande,Calibri;"/>
                                     </td>
                                     <td style="border:1px solid black;" class="text-right">
-                                        <span t-esc="sum_balance + round(line['debit']) - round(line['credit'])"  style="font-size: 11pt;font-family:Helvetica,Verdana,Arial,sans,Lucida Grande,Calibri;"/>
+                                         <t t-if="entry_count == 0">
+                                         <span t-esc="sum_balance + round(line['debit']) - round(line['credit'])"  style="font-size: 11pt;font-family:Helvetica,Verdana,Arial,sans,Lucida Grande,Calibri;"/>
+                                         <t t-set="init_balance" t-value="sum_balance + round(line['debit']) - round(line['credit'])"/>
+                                         </t>
+                                        
+                                        <t t-if="entry_count > 0">
+                                         <span t-esc="init_balance + round(line['debit']) - round(line['credit'])"  style="font-size: 11pt;font-family:Helvetica,Verdana,Arial,sans,Lucida Grande,Calibri;"/>
+                                         <t t-set="init_balance" t-value="init_balance + round(line['debit']) - round(line['credit'])"/>
+                                         </t>
+                                         <t t-set="entry_count" t-value="entry_count + 1"/>
+
+
+                                        
+                                        
                                     </td>
                                     <td style="border:1px solid black;" class="text-right" t-if="data['form']['amount_currency']">
                                         <t t-if="line['currency_id']">
@@ -112,7 +128,6 @@
                                         </t>
                                     </td>
                                    
-                                   <t t-set="sum_balance" t-value="sum_balance + round(line['debit']) - round(line['credit'])"/>
                                 </tr>
                             </tbody>
                         </t>
