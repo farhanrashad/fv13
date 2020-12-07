@@ -39,7 +39,7 @@
                   <field name="production_quantity"   attrs="{'readonly': ['|',('po_created','=',True),('production_created','=',True)]}"/>
                   <field name="vendor_id"   attrs="{'readonly': ['|',('type','=','normal'),('po_created','=',True)]}"/>
                   <field name="po_created" invisible="1"/>
-                  <field name="is_duplicate" />
+                  <field name="is_duplicate"  invisible="1"/>
                   <field name="production_created" invisible="1"/>
                   <field name="company_id" invisible="1"/>
             </tree>
