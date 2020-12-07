@@ -28,20 +28,20 @@ class JobOrder(models.Model):
         res = super(JobOrder, self).action_confirm()
         for line in self.sale_id.order_line:
             for order_line in self.job_order_sale_lines:
-                greige_bom = []
-                product_variant_bom = self.env['mrp.bom'].search([('product_id','=',order_line.product_id.id)])
-                product_tmpl_bom = self.env['mrp.bom'].search([('product_tmpl_id.name','=',order_line.product_id.name)])
+#                 greige_bom = []
+#                 product_variant_bom = self.env['mrp.bom'].search([('product_id','=',order_line.product_id.id)])
+#                 product_tmpl_bom = self.env['mrp.bom'].search([('product_tmpl_id.name','=',order_line.product_id.name)])
                 
-       # SO  product bom
-                if product_variant_bom:
+#        # SO  product bom
+#                 if product_variant_bom:
                 
-                    for component_level1 in product_variant_bom.bom_line_ids:   
-                # Level 1         
+#                     for component_level1 in product_variant_bom.bom_line_ids:   
+#                 # Level 1         
                        
-                        component_bom_level2 = self.env['mrp.bom'].search([('product_tmpl_id.name','=',component_level1.product_id.name)])
-                 # Level 2       
-                        if component_bom_level2:
-                            for component_level2 in component_bom_level2.bom_line_ids:                                                                                                                                                                                   greige_bom.append(component_level2.product_id.id)
+#                         component_bom_level2 = self.env['mrp.bom'].search([('product_tmpl_id.name','=',component_level1.product_id.name)])
+#                  # Level 2       
+#                         if component_bom_level2:
+#                             for component_level2 in component_bom_level2.bom_line_ids:                                                                                                                                                                                   greige_bom.append(component_level2.product_id.id)
 
 #                                 component_bom_level3 = self.env['mrp.bom'].search([('product_tmpl_id.name','=',component_level2.product_id.name)])
 #                  # Level 2       
@@ -53,7 +53,7 @@ class JobOrder(models.Model):
                 if order_line.product_id.id == line.product_id.id:
                     order_line.update({
                         'unit_weight': line.weight,
-                        'greige_bom_ids': greige_bom
+#                         'greige_bom_ids': greige_bom
                     })
         return res
     
@@ -129,7 +129,7 @@ class JobOrder(models.Model):
                          'source_product_id': sale_product,
                            }  
                 bom_product.append(bom_vals)
-                for component_level1 in product_variant_bom.bom_line_ids:   
+                for component_level1 in product_variant_bom[0].bom_line_ids:   
             # Level 1         
                     product_list.append(component_level1.product_id.name)
                     component_bom_level1_type = self.env['mrp.bom'].search([('product_tmpl_id.name','=',component_level1.product_id.name)]) 
@@ -157,7 +157,7 @@ class JobOrder(models.Model):
                     component_bom_level2 = self.env['mrp.bom'].search([('product_tmpl_id.name','=',component_level1.product_id.name)])
              # Level 2       
                     if component_bom_level2:
-                        for component_level2 in component_bom_level2.bom_line_ids:
+                        for component_level2 in component_bom_level2[0].bom_line_ids:
                             product_list.append(component_level2.product_id.name)
                             component_bom_level2_type = self.env['mrp.bom'].search([('product_tmpl_id.name','=',component_level2.product_id.name)])
                             if component_bom_level2_type.categ_id.id == 10:
@@ -290,7 +290,7 @@ class JobOrder(models.Model):
                          'source_product_id': sale_product,
                            }  
                 bom_product.append(bom_vals)
-                for component_level1 in product_tmpl_bom.bom_line_ids:   
+                for component_level1 in product_tmpl_bom[0].bom_line_ids:   
             # Level 1         
                     product_list.append(component_level1.product_id.name)
                     component_bom_level1_type = self.env['mrp.bom'].search([('product_tmpl_id.name','=',component_level1.product_id.name)])
@@ -311,7 +311,7 @@ class JobOrder(models.Model):
                     bom_vals =   {
                              'job_order_id':  self.name,
                              'product_id': component_level1.product_id.id,
-                             'type': component_bom_level1_type.type,
+                             'type': component_bom_level1_type[0].type,
                              'quantity':  component_level1.product_qty,
                              'production_quantity': component_production_quantityt1,
                              'weight':  component_weightt1,
