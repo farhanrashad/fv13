@@ -32,7 +32,6 @@
         'data/server_action.xml',
         'security/ir.model.access.csv',
         'views/job_order.xml',
-        'views/templates.xml',
     ],
     # only loaded in demonstration mode
     'demo': [
