@@ -8,6 +8,8 @@ import threading
 
 
 
+
+
 class JobOrder(models.Model):
     _inherit = 'job.order'
     
