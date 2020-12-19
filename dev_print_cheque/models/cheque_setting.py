@@ -26,6 +26,7 @@ class cheque_setting(models.Model):
     partner_m_left = fields.Float('From Left', default=70)
 
     is_date = fields.Boolean('Print Date', default=True)
+    is_date_bold = fields.Boolean('Font Bold')
     date_formate = fields.Selection([('dd_mm', 'DD MM'), ('mm_dd', 'MM DD')], string='Date Formate', default='dd_mm')
     year_formate = fields.Selection([('yy', 'YY'), ('yyyy', 'YYYY')], string='Year Format', default='yy')
     date_m_top = fields.Float('From Top', default=90)
@@ -44,7 +45,8 @@ class cheque_setting(models.Model):
     amt_m_top = fields.Float('From Top', default=158.76)
     amt_m_left = fields.Float('From Left', default=540)
     is_star = fields.Boolean('Print Star', help="if true then print 3 star before and after Amount", default=True)
-
+    is_amount_bold = fields.Boolean('Font Bold')
+    
     is_currency = fields.Boolean('Print Currency')
 
     is_amount_word = fields.Boolean('Print Amount Words', default=True)
@@ -84,6 +86,8 @@ class cheque_setting(models.Model):
     f_two_margin_left = fields.Float('From Left', default=100)
 
     is_acc_pay = fields.Boolean('Print A/C PAY', default=True)
+    is_acc_bold = fields.Boolean('Font Bold')
+
     acc_pay_m_top = fields.Float('From Top', default=90)
     acc_pay_m_left = fields.Float('From Left', default=50)
     
