@@ -36,6 +36,7 @@
                     <group>
                         <group string="Print Date" >
                             <field name='is_date' />
+                            <field name='is_date_bold' />
                             <field name="date_seprator"/>
                             <field name="date_formate" attrs="{'required':[('is_date','=',True)]}"/>
                             <field name='year_formate' attrs="{'required':[('is_date','=',True)]}"/>
@@ -58,6 +59,7 @@
                             <field name='is_amount' />
                             <field name="is_currency"/>
                             <field name='is_star' />
+                            <field name='is_amount_bold' />
                         </group>
                         <group>
                             <field name='amt_m_top' attrs="{'required':[('is_amount','=',True)]}"/>
@@ -103,6 +105,7 @@
                     <group string="Print A/C PAY">
                         <group>
                             <field name='is_acc_pay'/>
+                            <field name='is_acc_bold'/>
                         </group>
                         <group>
                             <field name='acc_pay_m_top' attrs="{'required':[('is_acc_pay','=',True)]}"/>
