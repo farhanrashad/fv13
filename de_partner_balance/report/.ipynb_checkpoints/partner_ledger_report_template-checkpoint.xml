@@ -29,25 +29,43 @@
                         </tr>
                     </thead>
                     <tbody>
-                       <tr t-foreach="dat" t-as="d" style="border-bottom:1px solid #000;">
-                           <t t-set="tot_obal" t-value="tot_obal+d['obal']"/>
-                           <t t-set="tot_debit" t-value="tot_debit+d['debit']"/>
-                           <t t-set="tot_credit" t-value="tot_credit+d['credit']"/>
-                           <t t-set="tot_cbal" t-value="tot_cbal+d['cbal']"/>
-                           <td><span t-esc="d['partner_name']"/></td>
-                           <td class="text-right"><t t-esc="'{0:,.2f}'.format(float(d['obal']))" /></td>
-                            <td class="text-right"><t t-esc="'{0:,.2f}'.format(float(d['debit']))" /></td>
-                            <td class="text-right"><t t-esc="'{0:,.2f}'.format(float(d['credit']))" /></td>
-                            <td class="text-right"><t t-esc="'{0:,.2f}'.format(float(d['cbal']))" /></td>
- 
-                        </tr>
+                     <t t-if="data['is_vendor_balance'] == True"> 
+                     <t t-foreach="dat" t-as="d">
+                       <t t-if="float(d['cbal']) != 0"> 
+                           <tr style="border-bottom:1px solid #000;">
+                               <t t-set="tot_obal" t-value="tot_obal+d['obal']"/>
+                               <t t-set="tot_debit" t-value="tot_debit+d['debit']"/>
+                               <t t-set="tot_credit" t-value="tot_credit+d['credit']"/>
+                               <t t-set="tot_cbal" t-value="tot_cbal+d['cbal']"/>
+                               <td><span t-esc="d['partner_name']"/></td>
+                               <td class="text-right"><t t-esc="'{0:,.2f}'.format(float(d['obal']))" /></td>
+                                <td class="text-right"><t t-esc="'{0:,.2f}'.format(float(d['debit']))" /></td>
+                                <td class="text-right"><t t-esc="'{0:,.2f}'.format(float(d['credit']))" /></td>                                    <td class="text-right"><t t-esc="'{0:,.2f}'.format(float(d['cbal']))" /></td> 
+                            </tr>                           
+                        </t> 
+                        </t>  
+                        </t>
+                     <t t-if="data['is_vendor_balance'] == False"> 
+                     <t t-foreach="dat" t-as="d">
+                           <tr style="border-bottom:1px solid #000;">
+                               <t t-set="tot_obal" t-value="tot_obal+d['obal']"/>
+                               <t t-set="tot_debit" t-value="tot_debit+d['debit']"/>
+                               <t t-set="tot_credit" t-value="tot_credit+d['credit']"/>
+                               <t t-set="tot_cbal" t-value="tot_cbal+d['cbal']"/>
+                               <td><span t-esc="d['partner_name']"/></td>
+                               <td class="text-right"><t t-esc="'{0:,.2f}'.format(float(d['obal']))" /></td>
+                                <td class="text-right"><t t-esc="'{0:,.2f}'.format(float(d['debit']))" /></td>
+                                <td class="text-right"><t t-esc="'{0:,.2f}'.format(float(d['credit']))" /></td>                                    <td class="text-right"><t t-esc="'{0:,.2f}'.format(float(d['cbal']))" /></td> 
+                            </tr>                           
+                        </t> 
+                        </t>
+                        
                         <tr>
                             <td><strong>Total</strong></td>
                             <td class="text-right"><strong><t t-esc="round(tot_obal,2)" /></strong></td>
                             <td class="text-right"><strong><t t-esc="round(tot_debit,2)" /></strong></td>
                             <td class="text-right"><strong><t t-esc="round(tot_credit,2)" /></strong></td>
-                            <td class="text-right"><strong><t t-esc="round(tot_cbal,2)" /></strong></td>
-                            
+                            <td class="text-right"><strong><t t-esc="round(tot_cbal,2)" /></strong></td>                           
                         </tr>
 
                     </tbody>
