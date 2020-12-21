@@ -11,6 +11,7 @@
                         <field name="end_date"/>                 
                         <field name="partner_type"/>
                         <field name="is_posted"/>
+                        <field name="is_vendor_balance"/>
                         <field name="category_id"/>               
                 </group>
 

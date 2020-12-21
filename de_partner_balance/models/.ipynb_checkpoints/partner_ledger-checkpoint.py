@@ -34,8 +34,9 @@ class PartnerLedger(models.TransientModel):
         ], string='Type',  default='all', required=True)
     
     is_posted = fields.Boolean('All Posted Entries', default=False)
+    is_vendor_balance = fields.Boolean('Filter Partners with 0 Balance', default=False)
     category_id = fields.Many2one('res.partner.category', string='Select Category',)
 
     def print_report(self, data=None):
-        data = {'start_date': self.start_date, 'end_date': self.end_date,'category_id': self.category_id.id,'partner_type': self.partner_type,'is_posted': self.is_posted}
+        data = {'start_date': self.start_date, 'end_date': self.end_date,'category_id': self.category_id.id,'partner_type': self.partner_type,'is_posted': self.is_posted, 'is_vendor_balance': self.is_vendor_balance}
         return self.env.ref('de_partner_balance.partner_balance_pdf').report_action(self, data=data)
