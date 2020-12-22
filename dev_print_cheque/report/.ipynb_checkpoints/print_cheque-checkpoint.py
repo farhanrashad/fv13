@@ -21,18 +21,19 @@ class print_check(models.AbstractModel):
         return date
 
     def get_partner_name(self,obj,p_text):
-        if p_text and obj.partner_text:
+        if p_text and obj.partner_text and obj.pay_by:
             if p_text == 'prefix' :
                 return obj.partner_text + ' ' + obj.pay_by
             else:
                 return obj.pay_by + ' ' + obj.partner_text
-        if obj.pay_by:
+        elif obj.pay_by:
             return obj.pay_by
         else:
             return obj.partner_id.name
 
     def amount_word(self, obj):
-        amt_word = num2words(obj.amount)
+        
+        amt_word = obj.check_amount_in_words
         lst = amt_word.split(' ')
         lst.append(' only')
         lst_len = len(lst)
@@ -60,8 +61,12 @@ class print_check(models.AbstractModel):
 
         first_line = first_line.replace(",", "")
         second_line = second_line.replace(",", "")
+        amount_in_words = first_line + second_line
 
-        return [first_line, second_line]
+        return second_line , first_line
+    
+
+    
     @api.model
     def _get_report_values(self, docids, data=None):
         docs = self.env['account.payment'].browse(docids)

@@ -32,7 +32,8 @@ class print_check(models.AbstractModel):
             return obj.partner_id.name
 
     def amount_word(self, obj):
-        amt_word = num2words(obj.amount)
+        
+        amt_word = obj.check_amount_in_words
         lst = amt_word.split(' ')
         lst.append(' only')
         lst_len = len(lst)
@@ -60,8 +61,12 @@ class print_check(models.AbstractModel):
 
         first_line = first_line.replace(",", "")
         second_line = second_line.replace(",", "")
+        amount_in_words = first_line + second_line
 
-        return [first_line, second_line]
+        return second_line , first_line
+    
+
+    
     @api.model
     def _get_report_values(self, docids, data=None):
         docs = self.env['account.payment'].browse(docids)

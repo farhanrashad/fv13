@@ -1,9 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!--
-Copyright (C) 2015 DevIntelle Consulting Service Pvt.Ltd (<http://www.devintellecs.com>).
 
-For Module Support : devintelle@gmail.com  or Skype : devintelle 
- -->
 <odoo>
 <template id="report_print_cheque_template">
 		<t t-call="web.basic_layout">
@@ -173,7 +169,7 @@ For Module Support : devintelle@gmail.com  or Skype : devintelle
 
                     <!-- Print Partner Name in Cheque -->
                     <t t-if="o.cheque_formate_id.is_partner">
-                        <div t-attf-style="margin-left:#{o.cheque_formate_id.partner_m_left}px;margin-top:#{o.cheque_formate_id.partner_m_top}px;position: absolute;};">
+                        <div t-attf-style="margin-left:#{o.cheque_formate_id.partner_m_left}px;margin-top:#{o.cheque_formate_id.partner_m_top}px;width:800px;position: absolute;};">
                             <t t-if="o.cheque_formate_id.is_partner_bold">
                                 <span style="font-weight:bold" t-esc="get_partner_name(o,o.cheque_formate_id.partner_text)"/>
                             </t>
@@ -232,7 +228,7 @@ For Module Support : devintelle@gmail.com  or Skype : devintelle
 
                     <!-- Print Amount in Word In Cheque -->
                     <t t-if="o.cheque_formate_id.is_amount_word">
-                    <div t-attf-style="margin-left:#{o.cheque_formate_id.amt_w_m_left}px;margin-top:#{o.cheque_formate_id.amt_w_m_top}px;position: absolute;};">
+                    <div t-attf-style="margin-left:#{o.cheque_formate_id.amt_w_m_left}px;margin-top:#{o.cheque_formate_id.amt_w_m_top}px;width:300px;position: absolute;};">
                               <t t-if="o.cheque_formate_id.is_star_word">
                                 ***
                             </t>
@@ -246,14 +242,16 @@ For Module Support : devintelle@gmail.com  or Skype : devintelle
                                 ***
                             </t>
                         </div>  
-                  <!--         <div t-attf-style="margin-left:#{o.cheque_formate_id.amt_w_s_m_left}px;margin-top:#{o.cheque_formate_id.amt_w_s_m_top}px;position: absolute;};">
+<!--                           <div t-attf-style="margin-left:#{o.cheque_formate_id.amt_w_s_m_left}px;margin-top:#{o.cheque_formate_id.amt_w_s_m_top}px;position: absolute;};">
+                          
                            <t t-if="o.cheque_formate_id.is_word_bold">
-                                <span style="font-weight:bold" t-esc="amount_word(o)[1]"/>
+                                <span style="font-weight:bold" t-esc="amount_word(o)[0]"/>                                 
                             </t>
                            <t t-if="not o.cheque_formate_id.is_word_bold">
                                 <span t-esc="amount_word(o)[1]"/>
                             </t>
-                        </div>-->
+                           
+                        </div> -->
                     </t>
 
 
@@ -542,7 +540,7 @@ For Module Support : devintelle@gmail.com  or Skype : devintelle
 
                     <!-- Print Partner Name in Cheque -->
                     <t t-if="o.cheque_formate_id.is_partner">
-                        <div t-attf-style="margin-left:#{o.cheque_formate_id.partner_m_left}px;margin-top:#{o.cheque_formate_id.partner_m_top}px;position: absolute;};">
+                        <div t-attf-style="margin-left:#{o.cheque_formate_id.partner_m_left}px;margin-top:#{o.cheque_formate_id.partner_m_top}px;width:800px;position: absolute;};">
                             <t t-if="o.cheque_formate_id.is_partner_bold">
                                 <span style="font-weight:bold" t-esc="get_partner_name(o,o.cheque_formate_id.partner_text)"/>
                             </t>
@@ -601,7 +599,7 @@ For Module Support : devintelle@gmail.com  or Skype : devintelle
 
                     <!-- Print Amount in Word In Cheque -->
                     <t t-if="o.cheque_formate_id.is_amount_word">
-                    <div t-attf-style="margin-left:#{o.cheque_formate_id.amt_w_m_left}px;margin-top:#{o.cheque_formate_id.amt_w_m_top}px;position: absolute;};">
+                    <div t-attf-style="margin-left:#{o.cheque_formate_id.amt_w_m_left}px;margin-top:#{o.cheque_formate_id.amt_w_m_top}px;width:300px;position: absolute;};">
                              <t t-if="o.cheque_formate_id.is_star_word">
                                 ***
                             </t>
@@ -616,13 +614,15 @@ For Module Support : devintelle@gmail.com  or Skype : devintelle
                             </t>
                         </div> 
 
-                   <!--         <div t-attf-style="margin-left:#{o.cheque_formate_id.amt_w_s_m_left}px;margin-top:#{o.cheque_formate_id.amt_w_s_m_top}px;position: absolute;};">
+<!--                            <div t-attf-style="margin-left:#{o.cheque_formate_id.amt_w_s_m_left}px;margin-top:#{o.cheque_formate_id.amt_w_s_m_top}px;position: absolute;};">
+                             
                             <t t-if="o.cheque_formate_id.is_word_bold">
-                                <span style="font-weight:bold" t-esc="amount_word(o)[1]"/>
+                                 <span style="font-weight:bold" t-esc="amount_word(o)[0]"/>                               
                             </t>
                             <t t-if="not o.cheque_formate_id.is_word_bold">
                                 <span t-esc="amount_word(o)[1]"/>
                             </t>
+                            
                         </div> -->
                     </t>
 
