@@ -1,5 +1,5 @@
 <odoo>
-  <data>
+  <data>     
    
      <record id="job_order_bom_component_view_tree_search" model="ir.ui.view">
         <field name="name">Job Order Component sheet tree view</field>

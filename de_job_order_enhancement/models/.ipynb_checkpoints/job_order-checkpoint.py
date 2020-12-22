@@ -97,8 +97,9 @@ class JobOrder(models.Model):
                 for component_level1 in product_variant_bom[0].bom_line_ids:   
             # Level 1         
                     product_list.append(component_level1.product_id.name)
-                    component_bom_level1_type = self.env['mrp.bom'].search([('product_tmpl_id.name','=',component_level1.product_id.name)]) 
-                    component_bom_level1_type[0]
+                    component_bom_level1_type = self.env['mrp.bom'].search([('product_tmpl_id.name','=',component_level1.product_id.name)])
+                    component_production_quantity1 = 0
+                    component_weight1 = 0
                     if component_bom_level1_type.categ_id.id == 10:
                        component_production_quantity1 =  order_qty * variant_qty
                        component_weight1 = unit_weight * order_qty * variant_qty
@@ -133,7 +134,9 @@ class JobOrder(models.Model):
                         
                     
                     component_bom_level2 = self.env['mrp.bom'].search([('product_tmpl_id.name','=',component_level1.product_id.name)])
-             # Level 2       
+             # Level 2 
+                    component_production_quantity2 = 0
+                    component_weight2 = 0
                     if component_bom_level2:
                         for component_level2 in component_bom_level2[0].bom_line_ids:
                             product_list.append(component_level2.product_id.name)
@@ -173,7 +176,9 @@ class JobOrder(models.Model):
                             component_bom_level3 = self.env['mrp.bom'].search([('product_tmpl_id.name','=',component_level2.product_id.name)])
              # Level 3 
 #======================================           ============================================
-             # Greige BOM
+             # Greige BOM  
+                            component_production_quantity3 = 0
+                            component_weight3 = 0
                             if component_bom_level3:
                                 for component_level3 in component_bom_level3[bom_versions].bom_line_ids:
                                     product_list.append(component_level3.product_id.name)
@@ -198,7 +203,6 @@ class JobOrder(models.Model):
 
                                     component_bom_level4 = self.env['mrp.bom'].search([('product_tmpl_id.name','=',component_level3.product_id.name)])
                              # Level 4       
-
                                     if component_bom_level4:
                                         for component_level4 in component_bom_level4.bom_line_ids:
                                             product_list.append(component_level4.product_id.name)
@@ -219,6 +223,7 @@ class JobOrder(models.Model):
 
                              # Level 5       
                                             component_bom_level5 = self.env['mrp.bom'].search([('product_tmpl_id.name','=',component_level4.product_id.name)])
+                                        
                                             if component_bom_level5:
                                                 for component_level5 in component_bom_level5.bom_line_ids:
                                                     product_list.append(component_level5.product_id.name)
@@ -239,6 +244,7 @@ class JobOrder(models.Model):
 
                                # Level 6       
                                                     component_bom_level6 = self.env['mrp.bom'].search([('product_tmpl_id.name','=',component_level5.product_id.name)])
+                                                  
                                                     if component_bom_level6:
                                                         for component_level6 in component_bom_level6.bom_line_ids:
                                                             product_list.append(component_level6.product_id.name)
@@ -256,6 +262,7 @@ class JobOrder(models.Model):
 
                                     # Level 7       
                                                             component_bom_level7 = self.env['mrp.bom'].search([('product_tmpl_id.name','=',component_level6.product_id.name)])
+                                                          
                                                             if component_bom_level7:
                                                                 for component_level7 in component_bom_level7.bom_line_ids:
                                                                     product_list.append(component_level7.product_id.name)
@@ -283,7 +290,9 @@ class JobOrder(models.Model):
                            }  
                 bom_product.append(bom_vals)
                 for component_level1 in product_tmpl_bom[0].bom_line_ids:   
-            # Level 1         
+            # Level 1
+                    component_production_quantityt1 = 0
+                    component_weightt1 = 0
                     product_list.append(component_level1.product_id.name)
                     component_bom_level1_type = self.env['mrp.bom'].search([('product_tmpl_id.name','=',component_level1.product_id.name)])
                     if component_level1.product_id.categ_id.id == 10 :
@@ -324,7 +333,9 @@ class JobOrder(models.Model):
                         
 
                     component_bom_level2 = self.env['mrp.bom'].search([('product_tmpl_id.name','=',component_level1.product_id.name)])
-             # Level 2       
+             # Level 2  
+                    component_production_quantityt2 = 0
+                    component_weightt2 = 0 
                     if component_bom_level2:
                         for component_level2 in component_bom_level2[0].bom_line_ids:
                             product_list.append(component_level2.product_id.name)
@@ -356,6 +367,8 @@ class JobOrder(models.Model):
 
                             component_bom_level3 = self.env['mrp.bom'].search([('product_tmpl_id.name','=',component_level2.product_id.name)])
              # Level 3       
+                            component_production_quantityt3 = 0
+                            component_weightt3 = 0
                             if component_bom_level3:
                                 for component_level3 in component_bom_level3[bom_versions].bom_line_ids:
                                     product_list.append(component_level3.product_id.name)
@@ -567,15 +580,6 @@ class JobOrderBOMCompoent(models.Model):
             production_weight = 0.0
             product_count = 0
             if line.production_created == False and line.type == 'normal':
-#                 for production_line in self:
-#                     if production_line.product_id.id == line.product_id.id:
-#                         production_qty = production_qty + line.production_quantity
-#                         production_weight = production_weight + line.weight
-#                         product_count = product_count + 1
-#                 if  product_count >= 2:           
-#                     line.update({
-#                             'is_duplicate': True
-#                             })
                 if line.is_duplicate == True:   
                     product_uniq_list.append(line.product_id.id)        
                 line__bom_vals = []        
@@ -584,7 +588,6 @@ class JobOrderBOMCompoent(models.Model):
                 variant_line_bom = self.env['mrp.bom'].search([('product_id.name','=',line.product_id.name)])
                 if line_bom:
                     for bom in line_bom[0]:
-#                         line__bom_vals = []
                         for component in bom.bom_line_ids:
 
                             line__bom_vals.append((0,0, {
@@ -592,7 +595,7 @@ class JobOrderBOMCompoent(models.Model):
                                     'name': component.product_id.name,
                                     'product_uom': component.product_id.uom_po_id.id,
                                     'product_uom_qty':line.production_quantity,
-                                    'total_weight': line.weight, 
+                                    'stock_total_weight': line.weight, 
                                     'date': fields.Date.today(),
                                     'date_expected': fields.Date.today(),
                                     'location_id': line.location_src_id.id,
@@ -600,7 +603,6 @@ class JobOrderBOMCompoent(models.Model):
                             }))
                 else:
                     for bom in variant_line_bom[0]:
-#                         line__bom_vals = []
                         for component in bom.bom_line_ids:
 
                             line__bom_vals.append((0,0, {
@@ -608,7 +610,7 @@ class JobOrderBOMCompoent(models.Model):
                                     'name': component.product_id.name,
                                     'product_uom': component.product_id.uom_po_id.id,
                                     'product_uom_qty': line.production_quantity,
-                                    'total_weight': line.weight, 
+                                    'stock_total_weight': line.weight, 
                                     'date': fields.Date.today(),
                                     'date_expected': fields.Date.today(),
                                     'location_id': line.location_src_id.id,
@@ -620,7 +622,7 @@ class JobOrderBOMCompoent(models.Model):
                         'product_id': line.product_id.id,
                         'product_uom_id': line.product_id.uom_id.id,
                         'product_qty': line.production_quantity,
-                        'production_weight':line.weight, 
+                        'production_total_weight':line.weight, 
                         'origin': self.job_order_id.name, 
                         'job_order_id': self.job_order_id.id, 
                         'bom_id': line_bom[0].id,
@@ -633,7 +635,6 @@ class JobOrderBOMCompoent(models.Model):
                 production_order = self.env['mrp.production'].create(production_vals)
                 if line.production_created == False and line.type == 'normal':
                     line.update ({
-#                    'po_process': False,
                         'production_created': True,
                         })
                 
