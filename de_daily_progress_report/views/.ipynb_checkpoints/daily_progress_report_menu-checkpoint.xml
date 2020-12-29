@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+        <menuitem id="daily_progress_report_menu" name="Daily Progress Report" parent="mrp.menu_mrp_production_report" sequence="1"
+                   action="action_progress_report_wizard" />
+</odoo>
+
+
