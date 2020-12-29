@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="view_project_tree_inhrt" model="ir.ui.view">
+        <field name="name">project.task.tree</field>
+        <field name="model">project.task</field>
+        <field name="inherit_id" ref="project.view_task_tree2"/>
+        <field name="arch" type="xml">
+
+            <xpath expr="//field[@name = 'company_id']" position="before">
+                <field name="color" invisible="1"/>
+<!--                <field nolabel="1" name="color_icon" widget="color"/>-->
+            </xpath>
+
+            <xpath expr="//tree" position="attributes">
+                <attribute name="decoration-muted">color=='grey'</attribute>
+                <attribute name="decoration-danger">color=='red'</attribute>
+                <attribute name="decoration-success">color=='green'</attribute>
+                <attribute name="decoration-primary">color=='purple'</attribute>
+                <attribute name="decoration-info">color=='blue'</attribute>
+                <attribute name="decoration-warning">color=='brown'</attribute>
+            </xpath>
+
+        </field>
+    </record>
+
+
+    <record id="view_project_frm_inhrt" model="ir.ui.view">
+        <field name="name">project.task.form</field>
+        <field name="model">project.task</field>
+        <field name="inherit_id" ref="project.view_task_form2"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name = 'legend_done']" position="after">
+                    <field name="color" style="padding-right:20px" />
+            </xpath>
+
+            <xpath expr="//field[@name = 'tag_ids']" position="after">
+                    <field string=" " name="color_icon" widget="color"  attrs="{'invisible' : [('color','=','black')]}"  />
+            </xpath>
+
+        </field>
+    </record>
+
+</odoo>
+

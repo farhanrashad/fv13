@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+<!--	<report id="report_student_card"-->
+<!--			string="Student Report"-->
+<!--			model="student.data"-->
+<!--			report_type="qweb-pdf"-->
+<!--			name="de_training_batch.report_student"-->
+<!--			file="de_training_batch.report_student" />-->
+</odoo>
