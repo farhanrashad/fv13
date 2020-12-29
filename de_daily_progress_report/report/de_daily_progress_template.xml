@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+-     <template id="progress_report_template">
+        <t t-call="web.html_container">
+            <t t-call="web.external_layout">
+              <div class="page">
+
+              <table class="table table-condensed">
+                   <thead>
+                       <tr>
+                            <th>Sr#</th>
+                            <th>SO</th>
+                            <th>LOT#</th>
+                           <th>Partner</th>
+                           <th>Cloth Desc.</th> 
+                           <th>Greige</th>
+                          <th>Stiched</th> 
+                          <th>Processed</th>
+                       </tr>
+                   </thead>
+                   <tbody> 
+                      <t t-set="row_number" t-value="1"/>
+                        <tr t-foreach="lot_records" t-as='o' >
+                           <td><t t-esc="row_number"/></td>
+                           <td><t t-esc="o.date"/></td>
+                           <td><t t-esc="o.lot_id.name"/></td> 
+                           <td><t t-esc="o.cloth_desc"/></td>
+                            <td><t t-esc="o.qty_done"/></td> 
+                          <td> 
+                     <table class="table table-condensed">
+                        <thead>
+                         <tr>
+                            <th>Issued Today</th>
+                            <th>Previous</th>
+                            <th>Total</th>
+                         </tr>
+                        </thead>
+                        <tbody> 
+
+                        <tr t-foreach="mrp_production" t-as='o' >
+                          <td><t t-esc="o.date_planned_start"/></td>
+                           <td><t t-esc="o.product_qty"/></td>
+                           <td><t t-esc="o.product_qty"/></td> 
+
+                        </tr>
+                   </tbody>
+               </table> 
+           </td>
+                           <td>
+                        <table class="table table-condensed">
+                        <thead>
+                         <tr>
+                            <th>Issued Today</th>
+                            <th>Previous</th>
+                            <th>Total</th>
+                         </tr>
+                        </thead>
+                        <tbody> 
+
+                        <tr t-foreach="mrp_production" t-as='o' >
+                           <td><t t-esc="o.date_planned_start"/></td>
+                           <td><t t-esc="o.product_qty"/></td>
+                           <td><t t-esc="o.product_qty"/></td> 
+
+
+                        </tr>
+                   </tbody>
+               </table> 
+              </td>
+                 
+                     <td>
+                        <table class="table table-condensed">
+                        <thead>
+                         <tr>
+                            <th>Issued Today</th>
+                            <th>Previous</th>
+                            <th>Total</th>
+                         </tr>
+                        </thead>
+                        <tbody> 
+
+                        <tr t-foreach="mrp_production" t-as='o' >
+                           <td><t t-esc="o.date_planned_start"/></td>
+                           <td><t t-esc="o.product_qty"/></td>
+                           <td><t t-esc="o.product_qty"/></td> 
+
+                        </tr>
+                   </tbody>
+               </table> 
+              </td> 
+                         
+
+
+                       <t t-set="row_number" t-value="row_number + 1"/>
+                        </tr>
+                   </tbody>
+               </table> 
+                </div>
+             </t>
+        </t>
+    </template>
+
+</odoo>
+
