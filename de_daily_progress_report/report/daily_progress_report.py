@@ -9,6 +9,8 @@
 import time
 from odoo import api, models
 from dateutil.parser import parse
+from datetime import date, timedelta
+from dateutil.relativedelta import relativedelta
 from odoo.exceptions import UserError
 
 class DailyProgressReport(models.AbstractModel):
@@ -20,9 +22,9 @@ class DailyProgressReport(models.AbstractModel):
         self.model = self.env.context.get('active_model')
         docs = self.env[self.model].browse(self.env.context.get('active_id'))
         outstanding_invoice = []       
-        
-        lot_records = self.env['stock.move.line'].search([('date', '=', docs.date),
-                                                          ])
+        doc_date = docs.date + timedelta(hours=0) 
+        docs_date = docs.date + timedelta(hours=1) 
+        lot_records = self.env['stock.move.line'].search([('date','>=',doc_date),('date','<=',docs_date)])
         mrp_production = self.env['mrp.production'].search([('date_planned_start', '=', docs.date),
                                                           ])
 
