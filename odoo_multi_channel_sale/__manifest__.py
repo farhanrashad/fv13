@@ -18,7 +18,11 @@
   "name"                 :  "Odoo Multi-Channel Sale",
   "summary"              :  "Manage Multiple Marketplace and eCommerce Platform Channel (like CS-Cart, WooCommerce, PrestaShop, Magento, Amazon, eBay, Etsy, Cdiscount  and many more) using a single interface.",
   "category"             :  "Website",
+<<<<<<< HEAD
   "version"              :  "0.1.3",
+=======
+  "version"              :  "0.1.4",
+>>>>>>> 928e0abe7139024f46a5e306091df0a5b7e8749e
   "sequence"             :  1,
   "author"               :  "Webkul Software Pvt. Ltd.",
   "license"              :  "Other proprietary",
@@ -37,7 +41,11 @@
   "live_test_url"        :  "",
   "depends"              :  [
                              'account_invoicing',
+<<<<<<< HEAD
                              'delivery',
+=======
+                             'delivery','stock'
+>>>>>>> 928e0abe7139024f46a5e306091df0a5b7e8749e
                             ],
   "data"                 :  [
                              'security/security.xml',
