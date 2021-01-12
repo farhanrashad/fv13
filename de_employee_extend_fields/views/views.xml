@@ -17,18 +17,18 @@
                   <field name="qualification"/>
                   <field name="number_of_department"/>
               </xpath>
-              <xpath expr="//form[1]/sheet[1]/div[not(@name)][1]/div[1]/notebook[1]" position="inside">
-                  <page string="Emergency Contact">
-                      <field name="emergency_contact_lines" widget="one2many_list">
-                          <tree string="Emergency Contact Lines" editable="bottom">
-                              <field name="name"/>
-                              <field name="relation"/>
-                              <field name="mobile_number"/>
-                              <field name="address"/>
-                          </tree>
-                      </field>
-                  </page>
-              </xpath>
+<!--              <xpath expr="//form[1]/sheet[1]/div[not(@name)][1]/div[1]/notebook[1]" position="inside">-->
+<!--                  <page string="Emergency Contact">-->
+<!--                      <field name="emergency_contact_lines" widget="one2many_list">-->
+<!--                          <tree string="Emergency Contact Lines" editable="bottom">-->
+<!--                              <field name="name"/>-->
+<!--                              <field name="relation"/>-->
+<!--                              <field name="mobile_number"/>-->
+<!--                              <field name="address"/>-->
+<!--                          </tree>-->
+<!--                      </field>-->
+<!--                  </page>-->
+<!--              </xpath>-->
           </field>
 
     </record>

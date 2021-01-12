@@ -4,7 +4,6 @@ from odoo import api, fields, models
 class MrpProduction(models.Model):
     _inherit = 'mrp.production'
 
-    @api.multi
     def close_forcefully(self):
         for workorder_rec in self.workorder_ids.filtered(lambda r: r.state != 'done'):
             if not workorder_rec.check_ids:

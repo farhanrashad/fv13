@@ -1,10 +1,10 @@
 # -*- coding: utf-8 -*-
 {
-    'name' : 'Payslip Restriction for a Month',
-    'version': '1.0',
-    'author' : 'DX',
-    'website' : '',
-    'category' : '',
+    'name' : 'Payslip Restriction For Month',
+    'version': '13.0.0.0',
+    'author' : 'Dynexcel',
+    'website' : 'http://www.dynexcel.co',
+    'category' : 'payroll',
     'summary': 'This module will restrict user to generate multiple payslips for an employee.',
     'description': """
 

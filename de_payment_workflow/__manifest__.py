@@ -16,7 +16,7 @@
   "name"                 :  "Payment Approval Workflow",
   "summary"              :  "This Module add the approval workflow functionality in payment Transaction",
   "category"             :  "Accounting",
-  "version"              :  "1.4",
+  "version"              :  "13.0.0.0'",
   "sequence"             :  1,
   "author"               :  "Dynexcel",
   "license"              :  "AGPL-3",
@@ -29,9 +29,9 @@
                              'account',
                             ],
   "data"                 :  [
+                            'views/payment_group_view.xml',
                             'views/payment_state_view.xml',
                             'views/payment_view.xml',
-                            'views/payment_group_view.xml'
                             ],
   "images"               :  ['static/description/Banner.png'],
   "application"          :  True,

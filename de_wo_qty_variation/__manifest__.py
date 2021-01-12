@@ -1,9 +1,9 @@
 {
     'name' : 'Work Order Quantity Variation',
-    'version' : '11.0.1.1',
-    'author' : 'DX',
-    'website' : '',
-    'category' : '',
+    'version' : '13.0.0.0',
+    'author' : 'Dynexcel',
+    'website' : 'http://www.dynexcel.co',
+    'category' : 'MRP',
     'description' : """
         Enterprise
         This module will change the default behavior of the current quantity of work orders. 
@@ -12,7 +12,7 @@
     'depends' : ['mrp'],
     'demo' : [],
     'data' : [
-        #'views/mrp_production_view.xml'
+        'views/mrp_production_view.xml'
     ],
     'installable' : True,
 }

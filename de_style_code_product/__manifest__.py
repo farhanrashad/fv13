@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 {
-    'name': "adding new field in product template",
+    'name': "Adding New Field in Product Template",
 
     'summary': """ This module will add a field in product template and in search view""",
 
@@ -10,7 +10,7 @@
     'website': "http://www.dynexcel.co",
 
     'category': 'Employee',
-    'version': '13.0.0.1',
+    'version': '13.0.0.0',
 
 
 

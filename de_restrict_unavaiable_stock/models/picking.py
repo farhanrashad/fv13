@@ -5,7 +5,6 @@ from odoo.exceptions import UserError
 class Picking(models.Model):
     _inherit = "stock.picking"
     
-    @api.multi
     def button_validate(self):
 
         for rec in self:

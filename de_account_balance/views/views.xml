@@ -81,6 +81,6 @@
       
       
     
-    <menuitem id="account_summary_display_menu" name="Account Balance" parent="account.menu_finance_entries_accounting_entries" action="action_account_summary" sequence="0"/>
+<!--    <menuitem id="account_summary_display_menu" name="Account Balance" parent="account.menu_finance_entries_accounting_entries" action="action_account_summary" sequence="0"/>-->
   </data>
 </odoo>

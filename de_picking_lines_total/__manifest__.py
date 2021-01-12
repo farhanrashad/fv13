@@ -16,7 +16,7 @@
   "name"                 :  "Picking Line Items Quantity Sum",
   "summary"              :  "Add Line Items Quantity Sum at picking",
   "category"             :  "Warehouse",
-  "version"              :  "1.2",
+  "version"              :  "13.0.0.0",
   "sequence"             :  1,
   "author"               :  "Dynexcel",
   "license"              :  "Other proprietary",

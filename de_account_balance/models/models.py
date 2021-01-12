@@ -5,7 +5,7 @@ from odoo import api, fields, models, _
 from odoo.exceptions import UserError, ValidationError, Warning
 
 
-from odoo.addons import decimal_precision as dp
+# from odoo.addons import decimal_precision as dp
 
 class AccountMaster(models.Model):
     _name = 'account.summary.master'
@@ -49,8 +49,6 @@ class Account(models.Model):
     company_currency_id = fields.Many2one('res.currency', string="Company Currency", related='company_id.currency_id', readonly=True, help='Utility field to express amount currency')
     company_id = fields.Many2one('res.company', 'Company', default=lambda self: self.env['res.company']._company_default_get('account.summary.account'))
     
-    #@api.depends('account_id')
-    @api.multi
     @api.depends('account_id','balance')
     def _compute_balance(self):
         
@@ -62,7 +60,6 @@ class Account(models.Model):
                     bal = bal + (line.debit - line.credit)
             rs.update({'balance': bal })
     
-    @api.multi
     @api.onchange('account_id')
     def onchange_account_id(self):
         for rs in self:

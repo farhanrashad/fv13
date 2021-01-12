@@ -5,12 +5,12 @@
             <field name="name">inherit.payment.workflow.form.view</field>
             <field name="model">account.payment</field>
             <field name="inherit_id" ref="account.view_account_payment_form"/>
-            <field name="groups" eval="[(4, ref('account.group_account_user'))]"/>
-            <field eval="0" name="perm_unlink"/>
-            <field eval="0" name="perm_write"/>
-            <field eval="1" name="perm_read"/>
-            <field eval="0" name="perm_create"/>
-            <field name="domain_force">[('state', '!=', 'draft'])]</field>
+<!--            <field name="groups" eval="[(4, ref('account.group_account_user'))]"/>-->
+<!--            <field eval="0" name="perm_unlink"/>-->
+<!--            <field eval="0" name="perm_write"/>-->
+<!--            <field eval="1" name="perm_read"/>-->
+<!--            <field eval="0" name="perm_create"/>-->
+<!--            <field name="domain_force">[('state', '!=', 'draft'])]</field>-->
             <field name="arch" type="xml">
                 <xpath expr="/form/header/button[@name='post']" position="after">
                     <button name="submit_payment" class="oe_highlight" states="draft" string="Submit" groups="de_payment_workflow.group_submit_payment" type="object"/>

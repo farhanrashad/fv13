@@ -27,12 +27,10 @@ class ProductStock(models.TransientModel):
     location_id = fields.Many2one('stock.location', string='Location',required=True)
     
 
-    @api.multi
     def print_report(self, data):
         data = {'product_id': self.product_id.id,'categ_ids':[p.id for p in self.categ_ids], 'pricelist_id':self.pricelist_id.id, 'dated': self.dated, 'warehouse_id':self.warehouse_id.id, 'location_id':self.location_id.id}
         return self.env.ref('de_stock_valuation_report.stock_valuation_pdf').report_action(self, data=data)
     
-    @api.multi
     def action_print_xlsx_report(self,data):
         data = {'product_id': self.product_id.id,'categ_ids':[p.id for p in self.categ_ids], 'pricelist_id':self.pricelist_id.id, 'dated': self.dated, 'warehouse_id':self.warehouse_id.id, 'location_id':self.location_id.id}
         return self.env.ref('de_stock_valuation_report.stock_valuation_xlsx').report_action(self, data=data)

@@ -1,4 +1,6 @@
 # -*- coding: utf-8 -*-
+# access_de_partner_tax_de_partner_tax,de_partner_tax.de_partner_tax,model_de_partner_tax_de_partner_tax,base.group_user,1,1,1,1
+
 
 from odoo import models, fields, api
 

@@ -37,20 +37,17 @@ class account_payment(models.Model):
                               ('cancelled', 'Cancelled')],
                              readonly=True, default='draft', copy=False, string="Status", track_visibility='onchange')
 
-    @api.multi
     def action_draft(self):
         res = super(account_payment, self).action_draft()
         self.message_post(body=_('Dear %s, you are set payment to Draft.') % (self.env.user.name),
                           partner_ids=[self.env.user.partner_id.id])
         return res
 
-    @api.multi
     def submit_payment(self):
         self.write({'state': 'submit'})
         self.message_post(body=_('Dear %s, payment is submitted for Approval.') % (self.env.user.name,),
                           partner_ids=[self.env.user.partner_id.id])
 
-    @api.multi
     def approve_payment(self):
         self.write({'state': 'approved'})
         self.message_post(body=_('Dear %s, payment has approved.') % (self.env.user.name,),
@@ -75,11 +72,9 @@ class account_payment(models.Model):
     #             'It is not allowed to delete a payment that already created a journal entry since it would create a gap in the numbering. You should create the journal entry again and cancel it thanks to a regular revert.'))
     #     return super(account_payment, self).unlink()
 
-    @api.multi
     def just_create_payment(self):
         return True
 
-    @api.multi
     def post(self):
         self.write({'state': 'draft'})
         res = super(account_payment, self).post()

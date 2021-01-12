@@ -21,3 +21,9 @@ class ProjectTaskExt(models.Model):
                 else:
                     pass
 
+
+class PartnerInherit(models.Model):
+    _inherit = 'res.partner'
+
+    name = fields.Char(track_visibility="onchange")
+

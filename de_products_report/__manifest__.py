@@ -12,7 +12,7 @@
     "sequence": 1,
     "author": "Dynexcel",
     "website": "http://www.dynexcel.co",
-    "version": '11.0.0.0',
+    "version": '13.0.0.0',
     "depends": ['sale','product'],
     "data": [
         'reports/product_report.xml',
