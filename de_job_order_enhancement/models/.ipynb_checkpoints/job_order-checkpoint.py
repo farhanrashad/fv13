@@ -705,13 +705,6 @@ class JobOrderBOMCompoent(models.Model):
                 product_list.append(line_vals)  
             
     
-            vals = {
-                  'partner_id': vendor.id,
-                  'date_order': fields.Date.today(),
-                  'job_order_id': self.job_order_id.id,
-                  'origin': self.job_order_id.name,
-                    }
-            order = self.env['purchase.order'].create(vals)
             for prod in product_list:
                 order_line = {
                        'order_id': order.id,
