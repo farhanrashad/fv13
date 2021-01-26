@@ -21,8 +21,8 @@
             string="PO Matrix Report"
             model="purchase.order"
             report_type="qweb-pdf"
-            name="de_po_matrix_report.matrix_report_template"
-            file="de_po_matrix_report.matrix_report_template"
+            name="de_po_matrix_report.action_po_matrix_report"
+            file="de_po_matrix_report.action_po_matrix_report"
             paperformat="po_matrix_paperformat"/>
     
     <record id="action_po_matrix_report" model="ir.actions.report">
@@ -39,8 +39,9 @@
 		<field name="model">purchase.order</field>
 		<field name="inherit_id" ref="purchase.purchase_order_form" />
 		<field name="arch" type="xml">
+            
             <xpath expr="//header/button[@name='button_cancel']" position="after">
-                    <button string="Matrix" name="print_po_matrix_report" type="object" class="oe_highlight" />
+                    <button string="Print Dyeing Report" name="print_po_matrix_report" type="object"/>
             </xpath>
 			
 
