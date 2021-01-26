@@ -49,23 +49,7 @@
                     <notebook>
 <!--                         editable="bottom"-->
 
-                        
-
-                        
-                         <page name='stock_gatepass_line_ids' string="Stock Move New">
-                            <field name="line_ids" >
-                                <tree string="Stock Gatepass Lines">
-                                    <field name="stock_move_line_id" />
-                                    <field name="gatepass_quantity" />
-                                    <field name="gatepass_origin" />
-                                   
-                                </tree>
-                            </field>
-                        </page>
-                        
-                        
-                        
-<!-- 						 <page name='stock_move_line_ids' string="Stock Move New">
+						 <page name='stock_move_line_ids' string="Stock Move New">
                             <field name="stock_move_line_ids" >
                                 <tree string="Stock Move Lines">
                                     <field name="date" readonly="1"/>
@@ -78,10 +62,10 @@
                                     <field name="remaining_qty" readonly="1"/>
                                 </tree>
                             </field>
-                        </page> -->
+                        </page>
 						
 						
-<!--                         <page name='stock_move_lines' string="Stock Move">
+                        <page name='stock_move_lines' string="Stock Move">
                             <field name="stock_move_lines" widget="many2many" options="{'no_create':True, 'no_edit':True}" >
                                 <tree string="Stock Move Lines">
                                     <field name="date" readonly="1"/>
@@ -94,7 +78,7 @@
                                     <field name="remaining_qty" readonly="1"/>
                                 </tree>
                             </field>
-                        </page> -->
+                        </page>
                     </notebook>
                 </sheet>
                 <div class="oe_chatter">
@@ -132,5 +116,4 @@
     <menuitem name="Gatepass" id="stock_gatepass_menu" parent="stock.menu_stock_warehouse_mgmt" action="stock_gatepass_action" sequence="30"/>
   </data>
 </odoo>
-
 
