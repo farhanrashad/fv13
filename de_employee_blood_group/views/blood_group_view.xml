@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+	<record id="employee_blood_group_form_view" model="ir.ui.view">
+        <field name="name">view.employee.blood.group.form.view</field>
+        <field name="model">hr.employee</field>
+        <field name="type">form</field>
+        <field name="inherit_id" ref="hr.view_employee_form"/>
+        <field name="arch" type="xml">
+			<xpath expr="//field[@name='country_of_birth']" position="after">
+				<field name='blood_group'/>
+			</xpath>
+        </field>
+    </record>
+
+</odoo>
+
+
