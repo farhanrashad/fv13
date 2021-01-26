@@ -5,6 +5,7 @@
         <t t-call="web.external_layout">
             <t t-call="web.html_container">
                 <t t-foreach="docs" t-as='o'>
+                    <h2> Color Assortment(Pieces)</h2>
                     <table class="table table-condensed">
                         <thead>
                             <tr>
@@ -15,6 +16,8 @@
                                 </tr>
                         </thead>
                         <tbody>
+                            
+                             <t t-set="total" t-value="0"/>
                             <t t-foreach='color_list' t-as="color">
                                 <t t-set="total_qty" t-value="0"/>
                                 <tr>
@@ -22,12 +25,11 @@
                                         <span t-esc="color"/>
                                     </td>
                                     <t t-foreach='model_list' t-as="model">
-                                        <t t-foreach="product_qty(color, model)" t-as="pd"> 
-                                            <t t-set="total_qty" t-value="total_qty + pd.product_qty" />  
-                                            <td>
-                                                <span t-esc="pd.product_qty"/>
-                                            </td>
-                                        </t>
+                                        
+                                            <t t-set="total_qty" t-value="total_qty + product_qty(color, model)" />
+                                            <td >
+                                                <span t-esc="product_qty(color, model)"/>
+                                            </td>          
                                     </t>
                                     <td>
                                         <span t-esc="total_qty"/>           
@@ -36,16 +38,86 @@
                             </t>
                             <tr class="border-black o_total">
                                 <td>
-<!--                                     <span t-esc="sum([rec.product_qty for rec in o.order_line])"/> -->
                                 </td>
+                                
+                                    <t t-foreach='model_list' t-as="model">
+                                        <t t-set="total_model" t-value="0"/>
+                                        <t t-foreach='color_list' t-as="color">
+                                             <t t-set="total_model" t-value="total_model + product_qty(color, model)" />
+                                            
+                                        </t>
+                                        <td>
+                                            <span t-esc="total_model"/>
+                                        </td>
+                                        <t t-set="total" t-value="total + total_model" />
+
+                                    </t>
+                                
+                                 
                                 <td>
-                                    <span t-esc="sum([rec.product_qty for rec in o.order_line])"/>
+                                    <span t-esc="total"/>
                                 </td>
                             </tr>
                             
                         </tbody>
                     </table>
                     <p style="page-break-before:always;"> </p>
+                    <h2> Color Assortment(kgs)</h2>
+                    <table class="table table-condensed">
+                        <thead>
+                            <tr>
+                                <th></th>
+                            <t t-foreach='model_list' t-as="model">
+                                <th> <span t-esc="model"/></th>   
+                            </t>
+                                </tr>
+                        </thead>
+                        <tbody>
+                            <t t-set="total" t-value="0"/>
+                            <t t-foreach='color_list' t-as="color">
+                                <t t-set="total_weight" t-value="0"/>
+                                <tr>
+                                    <td>
+                                        <span t-esc="color"/>
+                                    </td>
+                                    <t t-foreach='model_list' t-as="model">
+                                            <t t-set="total_weight" t-value="total_weight + product_weight(color, model)" />
+                                            <td >
+                                                <span t-esc="product_weight(color, model)"/>
+                                            </td>                                    
+                                       
+                                    </t>
+                                    <td>
+                                        <span t-esc="total_weight"/>     
+                                    </td>
+                                    <t t-set="total" t-value="total + total_weight" />
+                                </tr>
+                            </t>
+                            <tr class="border-black o_total">
+                                <td>
+                                </td>
+                                
+                                    <t t-foreach='model_list' t-as="model">
+                                        <t t-set="total_model" t-value="0"/>
+                                        <t t-foreach='color_list' t-as="color">
+                                             <t t-set="total_model" t-value="total_model + product_weight(color, model)" />
+                                            
+                                        </t>
+                                        <td>
+                                            <span t-esc="total_model"/>
+                                        </td>
+                                    </t>
+                                
+                                 
+                                <td>
+                                    <span t-esc="total"/>
+                                </td>
+                            </tr>
+                            
+                        </tbody>
+                    </table> 
+
+                    
                 </t>
             </t>
         </t>

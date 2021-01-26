@@ -20,13 +20,34 @@ class POMatrixReport(models.AbstractModel):
         docs = self.env[self.model].browse(self.env.context.get('active_id'))
         records_list = []
         for record in docs.order_line:
-            data = record.product_id.name
-            x = re.search(model, data)
-            y = re.search(color, data)
-            if x and y:
-                records_list.append(record.id)
+            if record.display_type != "line_section":
+                data = record.product_id.name
+                x = re.search(model, data)
+                y = re.search(color, data)
+                if x and y:
+                    records_list.append(record.id)
         rec = self.env['purchase.order.line'].browse(records_list)
-        return rec
+        if rec:
+            return rec.product_qty
+        else:
+            return 0.0
+        
+    def get_weight(self, color, model):
+        self.model = self.env.context.get('active_model')
+        docs = self.env[self.model].browse(self.env.context.get('active_id'))
+        records_list = []
+        for record in docs.order_line:
+            if record.display_type != "line_section":
+                data = record.product_id.name
+                x = re.search(model, data)
+                y = re.search(color, data)
+                if x and y:
+                    records_list.append(record.id)
+        rec = self.env['purchase.order.line'].browse(records_list)
+        if rec:
+            return rec.total_weight
+        else:
+            return 0.0
         
     
     def _get_report_values(self, docids, data=None):
@@ -38,14 +59,16 @@ class POMatrixReport(models.AbstractModel):
         model_list = []
         for record in docs.order_line:
             data = record.product_id.name
-            color_name = data.split('(', 1)[1].split(')')[0]
-            model_name = data.split('(', 1)[0]
-            color_list.append(color_name)
-            model_list.append(model_name)
+            if record.display_type != "line_section":
+                color_name = data.split('(', 1)[1].split(')')[0]
+                model_name = data.split('(', 1)[0]
+                color_list.append(color_name)
+                model_list.append(model_name)
 #             raise UserError((colors))
 #             raise UserError((description))
 #             color = colors.find("(")+1:colors.find(")")
-
+        
+        color_list = list(dict.fromkeys(color_list))
         model_list = list(dict.fromkeys(model_list))
 
         return {
@@ -54,6 +77,7 @@ class POMatrixReport(models.AbstractModel):
                 'model_list':model_list,
                 'color_list': color_list,
                 'product_qty': self.get_matched_record,
+                'product_weight': self.get_weight
             }
         
             
