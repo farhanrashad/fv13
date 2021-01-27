@@ -31,17 +31,29 @@
 				
 				</div>
                     <h2> Color Assortment(Pieces)</h2>
-                    <table class="table table-condensed">
+                    <table class="table table-bordered">
                         <thead>
-                            <tr>
-                                <th></th>
-                            <t t-foreach='model_list' t-as="model">
-                                <th> <span t-esc="model"/></th>   
-                            </t>
+                                <tr>
+                                <th>Size</th>
+                                    <t t-foreach='model_list' t-as="model">
+                                        <th> <span t-esc="model"/></th>   
+                                    </t>
                                 </tr>
                         </thead>
                         <tbody>
-                            
+                                <tr>
+                                    <td>
+                                        <span ><strong>Griege Weight</strong></span>
+                                    </td> 
+                                    <t t-foreach='model_list' t-as="model">
+                                        <td >
+                                            <span t-esc="product_unit(model)"/>
+                                        </td>          
+                                    </t>
+                                    <td>
+                                        <span><strong>Total</strong></span>
+                                    </td> 
+                                </tr>
                              <t t-set="total" t-value="0"/>
                             <t t-foreach='color_list' t-as="color">
                                 <t t-set="total_qty" t-value="0"/>
@@ -57,14 +69,14 @@
                                             </td>          
                                     </t>
                                     <td>
-                                        <span t-esc="total_qty"/>           
+                                        <strong><span t-esc="total_qty"/></strong>        
                                     </td>
                                 </tr>
                             </t>
                             <tr class="border-black o_total">
                                 <td>
+                                    <span><strong>Total</strong></span>
                                 </td>
-                                
                                     <t t-foreach='model_list' t-as="model">
                                         <t t-set="total_model" t-value="0"/>
                                         <t t-foreach='color_list' t-as="color">
@@ -72,15 +84,13 @@
                                             
                                         </t>
                                         <td>
-                                            <span t-esc="total_model"/>
+                                            <strong> <span t-esc="total_model"/></strong>   
                                         </td>
                                         <t t-set="total" t-value="total + total_model" />
 
                                     </t>
-                                
-                                 
                                 <td>
-                                    <span t-esc="total"/>
+                                  <strong><span t-esc="total"/></strong>
                                 </td>
                             </tr>
                             
@@ -88,13 +98,14 @@
                     </table>
                     <p style="page-break-before:always;"> </p>
                     <h2> Color Assortment(kgs)</h2>
-                    <table class="table table-condensed">
+                    <table class="table table-bordered">
                         <thead>
                             <tr>
-                                <th></th>
+                                <th>Size</th>
                             <t t-foreach='model_list' t-as="model">
                                 <th> <span t-esc="model"/></th>   
                             </t>
+                                <th><span style="border: 1px solid Transparent!important;">Total</span></th>
                                 </tr>
                         </thead>
                         <tbody>
@@ -106,21 +117,22 @@
                                         <span t-esc="color"/>
                                     </td>
                                     <t t-foreach='model_list' t-as="model">
-                                            <t t-set="total_weight" t-value="total_weight + product_weight(color, model)" />
-                                            <td >
-                                                <span t-esc="product_weight(color, model)"/>
-                                            </td>                                    
+                                        <t t-set="total_weight" t-value="total_weight + product_weight(color, model)" />
+                                        <td >
+                                            <span t-esc="product_weight(color, model)"/>
+                                        </td>                                    
                                        
                                     </t>
                                     <td>
-                                        <span t-esc="total_weight"/>     
+                                        <strong><span t-esc="total_weight"/></strong>
                                     </td>
                                     <t t-set="total" t-value="total + total_weight" />
                                 </tr>
                             </t>
-                            <tr class="border-black o_total">
-                                <td>
-                                </td>
+                            <tr>
+                                    <td>
+                                        <span><strong>Total</strong></span>
+                                    </td>
                                 
                                     <t t-foreach='model_list' t-as="model">
                                         <t t-set="total_model" t-value="0"/>
@@ -129,13 +141,14 @@
                                             
                                         </t>
                                         <td>
-                                            <span t-esc="total_model"/>
+                                          <strong><span t-esc="total_model"/></strong>
                                         </td>
+                                       
                                     </t>
-                                
+                                 
                                  
                                 <td>
-                                    <span t-esc="total"/>
+                                    <strong><span t-esc="total"/></strong>
                                 </td>
                             </tr>
                             
