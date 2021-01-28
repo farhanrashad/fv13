@@ -59,10 +59,15 @@ class JobOrder(models.Model):
             unit_weight = sale.unit_weight
             bom_versions = sale.bom_version
             
+            velour_greige_qty = 0.0                
+            for rule in self.struct_id.rule_ids:
+                if rule.code=='VW':
+                    velour_greige_qty = (1 + (rule.quantity_percentage/100))
+                    
             sized_yarn_qty = 0.0                
             for rule in self.struct_id.rule_ids:
                 if rule.code=='CDW':
-                    sized_yarn_qty = (1 + (rule.quantity_percentage/100))
+                    sized_yarn_qty = (1 + (rule.quantity_percentage/100))        
                 
             yarn_qty = 0.0                
             for rule in self.struct_id.rule_ids:
@@ -95,20 +100,29 @@ class JobOrder(models.Model):
                            }  
                 bom_product.append(bom_vals)
                 for component_level1 in product_variant_bom[0].bom_line_ids:   
-            # Level 1         
+            # Level 1 
+#                     raise UserError(_('Please Select Vendor on Product Form:' + ' ' + str(component_level1.product_id.name)))
+
                     product_list.append(component_level1.product_id.name)
                     component_bom_level1_type = self.env['mrp.bom'].search([('product_tmpl_id.name','=',component_level1.product_id.name)])
                     component_production_quantity1 = 0
                     component_weight1 = 0
                     if component_bom_level1_type.categ_id.id == 10:
-                       component_production_quantity1 =  order_qty * variant_qty
-                       component_weight1 = unit_weight * order_qty * variant_qty
+                        component_production_quantity1 =  order_qty * variant_qty
+                        component_weight1 = unit_weight * order_qty * variant_qty
+                    elif component_bom_level1_type.categ_id.id == 12:
+                        component_production_quantity1 =  order_qty * variant_qty
+                        component_weight1 = unit_weight * order_qty * variant_qty    
                     elif component_bom_level1_type.categ_id.id == 15:
-                       component_production_quantity1 =  order_qty * variant_qty
-                       component_weight1 = unit_weight * order_qty * variant_qty 
+                        component_production_quantity1 =  order_qty * variant_qty
+                        component_weight1 = unit_weight * order_qty * variant_qty 
                     elif component_bom_level1_type.categ_id.id == 22:
-                       component_production_quantity1 =  order_qty * variant_qty
-                       component_weight1 = unit_weight * order_qty * variant_qty
+                        component_production_quantity1 =  order_qty * variant_qty
+                        component_weight1 = unit_weight * order_qty * variant_qty
+                    if component_level1.product_id.categ_id.id == 14:
+                        component_production_quantity1 =  (component_level1.product_qty * yarn_qty * unit_weight * order_qty * variant_qty)/component_level1.product_id.uom_po_id.factor_inv
+                        component_weight1 = component_level1.product_qty * yarn_qty * unit_weight * order_qty * variant_qty
+                        
                     if component_bom_level1_type:    
                         bom_vals =   {
                                  'job_order_id':  self.name,
@@ -147,6 +161,12 @@ class JobOrder(models.Model):
                             elif component_bom_level2_type.categ_id.id == 12:
                                 component_production_quantity2 =  order_qty * variant_qty
                                 component_weight2 = unit_weight * order_qty * variant_qty * greige_qty
+                            elif component_level2.product_id.categ_id.id == 27:
+                                component_production_quantity2 =  order_qty * variant_qty
+                                component_weight2 = unit_weight * order_qty * variant_qty * greige_qty    
+                            elif component_level2.product_id.categ_id.id == 14:
+                                component_production_quantity2 =  (component_level2.product_qty * yarn_qty * unit_weight * order_qty * variant_qty)/component_level1.product_id.uom_po_id.factor_inv
+                                component_weight2 = component_level2.product_qty * yarn_qty * unit_weight * order_qty * variant_qty    
                             if component_bom_level2_type:    
                                 
                                 bom_vals =   {
@@ -184,11 +204,11 @@ class JobOrder(models.Model):
                                     product_list.append(component_level3.product_id.name)
                                     component_bom_level3_type = self.env['mrp.bom'].search([('product_tmpl_id.name','=',component_level3.product_id.name)])
                                     if component_level3.product_id.categ_id.id == 14:
-                                        component_production_quantity3 =  (component_level3.product_qty * yarn_qty * unit_weight * order_qty * variant_qty * greige_qty)/component_level3.product_id.uom_po_id.factor_inv
-                                        component_weight3 = component_level3.product_qty * yarn_qty * unit_weight * order_qty * variant_qty * greige_qty
+                                        component_production_quantityt3 =  (component_level3.product_qty * yarn_qty * unit_weight * order_qty * variant_qty * greige_qty)/component_level3.product_id.uom_po_id.factor_inv
+                                        component_weightt3 = component_level3.product_qty * yarn_qty * unit_weight * order_qty * variant_qty * greige_qty
                                     elif component_level3.product_id.categ_id.id == 12:
-                                        component_production_quantity3 =   (component_level3.product_qty * yarn_qty * unit_weight * order_qty * variant_qty * greige_qty)/component_level3.product_id.uom_po_id.factor_inv
-                                        component_weight3 = component_level3.product_qty * yarn_qty * unit_weight * order_qty * variant_qty * greige_qty  
+                                        component_production_quantity3 =   (order_qty * variant_qty * velour_greige_qty )/component_level3.product_id.uom_po_id.factor_inv
+                                        component_weight3 = unit_weight * order_qty * variant_qty * greige_qty * velour_greige_qty 
                                     bom_vals =   {
                                          'job_order_id':  self.name,
                                          'product_id': component_level3.product_id.id,
@@ -208,15 +228,20 @@ class JobOrder(models.Model):
                                             product_list.append(component_level4.product_id.name)
 
                                             component_bom_level4_type = self.env['mrp.bom'].search([('product_tmpl_id.name','=',component_level4.product_id.name)])
-
+                                            if component_level3.product_id.categ_id.id == 12:
+                                                component_production_quantity4 =   (component_level4.product_qty * order_qty * variant_qty * velour_greige_qty * yarn_qty)/component_level4.product_id.uom_po_id.factor_inv
+                                                component_weight4 = component_level4.product_qty * unit_weight * order_qty * variant_qty * greige_qty * velour_greige_qty * yarn_qty
+                                            else:
+                                                component_production_quantity4 =   (component_level4.product_qty * yarn_qty *unit_weight * order_qty * variant_qty * greige_qty)/component_level4.product_id.uom_po_id.factor_inv
+                                                component_weight4 = component_level4.product_qty * yarn_qty * unit_weight * order_qty * variant_qty * greige_qty
 
                                             bom_vals =   {
                                                  'job_order_id':  self.name,
                                                  'product_id': component_level4.product_id.id,
                                                  'type': component_bom_level4_type.type,
                                                  'quantity':  component_level4.product_qty,
-                                                 'production_quantity':  (component_level4.product_qty * yarn_qty *unit_weight * order_qty * variant_qty * greige_qty)/component_level4.product_id.uom_po_id.factor_inv,
-                                                'weight':component_level4.product_qty * yarn_qty * unit_weight * order_qty * variant_qty * greige_qty,
+                                                 'production_quantity':  component_production_quantity4,
+                                                'weight': component_weight4 ,
                                                  'source_product_id': sale_product,
                                                }  
                                             bom_product.append(bom_vals) 
@@ -341,14 +366,14 @@ class JobOrder(models.Model):
                             product_list.append(component_level2.product_id.name)
                             component_bom_level2_type = self.env['mrp.bom'].search([('product_tmpl_id.name','=',component_level2.product_id.name)])
                             if component_level2.product_id.categ_id.id == 13:
-                                component_production_quantityt2 =  (component_level2.product_qty * yarn_qty * unit_weight * order_qty * variant_qty * greige_qty * sized_yarn_qty)/component_level2.product_id.uom_po_id.factor_inv
-                                component_weightt2 = component_level2.product_qty * unit_weight * yarn_qty * order_qty * variant_qty * greige_qty * sized_yarn_qty
+                                component_production_quantityt2 =  (component_level2.product_qty * order_qty * variant_qty * yarn_qty)/component_level2.product_id.uom_po_id.factor_inv
+                                component_weightt2 = component_level2.product_qty * order_qty * variant_qty * yarn_qty
                             elif component_level2.product_id.categ_id.id == 12:
                                 component_production_quantityt2 =  order_qty * variant_qty
                                 component_weightt2 = unit_weight * order_qty * variant_qty * greige_qty
                             elif component_level2.product_id.categ_id.id == 14:
-                                component_production_quantityt2 =  (component_level2.product_qty * yarn_qty * unit_weight * order_qty * variant_qty * greige_qty)/component_level2.product_id.uom_po_id.factor_inv
-                                component_weightt2 = component_level2.product_qty * yarn_qty * unit_weight * order_qty * variant_qty * greige_qty
+                                component_production_quantityt2 =  (component_level2.product_qty * order_qty * variant_qty * yarn_qty)/component_level2.product_id.uom_po_id.factor_inv
+                                component_weightt2 = component_level2.product_qty *order_qty * variant_qty * yarn_qty
                             elif component_level2.product_id.categ_id.id == 17:
                                 component_production_quantityt2 =  (component_level2.product_qty * yarn_qty * unit_weight * order_qty * variant_qty * greige_qty)/component_level2.product_id.uom_po_id.factor_inv
                                 component_weightt2 = component_level2.product_qty * yarn_qty * unit_weight * order_qty * variant_qty * greige_qty    
@@ -374,8 +399,8 @@ class JobOrder(models.Model):
                                     product_list.append(component_level3.product_id.name)
                                     component_bom_level3_type = self.env['mrp.bom'].search([('product_tmpl_id.name','=',component_level3.product_id.name)])
                                     if component_level3.product_id.categ_id.id == 14:
-                                        component_production_quantityt3 =  (component_level3.product_qty * yarn_qty * unit_weight * order_qty * variant_qty * greige_qty)/component_level3.product_id.uom_po_id.factor_inv
-                                        component_weightt3 = component_level3.product_qty * yarn_qty * unit_weight * order_qty * variant_qty * greige_qty
+                                        component_production_quantityt3 =  (component_level3.product_qty * order_qty * variant_qty * yarn_qty * sized_yarn_qty)/component_level3.product_id.uom_po_id.factor_inv
+                                        component_weightt3 = component_level2.product_qty * order_qty * variant_qty * yarn_qty * sized_yarn_qty
                                     elif component_level3.product_id.categ_id.id == 13:
                                         component_production_quantityt3 =   (component_level3.product_qty * unit_weight * order_qty * variant_qty * greige_qty * sized_yarn_qty)/component_level3.product_id.uom_po_id.factor_inv
                                         component_weightt3 = component_level3.product_qty *  unit_weight * order_qty * variant_qty * greige_qty * sized_yarn_qty   
