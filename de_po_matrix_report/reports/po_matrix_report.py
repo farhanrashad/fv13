@@ -28,6 +28,7 @@ class POMatrixReport(models.AbstractModel):
                     records_list.append(record.id)
         rec = self.env['purchase.order.line'].browse(records_list)
         if rec:
+            rec = rec[0]
             return rec.product_qty
         else:
             return 0.0
