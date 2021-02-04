@@ -207,7 +207,7 @@ class JobOrder(models.Model):
                                         component_production_quantityt3 =  (component_level3.product_qty * yarn_qty * unit_weight * order_qty * variant_qty * greige_qty)/component_level3.product_id.uom_po_id.factor_inv
                                         component_weightt3 = component_level3.product_qty * yarn_qty * unit_weight * order_qty * variant_qty * greige_qty
                                     elif component_level3.product_id.categ_id.id == 12:
-                                        component_production_quantity3 =   (order_qty * variant_qty * velour_greige_qty )/component_level3.product_id.uom_po_id.factor_inv
+                                        component_production_quantity3 =   (order_qty * variant_qty)/component_level3.product_id.uom_po_id.factor_inv
                                         component_weight3 = unit_weight * order_qty * variant_qty * greige_qty * velour_greige_qty 
                                     bom_vals =   {
                                          'job_order_id':  self.name,
@@ -614,7 +614,7 @@ class JobOrderBOMCompoent(models.Model):
                 if line_bom:
                     for bom in line_bom[0]:
                         for component in bom.bom_line_ids:
-
+                            
                             line__bom_vals.append((0,0, {
                                     'product_id': component.product_id.id,
                                     'name': component.product_id.name,
@@ -728,8 +728,15 @@ class JobOrderBOMCompoent(models.Model):
                              'product_uom': produt_uniq.uom_po_id.id,
                                 }
                 product_list.append(line_vals)  
+            vals = {
+                  'partner_id': vendor.id,
+                  'date_order': fields.Date.today(),
+                  'origin' : self.job_order_id.name,
+                  'job_order_id': self.job_order_id.id,
+                  'sale_id': self.job_order_id.sale_id.id 
+                    }
+            order = self.env['purchase.order'].create(vals)
             
-    
             for prod in product_list:
                 order_line = {
                        'order_id': order.id,
@@ -749,4 +756,4 @@ class JobOrderBOMCompoent(models.Model):
                   	})
                 
                 
-    
+     
