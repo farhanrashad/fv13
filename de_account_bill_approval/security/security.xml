@@ -6,9 +6,6 @@
             <field name="name">Bill Approval Request</field>
             <field name="description">Helps You Handle Your Basic Needs</field>
         </record>
-    </data>
-
-    <data>
         <record id="group_waiting_for_approval" model="res.groups">
             <field name="name">Waiting For Approval</field>
             <field name="category_id" ref="module_de_vendor_bill"/>
