@@ -26,11 +26,11 @@
 """,
   "live_test_url"        :  "",
   "depends"              :  [
-                             'account','purchase'
+                             'account',
                             ],
     "data":  [
         'security/ir.model.access.csv',
-        'views/vendor_bill_group_view.xml',
+        'security/security.xml',
         'views/vendor_bill_approval_view.xml',
         'views/vendor_bill_state_view.xml',
         'views/vendor_bill_view.xml'
