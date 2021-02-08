@@ -8,7 +8,7 @@
 			<field name="inherit_id" ref="mrp.view_stock_move_raw_tree"/>
 			<field name="arch" type="xml">
                 <xpath expr="//field[@name='product_uom_qty']" position="after">
-                   <field name="stock_total_weight"/>
+                   <field name="stock_total_weight" invisible="1"/>
                 </xpath> 
 			  
 		

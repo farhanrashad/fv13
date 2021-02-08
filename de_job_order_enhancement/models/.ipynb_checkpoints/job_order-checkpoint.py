@@ -544,7 +544,7 @@ class JobOrderBOMCompoent(models.Model):
     
     def _default_src_location(self):
         return self.env['stock.location'].search([
-            ('name', '=', 'Stock'),],
+             ('name', '=', 'Stock'),],
             limit=1).id
     
     def _default_dest_location(self):
@@ -600,7 +600,9 @@ class JobOrderBOMCompoent(models.Model):
         
     def action_generate_production_order(self):
         product_uniq_list = []
+        count = 0
         for line in self:
+            job_order_ids = line.job_order_id.id
             production_qty = 0.0
             production_weight = 0.0
             product_count = 0
@@ -609,37 +611,39 @@ class JobOrderBOMCompoent(models.Model):
                     product_uniq_list.append(line.product_id.id)        
                 line__bom_vals = []        
                 bom_qty = 0.0
-                line_bom = self.env['mrp.bom'].search([('product_tmpl_id.name','=',line.product_id.name)])
-                variant_line_bom = self.env['mrp.bom'].search([('product_id.name','=',line.product_id.name)])
-                if line_bom:
-                    for bom in line_bom[0]:
-                        for component in bom.bom_line_ids:
-
-                            line__bom_vals.append((0,0, {
-                                    'product_id': component.product_id.id,
-                                    'name': component.product_id.name,
-                                    'product_uom': component.product_id.uom_po_id.id,
-                                    'product_uom_qty':line.production_quantity,
-                                    'stock_total_weight': line.weight, 
-                                    'date': fields.Date.today(),
-                                    'date_expected': fields.Date.today(),
-                                    'location_id': line.location_src_id.id,
-                                    'location_dest_id': line.location_dest_id.id,
-                            }))
-                else:
+                line_bom = self.env['mrp.bom'].search([('product_tmpl_id','=',line.product_id.product_tmpl_id.id)])
+                variant_line_bom = self.env['mrp.bom'].search([('product_id','=',line.product_id.id)])
+#                 raise UserError((str(line.product_id.id)))
+                if variant_line_bom:
                     for bom in variant_line_bom[0]:
                         for component in bom.bom_line_ids:
-
+                        
+                            product1_weight1 = self.env['job.order.bom.component'].search([('product_id','=',component.product_id.id),('job_order_id','=', line.job_order_id.id)])
                             line__bom_vals.append((0,0, {
                                     'product_id': component.product_id.id,
                                     'name': component.product_id.name,
-                                    'product_uom': component.product_id.uom_po_id.id,
-                                    'product_uom_qty': line.production_quantity,
-                                    'stock_total_weight': line.weight, 
+                                    'product_uom': component.product_id.uom_id.id,
+                                    'product_uom_qty':product1_weight1.production_quantity,
+                                    'stock_total_weight': product1_weight1.weight, 
                                     'date': fields.Date.today(),
                                     'date_expected': fields.Date.today(),
-                                    'location_id': line.location_src_id.id,
-                                    'location_dest_id': line.location_dest_id.id,
+                                    'location_id': 8,
+                                    'location_dest_id': 15,
+                            }))
+                else:
+                    for bom in line_bom[0]:
+                        for component in bom.bom_line_ids:
+                            product1_weight1 = self.env['job.order.bom.component'].search([('product_id','=',component.product_id.id),('job_order_id','=', line.job_order_id.id)])
+                            line__bom_vals.append((0,0, {
+                                    'product_id': component.product_id.id,
+                                    'name': component.product_id.name,
+                                    'product_uom': component.product_id.uom_id.id,
+                                    'product_uom_qty': product1_weight1.production_quantity,
+                                    'stock_total_weight': product1_weight1.weight, 
+                                    'date': fields.Date.today(),
+                                    'date_expected': fields.Date.today(),
+                                    'location_id': 8,
+                                    'location_dest_id': 15,                                  
                             }))
                     
                             
@@ -650,7 +654,7 @@ class JobOrderBOMCompoent(models.Model):
                         'production_total_weight':line.weight, 
                         'origin': self.job_order_id.name, 
                         'job_order_id': self.job_order_id.id, 
-                        'bom_id': line_bom[0].id,
+                        'bom_id': variant_line_bom[0].id,
                         'date_planned_start': fields.Date.today(),
                         'picking_type_id': line.picking_type_id.id,
                         'location_src_id': line.location_src_id.id,
@@ -662,6 +666,8 @@ class JobOrderBOMCompoent(models.Model):
                     line.update ({
                         'production_created': True,
                         })
+                    
+            count = count + 1        
                 
           
     

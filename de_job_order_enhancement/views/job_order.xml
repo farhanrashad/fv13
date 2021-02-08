@@ -28,6 +28,7 @@
         <field name="arch" type="xml">
             <tree string="Material Sheet lines"  create="false" editable="bottom" decoration-danger="po_created==True" decoration-success="production_created==True"  >
                   <field name="product_id"  readonly="1"/>
+                  <field name="job_order_id"  readonly="1"/>
                  <field name="category_id"  readonly="1" optional="hide"/>
                   <field name="source_product_id"  readonly="1"/>
                   <field name="picking_type_id"  attrs="{'invisible': [('type','!=','normal')],'readonly': ['|',('po_created','=',True),('production_created','=',True)]}"  optional="hide"/>
@@ -69,6 +70,7 @@
                             <field name="job_order_material_ids" >
                                 <tree string="Job Order BOM lines" editable="bottom" create="false" delete="false">
                                     <field name="product_id"/>
+                                    <field name="job_order_id"  readonly="1"/>
                                     <field name="category_id"  readonly="1"/>
                                     <field name="source_product_id"  readonly="1"/>
                                     <field name="type"/>
