@@ -15,19 +15,19 @@ class MrpProductProduce(models.TransientModel):
         
     produced_weight = fields.Float('Weight Produced', readonly=False, digits=dp.get_precision('Stock Weight'), help="Weight produced")
     
-    @api.depends('qty_producing')
-    def _calcualte_produced_weight(self):
-        """
-        Compute the weight on change in quantity
-        """
-        self.produced_weight = self.qty_producing * self.product_id.weight
+#     @api.depends('qty_producing')
+#     def _calcualte_produced_weight(self):
+#         """
+#         Compute the weight on change in quantity
+#         """
+#         self.produced_weight = self.qty_producing * self.product_id.weight
         
-    @api.onchange('qty_producing')
-    def _onchange_produced_finish_weight(self):
-        """
-        Compute the weight on change in quantity
-        """
-        self.produced_weight = self.qty_producing * self.product_id.weight
+#     @api.onchange('qty_producing')
+#     def _onchange_produced_finish_weight(self):
+#         """
+#         Compute the weight on change in quantity
+#         """
+#         self.produced_weight = self.qty_producing * self.product_id.weight
         
     
     @api.onchange('produced_weight')
