@@ -35,71 +35,45 @@ class MrpProduction(models.Model):
     
     
     def button_generate_bill(self):
-        vendor_list = []
-        for line in self.cost_lines:
-            if line.partner_id and line.is_billed == False:
-                vendor_list.append(line.partner_id)
-            else:
-                pass
-        list = set(vendor_list)
-        for partner in list:
-            product_list = []
-            for line in self.cost_lines:
-                if partner == line.partner_id:
-                    if line.is_billed == False:
-                        product_list.append((0,0, {
-                            'product_id': line.product_id.id,
-                            'name': line.product_id.name,
-                            'account_id': line.account_id.id,
-                            'quantity': line.quantity, 
-                            'price_unit': line.product_id.standard_price,
-                            'partner_id': line.partner_id.id,
-                            'product_uom_id': line.product_id.uom_po_id.id,
+        product_list = []
+        for line in self:
+            product_list.append((0,0, {
+                    'name': line.name,
+                    'account_id': line.account_id.id,
+                    'quantity': line.product_qty, 
+                    'price_unit': line.cost,
+                    'partner_id': self.partner_id.id,
                         }))
-#                         product_list.append(valss)
-            vals = {
-                  'partner_id': partner.id,
-                  'journal_id': self.journal_id.id,
-                  'invoice_date': fields.Date.today(),
-                  'type': 'in_invoice',
-                  'invoice_origin': self.name,
-                  'invoice_line_ids': product_list   
-                    }
-            move = self.env['account.move'].create(vals)     
-        for line in self.cost_lines:
-            if line.is_billed == False and line.partner_id:
-                line.update ({
-#                    'po_process': False,
-                    'is_billed': True,
-                  	})
+                        
+        vals = {
+                'partner_id': self.partner_id.id,
+                'journal_id': self.journal_id.id,
+                'invoice_date': fields.Date.today(),
+                'type': 'in_invoice',
+                'invoice_origin': self.name,
+                'invoice_line_ids': product_list   
+                }
+        move = self.env['account.move'].create(vals)     
+        
                 
     def _get_default_journal(self):
         return self.env['account.journal'].search([
             ('type', '=', 'purchase'),],
-            limit=1).id            
-    
-    credit_account_id = fields.Many2one('account.account', string='Credit Account')    
-    journal_id = fields.Many2one('account.journal', string='Journal', default=_get_default_journal)
-    cost_lines = fields.One2many('mrp.production.direct.cost', 'production_id' ,string='Direct Cost Lines')    
-    
-    
-class MrpCost(models.Model):
-    _name = 'mrp.production.direct.cost'
-    _description = 'This Production Order Cost'
+            limit=1).id   
     
     def _get_default_account(self):
         return self.env['account.account'].search([
-            ('name', '=', 'STOCK INTERIM (RECEIVED)'),],
-            limit=1).id
+            ('id', '=', 111),],
+            limit=1).id 
+    
+    partner_id = fields.Many2one('res.partner', string='Vendor')    
+    journal_id = fields.Many2one('account.journal', string='Journal', default=_get_default_journal)
+    account_id = fields.Many2one('account.account', string='Expense Account', default=_get_default_account)
+    cost = fields.Float(string="Cost")
+    production_id = fields.Many2one('mrp.production', string="Manufacturing Order")
     
 
-    product_id = fields.Many2one('product.product',string='Product', domain="[('type', '=', 'service')]")
-    account_id = fields.Many2one('account.account', string='Account', default=_get_default_account)
-    quantity = fields.Float(string="Quantity")
-    production_id = fields.Many2one('mrp.production', string="Manufacturing Order")
-    is_charge = fields.Boolean(related='product_id.is_charge')
-    standard_price = fields.Float(related='product_id.standard_price', readonly=False)
-    is_billed = fields.Boolean(string='Billed', readonly=True)
-    partner_id = fields.Many2one('res.partner', related='product_id.seller_ids.name',readonly=False)
+    
+    
     
 
