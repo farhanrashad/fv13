@@ -6,6 +6,8 @@ from odoo.tools.misc import format_date
 
 
 
+
+
 class MrpProduction(models.Model):
     _inherit = 'mrp.production'
     
