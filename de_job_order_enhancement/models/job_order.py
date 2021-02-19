@@ -226,10 +226,11 @@ class JobOrder(models.Model):
                                         component_production_quantity3 =   (order_qty * variant_qty)/component_level3.product_id.uom_po_id.factor_inv
                                         component_weight3 = unit_weight * order_qty * variant_qty * greige_qty * velour_greige_qty
                                     
-                                    component_categ3 =  component_level3.product_id.categ_id.id
                                     elif component_level3.product_id.categ_id.id == 16:
                                         component_production_quantity3 =  (component_level3.product_qty * order_qty * variant_qty)
-                                        component_weight3 = component_level3.product_qty * unit_weight * order_qty * variant_qty * greige_qty * sized_yarn_qty
+                                        component_weight3 = component_level3.product_qty * unit_weight * order_qty * variant_qty * greige_qty * sized_yarn_qty                                         
+                                        component_categ3 =  component_level3.product_id.categ_id.id
+
                                     bom_vals =   {
                                          'job_order_id':  self.name,
                                          'product_id': component_level3.product_id.id,
