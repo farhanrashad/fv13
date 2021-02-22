@@ -89,6 +89,7 @@ class JobOrder(models.Model):
                     variant_qty = 1 + (rule.quantity_percentage/100)
                     
             if product_variant_bom:
+                variant_bom_category0 = product_variant_bom.product_id.categ_id.id 
                 bom_vals =   {
                          'job_order_id':  self.name,
                          'product_id': product_variant_bom.product_id.id,
@@ -119,9 +120,12 @@ class JobOrder(models.Model):
                     elif component_bom_level1_type.categ_id.id == 22:
                         component_production_quantity1 =  order_qty * variant_qty
                         component_weight1 = unit_weight * order_qty * variant_qty
+                       
                     elif component_level1.product_id.categ_id.id == 14 or component_level1.product_id.categ_id.id == 17:
                         component_production_quantity1 =  (component_level1.product_qty * yarn_qty * unit_weight * order_qty * variant_qty)/component_level1.product_id.uom_po_id.factor_inv
                         component_weight1 = component_level1.product_qty * yarn_qty * unit_weight * order_qty * variant_qty
+                        
+                         
                         
                     elif component_level1.product_id.categ_id.id == 16:
                         component_production_quantity1 =  (component_level1.product_qty * order_qty * variant_qty)
@@ -168,15 +172,17 @@ class JobOrder(models.Model):
                             elif component_level2.product_id.categ_id.id == 27:
                                 component_production_quantity2 =  order_qty * variant_qty
                                 component_weight2 = unit_weight * order_qty * variant_qty * greige_qty    
-                            elif component_level2.product_id.categ_id.id == 14  :
+                            elif component_level2.product_id.categ_id.id == 14 and  variant_bom_category0 != 12:
                                 component_production_quantity2 =  (component_level2.product_qty * yarn_qty * unit_weight * order_qty * variant_qty)/component_level1.product_id.uom_po_id.factor_inv
                                 component_weight2 = component_level2.product_qty * yarn_qty * unit_weight * order_qty * variant_qty 
                                 
                             elif component_level2.product_id.categ_id.id == 17:
                                 component_production_quantity2 =  (component_level2.product_qty * yarn_qty * unit_weight * order_qty * variant_qty)/component_level1.product_id.uom_po_id.factor_inv
                                 component_weight2 = component_level2.product_qty * yarn_qty * unit_weight * order_qty * variant_qty 
-                                
-                                
+                            elif component_level2.product_id.categ_id.id == 14 and variant_bom_category0 == 12:
+                                component_production_quantity2 =  (component_level2.product_qty * component_production_quantity1 * sized_yarn_qty )
+                                component_weight2 = component_level2.product_qty * component_weight1 * sized_yarn_qty    
+
                             if component_bom_level2_type:    
                                 
                                 bom_vals =   {

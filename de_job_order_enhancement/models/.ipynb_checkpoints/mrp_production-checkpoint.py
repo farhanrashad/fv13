@@ -62,6 +62,7 @@ class MrpProduction(models.Model):
     
     production_total_weight = fields.Float(string='Production Weight')
     production_weight = fields.Float('Weight To Produce', compute='_get_production_weight', readonly=True, store=True, digits=dp.get_precision('Stock Weight'), help="Weight to be produce")
+    is_billed = fields.Boolean(string='Is Billed')
     
     @api.depends('product_id','product_qty')
     def _get_production_weight(self):
