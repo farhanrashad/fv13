@@ -18,7 +18,6 @@ class MrpProduction(models.Model):
     def _get_production_weight(self):
         for order in self:
             order.production_weight = order.product_id.weight * order.product_qty
-            
     #@api.onchange('product_qty')
     #def onchange_product_uom_qty(self):
         #self.total_weight = self.product_id.weight * self.product_qty
@@ -48,7 +47,13 @@ class MRPProductProduce(models.TransientModel):
     
     produced_weight = fields.Float('Weight Produced', digits=dp.get_precision('Stock Weight'), help="Weight produced")
     
-
+    @api.onchange('qty_producing')
+    def _compute_produced_weight(self):
+        """
+        Compute the weight on change in quantity
+        """
+        self.produced_weight = self.qty_producing * self.product_id.weight
+        
     @api.onchange('finished_lot_id')
     def onchange_finished_lot(self):
         total_qty = 0
@@ -57,7 +62,8 @@ class MRPProductProduce(models.TransientModel):
             if line.lot_id.name == self.finished_lot_id.name:
                 total_qty += line.qty_done
                 total_weight += line.produced_weight
-      
+        #self.qty_producing = total_qty
+        #self.produced_weight = total_weight
         
         #if self.production_id.bom_id.type == 'subcontract':
         #for mv in self.production_id.move_raw_ids.filtered(lambda x: x.state not in ('done', 'cancel')):

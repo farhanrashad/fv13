@@ -17,7 +17,7 @@ class MrpProduction(models.Model):
     @api.depends('product_id','product_qty')
     def _get_production_weight(self):
         for order in self:
-            order.production_weight = order.production_total_weight
+            order.production_weight = order.product_id.weight * order.product_qty
 
     
     
