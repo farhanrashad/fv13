@@ -64,8 +64,4 @@ class MrpProduction(models.Model):
     
     
 
-class StockMove(models.Model):
-    _inherit = 'stock.move'
-    
-    stock_total_weight = fields.Float(string='Production Weight')
 
