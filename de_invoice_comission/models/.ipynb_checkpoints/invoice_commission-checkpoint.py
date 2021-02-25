@@ -18,44 +18,66 @@ class SaleOrderInherit(models.Model):
 class AccountInvoiceInherit(models.Model):
     _inherit = 'account.move'
     
+
     
     @api.model
     def action_create_bill(self):
-#         agent_list = []
-#         for invoice in self:
-#             if invoice.agent_id and invoice.commission_settled == False:
-#                 agent_list.append(invoice.agent_id)
+        agent_list = []
+        for invoice in self:
+            if invoice.agent_id and invoice.commission_settled == False:
+                agent_list.append(invoice.agent_id)
                 
-#         list = set(agent_list)
-#         product_list = []
-#         for agent in list:
-#             total_commission_amount = 0
-#             for agent_invoice in self:
-#                 if  agent_invoice.agent_id.id ==  agent.id  and agent_invoice.commission_settled == False:
-#                     total_commission_amount = total_commission_amount + agent_invoice.commission  
+        list = set(agent_list)
+        product_list = []
+        for agent in list:
+            total_commission_amount = 0
+            for agent_invoice in self:
+                if  agent_invoice.agent_id.id ==  agent.id  and agent_invoice.commission_settled == False:
+                    total_commission_amount = total_commission_amount + agent_invoice.commission  
                     
-# #                 invoice.update({
-# #                 'commission_settled': True,
-# #                 })  
-        commission_list = []
-        commission_list.append((0,0, {
-                        'name': 'Commission Bill',
-                        'account_id': 13,
-                        'quantity': 1, 
-                        'price_unit': 20,
-                        'partner_id': 4438,
-                            }))
+                agent_invoice.update({
+                'commission_settled': True,
+                })
 
-        vals = {
-                'partner_id': 4438,
-                'journal_id': 2,
-                'invoice_date': fields.Date.today(),
-                'type': 'in_invoice',
-                'invoice_origin': 'Commission',
-                'amount_total': 100, 
-                'invoice_line_ids': commission_list,   
-                    }
-        move = self.env['account.move'].create(vals)
+
+            line_ids = []
+            debit_sum = 0.0
+            credit_sum = 0.0
+            move_dict = {
+    #               'name' : self.name, 
+                  'journal_id': 2,
+                  'type': 'in_invoice', 
+                  'date': fields.Date.today(),
+                  'state': 'draft',
+                       }
+                            #step2:debit side entry
+            debit_line = (0, 0, {
+                               'name':  'Commission Bill',
+                                'debit': 100,
+                                'credit': 0.0,
+                                'partner_id': 4438,
+                                'account_id': 13,
+                             })
+            line_ids.append(debit_line)
+            debit_sum += debit_line[2]['debit'] - debit_line[2]['credit']
+
+                    #step3:credit side entry
+            credit_line = (0, 0, {
+                                'name': 'Commission Bill',
+                                'debit': 0.0,
+                                'credit': 100,
+                                'partner_id': 4438,
+                                'account_id': 14,
+                              })
+            line_ids.append(credit_line)
+            credit_sum += credit_line[2]['credit'] - credit_line[2]['debit']
+
+            move_dict['line_ids'] = line_ids
+            move = self.env['account.move'].create(move_dict)   
+
+
+
+        
         
 
     agent_id = fields.Many2one(related='partner_id.agent_id')
