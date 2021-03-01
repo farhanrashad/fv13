@@ -110,7 +110,7 @@ class JobOrder(models.Model):
                     component_weight1 = 0
                     if component_bom_level1_type.categ_id.id == 10:
                         component_production_quantity1 =  order_qty * variant_qty
-                        component_weight1 = unit_weight * order_qty * variant_qty
+                        component_weight1 = unit_weight * order_qty * variant_qty * greige_qty
                     elif component_bom_level1_type.categ_id.id == 12:
                         component_production_quantity1 =  order_qty * variant_qty
                         component_weight1 = unit_weight * order_qty * variant_qty    
@@ -446,7 +446,7 @@ class JobOrder(models.Model):
                     component_bom_level1_type = self.env['mrp.bom'].search([('product_tmpl_id.name','=',component_level1.product_id.name)])
                     if component_level1.product_id.categ_id.id == 10 :
                         component_production_quantityt1 =  order_qty * variant_qty
-                        component_weightt1 = unit_weight * order_qty * variant_qty
+                        component_weightt1 = unit_weight * order_qty * variant_qty * greige_qty
                     elif component_level1.product_id.categ_id.id == 12:
                         component_production_quantityt1 =  order_qty * variant_qty
                         component_weightt1 = unit_weight * order_qty * variant_qty 
@@ -744,7 +744,8 @@ class JobOrderBOMCompoent(models.Model):
             production_qty = 0.0
             production_weight = 0.0
             product_count = 0
-            if line.production_created == False and line.type == 'normal':
+            var_bom = 0
+            if line.production_created == False and line.type == 'normal' and line.production_created == False and line.production_quantity > 0:
                 if line.is_duplicate == True:   
                     product_uniq_list.append(line.product_id.id)        
                 line__bom_vals = []        
@@ -754,9 +755,11 @@ class JobOrderBOMCompoent(models.Model):
 #                 raise UserError((str(line.product_id.id)))
                 if variant_line_bom:
                     for bom in variant_line_bom[0]:
+                        var_bom = bom.id 
                         for component in bom.bom_line_ids:
                         
-                            product1_weight1 = self.env['job.order.bom.component'].search([('product_id','=',component.product_id.id),('job_order_id','=', line.job_order_id.id)])
+                            product1_weight1 = self.env['job.order.bom.component'].search([('source_product_id','=',variant_line_bom[0].product_id.id),('product_id','=',component.product_id.id),('job_order_id','=', line.job_order_id.id)])
+                             
                             line__bom_vals.append((0,0, {
                                     'product_id': component.product_id.id,
                                     'name': component.product_id.name,
@@ -767,11 +770,12 @@ class JobOrderBOMCompoent(models.Model):
                                     'date_expected': fields.Date.today(),
                                     'location_id': 8,
                                     'location_dest_id': 15,
-                            }))
+                                }))
                 else:
                     for bom in line_bom[0]:
+                        var_bom = bom.id
                         for component in bom.bom_line_ids:
-                            product1_weight1 = self.env['job.order.bom.component'].search([('product_id','=',component.product_id.id),('job_order_id','=', line.job_order_id.id)])
+                            product1_weight1 = self.env['job.order.bom.component'].search([('source_product_id','=',line_bom[0].product_tmpl_id.id),('product_id','=',component.product_id.id),('job_order_id','=', line.job_order_id.id)])
                             line__bom_vals.append((0,0, {
                                     'product_id': component.product_id.id,
                                     'name': component.product_id.name,
@@ -783,7 +787,7 @@ class JobOrderBOMCompoent(models.Model):
                                     'location_id': 8,
                                     'location_dest_id': 15,                                  
                             }))
-                    
+                            
                             
                 production_vals ={
                         'product_id': line.product_id.id,
@@ -792,7 +796,7 @@ class JobOrderBOMCompoent(models.Model):
                         'production_total_weight':line.weight, 
                         'origin': self.job_order_id.name, 
                         'job_order_id': self.job_order_id.id, 
-                        'bom_id': variant_line_bom[0].id,
+                        'bom_id': var_bom,
                         'date_planned_start': fields.Date.today(),
                         'picking_type_id': line.picking_type_id.id,
                         'location_src_id': line.location_src_id.id,
