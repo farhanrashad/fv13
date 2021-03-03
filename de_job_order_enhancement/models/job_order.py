@@ -55,6 +55,7 @@ class JobOrder(models.Model):
         all_boms = []
         for sale in self.job_order_sale_lines:
             sale_product = sale.product_id.id
+            sale_product_tmpl = sale.product_id.product_tmpl_id.id
             order_qty = sale.product_uom_qty
             unit_weight = sale.unit_weight
             bom_versions = sale.bom_version
@@ -98,6 +99,8 @@ class JobOrder(models.Model):
                          'production_quantity': order_qty * variant_qty,
                          'weight':  unit_weight * order_qty * variant_qty,
                          'source_product_id': sale_product,
+                           'product_tmpl_id': sale_product_tmpl,
+
                            }  
                 bom_product.append(bom_vals)
                 for component_level1 in product_variant_bom[0].bom_line_ids:   
@@ -143,6 +146,8 @@ class JobOrder(models.Model):
                                  'production_quantity': component_production_quantity1,
                                  'weight':  component_weight1,
                                  'source_product_id': sale_product,
+                                 'product_tmpl_id': sale_product_tmpl,
+
                                        }  
                         bom_product.append(bom_vals)
                     else:
@@ -154,6 +159,8 @@ class JobOrder(models.Model):
                                  'production_quantity': component_production_quantity1,
                                  'weight':  component_weight1,
                                  'source_product_id': sale_product,
+                                 'product_tmpl_id': sale_product_tmpl,
+
                                        }  
                         bom_product.append(bom_vals)
                         
@@ -224,6 +231,8 @@ class JobOrder(models.Model):
                                      'production_quantity': component_production_quantity2,
                                      'weight':   component_weight2,
                                      'source_product_id': sale_product,
+                                     'product_tmpl_id': sale_product_tmpl,
+
                                        }  
                                 bom_product.append(bom_vals)
                             else:
@@ -235,6 +244,8 @@ class JobOrder(models.Model):
                                      'production_quantity': component_production_quantity2,
                                      'weight':   component_weight2,
                                      'source_product_id': sale_product,
+                                     'product_tmpl_id': sale_product_tmpl,
+
                                        }  
                                 bom_product.append(bom_vals)
                                 
@@ -289,6 +300,8 @@ class JobOrder(models.Model):
                                          'production_quantity': component_production_quantity3,
                                          'weight': component_weight3,
                                          'source_product_id': sale_product,
+                                         'product_tmpl_id': sale_product_tmpl,
+
                                            }  
                                     bom_product.append(bom_vals)
 
@@ -363,6 +376,8 @@ class JobOrder(models.Model):
                                                  'production_quantity':  component_production_quantity4,
                                                 'weight': component_weight4 ,
                                                  'source_product_id': sale_product,
+                                                 'product_tmpl_id': sale_product_tmpl,
+
                                                }  
                                             bom_product.append(bom_vals) 
 
@@ -387,6 +402,8 @@ class JobOrder(models.Model):
                                                          'production_quantity': component_production_quantity5,
                                                          'weight':component_weight5,
                                                          'source_product_id': sale_product,
+                                                         'product_tmpl_id': sale_product_tmpl,
+
 
                                                            }  
                                                     bom_product.append(bom_vals) 
@@ -406,6 +423,8 @@ class JobOrder(models.Model):
                                                                  'production_quantity':  (component_level4.product_qty * yarn_qty * unit_weight * order_qty * variant_qty * greige_qty)/component_level4.product_id.uom_po_id.factor_inv,
                                                                  'weight':component_level4.product_qty * yarn_qty * unit_weight * order_qty * variant_qty * greige_qty,
                                                                  'source_product_id': sale_product,
+                                                                 'product_tmpl_id': sale_product_tmpl,
+
                                                              }  
                                                             bom_product.append(bom_vals)
 
@@ -422,6 +441,8 @@ class JobOrder(models.Model):
                                                                         'type': component_bom_level7_type.type,
                                                                         'quantity':  component_level7.product_qty,
                                                                         'source_product_id': sale_product,
+                                                                        'product_tmpl_id': sale_product_tmpl,
+
                                                                            }  
                                                                     bom_product.append(bom_vals)
 
@@ -436,6 +457,8 @@ class JobOrder(models.Model):
                          'production_quantity': order_qty * variant_qty,
                          'weight':  unit_weight * order_qty * variant_qty,
                          'source_product_id': sale_product,
+                         'product_tmpl_id': sale_product_tmpl,
+
                            }  
                 bom_product.append(bom_vals)
                 for component_level1 in product_tmpl_bom[0].bom_line_ids:   
@@ -469,6 +492,8 @@ class JobOrder(models.Model):
                                  'production_quantity': component_production_quantityt1,
                                  'weight':  component_weightt1,
                                  'source_product_id': sale_product,
+                                  'product_tmpl_id': sale_product_tmpl,
+
                                        }  
                         bom_product.append(bom_vals)
                     else:
@@ -480,6 +505,8 @@ class JobOrder(models.Model):
                                  'production_quantity': component_production_quantityt1,
                                  'weight':  component_weightt1,
                                  'source_product_id': sale_product,
+                                 'product_tmpl_id': sale_product_tmpl,
+
                                        }  
                         bom_product.append(bom_vals)
                         
@@ -518,6 +545,8 @@ class JobOrder(models.Model):
                                  'production_quantity':  component_production_quantityt2,
                                  'weight': component_weightt2,
                                  'source_product_id': sale_product,
+                                 'product_tmpl_id': sale_product_tmpl,
+
                                    }  
                             bom_product.append(bom_vals)
 
@@ -550,6 +579,8 @@ class JobOrder(models.Model):
                                          'production_quantity':  component_production_quantityt3,
                                          'weight': component_weightt3,
                                          'source_product_id': sale_product,
+                                         'product_tmpl_id': sale_product_tmpl,
+
                                            }  
                                     bom_product.append(bom_vals)
 
@@ -572,6 +603,8 @@ class JobOrder(models.Model):
                                                  'production_quantity':  (component_level4.product_qty * component_level3.product_qty * yarn_qty *  unit_weight * order_qty * variant_qty * greige_qty * sized_yarn_qty)/component_level4.product_id.uom_po_id.factor_inv,
                                                 'weight':component_level4.product_qty * component_level3.product_qty * yarn_qty *  unit_weight * order_qty * variant_qty * greige_qty * sized_yarn_qty,
                                                  'source_product_id': sale_product,
+                                                'product_tmpl_id': sale_product_tmpl,
+
                                                }  
                                             bom_product.append(bom_vals) 
 
@@ -591,6 +624,8 @@ class JobOrder(models.Model):
                                                          'production_quantity':  (component_level4.product_qty * yarn_qty * unit_weight * order_qty * variant_qty * greige_qty)/component_level4.product_id.uom_po_id.factor_inv,
                                                 'weight':component_level4.product_qty * yarn_qty * unit_weight * order_qty * variant_qty * greige_qty,
                                                          'source_product_id': sale_product,
+                                                         'product_tmpl_id': sale_product_tmpl,
+
 
                                                            }  
                                                     bom_product.append(bom_vals) 
@@ -609,6 +644,8 @@ class JobOrder(models.Model):
                                                                  'production_quantity':  (component_level4.product_qty * yarn_qty * unit_weight * order_qty * variant_qty * greige_qty)/component_level4.product_id.uom_po_id.factor_inv,
                                                                  'weight':component_level4.product_qty * yarn_qty * unit_weight * order_qty * variant_qty * greige_qty,
                                                                  'source_product_id': sale_product,
+                                                                 'product_tmpl_id': sale_product_tmpl,
+
                                                              }  
                                                             bom_product.append(bom_vals)
 
@@ -624,6 +661,8 @@ class JobOrder(models.Model):
                                                                         'type': component_bom_level7_type.type,
                                                                         'quantity':  component_level7.product_qty,
                                                                         'source_product_id': sale_product,
+                                                                        'product_tmpl_id': sale_product_tmpl,
+
                                                                            }  
                                                                     bom_product.append(bom_vals)
                 
@@ -638,7 +677,9 @@ class JobOrder(models.Model):
                             'quantity': product['quantity'],
                             'weight': product['weight'],
                             'production_quantity': product['production_quantity'],  
-                            'source_product_id': product['source_product_id']
+                            'source_product_id': product['source_product_id'],
+                            'product_tmpl_id': product['product_tmpl_id'],
+
                             })) 
             
         self.job_order_material_ids = all_boms             
@@ -711,6 +752,8 @@ class JobOrderBOMCompoent(models.Model):
     product_id = fields.Many2one('product.product', string='Product',readonly=True)
     category_id = fields.Many2one(related='product_id.categ_id')
     source_product_id = fields.Many2one('product.product', string='Source Product',readonly=True)
+    product_tmpl_id = fields.Many2one('product.template', string='Product Template',readonly=True)
+
     weight = fields.Float(string='Weight',digits=dp.get_precision('Product Unit of Measure'),default=1.0)
     type = fields.Selection([
         ('normal', 'Manufacture this product'),
@@ -741,13 +784,21 @@ class JobOrderBOMCompoent(models.Model):
         count = 0
         for line in self:
             job_order_ids = line.job_order_id.id
+            product = line.product_id.id
+            product_tmpl = line.product_tmpl_id.id
             production_qty = 0.0
             production_weight = 0.0
             product_count = 0
             var_bom = 0
             if line.production_created == False and line.type == 'normal' and line.production_created == False and line.production_quantity > 0:
-                if line.is_duplicate == True:   
-                    product_uniq_list.append(line.product_id.id)        
+                for inner_line in self:
+                    if inner_line.production_created == False and inner_line.type == 'normal' and inner_line.production_quantity > 0:
+                        if  inner_line.product_id.id == product:
+                            production_qty = production_qty + inner_line.production_quantity  
+                            production_weight = production_weight + inner_line.weight  
+                            inner_line.update({
+                                'production_created': True
+                            })       
                 line__bom_vals = []        
                 bom_qty = 0.0
                 line_bom = self.env['mrp.bom'].search([('product_tmpl_id','=',line.product_id.product_tmpl_id.id)])
@@ -757,43 +808,59 @@ class JobOrderBOMCompoent(models.Model):
                     for bom in variant_line_bom[0]:
                         var_bom = bom.id 
                         for component in bom.bom_line_ids:
+                            bom_product_quantity_weight = 0 
+                            bom_production_weight = 0 
+                            product1_weight1 = self.env['job.order.bom.component'].search([('product_tmpl_id','=',product_tmpl),('product_id','=',component.product_id.id),('job_order_id','=', job_order_ids)])
+                            for bom_material_line in product1_weight1:
+                                bom_product_quantity_weight = bom_product_quantity_weight + bom_material_line.production_quantity    
+                                bom_production_weight = bom_production_weight + bom_material_line.weight
                         
-                            product1_weight1 = self.env['job.order.bom.component'].search([('source_product_id','=',variant_line_bom[0].product_id.id),('product_id','=',component.product_id.id),('job_order_id','=', line.job_order_id.id)])
+                            
                              
                             line__bom_vals.append((0,0, {
                                     'product_id': component.product_id.id,
                                     'name': component.product_id.name,
                                     'product_uom': component.product_id.uom_id.id,
-                                    'product_uom_qty':product1_weight1.production_quantity,
-                                    'stock_total_weight': product1_weight1.weight, 
+                                    'product_uom_qty':bom_product_quantity_weight,
+                                    'stock_total_weight': bom_production_weight, 
+                                    'bom_line_id': component.product_id.id, 
                                     'date': fields.Date.today(),
                                     'date_expected': fields.Date.today(),
                                     'location_id': 8,
-                                    'location_dest_id': 15,
+                                    'location_dest_id': 8,
                                 }))
                 else:
                     for bom in line_bom[0]:
                         var_bom = bom.id
                         for component in bom.bom_line_ids:
-                            product1_weight1 = self.env['job.order.bom.component'].search([('source_product_id','=',line_bom[0].product_tmpl_id.id),('product_id','=',component.product_id.id),('job_order_id','=', line.job_order_id.id)])
+                            bom_product_quantity_weight = 0 
+                            bom_production_weight = 0
+                            product1_weight1 = self.env['job.order.bom.component'].search([('product_tmpl_id','=',product_tmpl),('product_id','=',component.product_id.id),('job_order_id','=', job_order_ids)])
+#                             raise UserError((str(product1_weight1.id)))
+                            for bom_material_line in product1_weight1:
+                                bom_product_quantity_weight = bom_product_quantity_weight + bom_material_line.production_quantity    
+                                bom_production_weight = bom_production_weight + bom_material_line.weight
+
+                            
                             line__bom_vals.append((0,0, {
                                     'product_id': component.product_id.id,
                                     'name': component.product_id.name,
                                     'product_uom': component.product_id.uom_id.id,
-                                    'product_uom_qty': product1_weight1.production_quantity,
-                                    'stock_total_weight': product1_weight1.weight, 
+                                    'product_uom_qty': bom_product_quantity_weight,
+                                    'stock_total_weight': bom_production_weight, 
+                                    'bom_line_id': component.product_id.id, 
                                     'date': fields.Date.today(),
                                     'date_expected': fields.Date.today(),
                                     'location_id': 8,
-                                    'location_dest_id': 15,                                  
+                                    'location_dest_id': 8,                                  
                             }))
                             
                             
                 production_vals ={
                         'product_id': line.product_id.id,
                         'product_uom_id': line.product_id.uom_id.id,
-                        'product_qty': line.production_quantity,
-                        'production_total_weight':line.weight, 
+                        'product_qty': production_qty ,
+                        'production_total_weight':production_weight, 
                         'origin': self.job_order_id.name, 
                         'job_order_id': self.job_order_id.id, 
                         'bom_id': var_bom,
@@ -804,6 +871,11 @@ class JobOrderBOMCompoent(models.Model):
                         'move_raw_ids': line__bom_vals ,
                 }
                 production_order = self.env['mrp.production'].create(production_vals)
+                if production_order.categ_id.id == 11:
+                    for production_line  in  production_order.move_raw_ids:
+                        production_line.update({
+                            'stock_total_weight' :  line.weight
+                        })  
                 if line.production_created == False and line.type == 'normal':
                     line.update ({
                         'production_created': True,
