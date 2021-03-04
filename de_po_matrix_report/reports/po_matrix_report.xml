@@ -41,7 +41,7 @@
 		<field name="arch" type="xml">
             
             <xpath expr="//header/button[@name='button_cancel']" position="after">
-                    <button string="Print Dyeing Report" name="print_po_matrix_report" type="object"/>
+                    <button string="Print Matrix Report" name="print_po_matrix_report" type="object"/>
             </xpath>
 			
 
