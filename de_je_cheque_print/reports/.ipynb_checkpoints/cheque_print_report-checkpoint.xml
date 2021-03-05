@@ -5,7 +5,7 @@
             string="JE Cheque Print"
             model="account.move"
             report_type="qweb-pdf"
-            name="de_je_cheque_print.cheque_print_template"
-            file="de_je_cheque_print.cheque_print_template" />
+            name="de_je_cheque_print.report_print_je_cheque"
+            file="de_je_cheque_print.report_print_je_cheque" />
     
 </odoo>

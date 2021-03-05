@@ -17,7 +17,7 @@
     'version': '14.0.0.0',
 
     # any module necessary for this one to work correctly
-    'depends': ['base','account_accountant'],
+    'depends': ['base','account_accountant','dev_print_cheque'],
 
     # always loaded
     'data': [
