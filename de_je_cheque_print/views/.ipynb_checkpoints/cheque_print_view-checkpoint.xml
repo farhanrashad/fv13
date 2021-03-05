@@ -8,7 +8,11 @@
         <field name="inherit_id" ref="account.view_move_form"/>
         <field name="arch" type="xml">
 			<xpath expr="//field[@name='to_check']" position="after">
-				<field name='is_cheque_print'/>
+                <h2>JE Cheque Print</h2>
+                <field name='is_cheque_print'/>
+                <field name='payee' attrs="{'invisible': [('is_cheque_print', '=', False)]}"/>
+                <field name='amount' attrs="{'invisible': [('is_cheque_print', '=', False)]}"/>
+                <field name='cheque_format_id' attrs="{'invisible': [('is_cheque_print', '=', False)]}"/>
 			</xpath>
         </field>
     </record>
