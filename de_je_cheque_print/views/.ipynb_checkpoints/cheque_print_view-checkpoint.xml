@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+	<record id="journal_entry_form_view_inherit" model="ir.ui.view">
+        <field name="name">journal.entry.form</field>
+        <field name="model">account.move</field>
+        <field name="type">form</field>
+        <field name="inherit_id" ref="account.view_move_form"/>
+        <field name="arch" type="xml">
+			<xpath expr="//field[@name='to_check']" position="after">
+				<field name='is_cheque_print'/>
+			</xpath>
+        </field>
+    </record>
+
+</odoo>
