@@ -67,11 +67,11 @@
                                             <t t-set="total_weight" t-value="total_weight + product_weight(color, model)" />
                                             <t t-set="total_qty" t-value="total_qty + product_qty(color, model)" />
                                             <td >
-                                                <span t-esc="product_qty(color, model)"/> / <span t-esc="product_weight(color, model)"/>
+                                                <span t-esc="product_qty(color, model)"/> Pcs / <span t-esc="product_weight(color, model)"/> Kgs
                                             </td>          
                                     </t>
                                     <td>
-                                        <strong><span t-esc="total_qty"/></strong> / <strong><span t-esc="total_weight"/></strong>   
+                                        <strong><span t-esc="total_qty"/> Pcs</strong> / <strong><span t-esc="total_weight"/> Kgs</strong>   
                                     </td>
                                     <t t-set="total" t-value="total + total_weight" />
                                 </tr>
@@ -89,13 +89,13 @@
                                             
                                         </t>
                                         <td>
-                                            <strong> <span t-esc="total_model"/></strong> / <strong><span t-esc="total_model_w"/></strong>
+                                            <strong> <span t-esc="total_model"/> Pcs</strong> / <strong><span t-esc="total_model_w"/> Kgs</strong>
                                         </td>
                                         <t t-set="total" t-value="total + total_model" />
                                         <t t-set="total_w" t-value="total_w + total_model_w" />
                                     </t>
                                 <td>
-                                  <strong><span t-esc="total"/></strong> / <strong><span t-esc="total_w"/></strong>
+                                  <strong><span t-esc="total"/> Pcs</strong> / <strong><span t-esc="total_w"/> Kgs</strong>
                                 </td>
                             </tr>
                             
