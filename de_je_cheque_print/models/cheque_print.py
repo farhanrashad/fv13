@@ -11,17 +11,15 @@ class JeChequePrint(models.Model):
     payee = fields.Char(string='Payee')
     amount = fields.Float(string='Amount')
     cheque_formate_id = fields.Many2one('cheque.setting', string='Cheque Format')
+    amount_in_words = fields.Char(string='Amount in Words')
     
     
     @api.model
     def get_date(self,date):
-        print('=========================',date)
         date = str(date).split('-')
-        print('=========================',date)
         return date
     
-    @api.model
-    def amount_word(self, obj):
-        amt_word = num2words(obj.amount)
-        
-        return amt_word
+    @api.onchange('amount')
+    def _amount_word(self):
+        amt_word = num2words(self.amount)
+        self.amount_in_words = amt_word

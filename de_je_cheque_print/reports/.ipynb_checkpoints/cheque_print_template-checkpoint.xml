@@ -245,10 +245,10 @@
                           <div t-attf-style="margin-left:#{o.cheque_formate_id.amt_w_s_m_left}px;margin-top:#{o.cheque_formate_id.amt_w_s_m_top}px;position: absolute;};">
                           
                            <t t-if="o.cheque_formate_id.is_word_bold">
-                                <span style="font-weight:bold" t-esc="o.amount_word(o)[0]"/>                                 
+                                <span style="font-weight:bold" t-esc="o.amount_in_words"/>                                 
                             </t>
                            <t t-if="not o.cheque_formate_id.is_word_bold">
-                                <span t-esc="o.amount_word(o)[1]"/>
+                                <span t-esc="o.amount_in_words"/>
                             </t>
                            
                         </div>
@@ -533,10 +533,10 @@
                            <div t-attf-style="margin-left:#{o.cheque_formate_id.amt_w_s_m_left}px;margin-top:#{o.cheque_formate_id.amt_w_s_m_top}px;position: absolute;};">
                              
                             <t t-if="o.cheque_formate_id.is_word_bold">
-                                 <span style="font-weight:bold" t-esc="o.amount_word(o)[0]"/>                               
+                                 <span style="font-weight:bold" t-esc="o.amount_in_words"/>                               
                             </t>
                             <t t-if="not o.cheque_formate_id.is_word_bold">
-                                <span t-esc="o.amount_word(o)[1]"/>
+                                <span t-esc="o.amount_in_words"/>
                             </t>
                             
                         </div>

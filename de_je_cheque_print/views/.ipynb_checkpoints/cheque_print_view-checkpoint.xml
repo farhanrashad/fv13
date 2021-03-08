@@ -13,6 +13,7 @@
                 <field name='payee' attrs="{'invisible': [('is_cheque_print', '=', False)]}"/>
                 <field name='amount' attrs="{'invisible': [('is_cheque_print', '=', False)]}"/>
                 <field name='cheque_formate_id' attrs="{'invisible': [('is_cheque_print', '=', False)]}"/>
+                <field name='amount_in_words' attrs="{'invisible': [('is_cheque_print', '=', False)]}"/>
 			</xpath>
         </field>
     </record>
