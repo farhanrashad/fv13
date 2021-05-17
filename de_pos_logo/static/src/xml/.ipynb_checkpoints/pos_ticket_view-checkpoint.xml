@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates id="point_of_sale.template" xml:space="preserve">
+    <t t-extend="PosTicket">
+        <t t-jquery='.pos-logo' t-operation='before'>
+                
+                    <div style="width: 100%;float: left; ">
+                        <t t-if='widget.pos.config.image'>
+                            <img t-att-src="a2" style="width:100%"/>
+                        </t>
+                        <t t-if='!widget.pos.config.image'>
+                            <img src='/web/binary/company_logo' style="width:100%"/>
+                        </t>
+                    </div>
+               
+        </t>
+    </t>
+</templates>
