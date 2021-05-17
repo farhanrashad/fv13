@@ -11,11 +11,13 @@ class pos_order(models.Model):
     _inherit = 'pos.order'
 	#partner_id = fields.Many2one('res.partner', string='Customer', change_default=True, index=True, states={'draft': [('readonly', False)], 'paid': [('readonly', False)]},copy=True)
 
+    @api.multi
     def print_pos_report(self):
     	return  self.env['report'].get_action(self, 'point_of_sale.pos_invoice_report')
 
 
 
+    @api.multi
     def print_pos_receipt(self):
         output = []
         discount = 0

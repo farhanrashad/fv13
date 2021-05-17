@@ -1,15 +1,33 @@
 # -*- coding: utf-8 -*-
+##############################################################################
+#
+#    Cybrosys Technologies Pvt. Ltd.
+#    Copyright (C) 2018-TODAY Cybrosys Technologies(<https://www.cybrosys.com>).
+#    Author: Fasluca(<faslu@cybrosys.in>)
+#    you can modify it under the terms of the GNU AFFERO
+#    GENERAL PUBLIC LICENSE (AGPL v3), Version 3.
+
+#    This program is distributed in the hope that it will be useful,
+#    but WITHOUT ANY WARRANTY; without even the implied warranty of
+#    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#    GNU AFFERO GENERAL PUBLIC LICENSE (AGPL v3) for more details.
+#
+#    You should have received a copy of the GNU AFFERO GENERAL PUBLIC LICENSE
+#    GENERAL PUBLIC LICENSE (AGPL v3) along with this program.
+#    If not, see <http://www.gnu.org/licenses/>.
+#
+##############################################################################
 
 from odoo import models, fields, api, _
 from odoo.exceptions import UserError
 
 
 class AccountRegisterPayments(models.TransientModel):
-    _inherit = 'account.payment.register'
+    _inherit = "account.register.payments"
 
     bank_reference = fields.Char(copy=False)
     cheque_reference = fields.Char(copy=False)
-    effective_date = fields.Date(string='Effective Date', help='Effective date of PDC', copy=False, default=False)
+    effective_date = fields.Date('Effective Date', help='Effective date of PDC', copy=False, default=False)
 
     def get_payment_vals(self):
         res = super(AccountRegisterPayments, self).get_payment_vals()
@@ -23,14 +41,16 @@ class AccountRegisterPayments(models.TransientModel):
 
 
 class AccountPayment(models.Model):
-    _inherit = 'account.payment'
+    _inherit = "account.payment"
 
     bank_reference = fields.Char(copy=False)
     cheque_reference = fields.Char(copy=False)
-    effective_date = fields.Date(string='Effective Date', help='Effective date of PDC', copy=False, default=False)
+    effective_date = fields.Date('Effective Date', help='Effective date of PDC', copy=False, default=False)
 
+    @api.multi
     def print_checks(self):
         """ Check that the recordset is valid, set the payments state to sent and call print_checks() """
+        # Since this method can be called via a client_action_multi, we need to make sure the received records are what we expect
         self = self.filtered(lambda r: r.payment_method_id.code in ['check_printing', 'pdc'] and r.state != 'reconciled')
 
         if len(self) == 0:
@@ -62,6 +82,7 @@ class AccountPayment(models.Model):
             self.filtered(lambda r: r.state == 'draft').post()
             self.write({'state': 'sent'})
             return self.do_print_checks()
+
 
     def _get_move_vals(self, journal=None):
         """ Return dict to create the payment move

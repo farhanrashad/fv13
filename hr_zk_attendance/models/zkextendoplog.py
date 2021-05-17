@@ -5,7 +5,8 @@ def zkextendoplog(self, index=0):
         self.extlogtrynumber = 1
         
     data_seq = [ self.data_recv.encode("hex")[4:6], self.data_recv.encode("hex")[6:8] ]
-
+    #print data_seq
+    
     if index==0:
         self.data_seq1 = hex( int( data_seq[0], 16 ) + int( '104', 16 ) ).lstrip("0x")
         self.data_seq2 = hex( int( data_seq[1], 16 ) + int( '19', 16 ) ).lstrip("0x")

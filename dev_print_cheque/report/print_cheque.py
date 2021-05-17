@@ -15,21 +15,17 @@ class print_check(models.AbstractModel):
     _name = 'report.dev_print_cheque.report_print_cheque'
 
     def get_date(self,date):
-        print('=========================',date)
-        date = str(date).split('-')
-        print('=========================',date)
+        date = date.split('-')
         return date
 
     def get_partner_name(self,obj,p_text):
         if p_text and obj.partner_text:
             if p_text == 'prefix' :
-                return obj.partner_text + ' ' + obj.pay_by
+                return obj.partner_text + ' ' + obj.partner_id.name
             else:
-                return obj.pay_by + ' ' + obj.partner_text
-        if obj.pay_by:
-            return obj.pay_by
-        else:
-            return obj.partner_id.name
+                return obj.partner_id.name + ' ' + obj.partner_text
+
+        return obj.partner_id.name
 
     def amount_word(self, obj):
         amt_word = num2words(obj.amount)
@@ -62,8 +58,12 @@ class print_check(models.AbstractModel):
         second_line = second_line.replace(",", "")
 
         return [first_line, second_line]
-    @api.model
-    def _get_report_values(self, docids, data=None):
+
+
+
+
+    @api.multi
+    def get_report_values(self, docids, data=None):
         docs = self.env['account.payment'].browse(docids)
         return {
             'doc_ids': docs.ids,
@@ -117,8 +117,10 @@ class print_cheque_wizard(models.AbstractModel):
         second_line = second_line.replace(",", "")
         return [first_line, second_line]
 
-    @api.model
-    def _get_report_values(self, docids, data=None):
+
+
+    @api.multi
+    def get_report_values(self, docids, data=None):
         docs = self.env['cheque.wizard'].browse(data['form'])
         return {
             'doc_ids': docs.ids,

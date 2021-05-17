@@ -15,11 +15,15 @@
 #################################################################################
 {
   "name"                 :  "POS All Orders List",
-  'version': '13.0.1.0.1',
- 'author': "Dynexel",
-  'license': 'AGPL-3',
   "summary"              :  "POS All Orders List module display all old orders and this model is linked with POS order return, POS order reprint and POS Reorder.",
   "category"             :  "Point Of Sale",
+  "version"              :  "1.1.3",
+  "sequence"             :  1,
+  "author"               :  "Webkul Software Pvt. Ltd.",
+  "license"              :  "Other proprietary",
+  "website"              :  "https://store.webkul.com/Odoo-POS-All-Orders-List.html",
+  "description"          :  """https://webkul.com/blog/odoo-pos-all-orders-list/""",
+  "live_test_url"        :  "http://odoodemo.webkul.com/?module=pos_orders&version=11.0",
   "depends"              :  ['point_of_sale'],
   "data"                 :  [
                              'views/pos_config_view.xml',
@@ -30,4 +34,7 @@
   "application"          :  True,
   "installable"          :  True,
   "auto_install"         :  False,
+  "price"                :  27,
+  "currency"             :  "EUR",
+  "pre_init_hook"        :  "pre_init_check",
 }

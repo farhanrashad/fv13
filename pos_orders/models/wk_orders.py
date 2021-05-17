@@ -13,8 +13,8 @@ class PosOrder(models.Model):
     _inherit = 'pos.order'
 
     @api.model
-    def create_from_ui(self, orders, draft=False):
-        order_ids = super(PosOrder,self).create_from_ui(self, orders)
+    def create_from_ui(self,orders):
+        order_ids = super(PosOrder,self).create_from_ui(orders)
         order_objs = self.env['pos.order'].browse(order_ids)
         result = {}
         order_list = []

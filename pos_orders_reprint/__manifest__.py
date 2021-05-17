@@ -3,7 +3,7 @@
 
 {
     "name" : "POS Orders Reprint",
-    "version" : "13.0.0.1",
+    "version" : "11.0.0.1",
     "category" : "Point of Sale",
     "depends" : ['base','sale','point_of_sale','pos_orders_list'],
     "author": "BrowseInfo",
@@ -11,7 +11,6 @@
     "description": """
 
     Purpose :-
-
     POS Orders Reprint
     POS reprint
     POS order reprint

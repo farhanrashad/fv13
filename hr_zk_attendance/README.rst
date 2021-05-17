@@ -1,10 +1,10 @@
-Biometric Device Integration v12
+Biometric Device Integration v11
 ================================
 This Cybrosys's module integrates Odoo attendance with biometric device attendance.
 
 Features
 ========
-* Integrates biometric device(Face+Thumb) with HR attendance.
+* Ingrates biometric device(Face+Thumb) with HR attendance.
 * Managing attendance automatically
 * Keeps zk machine history in Odoo
 * Option to configure multiple zk devices
@@ -29,9 +29,7 @@ Author
 
 Credits
 =======
-Developer: Niyas Raphy @ Cybrosys, odoo@cybrosys.com V11
-Developer: Jesni Banu @ cybrosys, odoo@cybrosys.com  V10
-Developer: Basith @ Cybrosys, odoo@cybrosys.com     V12
-Developer: Varsha Vivek @ Cybrosys, odoo@cybrosys.com V13
+Developer: Niyas Raphy @ Cybrosys, odoo@cybrosys.com
+Developer: Jesni Banu @ cybrosys, odoo@cybrosys.com
 Developer: Mostafa Shokiel , mostafa.shokiel@gmail.com
 

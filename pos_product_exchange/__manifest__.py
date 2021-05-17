@@ -17,8 +17,13 @@
   "name"                 :  "POS Product Exchange",
   "summary"              :  "This module is use to exchange products of previous order in running point of sale session.",
   "category"             :  "Point Of Sale",
-  "version"             : '0.1',
-  "author"               :  "Webkul Software Pvt. Ltd",
+  "version"              :  "1.0.1",
+  "sequence"             :  1,
+  "author"               :  "Webkul Software Pvt. Ltd.",
+  "license"              :  "Other proprietary",
+  "website"              :  "https://store.webkul.com",
+  "description"          :  """POS Product Replace, POS Product Exchange, Exchange order In POS, Exchange POS Order""",
+  "live_test_url"        :  "http://odoodemo.webkul.com/?module=pos_product_exchange&version=11.0&custom_url=/pos/auto",
   "depends"              :  ['pos_order_return'],
   "data"                 :  [
                              'views/template.xml',
@@ -28,4 +33,7 @@
   "application"          :  True,
   "installable"          :  True,
   "auto_install"         :  False,
+  "price"                :  20,
+  "currency"             :  "EUR",
+  "pre_init_hook"        :  "pre_init_check",
 }

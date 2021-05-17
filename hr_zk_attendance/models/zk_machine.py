@@ -49,6 +49,7 @@ class ZkMachine(models.Model):
     address_id = fields.Many2one('res.partner', string='Working Address')
     company_id = fields.Many2one('res.company', string='Company', default=lambda self: self.env.user.company_id.id)
 
+    @api.multi
     def device_connect(self, zk):
         command = CMD_CONNECT
         command_string = ''
@@ -70,6 +71,7 @@ class ZkMachine(models.Model):
             conn = False
         return conn
     
+    @api.multi
     def clear_attendance(self):
         for info in self:
             try:
@@ -98,7 +100,6 @@ class ZkMachine(models.Model):
         command = unpack('HHHH', zk.data_recv[:8])[0]
         if command == CMD_PREPARE_DATA:
             size = unpack('I', zk.data_recv[8:12])[0]
-            print("size", size)
             return size
         else:
             return False
@@ -110,6 +111,7 @@ class ZkMachine(models.Model):
         chksum = 0
         session_id = zk.session_id
         reply_id = unpack('HHHH', zk.data_recv[:8])[3]
+
         buf = zk.createHeader(command, chksum, session_id, reply_id, command_string)
         zk.zkclient.sendto(buf, zk.address)
         try:
@@ -128,15 +130,11 @@ class ZkMachine(models.Model):
 
             users = {}
             if len(zk.userdata) > 0:
-                for x in range(len(zk.userdata)):
-                    if x > 0:
-                        zk.userdata[x] = zk.userdata[x][8:]
-                userdata = b''.join(zk.userdata)
+                userdata = zk.userdata[0]
                 userdata = userdata[11:]
                 while len(userdata) > 72:
                     uid, role, password, name, userid = unpack('2s2s8s28sx31s', userdata.ljust(72)[:72])
                     uid = int(binascii.hexlify(uid), 16)
-                    # print("uid",uid)
                     # Clean up some messy characters from the user name
                     password = password.split(b'\x00', 1)[0]
                     password = str(password.strip(b'\x00|\x01\x10x|\x000').decode('utf-8'))
@@ -147,7 +145,6 @@ class ZkMachine(models.Model):
                         name = uid
                     users[uid] = (userid, name, int(binascii.hexlify(role), 16), password)
                     userdata = userdata[72:]
-                    # print(users)
             return users
         except:
             return False
@@ -158,6 +155,7 @@ class ZkMachine(models.Model):
         for machine in machines :
             machine.download_attendance()
         
+    @api.multi
     def download_attendance(self):
         _logger.info("++++++++++++Cron Executed++++++++++++++++++++++")
         zk_attendance = self.env['zk.machine.attendance']
@@ -197,7 +195,7 @@ class ZkMachine(models.Model):
                     attendance = []
                     if len(zk.attendancedata) > 0:
                         # The first 4 bytes don't seem to be related to the user
-                        for x in range(len(zk.attendancedata)):
+                        for x in xrange(len(zk.attendancedata)):
                             if x > 0:
                                 zk.attendancedata[x] = zk.attendancedata[x][8:]
                         attendancedata = b''.join(zk.attendancedata) 

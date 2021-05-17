@@ -62,7 +62,7 @@ class ReportZkDevice(models.Model):
     _order = 'punching_day desc'
 
     name = fields.Many2one('hr.employee', string='Employee')
-    punching_day = fields.Datetime(string='Date')
+    punching_day = fields.Date(string='Date')
     address_id = fields.Many2one('res.partner', string='Working Address')
     attendance_type = fields.Selection([('1', 'Finger'),
                                         ('15', 'Face'),
@@ -80,7 +80,7 @@ class ReportZkDevice(models.Model):
 
     def init(self):
         tools.drop_view_if_exists(self._cr, 'zk_report_daily_attendance')
-        query = """
+        self._cr.execute("""
             create or replace view zk_report_daily_attendance as (
                 select
                     min(z.id) as id,
@@ -100,7 +100,6 @@ class ReportZkDevice(models.Model):
                     z.punch_type,
                     z.punching_time
             )
-        """
-        self._cr.execute(query)
+        """)
 
 

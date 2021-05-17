@@ -1,14 +1,32 @@
 # -*- coding: utf-8 -*-
+##############################################################################
+#
+#    Cybrosys Technologies Pvt. Ltd.
+#    Copyright (C) 2018-TODAY Cybrosys Technologies(<https://www.cybrosys.com>).
+#    Author: Fasluca(<faslu@cybrosys.in>)
+#    you can modify it under the terms of the GNU AFFERO
+#    GENERAL PUBLIC LICENSE (AGPL v3), Version 3.
+
+#    This program is distributed in the hope that it will be useful,
+#    but WITHOUT ANY WARRANTY; without even the implied warranty of
+#    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#    GNU AFFERO GENERAL PUBLIC LICENSE (AGPL v3) for more details.
+#
+#    You should have received a copy of the GNU AFFERO GENERAL PUBLIC LICENSE
+#    GENERAL PUBLIC LICENSE (AGPL v3) along with this program.
+#    If not, see <http://www.gnu.org/licenses/>.
+#
+##############################################################################
 
 from odoo import models, api, _
 
 
 class AccountJournal(models.Model):
-    _inherit = 'account.journal'
+    _inherit = "account.journal"
 
+    @api.one
     @api.depends('outbound_payment_method_ids')
     def _compute_check_printing_payment_method_selected(self):
-        self.ensure_one()
         self.check_printing_payment_method_selected = any(
             pm.code in ['check_printing', 'pdc'] for pm in self.outbound_payment_method_ids)
 

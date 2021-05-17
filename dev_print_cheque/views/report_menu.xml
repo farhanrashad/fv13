@@ -1,15 +1,21 @@
 <?xml version="1.0" encoding="utf-8"?>
-<openerp>
- <data>
-        <report
+<!--
+Copyright (C) 2015 DevIntelle Consulting Service Pvt.Ltd (<http://www.devintellecs.com>).
+
+For Module Support : devintelle@gmail.com  or Skype : devintelle 
+ -->
+<odoo>
+        <report 
             id="action_report_print_cheque"
             string="Print Cheque"
-            model="account.payment"
+            model="account.payment" 
             report_type="qweb-pdf"
             name="dev_print_cheque.report_print_cheque"
             file="dev_print_cheque.report_print_cheque"
-            menu="True"
+            header="False"
         />
+        
+        
         <record id="paperformat_cheque" model="report.paperformat">
             <field name="name">cheque A4</field>
             <field name="default" eval="True" />
@@ -28,6 +34,7 @@
         
         <record id="dev_print_cheque.action_report_print_cheque" model="ir.actions.report">
 			<field name="paperformat_id" ref="dev_print_cheque.paperformat_cheque" />
-		</record>
- </data>
-</openerp>
+		</record>   
+		
+		
+</odoo>
