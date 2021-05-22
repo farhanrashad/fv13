@@ -1,5 +1,5 @@
 <odoo>
-    <record id="view_mrp_workcenter_form_inherit" model="ir.ui.view">
+<!--     <record id="view_mrp_workcenter_form_inherit" model="ir.ui.view">
         <field name="name">view.mrp.workcenter.form.inherit</field>
         <field name="model">mrp.workcenter</field>
         <field name="type">form</field>
@@ -18,6 +18,6 @@
                 </group>
             </xpath>
         </field>
-    </record>
+    </record> -->
 
 </odoo>

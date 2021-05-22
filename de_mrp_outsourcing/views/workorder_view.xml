@@ -1,5 +1,5 @@
 <odoo>
-    <record id="mrp_production_workcenter_form_view_subcontracting_inherit" model="ir.ui.view">
+<!--     <record id="mrp_production_workcenter_form_view_subcontracting_inherit" model="ir.ui.view">
         <field name="name">mrp.production.workcenter.form.subcontracting.inherit</field>
         <field name="model">mrp.workorder</field>
         <field name="type">form</field>
@@ -14,11 +14,10 @@
                 </group>
             </xpath>
 
-            <!-- Adding button to create Subcontracting -->
             <xpath expr="//header/field[@name='state']" position="before">
                 <button name="create_subcontracting" type="object" string="Subcontracting Order" attrs="{'invisible': ['|', ('purchase_id', '!=', False),('is_subcontracting', '==', False)]}"/>
             </xpath>
         </field>
-    </record>
+    </record> -->
 
 </odoo>

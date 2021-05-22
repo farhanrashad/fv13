@@ -15,7 +15,7 @@ class MrpWorkorder(models.Model):
     return_id = fields.Many2one('stock.picking', 'Return')
     is_subcontracting = fields.Boolean(related='workcenter_id.is_subcontracting', string='Is Subcontracting', store=True)
 
-    @api.multi
+#     @api.multi
     def create_subcontracting(self):
         for workorder_rec in self:
             #Raising Various Warnings
