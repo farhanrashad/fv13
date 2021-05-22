@@ -44,10 +44,9 @@
             <xpath expr="//div[@t-field='doc.partner_id']" position="before">
                 <strong>Buyer/Customer:</strong>
             </xpath>
-            <xpath expr="//span[@t-field='l.price_unit']" position="replace">
-                <span t-field="l.price_unit"
-                      t-options='{"widget": "monetary", "display_currency": doc.pricelist_id.currency_id}'/>
-            </xpath>
+<!--             <xpath expr="//span[@t-field='l.price_unit']" position="replace">
+                <span t-esc="'%.4f'%(l.price_unit)"/>
+            </xpath> -->
         </template>
 
         <template id="report_saleorder_pro_forma_with_commission">

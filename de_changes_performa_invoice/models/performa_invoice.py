@@ -3,7 +3,7 @@ from datetime import datetime
 from odoo.exceptions import UserError
 
 
-class FleetRequest(models.Model):
+class SaleOrderInherit(models.Model):
     _inherit = 'sale.order'
 
     commission = fields.Char(string='Commission')
@@ -12,3 +12,8 @@ class FleetRequest(models.Model):
 #                                     copy=False)
 #     date_order = fields.Date(string='Order Date', required=True, readonly=True, index=True, states={'draft': [('readonly', False)], 'sent': [('readonly', False)]}, copy=False, default=fields.datetime.today())
 
+
+class StockPickingInherit(models.Model):
+    _inherit = 'stock.picking'
+
+    internal_note = fields.Text(string='Note')
