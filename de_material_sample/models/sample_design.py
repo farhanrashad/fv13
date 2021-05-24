@@ -45,23 +45,23 @@ class DesignSample(models.Model):
     add_wastage = fields.Float(string='Add Wastage', compute='_calculate_wastage_price', readonly=True)
     quote_price = fields.Char(string='Quote Price')
     
-    @api.multi
+#     @api.multi
     def action_pending(self):
         return self.write({'state': 'pending'})
     
-    @api.multi
+#     @api.multi
     def action_approved(self):
         return self.write({'state': 'approved'})
     
-    @api.multi
+#     @api.multi
     def action_rejected(self):
         return self.write({'state': 'rejected'})
     
-    @api.multi
+#     @api.multi
     def action_cancel(self):
         return self.write({'state': 'draft'})
     
-    @api.model
+#     @api.model
     def create(self, vals):
         if vals.get('name', 'New') == 'New':
             vals['name'] = self.env['ir.sequence'].next_by_code(
