@@ -1,0 +1,2 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_de_employee_blood_group_de_employee_blood_group,de_employee_blood_group.de_employee_blood_group,model_de_employee_blood_group_de_employee_blood_group,base.group_user,1,1,1,1
